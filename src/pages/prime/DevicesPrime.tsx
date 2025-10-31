@@ -214,7 +214,7 @@ const DevicesPrime = () => {
               {dispositivosDistribuicaoDetalhada.map((item) => (
                 <TableRow 
                   key={item.empresa}
-                  className="cursor-pointer hover:bg-accent"
+                  className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleDispositivoEmpresaClick(item.empresa)}
                 >
                   <TableCell className="font-medium">{item.empresa}</TableCell>
@@ -243,7 +243,7 @@ const DevicesPrime = () => {
             {colaboradoresSemCadastroDetalhado.map((item) => (
               <TableRow 
                 key={item.empresa}
-                className="cursor-pointer hover:bg-accent"
+                className="cursor-pointer hover:bg-muted/50"
                 onClick={() => handleCadastroEmpresaClick(item.empresa)}
               >
                 <TableCell className="font-medium">{item.empresa}</TableCell>

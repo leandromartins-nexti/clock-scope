@@ -150,7 +150,7 @@ const EngagementPrime = () => {
               {turnoverTable.map((item) => (
                 <TableRow 
                   key={item.empresa}
-                  className="cursor-pointer hover:bg-accent"
+                  className="cursor-pointer hover:bg-muted/50"
                   onClick={() => setSelectedEmpresaTurnover(item.empresa)}
                 >
                   <TableCell className="font-medium">{item.empresa}</TableCell>

@@ -125,7 +125,7 @@ export default function AusenciasCoberturasPrime() {
             </TableHeader>
             <TableBody>
               {filteredAbsenteismo.map(item => (
-                <TableRow key={item.empresa} className="cursor-pointer hover:bg-accent" onClick={() => handleAbsenteismoEmpresaClick(item.empresa)}>
+                <TableRow key={item.empresa} className="cursor-pointer hover:bg-muted/50" onClick={() => handleAbsenteismoEmpresaClick(item.empresa)}>
                   <TableCell className="font-medium">{item.empresa}</TableCell>
                   <TableCell className="text-right">
                     <span className="text-destructive font-semibold">{item.percentualAbsenteismo}%</span>
@@ -147,7 +147,7 @@ export default function AusenciasCoberturasPrime() {
             </TableHeader>
             <TableBody>
               {filteredAusencias.map(item => (
-                <TableRow key={item.empresa} className="cursor-pointer hover:bg-accent" onClick={() => handleAusenciasEmpresaClick(item.empresa)}>
+                <TableRow key={item.empresa} className="cursor-pointer hover:bg-muted/50" onClick={() => handleAusenciasEmpresaClick(item.empresa)}>
                   <TableCell className="font-medium">{item.empresa}</TableCell>
                   <TableCell className="text-right">{item.totalHoras}h</TableCell>
                 </TableRow>

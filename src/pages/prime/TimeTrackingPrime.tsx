@@ -339,7 +339,7 @@ const TimeTrackingPrimeContent = () => {
                   {qualidadeMarcacoesDetalhadas.map((item) => (
                     <TableRow
                       key={item.empresa}
-                      className="cursor-pointer hover:bg-accent"
+                      className="cursor-pointer hover:bg-muted/50"
                       onClick={() => {
                         handleEmpresaClick(item.empresa);
                         setSelectedEmpresa(item.empresa);
@@ -394,7 +394,7 @@ const TimeTrackingPrimeContent = () => {
                   {inconsistenciasDetalhadas.map((item) => (
                     <TableRow
                       key={item.empresa}
-                      className="cursor-pointer hover:bg-accent"
+                      className="cursor-pointer hover:bg-muted/50"
                       onClick={() => handleInconsistenciaEmpresaClick(item.empresa)}
                     >
                       <TableCell className="font-medium">{item.empresa}</TableCell>
@@ -514,7 +514,7 @@ const TimeTrackingPrimeContent = () => {
                   {solicitacoesDetalhadas.map((item) => (
                     <TableRow
                       key={item.empresa}
-                      className="cursor-pointer hover:bg-accent"
+                      className="cursor-pointer hover:bg-muted/50"
                       onClick={() => handleSolicitacaoEmpresaClick(item.empresa)}
                     >
                       <TableCell className="font-medium">{item.empresa}</TableCell>

@@ -148,7 +148,7 @@ const OperationalPrime = () => {
               {eventosPostosDescobertosTable.map((item) => (
                 <TableRow 
                   key={item.empresa}
-                  className="cursor-pointer hover:bg-accent"
+                  className="cursor-pointer hover:bg-muted/50"
                   onClick={() => setSelectedEmpresaPostosDescobertos(item.empresa)}
                 >
                   <TableCell className="font-medium">{item.empresa}</TableCell>
@@ -188,7 +188,7 @@ const OperationalPrime = () => {
               {eventosFaltaEfetivoTable.map((item) => (
                 <TableRow 
                   key={item.empresa}
-                  className="cursor-pointer hover:bg-accent"
+                  className="cursor-pointer hover:bg-muted/50"
                   onClick={() => setSelectedEmpresaFaltaEfetivo(item.empresa)}
                 >
                   <TableCell className="font-medium">{item.empresa}</TableCell>
@@ -228,7 +228,7 @@ const OperationalPrime = () => {
               {eventosExcedentesTable.map((item) => (
                 <TableRow 
                   key={item.empresa}
-                  className="cursor-pointer hover:bg-accent"
+                  className="cursor-pointer hover:bg-muted/50"
                   onClick={() => setSelectedEmpresaExcedentes(item.empresa)}
                 >
                   <TableCell className="font-medium">{item.empresa}</TableCell>
