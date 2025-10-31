@@ -49,6 +49,7 @@ export function DashboardSidebar() {
             <img src={nextiLogoSmall} alt="N" className="h-8" />
           </div>
         )}
+        <SidebarTrigger className="text-white hover:bg-[rgba(255,255,255,0.1)] h-8 w-8 p-0 ml-auto" />
       </SidebarHeader>
 
       <SidebarContent className="flex-1 overflow-y-auto bg-[#3d4449]">
