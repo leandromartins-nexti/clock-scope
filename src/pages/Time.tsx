@@ -161,29 +161,29 @@ function TimeDashboardContent() {
     value: aprovacaoHorasExtras.reprovadas,
     fill: COLORS.destructive
   }];
-  return <div className="min-h-screen bg-[#F8F8F8]">
+  return <div className="min-h-screen bg-background">
       
       
-      <div className="max-w-[1440px] mx-auto p-6 space-y-6">
+      <div className="container mx-auto p-6 space-y-6">
         
-        {/* Active Filters Display */}
-        {activeFilters.length > 0 && <Card className="border-primary/20 shadow-md">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-semibold text-foreground">Filtros ativos:</span>
-                {activeFilters.map((filter, idx) => <Badge key={idx} variant="secondary" className="gap-2 bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
-                    {filter.label}
-                    <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={() => removeFilter(filter.type, filter.value)} />
-                  </Badge>)}
-                <Button variant="ghost" size="sm" onClick={clearFilters} className="hover:bg-destructive/10 hover:text-destructive">
-                  Limpar todos
-                </Button>
-              </div>
-            </CardContent>
-          </Card>}
+         {/* Active Filters Display */}
+         {activeFilters.length > 0 && <Card>
+             <CardContent className="p-4">
+               <div className="flex items-center gap-2 flex-wrap">
+                 <span className="text-sm font-semibold">Filtros ativos:</span>
+                 {activeFilters.map((filter, idx) => <Badge key={idx} variant="secondary" className="gap-2">
+                     {filter.label}
+                     <X className="h-3 w-3 cursor-pointer" onClick={() => removeFilter(filter.type, filter.value)} />
+                   </Badge>)}
+                 <Button variant="ghost" size="sm" onClick={clearFilters}>
+                   Limpar todos
+                 </Button>
+               </div>
+             </CardContent>
+           </Card>}
 
-        {/* BIG NUMBERS - 4x2 Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+         {/* BIG NUMBERS - 4x2 Grid */}
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <KPICard title="Horas Previstas" value={bigNumbers.horasPrevistas.toLocaleString("pt-BR") + "h"} icon={Clock} />
           <KPICard title="Horas Realizadas" value={bigNumbers.horasRealizadas.toLocaleString("pt-BR") + "h"} icon={TrendingUp} />
           <KPICard title="Diferença Previsto vs Realizado" value={`+${bigNumbers.diferencaPrevistoRealizado.toLocaleString("pt-BR")}h`} trend={{
@@ -200,91 +200,79 @@ function TimeDashboardContent() {
           <KPICard title="HE Reprovadas" value={`${bigNumbers.horasExtrasReprovadas.toFixed(1)}%`} icon={XCircle} />
         </div>
 
-        {/* SEÇÃO 1: JORNADA PREVISTA X REALIZADA */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="h-1 w-12 bg-primary rounded-full"></div>
-            <h2 className="text-xl font-semibold text-foreground">1. Jornada Prevista x Realizada</h2>
-          </div>
+         {/* SEÇÃO 1: JORNADA PREVISTA X REALIZADA */}
+         <div className="space-y-6">
+           <h2 className="text-xl font-semibold mb-4">1. Jornada Prevista x Realizada</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Evolução Mensal */}
             <ChartCard title="Evolução Mensal - Previsto vs Realizado">
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={jornadaMensal}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <Tooltip contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))"
-                }} />
-                  <Legend />
-                  <Area type="monotone" dataKey="previstas" stackId="1" stroke={COLORS.primary} fill={COLORS.primary} fillOpacity={0.6} name="Previstas" />
-                  <Area type="monotone" dataKey="realizadas" stackId="2" stroke={COLORS.success} fill={COLORS.success} fillOpacity={0.6} name="Realizadas" />
-                </AreaChart>
-              </ResponsiveContainer>
+               <ResponsiveContainer width="100%" height={300}>
+                 <AreaChart data={jornadaMensal}>
+                   <CartesianGrid strokeDasharray="3 3" />
+                   <XAxis dataKey="mes" />
+                   <YAxis />
+                   <Tooltip />
+                   <Legend />
+                   <Area type="monotone" dataKey="previstas" stackId="1" stroke={COLORS.primary} fill={COLORS.primary} fillOpacity={0.6} name="Previstas" />
+                   <Area type="monotone" dataKey="realizadas" stackId="2" stroke={COLORS.success} fill={COLORS.success} fillOpacity={0.6} name="Realizadas" />
+                 </AreaChart>
+               </ResponsiveContainer>
             </ChartCard>
 
             {/* Taxa de Aderência */}
             <ChartCard title="Taxa de Aderência Mensal (%)">
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={jornadaMensal}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} domain={[95, 125]} />
-                  <Tooltip contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))"
-                }} />
-                  <Legend />
-                  <Line type="monotone" dataKey="aderencia" stroke={COLORS.secondary} strokeWidth={3} name="Aderência (%)" />
-                </LineChart>
-              </ResponsiveContainer>
+               <ResponsiveContainer width="100%" height={300}>
+                 <LineChart data={jornadaMensal}>
+                   <CartesianGrid strokeDasharray="3 3" />
+                   <XAxis dataKey="mes" />
+                   <YAxis domain={[95, 125]} />
+                   <Tooltip />
+                   <Legend />
+                   <Line type="monotone" dataKey="aderencia" stroke={COLORS.secondary} strokeWidth={2} name="Aderência (%)" />
+                 </LineChart>
+               </ResponsiveContainer>
             </ChartCard>
           </div>
 
-          {/* Tabela Detalhada por Empresa/Cliente */}
-          <ChartCard title="Detalhamento por Empresa e Cliente" action={<span className="text-xs text-muted-foreground">Clique para filtrar</span>}>
-            <div className="max-h-[400px] overflow-auto rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-primary hover:bg-primary">
-                    <TableHead className="text-primary-foreground font-semibold">Empresa</TableHead>
-                    <TableHead className="text-primary-foreground font-semibold">Cliente</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Previstas (h)</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Realizadas (h)</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Desvio (h)</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Aderência (%)</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredJornadaPorEmpresa.map((row, idx) => <TableRow key={idx} onClick={() => handleClienteClick(row.cliente)} className={`cursor-pointer transition-all duration-200 ${isFilterActive("cliente", row.cliente) ? "bg-primary/10 border-l-4 border-l-primary" : idx % 2 === 0 ? "bg-background hover:bg-[#FFF5EF]" : "bg-muted/30 hover:bg-[#FFF5EF]"}`}>
-                      <TableCell className="font-medium">{row.empresa}</TableCell>
-                      <TableCell>{row.cliente}</TableCell>
-                      <TableCell className="text-right">{row.previstas.toLocaleString("pt-BR")}</TableCell>
-                      <TableCell className="text-right">{row.realizadas.toLocaleString("pt-BR")}</TableCell>
-                      <TableCell className={`text-right font-medium ${row.desvio > 0 ? "text-warning" : "text-success"}`}>
-                        {row.desvio > 0 ? "+" : ""}{row.desvio.toLocaleString("pt-BR")}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Badge variant={row.aderencia > 110 ? "destructive" : row.aderencia < 95 ? "destructive" : "default"}>
-                          {row.aderencia.toFixed(1)}%
-                        </Badge>
-                      </TableCell>
-                    </TableRow>)}
-                </TableBody>
-              </Table>
-            </div>
-          </ChartCard>
+           {/* Tabela Detalhada por Empresa/Cliente */}
+           <ChartCard title="Detalhamento por Empresa e Cliente">
+             <div className="max-h-[400px] overflow-auto rounded-lg">
+               <Table>
+                 <TableHeader>
+                   <TableRow>
+                     <TableHead>Empresa</TableHead>
+                     <TableHead>Cliente</TableHead>
+                     <TableHead className="text-right">Previstas (h)</TableHead>
+                     <TableHead className="text-right">Realizadas (h)</TableHead>
+                     <TableHead className="text-right">Desvio (h)</TableHead>
+                     <TableHead className="text-right">Aderência (%)</TableHead>
+                   </TableRow>
+                 </TableHeader>
+                 <TableBody>
+                   {filteredJornadaPorEmpresa.map((row, idx) => <TableRow key={idx} onClick={() => handleClienteClick(row.cliente)} className={`cursor-pointer hover:bg-accent ${isFilterActive("cliente", row.cliente) ? "bg-accent" : ""}`}>
+                       <TableCell className="font-medium">{row.empresa}</TableCell>
+                       <TableCell>{row.cliente}</TableCell>
+                       <TableCell className="text-right">{row.previstas.toLocaleString("pt-BR")}</TableCell>
+                       <TableCell className="text-right">{row.realizadas.toLocaleString("pt-BR")}</TableCell>
+                       <TableCell className={`text-right font-medium ${row.desvio > 0 ? "text-warning" : "text-success"}`}>
+                         {row.desvio > 0 ? "+" : ""}{row.desvio.toLocaleString("pt-BR")}
+                       </TableCell>
+                       <TableCell className="text-right">
+                         <Badge variant={row.aderencia > 110 ? "destructive" : row.aderencia < 95 ? "destructive" : "default"}>
+                           {row.aderencia.toFixed(1)}%
+                         </Badge>
+                       </TableCell>
+                     </TableRow>)}
+                 </TableBody>
+               </Table>
+             </div>
+           </ChartCard>
         </div>
 
-        {/* SEÇÃO 2: HORAS EXTRAS E BANCO DE HORAS */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="h-1 w-12 bg-primary rounded-full"></div>
-            <h2 className="text-xl font-semibold text-foreground">2. Horas Extras e Banco de Horas</h2>
-          </div>
+         {/* SEÇÃO 2: HORAS EXTRAS E BANCO DE HORAS */}
+         <div className="space-y-6">
+           <h2 className="text-xl font-semibold mb-4">2. Horas Extras e Banco de Horas</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Top 10 Postos - Horas Extras */}
@@ -307,38 +295,35 @@ function TimeDashboardContent() {
 
             {/* Histórico Banco de Horas */}
             <ChartCard title="Evolução do Banco de Horas">
-              <ResponsiveContainer width="100%" height={400}>
-                <AreaChart data={bancoHorasMensal}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <Tooltip contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))"
-                }} />
-                  <Legend />
-                  <Area type="monotone" dataKey="credito" stackId="1" stroke={COLORS.success} fill={COLORS.success} fillOpacity={0.6} name="Crédito" />
-                  <Area type="monotone" dataKey="debito" stackId="2" stroke={COLORS.destructive} fill={COLORS.destructive} fillOpacity={0.6} name="Débito" />
-                </AreaChart>
-              </ResponsiveContainer>
+               <ResponsiveContainer width="100%" height={400}>
+                 <AreaChart data={bancoHorasMensal}>
+                   <CartesianGrid strokeDasharray="3 3" />
+                   <XAxis dataKey="mes" />
+                   <YAxis />
+                   <Tooltip />
+                   <Legend />
+                   <Area type="monotone" dataKey="credito" stackId="1" stroke={COLORS.success} fill={COLORS.success} fillOpacity={0.6} name="Crédito" />
+                   <Area type="monotone" dataKey="debito" stackId="2" stroke={COLORS.destructive} fill={COLORS.destructive} fillOpacity={0.6} name="Débito" />
+                 </AreaChart>
+               </ResponsiveContainer>
             </ChartCard>
           </div>
 
-          {/* Top 10 Colaboradores - Horas Extras */}
-          <ChartCard title="Top 10 Colaboradores - Horas Extras e Saldo BH" action={<span className="text-xs text-muted-foreground">Clique para filtrar</span>}>
-            <div className="max-h-[400px] overflow-auto rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-primary hover:bg-primary">
-                    <TableHead className="text-primary-foreground font-semibold">Colaborador</TableHead>
-                    <TableHead className="text-primary-foreground font-semibold">Posto</TableHead>
-                    <TableHead className="text-primary-foreground font-semibold">Cliente</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">HE (h)</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Saldo BH (h)</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredColaboradorHorasExtras.map((row, idx) => <TableRow key={row.id} onClick={() => handleColaboradorClick(row.id, row.colaborador)} className={`cursor-pointer transition-all duration-200 ${isFilterActive("colaborador", row.id) ? "bg-primary/10 border-l-4 border-l-primary" : idx % 2 === 0 ? "bg-background hover:bg-[#FFF5EF]" : "bg-muted/30 hover:bg-[#FFF5EF]"}`}>
+           {/* Top 10 Colaboradores - Horas Extras */}
+           <ChartCard title="Top 10 Colaboradores - Horas Extras e Saldo BH">
+             <div className="max-h-[400px] overflow-auto rounded-lg">
+               <Table>
+                 <TableHeader>
+                   <TableRow>
+                     <TableHead>Colaborador</TableHead>
+                     <TableHead>Posto</TableHead>
+                     <TableHead>Cliente</TableHead>
+                     <TableHead className="text-right">HE (h)</TableHead>
+                     <TableHead className="text-right">Saldo BH (h)</TableHead>
+                   </TableRow>
+                 </TableHeader>
+                 <TableBody>
+                   {filteredColaboradorHorasExtras.map((row, idx) => <TableRow key={row.id} onClick={() => handleColaboradorClick(row.id, row.colaborador)} className={`cursor-pointer hover:bg-accent ${isFilterActive("colaborador", row.id) ? "bg-accent" : ""}`}>
                       <TableCell className="font-medium">{row.colaborador}</TableCell>
                       <TableCell>{row.posto}</TableCell>
                       <TableCell>{row.cliente}</TableCell>
@@ -353,62 +338,53 @@ function TimeDashboardContent() {
           </ChartCard>
         </div>
 
-        {/* SEÇÃO 3: COMPLIANCE TRABALHISTA */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="h-1 w-12 bg-primary rounded-full"></div>
-            <h2 className="text-xl font-semibold text-foreground">3. Compliance Trabalhista</h2>
-          </div>
+         {/* SEÇÃO 3: COMPLIANCE TRABALHISTA */}
+         <div className="space-y-6">
+           <h2 className="text-xl font-semibold mb-4">3. Compliance Trabalhista</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Eventos por Tipo */}
             <ChartCard title="Ocorrências por Tipo de Evento">
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={eventosCompliance}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="tipo" stroke="hsl(var(--muted-foreground))" fontSize={10} angle={-20} textAnchor="end" height={100} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <Tooltip contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))"
-                }} />
-                  <Bar dataKey="ocorrencias" fill={COLORS.destructive} radius={[4, 4, 0, 0]} name="Ocorrências" />
-                </BarChart>
-              </ResponsiveContainer>
+               <ResponsiveContainer width="100%" height={300}>
+                 <BarChart data={eventosCompliance}>
+                   <CartesianGrid strokeDasharray="3 3" />
+                   <XAxis dataKey="tipo" fontSize={10} angle={-20} textAnchor="end" height={100} />
+                   <YAxis />
+                   <Tooltip />
+                   <Bar dataKey="ocorrencias" fill={COLORS.destructive} radius={[4, 4, 0, 0]} name="Ocorrências" />
+                 </BarChart>
+               </ResponsiveContainer>
             </ChartCard>
 
             {/* Evolução Mensal Compliance */}
             <ChartCard title="Evolução Mensal - Compliance (%)">
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={complianceMensal}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} domain={[80, 92]} />
-                  <Tooltip contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))"
-                }} />
-                  <Legend />
-                  <Line type="monotone" dataKey="percentualCompliance" stroke={COLORS.success} strokeWidth={3} name="Compliance (%)" />
-                </LineChart>
-              </ResponsiveContainer>
+               <ResponsiveContainer width="100%" height={300}>
+                 <LineChart data={complianceMensal}>
+                   <CartesianGrid strokeDasharray="3 3" />
+                   <XAxis dataKey="mes" />
+                   <YAxis domain={[80, 92]} />
+                   <Tooltip />
+                   <Legend />
+                   <Line type="monotone" dataKey="percentualCompliance" stroke={COLORS.success} strokeWidth={2} name="Compliance (%)" />
+                 </LineChart>
+               </ResponsiveContainer>
             </ChartCard>
           </div>
 
-          {/* Compliance por Cliente */}
-          <ChartCard title="Compliance por Cliente" action={<span className="text-xs text-muted-foreground">Clique para filtrar</span>}>
-            <div className="max-h-[400px] overflow-auto rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-primary hover:bg-primary">
-                    <TableHead className="text-primary-foreground font-semibold">Cliente</TableHead>
-                    <TableHead className="text-primary-foreground font-semibold">Empresa</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Ocorrências</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Colab. c/ Ocorrência</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Total Colab.</TableHead>
-                    <TableHead className="text-right text-primary-foreground font-semibold">Compliance (%)</TableHead>
-                  </TableRow>
-                </TableHeader>
+           {/* Compliance por Cliente */}
+           <ChartCard title="Compliance por Cliente">
+             <div className="max-h-[400px] overflow-auto rounded-lg">
+               <Table>
+                 <TableHeader>
+                   <TableRow>
+                     <TableHead>Cliente</TableHead>
+                     <TableHead>Empresa</TableHead>
+                     <TableHead className="text-right">Ocorrências</TableHead>
+                     <TableHead className="text-right">Colab. c/ Ocorrência</TableHead>
+                     <TableHead className="text-right">Total Colab.</TableHead>
+                     <TableHead className="text-right">Compliance (%)</TableHead>
+                   </TableRow>
+                 </TableHeader>
                 <TableBody>
                   {filteredCompliancePorCliente.map((row, idx) => <TableRow key={idx} onClick={() => handleClienteClick(row.cliente)} className={`cursor-pointer transition-all duration-200 ${isFilterActive("cliente", row.cliente) ? "bg-primary/10 border-l-4 border-l-primary" : idx % 2 === 0 ? "bg-background hover:bg-[#FFF5EF]" : "bg-muted/30 hover:bg-[#FFF5EF]"}`}>
                       <TableCell className="font-medium">{row.cliente}</TableCell>

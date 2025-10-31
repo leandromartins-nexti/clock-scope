@@ -135,30 +135,15 @@ const Operational = () => {
   const totalFilteredHours = filteredData.reduce((sum, item) => sum + item.hours, 0);
 
   return (
-    <div className="flex-1 overflow-auto" style={{ backgroundColor: '#F8F8F8' }}>
+    <div className="min-h-screen bg-background">
       <DashboardHeader 
         title="Unidade de Negócio" 
         breadcrumbs={["Registro de ponto", "Cliente"]}
       />
 
-      <main className="p-8 space-y-8 max-w-[1440px] mx-auto">
-        {/* Active Filters Display */}
-        {filters.length > 0 && (
-          <div className="flex flex-wrap gap-2 p-4 bg-white rounded-lg border border-border/50 shadow-sm animate-fade-in">
-            <span className="text-sm font-medium text-muted-foreground">Filtros ativos:</span>
-            {filters.map((filter, index) => (
-              <div 
-                key={index}
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium transition-all duration-200"
-                style={{ backgroundColor: '#FFF5EF', color: '#F15A24' }}
-              >
-                {filter.label}
-              </div>
-            ))}
-          </div>
-        )}
+      <main className="container mx-auto p-6 space-y-6">
         {/* KPIs Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <KPICard
             title="Solicitações de Cobertura"
             value="2.890"
@@ -185,10 +170,7 @@ const Operational = () => {
 
         {/* Reserva Técnica Section */}
         <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="h-1 w-12 rounded-full" style={{ backgroundColor: '#F15A24' }} />
-            <h3 className="text-xl font-semibold" style={{ color: '#4E4E4E' }}>Reserva Técnica Operacional</h3>
-          </div>
+          <h2 className="text-xl font-semibold mb-4">Reserva Técnica Operacional</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ChartCard title="Análise de Ociosidade por Cargo">
@@ -207,18 +189,11 @@ const Operational = () => {
                       }
                     }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
-                    <XAxis dataKey="role" angle={-45} textAnchor="end" height={100} stroke="#9CA3AF" />
-                    <YAxis stroke="#9CA3AF" />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#FFFFFF', 
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                      }}
-                    />
-                    <Bar dataKey="hours" fill="#F15A24" cursor="pointer" radius={[6, 6, 0, 0]} />
+                     <CartesianGrid strokeDasharray="3 3" />
+                     <XAxis dataKey="role" angle={-45} textAnchor="end" height={100} />
+                     <YAxis />
+                     <Tooltip />
+                     <Bar dataKey="hours" fill="hsl(var(--chart-1))" cursor="pointer" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -227,168 +202,133 @@ const Operational = () => {
             <ChartCard title="Evolução da Reserva Técnica">
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={reservaTecnicaEvolution}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
-                    <XAxis dataKey="month" stroke="#9CA3AF" />
-                    <YAxis stroke="#9CA3AF" />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#FFFFFF', 
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                      }}
-                    />
-                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                    <Line 
-                      type="monotone" 
-                      dataKey="hours" 
-                      stroke="#FDB813" 
-                      strokeWidth={3}
-                      name="Horas de Ociosidade"
-                      dot={{ fill: '#FDB813', r: 4 }}
-                      activeDot={{ r: 6 }}
-                    />
+                   <LineChart data={reservaTecnicaEvolution}>
+                     <CartesianGrid strokeDasharray="3 3" />
+                     <XAxis dataKey="month" />
+                     <YAxis />
+                     <Tooltip />
+                     <Legend />
+                     <Line 
+                       type="monotone" 
+                       dataKey="hours" 
+                       stroke="hsl(var(--chart-2))" 
+                       strokeWidth={2}
+                       name="Horas de Ociosidade"
+                     />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
             </ChartCard>
           </div>
 
-          <ChartCard title="Detalhamento por Unidade">
-            <div className="rounded-lg overflow-hidden border border-border/50">
-              <Table>
-                <TableHeader>
-                  <TableRow style={{ backgroundColor: '#F15A24' }} className="hover:bg-[#F15A24]">
-                    <TableHead className="text-white font-semibold">Cargo</TableHead>
-                    <TableHead className="text-white font-semibold">Empresa</TableHead>
-                    <TableHead className="text-white font-semibold">Unidade</TableHead>
-                    <TableHead className="text-right text-white font-semibold">Horas</TableHead>
-                  </TableRow>
-                </TableHeader>
-              <TableBody>
-                {filteredIdleHours.map((item, index) => (
-                  <TableRow 
-                    key={index}
-                    style={{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#FAFAFA' }}
-                    className="hover:bg-[#FFF5EF] transition-colors"
-                  >
-                    <TableCell 
-                      className="font-medium cursor-pointer transition-colors"
-                      style={{ color: '#F15A24' }}
-                      onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                      onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
-                      onClick={() => {
-                        addFilter({
-                          category: 'role',
-                          value: item.role,
-                          label: `Cargo: ${item.role}`,
-                        });
-                      }}
-                    >
-                      {item.role}
-                    </TableCell>
-                    <TableCell 
-                      className="cursor-pointer transition-colors"
-                      style={{ color: '#F15A24' }}
-                      onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                      onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
-                      onClick={() => {
-                        addFilter({
-                          category: 'company',
-                          value: item.company,
-                          label: `Empresa: ${item.company}`,
-                        });
-                      }}
-                    >
-                      {item.company}
-                    </TableCell>
-                    <TableCell 
-                      className="cursor-pointer transition-colors"
-                      style={{ color: '#F15A24' }}
-                      onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                      onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
-                      onClick={() => {
-                        addFilter({
-                          category: 'unit',
-                          value: item.unit,
-                          label: `Unidade: ${item.unit}`,
-                        });
-                      }}
-                    >
-                      {item.unit}
-                    </TableCell>
-                    <TableCell className="text-right">{item.hours}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            </div>
-          </ChartCard>
+           <ChartCard title="Detalhamento por Unidade">
+               <Table>
+                 <TableHeader>
+                   <TableRow>
+                     <TableHead>Cargo</TableHead>
+                     <TableHead>Empresa</TableHead>
+                     <TableHead>Unidade</TableHead>
+                     <TableHead className="text-right">Horas</TableHead>
+                   </TableRow>
+                 </TableHeader>
+               <TableBody>
+                 {filteredIdleHours.map((item, index) => (
+                   <TableRow 
+                     key={index}
+                     className="cursor-pointer hover:bg-accent"
+                   >
+                     <TableCell 
+                       className="font-medium"
+                       onClick={() => {
+                         addFilter({
+                           category: 'role',
+                           value: item.role,
+                           label: `Cargo: ${item.role}`,
+                         });
+                       }}
+                     >
+                       {item.role}
+                     </TableCell>
+                     <TableCell 
+                       onClick={() => {
+                         addFilter({
+                           category: 'company',
+                           value: item.company,
+                           label: `Empresa: ${item.company}`,
+                         });
+                       }}
+                     >
+                       {item.company}
+                     </TableCell>
+                     <TableCell 
+                       onClick={() => {
+                         addFilter({
+                           category: 'unit',
+                           value: item.unit,
+                           label: `Unidade: ${item.unit}`,
+                         });
+                       }}
+                     >
+                       {item.unit}
+                     </TableCell>
+                     <TableCell className="text-right">{item.hours}</TableCell>
+                   </TableRow>
+                 ))}
+               </TableBody>
+             </Table>
+           </ChartCard>
         </div>
 
         {/* Coverage and Absence Reasons */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="h-1 w-12 rounded-full" style={{ backgroundColor: '#F15A24' }} />
-              <h3 className="text-xl font-semibold" style={{ color: '#4E4E4E' }}>Recurso por Motivo de Cobertura</h3>
-            </div>
+            <h2 className="text-xl font-semibold mb-4">Recurso por Motivo de Cobertura</h2>
 
             <ChartCard title="Evolução Mensal por Motivo">
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart 
-                    data={coverageReasonsByMonth}
-                    onClick={(data) => {
-                      if (data && data.activeLabel) {
-                        // Add month filter
-                        addFilter({
-                          category: 'mês',
-                          value: data.activeLabel,
-                          label: `Mês: ${data.activeLabel}`,
-                        });
-                        
-                        // Add coverage reason filter if a specific bar segment was clicked
-                        if (data.activePayload && data.activePayload.length > 0) {
-                          const clickedReason = data.activePayload[0].dataKey;
-                          addFilter({
-                            category: 'coverage_reason',
-                            value: clickedReason as string,
-                            label: `Motivo: ${clickedReason}`,
-                          });
-                        }
-                      }
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
-                    <XAxis dataKey="month" stroke="#9CA3AF" />
-                    <YAxis stroke="#9CA3AF" />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#FFFFFF', 
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                      }}
-                    />
-                    <Legend 
-                      onClick={(e) => {
-                        if (e.dataKey) {
-                          addFilter({
-                            category: 'coverage_reason',
-                            value: e.dataKey as string,
-                            label: `Motivo: ${e.dataKey}`,
-                          });
-                        }
-                      }}
-                      wrapperStyle={{ cursor: 'pointer', paddingTop: '20px' }}
-                    />
-                    <Bar dataKey="Férias" stackId="a" fill="#F15A24" cursor="pointer" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="Falta" stackId="a" fill="#FDB813" cursor="pointer" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="Afastamento" stackId="a" fill="#4E4E4E" cursor="pointer" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="Licença Médica" stackId="a" fill="#00C48C" cursor="pointer" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="Outros" stackId="a" fill="#E63946" cursor="pointer" radius={[6, 6, 0, 0]} />
+                   <BarChart 
+                     data={coverageReasonsByMonth}
+                     onClick={(data) => {
+                       if (data && data.activeLabel) {
+                         addFilter({
+                           category: 'mês',
+                           value: data.activeLabel,
+                           label: `Mês: ${data.activeLabel}`,
+                         });
+                         
+                         if (data.activePayload && data.activePayload.length > 0) {
+                           const clickedReason = data.activePayload[0].dataKey;
+                           addFilter({
+                             category: 'coverage_reason',
+                             value: clickedReason as string,
+                             label: `Motivo: ${clickedReason}`,
+                           });
+                         }
+                       }
+                     }}
+                   >
+                     <CartesianGrid strokeDasharray="3 3" />
+                     <XAxis dataKey="month" />
+                     <YAxis />
+                     <Tooltip />
+                     <Legend 
+                       onClick={(e) => {
+                         if (e.dataKey) {
+                           addFilter({
+                             category: 'coverage_reason',
+                             value: e.dataKey as string,
+                             label: `Motivo: ${e.dataKey}`,
+                           });
+                         }
+                       }}
+                       wrapperStyle={{ cursor: 'pointer' }}
+                     />
+                     <Bar dataKey="Férias" stackId="a" fill="hsl(var(--chart-1))" cursor="pointer" />
+                     <Bar dataKey="Falta" stackId="a" fill="hsl(var(--chart-2))" cursor="pointer" />
+                     <Bar dataKey="Afastamento" stackId="a" fill="hsl(var(--chart-3))" cursor="pointer" />
+                     <Bar dataKey="Licença Médica" stackId="a" fill="hsl(var(--chart-4))" cursor="pointer" />
+                     <Bar dataKey="Outros" stackId="a" fill="hsl(var(--chart-5))" cursor="pointer" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -396,37 +336,34 @@ const Operational = () => {
 
             <ChartCard title="Top 5 Motivos de Cobertura">
               <div className="space-y-3">
-                {coverageReasons.map((reason, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-[#FFF5EF] transition-colors cursor-pointer border border-transparent hover:border-[#F15A24]/20"
-                    onClick={() => {
-                      addFilter({
-                        category: 'coverage_reason',
-                        value: reason.name,
-                        label: `Motivo: ${reason.name}`,
-                      });
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
-                        style={{ backgroundColor: reason.color }}
-                      />
-                      <span className="text-sm font-medium">{reason.name}</span>
-                    </div>
-                    <span className="text-sm font-semibold" style={{ color: '#F15A24' }}>{reason.value}%</span>
-                  </div>
-                ))}
+                 {coverageReasons.map((reason, index) => (
+                   <div 
+                     key={index} 
+                     className="flex items-center justify-between p-3 rounded-lg hover:bg-accent transition-colors cursor-pointer"
+                     onClick={() => {
+                       addFilter({
+                         category: 'coverage_reason',
+                         value: reason.name,
+                         label: `Motivo: ${reason.name}`,
+                       });
+                     }}
+                   >
+                     <div className="flex items-center gap-3">
+                       <div 
+                         className="w-3 h-3 rounded-full" 
+                         style={{ backgroundColor: reason.color }}
+                       />
+                       <span className="text-sm font-medium">{reason.name}</span>
+                     </div>
+                     <span className="text-sm font-semibold">{reason.value}%</span>
+                   </div>
+                 ))}
               </div>
             </ChartCard>
           </div>
 
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="h-1 w-12 rounded-full" style={{ backgroundColor: '#F15A24' }} />
-              <h3 className="text-xl font-semibold" style={{ color: '#4E4E4E' }}>Recurso por Motivo de Ausência</h3>
-            </div>
+            <h2 className="text-xl font-semibold mb-4">Recurso por Motivo de Ausência</h2>
 
             <ChartCard title="Evolução Mensal por Motivo">
               <div className="h-80">
@@ -490,28 +427,28 @@ const Operational = () => {
 
             <ChartCard title="Ranking de Motivos">
               <div className="space-y-3">
-                {absenceReasons.map((reason, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-[#FFF5EF] transition-colors cursor-pointer border border-transparent hover:border-[#F15A24]/20"
-                    onClick={() => {
-                      addFilter({
-                        category: 'absence_reason',
-                        value: reason.name,
-                        label: `Motivo: ${reason.name}`,
-                      });
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
-                        style={{ backgroundColor: reason.color }}
-                      />
-                      <span className="text-sm font-medium">{reason.name}</span>
-                    </div>
-                    <span className="text-sm font-semibold" style={{ color: '#F15A24' }}>{reason.value}%</span>
-                  </div>
-                ))}
+                 {absenceReasons.map((reason, index) => (
+                   <div 
+                     key={index} 
+                     className="flex items-center justify-between p-3 rounded-lg hover:bg-accent transition-colors cursor-pointer"
+                     onClick={() => {
+                       addFilter({
+                         category: 'absence_reason',
+                         value: reason.name,
+                         label: `Motivo: ${reason.name}`,
+                       });
+                     }}
+                   >
+                     <div className="flex items-center gap-3">
+                       <div 
+                         className="w-3 h-3 rounded-full" 
+                         style={{ backgroundColor: reason.color }}
+                       />
+                       <span className="text-sm font-medium">{reason.name}</span>
+                     </div>
+                     <span className="text-sm font-semibold">{reason.value}%</span>
+                   </div>
+                 ))}
               </div>
             </ChartCard>
           </div>
@@ -519,10 +456,7 @@ const Operational = () => {
 
         {/* Coverage Status */}
         <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="h-1 w-12 rounded-full" style={{ backgroundColor: '#F15A24' }} />
-            <h3 className="text-xl font-semibold" style={{ color: '#4E4E4E' }}>Coberturas por Motivo (Status)</h3>
-          </div>
+          <h2 className="text-xl font-semibold mb-4">Coberturas por Motivo (Status)</h2>
           
           <ChartCard 
             title="Evolução de Coberturas vs Ausências"
@@ -547,16 +481,15 @@ const Operational = () => {
                 
                 {/* Drill down button */}
                 {coverageDrillLevel !== 'employee' && (
-                  <Button 
-                    size="sm"
-                    onClick={handleCoverageDrillDown}
-                    style={{ backgroundColor: '#F15A24', color: '#FFFFFF' }}
-                    className="hover:opacity-90 transition-opacity"
-                  >
-                    Drill Down
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </Button>
-                )}
+                   <Button 
+                     size="sm"
+                     onClick={handleCoverageDrillDown}
+                     variant="default"
+                   >
+                     Drill Down
+                     <ChevronRight className="ml-1 h-4 w-4" />
+                   </Button>
+                 )}
               </div>
             }
           >
@@ -587,68 +520,57 @@ const Operational = () => {
                       }
                     }
                   }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
-                  <XAxis dataKey="month" stroke="#9CA3AF" />
-                  <YAxis stroke="#9CA3AF" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#FFFFFF', 
-                      border: '1px solid #E5E7EB',
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                    }}
-                  />
-                  <Legend 
-                    onClick={(e) => {
-                      if (e.dataKey) {
-                        addFilter({
-                          category: 'metric',
-                          value: e.dataKey as string,
-                          label: `Métrica: ${e.dataKey}`,
-                        });
-                      }
-                    }}
-                    wrapperStyle={{ cursor: 'pointer', paddingTop: '20px' }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="absences" 
-                    stroke="#4E4E4E" 
-                    strokeWidth={3}
-                    name="Ausências Lançadas"
-                    cursor="pointer"
-                    dot={{ fill: '#4E4E4E', r: 4 }}
-                    activeDot={{ r: 6, cursor: "pointer" }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="coveragesSent" 
-                    stroke="#F15A24" 
-                    strokeWidth={3}
-                    name="Coberturas Enviadas"
-                    cursor="pointer"
-                    dot={{ fill: '#F15A24', r: 4 }}
-                    activeDot={{ r: 6, cursor: "pointer" }}
-                  />
+                 >
+                   <CartesianGrid strokeDasharray="3 3" />
+                   <XAxis dataKey="month" />
+                   <YAxis />
+                   <Tooltip />
+                   <Legend 
+                     onClick={(e) => {
+                       if (e.dataKey) {
+                         addFilter({
+                           category: 'metric',
+                           value: e.dataKey as string,
+                           label: `Métrica: ${e.dataKey}`,
+                         });
+                       }
+                     }}
+                     wrapperStyle={{ cursor: 'pointer' }}
+                   />
+                   <Line 
+                     type="monotone" 
+                     dataKey="absences" 
+                     stroke="hsl(var(--chart-3))" 
+                     strokeWidth={2}
+                     name="Ausências Lançadas"
+                     cursor="pointer"
+                   />
+                   <Line 
+                     type="monotone" 
+                     dataKey="coveragesSent" 
+                     stroke="hsl(var(--chart-1))" 
+                     strokeWidth={2}
+                     name="Coberturas Enviadas"
+                     cursor="pointer"
+                   />
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
-            {/* Level indicator */}
-            <div className="mt-4 p-4 rounded-xl border border-border/50" style={{ backgroundColor: '#FFF5EF' }}>
-              <p className="text-sm">
-                <span className="font-semibold" style={{ color: '#F15A24' }}>Nível atual:</span>{' '}
-                <span style={{ color: '#4E4E4E' }}>
-                  {coverageDrillLevel === 'root' && 'Visão Geral'}
-                  {coverageDrillLevel === 'company' && 'Empresa'}
-                  {coverageDrillLevel === 'area' && 'Área'}
-                  {coverageDrillLevel === 'client' && 'Cliente'}
-                  {coverageDrillLevel === 'position' && 'Posto'}
-                  {coverageDrillLevel === 'employee' && 'Colaborador'}
-                </span>
-              </p>
-            </div>
+             {/* Level indicator */}
+             <div className="mt-4 p-4 rounded-lg border bg-muted/50">
+               <p className="text-sm">
+                 <span className="font-semibold">Nível atual:</span>{' '}
+                 <span>
+                   {coverageDrillLevel === 'root' && 'Visão Geral'}
+                   {coverageDrillLevel === 'company' && 'Empresa'}
+                   {coverageDrillLevel === 'area' && 'Área'}
+                   {coverageDrillLevel === 'client' && 'Cliente'}
+                   {coverageDrillLevel === 'position' && 'Posto'}
+                   {coverageDrillLevel === 'employee' && 'Colaborador'}
+                 </span>
+               </p>
+             </div>
           </ChartCard>
         </div>
       </main>
@@ -665,92 +587,82 @@ const Operational = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 mt-4 animate-fade-in">
-            {/* Summary Card */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-5 rounded-xl bg-white border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium mb-2" style={{ color: '#4E4E4E' }}>Total de Registros</p>
-                <p className="text-3xl font-bold" style={{ color: '#F15A24' }}>{filteredData.length}</p>
-              </div>
-              <div className="p-5 rounded-xl bg-white border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium mb-2" style={{ color: '#4E4E4E' }}>Total de Horas</p>
-                <p className="text-3xl font-bold" style={{ color: '#F15A24' }}>{totalFilteredHours.toLocaleString()}</p>
-              </div>
-              <div className="p-5 rounded-xl bg-white border border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium mb-2" style={{ color: '#4E4E4E' }}>Média de Horas</p>
-                <p className="text-3xl font-bold" style={{ color: '#F15A24' }}>
-                  {filteredData.length > 0 ? Math.round(totalFilteredHours / filteredData.length) : 0}
-                </p>
-              </div>
-            </div>
+           <div className="space-y-6 mt-4">
+             {/* Summary Card */}
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+               <div className="p-5 rounded-lg bg-card border shadow-sm">
+                 <p className="text-sm font-medium mb-2 text-muted-foreground">Total de Registros</p>
+                 <p className="text-3xl font-bold">{filteredData.length}</p>
+               </div>
+               <div className="p-5 rounded-lg bg-card border shadow-sm">
+                 <p className="text-sm font-medium mb-2 text-muted-foreground">Total de Horas</p>
+                 <p className="text-3xl font-bold">{totalFilteredHours.toLocaleString()}</p>
+               </div>
+               <div className="p-5 rounded-lg bg-card border shadow-sm">
+                 <p className="text-sm font-medium mb-2 text-muted-foreground">Média de Horas</p>
+                 <p className="text-3xl font-bold">
+                   {filteredData.length > 0 ? Math.round(totalFilteredHours / filteredData.length) : 0}
+                 </p>
+               </div>
+             </div>
 
-            {/* Detailed Table */}
-            <div className="border rounded-lg overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow style={{ backgroundColor: '#F15A24' }} className="hover:bg-[#F15A24]">
-                    <TableHead className="text-white font-semibold">Cargo</TableHead>
-                    <TableHead className="text-white font-semibold">Empresa</TableHead>
-                    <TableHead className="text-white font-semibold">Unidade</TableHead>
-                    <TableHead className="text-right text-white font-semibold">Horas</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredData.map((item, index) => (
-                    <TableRow 
-                      key={index}
-                      style={{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#FAFAFA' }}
-                      className="hover:bg-[#FFF5EF] transition-colors"
-                    >
-                      <TableCell className="font-medium">{item.role}</TableCell>
-                      <TableCell>{item.company}</TableCell>
-                      <TableCell>{item.unit}</TableCell>
-                      <TableCell className="text-right">{item.hours}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+             {/* Detailed Table */}
+             <div className="border rounded-lg overflow-hidden">
+               <Table>
+                 <TableHeader>
+                   <TableRow>
+                     <TableHead>Cargo</TableHead>
+                     <TableHead>Empresa</TableHead>
+                     <TableHead>Unidade</TableHead>
+                     <TableHead className="text-right">Horas</TableHead>
+                   </TableRow>
+                 </TableHeader>
+                 <TableBody>
+                   {filteredData.map((item, index) => (
+                     <TableRow 
+                       key={index}
+                       className="hover:bg-accent"
+                     >
+                       <TableCell className="font-medium">{item.role}</TableCell>
+                       <TableCell>{item.company}</TableCell>
+                       <TableCell>{item.unit}</TableCell>
+                       <TableCell className="text-right">{item.hours}</TableCell>
+                     </TableRow>
+                   ))}
+                 </TableBody>
+               </Table>
+             </div>
 
-            {/* Chart visualization */}
-            <div className="border rounded-lg p-4">
-              <h4 className="text-sm font-semibold mb-4">Distribuição de Horas</h4>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={filteredData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.4} />
-                    <XAxis 
-                      dataKey={drillDownFilter?.type === 'role' ? 'company' : drillDownFilter?.type === 'company' ? 'unit' : 'role'} 
-                      angle={-45} 
-                      textAnchor="end" 
-                      height={100}
-                      stroke="#9CA3AF"
-                    />
-                    <YAxis stroke="#9CA3AF" />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#FFFFFF', 
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                      }}
-                    />
-                    <Bar dataKey="hours" fill="#F15A24" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+             {/* Chart visualization */}
+             <div className="border rounded-lg p-4">
+               <h4 className="text-sm font-semibold mb-4">Distribuição de Horas</h4>
+               <div className="h-64">
+                 <ResponsiveContainer width="100%" height="100%">
+                   <BarChart data={filteredData}>
+                     <CartesianGrid strokeDasharray="3 3" />
+                     <XAxis 
+                       dataKey={drillDownFilter?.type === 'role' ? 'company' : drillDownFilter?.type === 'company' ? 'unit' : 'role'} 
+                       angle={-45} 
+                       textAnchor="end" 
+                       height={100}
+                     />
+                     <YAxis />
+                     <Tooltip />
+                     <Bar dataKey="hours" fill="hsl(var(--chart-1))" radius={[6, 6, 0, 0]} />
+                   </BarChart>
+                 </ResponsiveContainer>
+               </div>
+             </div>
 
-            <div className="flex justify-end">
-              <Button 
-                onClick={() => setDrillDownOpen(false)}
-                style={{ backgroundColor: '#F15A24', color: '#FFFFFF' }}
-                className="hover:opacity-90 transition-opacity"
-              >
-                Fechar
-              </Button>
-            </div>
-          </div>
+             <div className="flex justify-end">
+               <Button 
+                 onClick={() => setDrillDownOpen(false)}
+                 variant="default"
+               >
+                 Fechar
+               </Button>
+             </div>
+           </div>
         </DialogContent>
       </Dialog>
     </div>

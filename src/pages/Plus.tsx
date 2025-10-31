@@ -128,7 +128,7 @@ function PlusDashboardContent() {
 
         {/* 1. CUSTOS TOTAIS */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Custos Totais</h2>
+          <h2 className="text-xl font-semibold mb-4">Custos Totais</h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Evolução mensal do custo total */}
@@ -227,7 +227,7 @@ function PlusDashboardContent() {
 
         {/* 2. CUSTO PER CAPITA */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Custo Per Capita</h2>
+          <h2 className="text-xl font-semibold mb-4">Custo Per Capita</h2>
 
           <ChartCard title="Evolução Histórica do Custo Per Capita">
             <ResponsiveContainer width="100%" height={300}>
@@ -255,7 +255,7 @@ function PlusDashboardContent() {
 
         {/* 3. UTILIZAÇÃO VR/VA */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Utilização VR/VA</h2>
+          <h2 className="text-xl font-semibold mb-4">Utilização VR/VA</h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Taxa de utilização por empresa/fornecedor */}
@@ -361,7 +361,7 @@ function PlusDashboardContent() {
 
         {/* 4. UTILIZAÇÃO VT */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Utilização VT</h2>
+          <h2 className="text-xl font-semibold mb-4">Utilização VT</h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Taxa de utilização VT */}
@@ -414,7 +414,7 @@ function PlusDashboardContent() {
 
         {/* 5. GRATIFICAÇÕES */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Gratificações</h2>
+          <h2 className="text-xl font-semibold mb-4">Gratificações</h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Evolução de gratificações */}
