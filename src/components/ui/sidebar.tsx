@@ -635,3 +635,6 @@ export {
   SidebarTrigger,
   useSidebar,
 };
+
+// Re-export Collapsible components for use in sidebar
+export { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
