@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -158,7 +158,8 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
   ...props
 }, ref) => {
   const {
-    toggleSidebar
+    toggleSidebar,
+    open
   } = useSidebar();
   return <Button 
     ref={ref} 
@@ -167,7 +168,7 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
     size="icon" 
     className={cn(
       "absolute top-6 right-0 translate-x-1/2 z-50",
-      "h-8 w-8 rounded-full border-2 border-orange-500 bg-white hover:bg-orange-50",
+      "h-8 w-8 rounded-full border-2 border-orange-500 bg-white",
       className
     )} 
     onClick={(event) => {
@@ -176,7 +177,7 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
     }} 
     {...props}
   >
-    <ChevronRight className="h-4 w-4 text-orange-500" />
+    {open ? <ChevronLeft className="h-4 w-4 text-orange-500" /> : <ChevronRight className="h-4 w-4 text-orange-500" />}
     <span className="sr-only">Toggle Sidebar</span>
   </Button>;
 });
