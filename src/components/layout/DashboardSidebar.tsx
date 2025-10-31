@@ -81,7 +81,7 @@ export function DashboardSidebar() {
                       <NavLink 
                         to="/prime" 
                         className={({ isActive }) => cn(
-                          "text-[#a8b2bc] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                          "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
                           isActive && "text-white bg-[rgba(255,255,255,0.05)]"
                         )}
                       >
@@ -94,7 +94,7 @@ export function DashboardSidebar() {
                       <NavLink 
                         to="/haas" 
                         className={({ isActive }) => cn(
-                          "text-[#a8b2bc] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                          "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
                           isActive && "text-white bg-[rgba(255,255,255,0.05)]"
                         )}
                       >
@@ -107,7 +107,7 @@ export function DashboardSidebar() {
                       <NavLink 
                         to="/rh-digital" 
                         className={() => cn(
-                          "text-[#a8b2bc] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                          "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
                           location.pathname.startsWith("/rh-digital") && "text-white bg-[rgba(255,255,255,0.05)]"
                         )}
                       >
@@ -120,7 +120,7 @@ export function DashboardSidebar() {
                       <NavLink 
                         to="/plus" 
                         className={({ isActive }) => cn(
-                          "text-[#a8b2bc] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                          "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
                           isActive && "text-white bg-[rgba(255,255,255,0.05)]"
                         )}
                       >
@@ -133,7 +133,7 @@ export function DashboardSidebar() {
                       <NavLink 
                         to="/time" 
                         className={({ isActive }) => cn(
-                          "text-[#a8b2bc] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                          "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
                           isActive && "text-white bg-[rgba(255,255,255,0.05)]"
                         )}
                       >
@@ -146,7 +146,7 @@ export function DashboardSidebar() {
                       <NavLink 
                         to="/control" 
                         className={({ isActive }) => cn(
-                          "text-[#a8b2bc] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                          "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
                           isActive && "text-white bg-[rgba(255,255,255,0.05)]"
                         )}
                       >
@@ -196,13 +196,13 @@ export function DashboardSidebar() {
               <CollapsibleContent>
                 <SidebarMenu className="mt-1">
                   <SidebarMenuItem>
-                    <SidebarMenuButton className="text-[#a8b2bc] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]">
+                    <SidebarMenuButton className="text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]">
                       <CheckSquare className="w-4 h-4 mr-2" />
                       <span>Checklist</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton className="text-[#a8b2bc] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]">
+                    <SidebarMenuButton className="text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]">
                       <ArrowLeftRight className="w-4 h-4 mr-2" />
                       <span>Movimentações em Lote</span>
                     </SidebarMenuButton>
