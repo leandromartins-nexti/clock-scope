@@ -111,7 +111,7 @@ function PlusDashboardContent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {custoTable.map(item => <TableRow key={item.empresa} className="cursor-pointer hover:bg-accent" onClick={() => setSelectedEmpresaCusto(item.empresa)}>
+                {custoTable.map(item => <TableRow key={item.empresa} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedEmpresaCusto(item.empresa)}>
                     <TableCell className="font-medium">{item.empresa}</TableCell>
                     <TableCell>{item.cnpj}</TableCell>
                     <TableCell className="text-right">

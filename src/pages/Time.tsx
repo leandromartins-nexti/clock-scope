@@ -249,22 +249,22 @@ function TimeDashboardContent() {
                      <TableHead className="text-right">Aderência (%)</TableHead>
                    </TableRow>
                  </TableHeader>
-                 <TableBody>
-                   {filteredJornadaPorEmpresa.map((row, idx) => <TableRow key={idx} onClick={() => handleClienteClick(row.cliente)} className={`cursor-pointer hover:bg-accent ${isFilterActive("cliente", row.cliente) ? "bg-accent" : ""}`}>
-                       <TableCell className="font-medium">{row.empresa}</TableCell>
-                       <TableCell>{row.cliente}</TableCell>
-                       <TableCell className="text-right">{row.previstas.toLocaleString("pt-BR")}</TableCell>
-                       <TableCell className="text-right">{row.realizadas.toLocaleString("pt-BR")}</TableCell>
-                       <TableCell className={`text-right font-medium ${row.desvio > 0 ? "text-warning" : "text-success"}`}>
-                         {row.desvio > 0 ? "+" : ""}{row.desvio.toLocaleString("pt-BR")}
-                       </TableCell>
-                       <TableCell className="text-right">
-                         <Badge variant={row.aderencia > 110 ? "destructive" : row.aderencia < 95 ? "destructive" : "default"}>
-                           {row.aderencia.toFixed(1)}%
-                         </Badge>
-                       </TableCell>
-                     </TableRow>)}
-                 </TableBody>
+                  <TableBody>
+                    {filteredJornadaPorEmpresa.map((row, idx) => <TableRow key={idx} onClick={() => handleClienteClick(row.cliente)} className={`cursor-pointer hover:bg-muted/50 ${isFilterActive("cliente", row.cliente) ? "bg-muted/50" : ""}`}>
+                        <TableCell className="font-medium">{row.empresa}</TableCell>
+                        <TableCell>{row.cliente}</TableCell>
+                        <TableCell className="text-right">{row.previstas.toLocaleString("pt-BR")}</TableCell>
+                        <TableCell className="text-right">{row.realizadas.toLocaleString("pt-BR")}</TableCell>
+                        <TableCell className={`text-right font-medium ${row.desvio > 0 ? "text-warning" : "text-success"}`}>
+                          {row.desvio > 0 ? "+" : ""}{row.desvio.toLocaleString("pt-BR")}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Badge variant={row.aderencia > 110 ? "destructive" : row.aderencia < 95 ? "destructive" : "default"}>
+                            {row.aderencia.toFixed(1)}%
+                          </Badge>
+                        </TableCell>
+                      </TableRow>)}
+                  </TableBody>
                </Table>
              </div>
            </ChartCard>
@@ -322,16 +322,16 @@ function TimeDashboardContent() {
                      <TableHead className="text-right">Saldo BH (h)</TableHead>
                    </TableRow>
                  </TableHeader>
-                 <TableBody>
-                   {filteredColaboradorHorasExtras.map((row, idx) => <TableRow key={row.id} onClick={() => handleColaboradorClick(row.id, row.colaborador)} className={`cursor-pointer hover:bg-accent ${isFilterActive("colaborador", row.id) ? "bg-accent" : ""}`}>
-                      <TableCell className="font-medium">{row.colaborador}</TableCell>
-                      <TableCell>{row.posto}</TableCell>
-                      <TableCell>{row.cliente}</TableCell>
-                      <TableCell className="text-right">{row.horasExtras}h</TableCell>
-                      <TableCell className={`text-right font-medium ${row.saldoBH >= 0 ? "text-success" : "text-destructive"}`}>
-                        {row.saldoBH >= 0 ? "+" : ""}{row.saldoBH}h
-                      </TableCell>
-                    </TableRow>)}
+                  <TableBody>
+                    {filteredColaboradorHorasExtras.map((row, idx) => <TableRow key={row.id} onClick={() => handleColaboradorClick(row.id, row.colaborador)} className={`cursor-pointer hover:bg-muted/50 ${isFilterActive("colaborador", row.id) ? "bg-muted/50" : ""}`}>
+                       <TableCell className="font-medium">{row.colaborador}</TableCell>
+                       <TableCell>{row.posto}</TableCell>
+                       <TableCell>{row.cliente}</TableCell>
+                       <TableCell className="text-right">{row.horasExtras}h</TableCell>
+                       <TableCell className={`text-right font-medium ${row.saldoBH >= 0 ? "text-success" : "text-destructive"}`}>
+                         {row.saldoBH >= 0 ? "+" : ""}{row.saldoBH}h
+                       </TableCell>
+                     </TableRow>)}
                 </TableBody>
               </Table>
             </div>
