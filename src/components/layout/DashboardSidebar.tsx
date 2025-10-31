@@ -86,7 +86,7 @@ export function DashboardSidebar() {
                         to="/prime" 
                         className={({ isActive }) => cn(
                           "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                          isActive && "text-white bg-[rgba(255,255,255,0.05)]"
+                          isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                         )}
                       >
                         <span>Prime</span>
@@ -99,7 +99,7 @@ export function DashboardSidebar() {
                         to="/haas" 
                         className={({ isActive }) => cn(
                           "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                          isActive && "text-white bg-[rgba(255,255,255,0.05)]"
+                          isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                         )}
                       >
                         <span>HaaS</span>
@@ -112,7 +112,7 @@ export function DashboardSidebar() {
                         to="/rh-digital" 
                         className={() => cn(
                           "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                          location.pathname.startsWith("/rh-digital") && "text-white bg-[rgba(255,255,255,0.05)]"
+                          location.pathname.startsWith("/rh-digital") && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                         )}
                       >
                         <span>RH Digital</span>
@@ -125,7 +125,7 @@ export function DashboardSidebar() {
                         to="/plus" 
                         className={({ isActive }) => cn(
                           "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                          isActive && "text-white bg-[rgba(255,255,255,0.05)]"
+                          isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                         )}
                       >
                         <span>Plus</span>
@@ -138,7 +138,7 @@ export function DashboardSidebar() {
                         to="/time" 
                         className={({ isActive }) => cn(
                           "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                          isActive && "text-white bg-[rgba(255,255,255,0.05)]"
+                          isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                         )}
                       >
                         <span>Time</span>
@@ -151,7 +151,7 @@ export function DashboardSidebar() {
                         to="/control" 
                         className={({ isActive }) => cn(
                           "text-[#929DA7] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                          isActive && "text-white bg-[rgba(255,255,255,0.05)]"
+                          isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                         )}
                       >
                         <span>Control</span>
