@@ -34,11 +34,13 @@ export function DashboardSidebar() {
     <Sidebar 
       className={cn(
         isCollapsed ? "w-16" : "w-64", 
-        "bg-[#3d4449] border-r border-[rgba(255,255,255,0.05)]"
+        "bg-[#3d4449] border-r border-[rgba(255,255,255,0.05)] relative"
       )} 
       collapsible="icon"
     >
-      <SidebarHeader className="p-4 border-b border-[rgba(255,255,255,0.05)] bg-[#FF5722] flex flex-row items-center justify-between">
+      <SidebarTrigger />
+      
+      <SidebarHeader className="p-4 border-b border-[rgba(255,255,255,0.05)] bg-[#FF5722] flex flex-row items-center justify-center">
         {!isCollapsed && (
           <div className="text-white">
             <img src={nextiLogo} alt="Nexti" className="h-10" />
@@ -49,7 +51,6 @@ export function DashboardSidebar() {
             <img src={nextiLogoSmall} alt="N" className="h-8" />
           </div>
         )}
-        <SidebarTrigger className="text-white hover:bg-[rgba(255,255,255,0.1)] h-8 w-8 p-0 ml-auto" />
       </SidebarHeader>
 
       <SidebarContent className="flex-1 overflow-y-auto bg-[#3d4449]">

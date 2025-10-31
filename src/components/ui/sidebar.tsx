@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
+import { PanelLeft, ChevronRight, ChevronLeft } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -158,16 +158,32 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
   ...props
 }, ref) => {
   const {
-    toggleSidebar
+    toggleSidebar,
+    state
   } = useSidebar();
-  return <Button ref={ref} data-sidebar="trigger" variant="ghost" size="icon" className={cn("h-7 w-7", className)} onClick={(event) => {
-    onClick?.(event);
-    toggleSidebar();
-  }} {...props}>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="18" height="18" x="3" y="3" rx="2" />
-      <path d="M9 3v18" />
-    </svg>
+  const isCollapsed = state === "collapsed";
+  
+  return <Button 
+    ref={ref} 
+    data-sidebar="trigger" 
+    variant="ghost" 
+    size="icon" 
+    className={cn(
+      "h-10 w-10 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md absolute top-1/2 -translate-y-1/2 z-50",
+      isCollapsed ? "-right-5" : "-right-5",
+      className
+    )} 
+    onClick={(event) => {
+      onClick?.(event);
+      toggleSidebar();
+    }} 
+    {...props}
+  >
+    {isCollapsed ? (
+      <ChevronRight className="h-5 w-5" />
+    ) : (
+      <ChevronLeft className="h-5 w-5" />
+    )}
     <span className="sr-only">Toggle Sidebar</span>
   </Button>;
 });
