@@ -11,7 +11,7 @@ Nexti Official Theme
 
 @layer base {
   :root {
-    /* Nexti Brand Colors */
+    /* Brand Colors - Dark Blue Primary */
     --background: 0 0% 100%; /* #FFFFFF */
     --foreground: 0 0% 13%; /* #222222 */
 
@@ -21,12 +21,12 @@ Nexti Official Theme
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 13%;
 
-    --primary: 16 87% 54%; /* #F15A24 - Nexti Orange */
+    --primary: 220 100% 30%; /* #003399 - Brand Primary Dark Blue */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 16 87% 64%;
+    --primary-glow: 220 100% 45%; /* Lighter Blue for glow effects */
 
-    --secondary: 44 98% 54%; /* #FDB813 - Nexti Yellow */
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 220 80% 50%; /* #1A66CC - Brand Default Blue */
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 220 9% 65%; /* #9CA3AF */
     --muted-foreground: 0 0% 42%; /* #6B6B6B */
@@ -45,32 +45,32 @@ Nexti Official Theme
 
     --border: 220 13% 91%; /* #E5E7EB */
     --input: 220 13% 91%;
-    --ring: 16 87% 54%;
+    --ring: 220 100% 30%;
 
     --radius: 0.75rem;
 
-    --surface: 24 100% 98%; /* #FFF8F4 */
+    --surface: 220 100% 98%; /* Light blue surface */
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 0 0% 13%;
-    --sidebar-primary: 16 87% 54%;
+    --sidebar-primary: 220 100% 30%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 32 100% 95%;
-    --sidebar-accent-foreground: 16 87% 54%;
+    --sidebar-accent: 220 100% 95%;
+    --sidebar-accent-foreground: 220 100% 30%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 16 87% 54%;
+    --sidebar-ring: 220 100% 30%;
 
-    /* Chart colors - Nexti Palette */
-    --chart-1: 16 87% 54%; /* #F15A24 */
-    --chart-2: 44 98% 54%; /* #FDB813 */
-    --chart-3: 29 100% 50%; /* #FF7A00 */
-    --chart-4: 21 93% 63%; /* #F98F45 */
-    --chart-5: 44 100% 70%; /* #FFD166 */
-    --chart-6: 0 0% 31%; /* #4E4E4E */
+    /* Chart colors - Brand Blue Palette */
+    --chart-1: 220 100% 30%; /* #003399 - Brand Primary */
+    --chart-2: 220 80% 50%; /* #1A66CC - Brand Default */
+    --chart-3: 220 70% 60%; /* #4D88E6 - Brand Light */
+    --chart-4: 220 60% 70%; /* #80AAFF - Lighter Blue */
+    --chart-5: 220 50% 80%; /* #B3CCFF - Very Light Blue */
+    --chart-6: 0 0% 31%; /* #4E4E4E - Neutral Gray */
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(16 87% 54%), hsl(44 98% 54%));
-    --gradient-card: linear-gradient(to bottom, hsl(0 0% 100%), hsl(24 100% 98%));
+    --gradient-primary: linear-gradient(135deg, hsl(220 100% 30%), hsl(220 80% 50%));
+    --gradient-card: linear-gradient(to bottom, hsl(0 0% 100%), hsl(220 100% 97%));
   }
 }
 
