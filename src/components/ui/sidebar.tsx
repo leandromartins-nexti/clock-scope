@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -160,14 +160,23 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
   const {
     toggleSidebar
   } = useSidebar();
-  return <Button ref={ref} data-sidebar="trigger" variant="ghost" size="icon" className={cn("h-7 w-7", className)} onClick={(event) => {
-    onClick?.(event);
-    toggleSidebar();
-  }} {...props}>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="18" height="18" x="3" y="3" rx="2" />
-      <path d="M9 3v18" />
-    </svg>
+  return <Button 
+    ref={ref} 
+    data-sidebar="trigger" 
+    variant="ghost" 
+    size="icon" 
+    className={cn(
+      "absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-50",
+      "h-8 w-8 rounded-full border border-white/20 bg-sidebar hover:bg-sidebar-accent",
+      className
+    )} 
+    onClick={(event) => {
+      onClick?.(event);
+      toggleSidebar();
+    }} 
+    {...props}
+  >
+    <ChevronRight className="h-4 w-4" />
     <span className="sr-only">Toggle Sidebar</span>
   </Button>;
 });
