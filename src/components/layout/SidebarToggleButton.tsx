@@ -12,8 +12,8 @@ export function SidebarToggleButton({ className }: { className?: string }) {
       size="icon"
       onClick={toggleSidebar}
       className={cn(
-        "absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-50",
-        "h-8 w-8 rounded-full border border-orange-500 bg-white",
+        "absolute top-9 right-0 translate-x-1/2 z-50",
+        "h-8 w-8 rounded-full border border-orange-500 bg-white hover:bg-white",
         className
       )}
     >
