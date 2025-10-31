@@ -20,8 +20,7 @@ function ControlContent() {
     clearFilters,
     hasFilters
   } = useControlFilter();
-  return <div className="min-h-screen bg-background p-8">
-      <div className="max-w-[1600px] mx-auto space-y-8">
+  return <div className="container mx-auto p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -43,7 +42,7 @@ function ControlContent() {
           </div>}
 
         {/* Big Numbers */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
           <KPICard title="Visitas Realizadas" value={controlBigNumbers.visitasRealizadas} icon={MapPin} />
           <KPICard title="Visitas Não Realizadas" value={controlBigNumbers.visitasNaoRealizadas} icon={XCircle} />
           <KPICard title="Não Conformidades" value={controlBigNumbers.naoConformidades} icon={AlertTriangle} />
@@ -329,7 +328,6 @@ function ControlContent() {
             </ChartCard>
           </div>
         </div>
-      </div>
     </div>;
 }
 export default function Control() {
