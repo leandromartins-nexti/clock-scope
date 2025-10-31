@@ -1,10 +1,10 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 export function SidebarToggleButton({ className }: { className?: string }) {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, open } = useSidebar();
 
   return (
     <Button
@@ -17,7 +17,11 @@ export function SidebarToggleButton({ className }: { className?: string }) {
         className
       )}
     >
-      <ChevronRight className="h-4 w-4 text-orange-500" />
+      {open ? (
+        <ChevronLeft className="h-4 w-4 text-orange-500" />
+      ) : (
+        <ChevronRight className="h-4 w-4 text-orange-500" />
+      )}
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
