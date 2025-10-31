@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const AppSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<string[]>([]);
+  const [expandedSections, setExpandedSections] = useState<string[]>(["nexti-analytics"]);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) =>
@@ -75,6 +75,7 @@ export const AppSidebar = () => {
       label: "Time", 
       items: [
         { label: "Dashboard Time", path: "/time" },
+        { label: "Time Tracking", path: "/time-tracking" },
       ]
     },
     { 
@@ -82,6 +83,7 @@ export const AppSidebar = () => {
       label: "Control", 
       items: [
         { label: "Dashboard Control", path: "/control" },
+        { label: "Operacional", path: "/operational" },
       ]
     },
   ];
