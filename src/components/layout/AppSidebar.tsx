@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const AppSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<string[]>(["nexti-analytics"]);
+  const [expandedSections, setExpandedSections] = useState<string[]>(["nexti-analytics", "prime"]);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) =>
