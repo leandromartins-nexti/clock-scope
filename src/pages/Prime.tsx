@@ -1,5 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InlineFilters } from "@/components/dashboard/InlineFilters";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
+import { useState } from "react";
 import TimeTrackingPrime from "./prime/TimeTrackingPrime";
 import OperationalPrime from "./prime/OperationalPrime";
 import DevicesPrime from "./prime/DevicesPrime";
@@ -7,10 +10,12 @@ import EngagementPrime from "./prime/EngagementPrime";
 import AusenciasCoberturasPrime from "./prime/AusenciasCoberturasPrime";
 
 const Prime = () => {
+  const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
+
   return (
     <div className="min-h-screen bg-background">
       <Tabs defaultValue="registro-ponto" className="w-full">
-        <InlineFilters />
+        <InlineFilters isExpanded={isFiltersExpanded} />
         
         <div className="border-b border-border bg-card">
           <div className="container mx-auto px-6">
@@ -47,6 +52,15 @@ const Prime = () => {
                   Ausências e coberturas
                 </TabsTrigger>
               </TabsList>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
+                className="h-9 w-9 ml-4"
+              >
+                <Settings className="h-5 w-5 text-[#003399]" />
+              </Button>
             </div>
           </div>
         </div>

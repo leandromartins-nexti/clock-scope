@@ -1,14 +1,19 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InlineFilters } from "@/components/dashboard/InlineFilters";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
+import { useState } from "react";
 import DirectPage from "./rh-digital/DirectPage";
 import AvisosPage from "./rh-digital/AvisosPage";
 import ChecklistPage from "./rh-digital/ChecklistPage";
 
 const RhDigital = () => {
+  const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
+
   return (
     <div className="min-h-screen bg-background">
       <Tabs defaultValue="direct" className="w-full">
-        <InlineFilters />
+        <InlineFilters isExpanded={isFiltersExpanded} />
         
         <div className="border-b border-border bg-card">
           <div className="container mx-auto px-6">
@@ -33,6 +38,15 @@ const RhDigital = () => {
                   Check-list
                 </TabsTrigger>
               </TabsList>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
+                className="h-9 w-9 ml-4"
+              >
+                <Settings className="h-5 w-5 text-[#003399]" />
+              </Button>
             </div>
           </div>
         </div>

@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface InlineFiltersProps {
   className?: string;
+  isExpanded: boolean;
 }
 
-export function InlineFilters({ className }: InlineFiltersProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+export function InlineFilters({ className, isExpanded }: InlineFiltersProps) {
   return (
     <>
       {isExpanded && (
@@ -71,15 +69,6 @@ export function InlineFilters({ className }: InlineFiltersProps) {
           </div>
         </div>
       )}
-      
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="h-9 w-9"
-      >
-        <Settings className="h-5 w-5 text-[#003399]" />
-      </Button>
     </>
   );
 }
