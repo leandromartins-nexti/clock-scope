@@ -46,7 +46,7 @@ export function DashboardSidebar() {
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <NavLink to="/rh-digital/direct" className={({
+                    <NavLink to="/rh-digital" className={({
                       isActive
                     }) => cn(location.pathname.startsWith("/rh-digital") && "bg-sidebar-accent text-sidebar-accent-foreground")}>
                       <span>RH Digital</span>

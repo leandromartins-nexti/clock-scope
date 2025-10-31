@@ -8,9 +8,7 @@ import Prime from "./pages/Prime";
 import Haas from "./pages/Haas";
 import HaasSmart from "./pages/HaasSmart";
 import HaasTerminal from "./pages/HaasTerminal";
-import DirectPage from "./pages/rh-digital/DirectPage";
-import AvisosPage from "./pages/rh-digital/AvisosPage";
-import ChecklistPage from "./pages/rh-digital/ChecklistPage";
+import RhDigital from "./pages/RhDigital";
 import Plus from "./pages/Plus";
 import Time from "./pages/Time";
 import Control from "./pages/Control";
@@ -31,9 +29,7 @@ const App = () => (
             <Route path="/haas" element={<Haas />} />
             <Route path="/haas/smart" element={<HaasSmart />} />
             <Route path="/haas/terminal" element={<HaasTerminal />} />
-            <Route path="/rh-digital/direct" element={<DirectPage />} />
-            <Route path="/rh-digital/avisos" element={<AvisosPage />} />
-            <Route path="/rh-digital/checklist" element={<ChecklistPage />} />
+            <Route path="/rh-digital" element={<RhDigital />} />
             <Route path="/plus" element={<Plus />} />
             <Route path="/time" element={<Time />} />
             <Route path="/control" element={<Control />} />
