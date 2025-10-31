@@ -85,7 +85,7 @@ export function DashboardSidebar() {
                       to="/prime" 
                       className={({ isActive }) => cn(
                         "text-[#929DA7] hover:text-white transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white border-l-2 border-l-orange-500"
+                        isActive && "text-white"
                       )}
                     >
                       <Star className="w-4 h-4 mr-2" />
@@ -99,7 +99,7 @@ export function DashboardSidebar() {
                       to="/haas" 
                       className={({ isActive }) => cn(
                         "text-[#929DA7] hover:text-white transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white border-l-2 border-l-orange-500"
+                        isActive && "text-white"
                       )}
                     >
                       <Smartphone className="w-4 h-4 mr-2" />
@@ -113,7 +113,7 @@ export function DashboardSidebar() {
                       to="/rh-digital" 
                       className={() => cn(
                         "text-[#929DA7] hover:text-white transition-colors pl-11 h-10 font-normal text-[15px]",
-                        location.pathname.startsWith("/rh-digital") && "text-white border-l-2 border-l-orange-500"
+                        location.pathname.startsWith("/rh-digital") && "text-white"
                       )}
                     >
                       <Users className="w-4 h-4 mr-2" />
@@ -127,7 +127,7 @@ export function DashboardSidebar() {
                       to="/plus" 
                       className={({ isActive }) => cn(
                         "text-gray-400 hover:text-white transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white border-l-2 border-l-orange-500"
+                        isActive && "text-white"
                       )}
                     >
                       <PlusCircle className="w-4 h-4 mr-2" />
@@ -141,7 +141,7 @@ export function DashboardSidebar() {
                       to="/time" 
                       className={({ isActive }) => cn(
                         "text-[#929DA7] hover:text-white transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white border-l-2 border-l-orange-500"
+                        isActive && "text-white"
                       )}
                     >
                       <Timer className="w-4 h-4 mr-2" />
@@ -155,7 +155,7 @@ export function DashboardSidebar() {
                       to="/control" 
                       className={({ isActive }) => cn(
                         "text-[#929DA7] hover:text-white transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white border-l-2 border-l-orange-500"
+                        isActive && "text-white"
                       )}
                     >
                       <Shield className="w-4 h-4 mr-2" />
