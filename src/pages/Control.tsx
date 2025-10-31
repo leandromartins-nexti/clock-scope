@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, MapPin, XCircle, AlertTriangle, Clock, Timer, Calendar } from "lucide-react";
 import { ControlFilterProvider, useControlFilter } from "@/contexts/ControlContext";
 import {
   controlBigNumbers,
@@ -75,28 +75,34 @@ function ControlContent() {
         {/* Big Numbers */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           <KPICard
-            title="📍 Visitas Realizadas"
+            title="Visitas Realizadas"
             value={controlBigNumbers.visitasRealizadas}
+            icon={MapPin}
           />
           <KPICard
-            title="❌ Visitas Não Realizadas"
+            title="Visitas Não Realizadas"
             value={controlBigNumbers.visitasNaoRealizadas}
+            icon={XCircle}
           />
           <KPICard
-            title="⚠️ Não Conformidades"
+            title="Não Conformidades"
             value={controlBigNumbers.naoConformidades}
+            icon={AlertTriangle}
           />
           <KPICard
-            title="🕒 Tempo Médio Deslocamento"
+            title="Tempo Médio Deslocamento"
             value={`${controlBigNumbers.tempoMedioDeslocamento} min`}
+            icon={Clock}
           />
           <KPICard
-            title="⏱️ Tempo Médio Permanência"
+            title="Tempo Médio Permanência"
             value={`${controlBigNumbers.tempoMedioPermanencia} min`}
+            icon={Timer}
           />
           <KPICard
-            title="📅 Última Visita"
+            title="Última Visita"
             value={controlBigNumbers.ultimaVisita}
+            icon={Calendar}
           />
         </div>
 

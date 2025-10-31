@@ -134,21 +134,23 @@ export default function AusenciasCoberturasPrime() {
 
   return (
     <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Ausências e Coberturas
-        </h1>
-        <p className="text-muted-foreground">
-          Análise de ausências e estratégias de cobertura
-        </p>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-3xl">Ausências e Coberturas</CardTitle>
+          <p className="text-muted-foreground">
+            Análise de ausências e estratégias de cobertura
+          </p>
+        </CardHeader>
+      </Card>
 
       {/* Coberturas Section */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-primary">Coberturas</h2>
-        
-        {/* KPIs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Coberturas</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* KPIs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <KPICard
             title="Absenteísmo"
             value={`${mediaAbsenteismo}%`}
@@ -171,13 +173,16 @@ export default function AusenciasCoberturasPrime() {
             trend={{ value: 8, isPositive: true }}
           />
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Absenteísmo e Ausência Section */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-primary">Absenteísmo e Ausência</h2>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Absenteísmo e Ausência</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Absenteísmo por Empresa */}
           <Card>
             <CardHeader>
@@ -314,14 +319,17 @@ export default function AusenciasCoberturasPrime() {
             </ResponsiveContainer>
           </ChartCard>
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Cobertura Section */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-primary">Cobertura</h2>
-        
-        {/* Evolução Coberturas vs. Ausências - Full Width */}
-        <ChartCard title="Evolução Coberturas vs. Ausências">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Cobertura</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Evolução Coberturas vs. Ausências - Full Width */}
+          <ChartCard title="Evolução Coberturas vs. Ausências">
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={evolucaoCoberturasAusencias}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -446,7 +454,8 @@ export default function AusenciasCoberturasPrime() {
             </ResponsiveContainer>
           </ChartCard>
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Modals */}
       <AusenciaClienteDetailModal
