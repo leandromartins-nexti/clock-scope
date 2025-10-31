@@ -75,8 +75,7 @@ const EngagementPrime = () => {
     : [];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 space-y-6">
         {/* KPIs Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <KPICard
@@ -299,7 +298,6 @@ const EngagementPrime = () => {
         postos={postosTurnover}
       />
       </div>
-    </div>
   );
 };
 
