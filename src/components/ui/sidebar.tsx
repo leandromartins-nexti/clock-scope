@@ -166,7 +166,7 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
     variant="ghost" 
     size="icon" 
     className={cn(
-      "absolute top-6 right-0 translate-x-1/2 z-50",
+      "absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-50",
       "h-8 w-8 rounded-full border border-white/20 bg-sidebar hover:bg-sidebar-accent",
       className
     )} 
