@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import nextiLogo from "@/assets/nexti-logo.png";
+import nextiLogoSmall from "@/assets/nexti-logo-small.png";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -44,7 +45,9 @@ export function DashboardSidebar() {
           </div>
         )}
         {isCollapsed && (
-          <div className="text-white font-bold text-2xl italic">n</div>
+          <div className="text-white flex items-center justify-center w-full">
+            <img src={nextiLogoSmall} alt="N" className="h-8" />
+          </div>
         )}
         <SidebarTrigger className="text-white hover:bg-[rgba(255,255,255,0.1)] h-8 w-8 p-0 ml-auto" />
       </SidebarHeader>
