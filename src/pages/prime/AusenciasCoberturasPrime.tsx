@@ -10,6 +10,8 @@ import { useState } from "react";
 import { AusenciaClienteDetailModal } from "@/components/prime/AusenciaClienteDetailModal";
 import { AusenciaPostoDetailModal } from "@/components/prime/AusenciaPostoDetailModal";
 import { AusenciaColaboradorDetailModal } from "@/components/prime/AusenciaColaboradorDetailModal";
+import { DashboardFilters } from "@/components/layout/DashboardFilters";
+
 export default function AusenciasCoberturasPrime() {
   const {
     selectedEmpresa,
@@ -99,6 +101,8 @@ export default function AusenciasCoberturasPrime() {
     }
   };
   return <div className="space-y-6 p-6">
+      <DashboardFilters />
+      
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard title="Absenteísmo" value={`${mediaAbsenteismo}%`} icon={Users} />

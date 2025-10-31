@@ -14,6 +14,7 @@ import { SolicitacaoClienteDetailModal } from "@/components/prime/SolicitacaoCli
 import { SolicitacaoPostoDetailModal } from "@/components/prime/SolicitacaoPostoDetailModal";
 import { SolicitacaoColaboradorDetailModal } from "@/components/prime/SolicitacaoColaboradorDetailModal";
 import { PrimeFilterProvider, usePrimeFilters } from "@/contexts/PrimeFilterContext";
+import { DashboardFilters } from "@/components/layout/DashboardFilters";
 import {
   LineChart,
   Line,
@@ -231,6 +232,8 @@ const TimeTrackingPrimeContent = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6">
+        <DashboardFilters />
+        
         {/* Active Filters */}
         {activeFiltersCount > 0 && (
           <div className="flex flex-wrap gap-2 items-center">
