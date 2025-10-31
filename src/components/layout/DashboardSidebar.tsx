@@ -1,4 +1,4 @@
-import { BarChart3, Car, Clock, Map, Megaphone, CheckSquare, ArrowLeftRight, BookOpen, ChevronDown } from "lucide-react";
+import { BarChart3, Car, Clock, Map, Megaphone, CheckSquare, ArrowLeftRight, BookOpen, ChevronDown, Star, Smartphone, Users, PlusCircle, Timer, Shield } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -88,6 +88,7 @@ export function DashboardSidebar() {
                         isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                       )}
                     >
+                      <Star className="w-4 h-4 mr-2" />
                       <span>Prime</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -101,6 +102,7 @@ export function DashboardSidebar() {
                         isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                       )}
                     >
+                      <Smartphone className="w-4 h-4 mr-2" />
                       <span>HaaS</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -114,6 +116,7 @@ export function DashboardSidebar() {
                         location.pathname.startsWith("/rh-digital") && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                       )}
                     >
+                      <Users className="w-4 h-4 mr-2" />
                       <span>RH Digital</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -127,6 +130,7 @@ export function DashboardSidebar() {
                         isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                       )}
                     >
+                      <PlusCircle className="w-4 h-4 mr-2" />
                       <span>Plus</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -140,6 +144,7 @@ export function DashboardSidebar() {
                         isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                       )}
                     >
+                      <Timer className="w-4 h-4 mr-2" />
                       <span>Time</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -153,6 +158,7 @@ export function DashboardSidebar() {
                         isActive && "text-white bg-[rgba(255,255,255,0.05)] border-l-2 border-l-orange-500"
                       )}
                     >
+                      <Shield className="w-4 h-4 mr-2" />
                       <span>Control</span>
                     </NavLink>
                   </SidebarMenuButton>
