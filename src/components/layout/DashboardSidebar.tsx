@@ -2,6 +2,7 @@ import { BarChart3, Car, Clock, Map, Megaphone, CheckSquare, ArrowLeftRight, Boo
 import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import nextiLogo from "@/assets/nexti-logo.png";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -39,9 +40,7 @@ export function DashboardSidebar() {
       <SidebarHeader className="p-4 border-b border-[rgba(255,255,255,0.05)] bg-[#FF5722] flex flex-row items-center justify-between">
         {!isCollapsed && (
           <div className="text-white">
-            <svg viewBox="0 0 120 40" className="w-32 h-10" fill="white">
-              <text x="10" y="30" fontFamily="Arial, sans-serif" fontSize="28" fontWeight="bold" fontStyle="italic">nexti</text>
-            </svg>
+            <img src={nextiLogo} alt="Nexti" className="h-10" />
           </div>
         )}
         {isCollapsed && (
