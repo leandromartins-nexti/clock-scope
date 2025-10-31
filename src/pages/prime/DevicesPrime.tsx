@@ -28,7 +28,6 @@ import { CadastroClienteDetailModal } from "@/components/prime/CadastroClienteDe
 import { CadastroPostoDetailModal } from "@/components/prime/CadastroPostoDetailModal";
 import { CadastroColaboradorDetailModal } from "@/components/prime/CadastroColaboradorDetailModal";
 import { useState } from "react";
-import { DashboardFilters } from "@/components/layout/DashboardFilters";
 
 const DevicesPrime = () => {
   const totalColaboradores = 1250;
@@ -140,8 +139,6 @@ const DevicesPrime = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6">
-        <DashboardFilters />
-        
       {/* KPI Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <KPICard

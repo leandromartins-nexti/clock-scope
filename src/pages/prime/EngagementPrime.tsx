@@ -39,7 +39,6 @@ import {
 } from "@/lib/primeData";
 import { TurnoverClienteDetailModal } from "@/components/prime/TurnoverClienteDetailModal";
 import { TurnoverPostoDetailModal } from "@/components/prime/TurnoverPostoDetailModal";
-import { DashboardFilters } from "@/components/layout/DashboardFilters";
 
 const EngagementPrime = () => {
   const totalAdmissoes = 303;
@@ -78,8 +77,6 @@ const EngagementPrime = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6">
-        <DashboardFilters />
-        
         {/* KPIs Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <KPICard

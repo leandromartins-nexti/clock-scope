@@ -33,7 +33,6 @@ import { EventosFaltaEfetivoClienteDetailModal } from "@/components/prime/Evento
 import { EventosFaltaEfetivoPostoDetailModal } from "@/components/prime/EventosFaltaEfetivoPostoDetailModal";
 import { EventosExcedentesClienteDetailModal } from "@/components/prime/EventosExcedentesClienteDetailModal";
 import { EventosExcedentesPostoDetailModal } from "@/components/prime/EventosExcedentesPostoDetailModal";
-import { DashboardFilters } from "@/components/layout/DashboardFilters";
 
 const OperationalPrime = () => {
   const totalUncoveredPositions = 39;
@@ -116,8 +115,6 @@ const OperationalPrime = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6">
-        <DashboardFilters />
-        
       {/* KPIs Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <KPICard

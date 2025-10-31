@@ -1,18 +1,26 @@
 import { Outlet } from "react-router-dom";
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { PrimeFilterProvider } from "@/contexts/PrimeFilterContext";
-import { AppSidebar } from "@/components/layout/AppSidebar";
 
 const DashboardLayout = () => {
   return (
     <FilterProvider>
       <PrimeFilterProvider>
-        <div className="min-h-screen w-full bg-background flex">
-          <AppSidebar />
-          <main className="flex-1 ml-64 transition-all duration-300">
-            <Outlet />
-          </main>
-        </div>
+        <SidebarProvider>
+          <div className="flex min-h-screen w-full bg-background">
+            <DashboardSidebar />
+            <div className="flex-1 flex flex-col">
+              <header className="h-12 flex items-center border-b border-border bg-card px-4">
+                <SidebarTrigger />
+              </header>
+              <main className="flex-1">
+                <Outlet />
+              </main>
+            </div>
+          </div>
+        </SidebarProvider>
       </PrimeFilterProvider>
     </FilterProvider>
   );
