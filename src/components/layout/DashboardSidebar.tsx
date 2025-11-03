@@ -46,7 +46,7 @@ export function DashboardSidebar() {
         )}
         {isCollapsed && (
           <div className="text-white flex items-center justify-center w-full">
-            <img src={nextiLogoSmall} alt="N" className="h-8 w-auto object-contain" />
+            <img src={nextiLogoSmall} alt="N" className="h-12 w-auto object-contain" />
           </div>
         )}
         <SidebarToggleButton className="text-white hover:bg-[rgba(255,255,255,0.1)] h-8 w-8 p-0 ml-auto" />
