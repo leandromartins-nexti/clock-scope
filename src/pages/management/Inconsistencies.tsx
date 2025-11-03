@@ -12,7 +12,12 @@ import {
   topAtestadosPosto,
   topAusenciasColaborador,
   topAusenciasPosto,
+  colaboradoresPorPostoInconsistencias,
+  colaboradoresPorPostoAtestados,
+  colaboradoresPorPostoAusencias,
 } from "@/lib/managementData";
+import { InconsistenciaPostoDetailModal } from "@/components/management/InconsistenciaPostoDetailModal";
+import { AusenciaPostoDetailModal } from "@/components/management/AusenciaPostoDetailModal";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -20,7 +25,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ManagementInconsistencies = () => {
   const [inconsistencyType, setInconsistencyType] = useState("geral");
-  const [absenceType, setAbsenceType] = useState("atestados");
+  const [absenceType, setAbsenceType] = useState<"atestados" | "ausencias">("atestados");
+  
+  // Estados para modais de drill-down
+  const [selectedInconsistenciaPosto, setSelectedInconsistenciaPosto] = useState<string | null>(null);
+  const [selectedAusenciaPosto, setSelectedAusenciaPosto] = useState<string | null>(null);
 
   return (
     <div className="flex-1 overflow-auto bg-background">
@@ -169,7 +178,11 @@ const ManagementInconsistencies = () => {
                   </TableHeader>
                   <TableBody>
                     {topInconsistenciasPosto.slice(0, 10).map((item, idx) => (
-                      <TableRow key={idx}>
+                      <TableRow 
+                        key={idx}
+                        className="cursor-pointer hover:bg-accent"
+                        onClick={() => setSelectedInconsistenciaPosto(item.colaborador)}
+                      >
                         <TableCell className="font-bold">{idx + 1}</TableCell>
                         <TableCell className="font-medium">{item.colaborador}</TableCell>
                         <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
@@ -195,7 +208,7 @@ const ManagementInconsistencies = () => {
             <TabsContent value="colaborador" className="space-y-4">
               <div className="flex items-center gap-4">
                 <label className="text-sm font-medium">Tipo:</label>
-                <Select value={absenceType} onValueChange={setAbsenceType}>
+                <Select value={absenceType} onValueChange={(value) => setAbsenceType(value as "atestados" | "ausencias")}>
                   <SelectTrigger className="w-[250px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -233,7 +246,7 @@ const ManagementInconsistencies = () => {
             <TabsContent value="posto" className="space-y-4">
               <div className="flex items-center gap-4">
                 <label className="text-sm font-medium">Tipo:</label>
-                <Select value={absenceType} onValueChange={setAbsenceType}>
+                <Select value={absenceType} onValueChange={(value) => setAbsenceType(value as "atestados" | "ausencias")}>
                   <SelectTrigger className="w-[250px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -255,7 +268,11 @@ const ManagementInconsistencies = () => {
                   </TableHeader>
                   <TableBody>
                     {(absenceType === "atestados" ? topAtestadosPosto : topAusenciasPosto).map((item, idx) => (
-                      <TableRow key={idx}>
+                      <TableRow 
+                        key={idx}
+                        className="cursor-pointer hover:bg-accent"
+                        onClick={() => setSelectedAusenciaPosto(item.colaborador)}
+                      >
                         <TableCell className="font-bold">{idx + 1}</TableCell>
                         <TableCell className="font-medium">{item.colaborador}</TableCell>
                         <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
@@ -268,6 +285,30 @@ const ManagementInconsistencies = () => {
           </Tabs>
         </div>
       </main>
+
+      {/* Modais de Drill-Down */}
+      {selectedInconsistenciaPosto && (
+        <InconsistenciaPostoDetailModal
+          isOpen={!!selectedInconsistenciaPosto}
+          onClose={() => setSelectedInconsistenciaPosto(null)}
+          posto={selectedInconsistenciaPosto}
+          colaboradores={colaboradoresPorPostoInconsistencias[selectedInconsistenciaPosto] || []}
+        />
+      )}
+
+      {selectedAusenciaPosto && (
+        <AusenciaPostoDetailModal
+          isOpen={!!selectedAusenciaPosto}
+          onClose={() => setSelectedAusenciaPosto(null)}
+          posto={selectedAusenciaPosto}
+          tipo={absenceType}
+          colaboradores={
+            absenceType === "atestados"
+              ? colaboradoresPorPostoAtestados[selectedAusenciaPosto] || []
+              : colaboradoresPorPostoAusencias[selectedAusenciaPosto] || []
+          }
+        />
+      )}
     </div>
   );
 };

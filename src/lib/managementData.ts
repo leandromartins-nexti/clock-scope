@@ -344,6 +344,138 @@ export const topAusenciasPosto: InconsistenciaRanking[] = [
   { colaborador: "Prédio Anexo - Órgão Público", inconsistencias: 39, tipo: "posto" },
 ];
 
+// Detalhamento de Colaboradores por Posto - Inconsistências
+export const colaboradoresPorPostoInconsistencias: Record<string, Array<{ nome: string; inconsistencias: number }>> = {
+  "Portaria Norte - Shopping ABC": [
+    { nome: "João Silva Santos", inconsistencias: 87 },
+    { nome: "Carlos Eduardo Souza", inconsistencias: 58 },
+    { nome: "Roberto Alves Costa", inconsistencias: 51 },
+    { nome: "Lucas Ferreira Silva", inconsistencias: 49 },
+  ],
+  "Vigilância Noturna - Banco Nacional": [
+    { nome: "Pedro Henrique Lima", inconsistencias: 68 },
+    { nome: "Ricardo Souza Oliveira", inconsistencias: 43 },
+    { nome: "Bruno Costa Oliveira", inconsistencias: 42 },
+    { nome: "Diego Santos Lima", inconsistencias: 45 },
+  ],
+  "Recepção Principal - Hospital": [
+    { nome: "Maria Oliveira Costa", inconsistencias: 72 },
+    { nome: "Fernanda Lima Santos", inconsistencias: 47 },
+    { nome: "Amanda Silva Costa", inconsistencias: 38 },
+    { nome: "Carla Mendes Santos", inconsistencias: 30 },
+  ],
+  "Controle de Acesso - Tech Park": [
+    { nome: "Ana Paula Ferreira", inconsistencias: 61 },
+    { nome: "Patrícia Rocha Silva", inconsistencias: 39 },
+    { nome: "Gabriela Souza Costa", inconsistencias: 35 },
+    { nome: "Henrique Alves Lima", inconsistencias: 30 },
+  ],
+  "Terminal Principal - Aeroporto": [
+    { nome: "Roberto Alves Costa", inconsistencias: 51 },
+    { nome: "Fábio Lima Santos", inconsistencias: 44 },
+    { nome: "Eliana Rocha Silva", inconsistencias: 38 },
+    { nome: "Iris Martins Rocha", inconsistencias: 20 },
+  ],
+  "Segurança Industrial - Indústria XYZ": [
+    { nome: "Juliana Martins Rocha", inconsistencias: 54 },
+    { nome: "Carlos Eduardo Souza", inconsistencias: 48 },
+    { nome: "Pedro Henrique Lima", inconsistencias: 40 },
+  ],
+  "Gate Control - Porto Salvador": [
+    { nome: "Fernanda Lima Santos", inconsistencias: 47 },
+    { nome: "Ricardo Souza Oliveira", inconsistencias: 43 },
+    { nome: "Lucas Ferreira Silva", inconsistencias: 38 },
+  ],
+  "Portaria Sul - Shopping XYZ": [
+    { nome: "Carlos Eduardo Souza", inconsistencias: 58 },
+    { nome: "João Silva Santos", inconsistencias: 35 },
+    { nome: "Diego Santos Lima", inconsistencias: 22 },
+  ],
+  "Vigilância Patrimonial - Universidade": [
+    { nome: "Ricardo Souza Oliveira", inconsistencias: 43 },
+    { nome: "Bruno Costa Oliveira", inconsistencias: 34 },
+    { nome: "Fábio Lima Santos", inconsistencias: 27 },
+  ],
+  "Acesso Principal - Órgão Público": [
+    { nome: "Patrícia Rocha Silva", inconsistencias: 39 },
+    { nome: "Henrique Alves Lima", inconsistencias: 31 },
+    { nome: "Gabriela Souza Costa", inconsistencias: 22 },
+  ],
+};
+
+// Detalhamento de Colaboradores por Posto - Atestados
+export const colaboradoresPorPostoAtestados: Record<string, Array<{ nome: string; quantidade: number }>> = {
+  "Portaria Principal - Shopping ABC": [
+    { nome: "Lucas Ferreira Silva", quantidade: 12 },
+    { nome: "Bruno Costa Oliveira", quantidade: 10 },
+    { nome: "Diego Santos Lima", quantidade: 8 },
+    { nome: "Carla Mendes Santos", quantidade: 9 },
+    { nome: "Amanda Silva Costa", quantidade: 6 },
+  ],
+  "Recepção - Hospital São Lucas": [
+    { nome: "Amanda Silva Costa", quantidade: 11 },
+    { nome: "Carla Mendes Santos", quantidade: 9 },
+    { nome: "Eliana Rocha Silva", quantidade: 7 },
+    { nome: "Gabriela Souza Costa", quantidade: 6 },
+    { nome: "Iris Martins Rocha", quantidade: 5 },
+  ],
+  "Vigilância - Banco Nacional": [
+    { nome: "Bruno Costa Oliveira", quantidade: 10 },
+    { nome: "Diego Santos Lima", quantidade: 8 },
+    { nome: "Fábio Lima Santos", quantidade: 7 },
+    { nome: "Henrique Alves Lima", quantidade: 7 },
+  ],
+  "Controle - Tech Park": [
+    { nome: "Carla Mendes Santos", quantidade: 9 },
+    { nome: "Lucas Ferreira Silva", quantidade: 8 },
+    { nome: "Amanda Silva Costa", quantidade: 6 },
+    { nome: "Gabriela Souza Costa", quantidade: 5 },
+  ],
+  "Terminal - Aeroporto Sul": [
+    { nome: "Diego Santos Lima", quantidade: 8 },
+    { nome: "Eliana Rocha Silva", quantidade: 7 },
+    { nome: "Fábio Lima Santos", quantidade: 5 },
+    { nome: "Iris Martins Rocha", quantidade: 4 },
+  ],
+};
+
+// Detalhamento de Colaboradores por Posto - Ausências
+export const colaboradoresPorPostoAusencias: Record<string, Array<{ nome: string; quantidade: number }>> = {
+  "Terminal 2 - Aeroporto Sul": [
+    { nome: "Eliana Rocha Silva", quantidade: 15 },
+    { nome: "Fábio Lima Santos", quantidade: 14 },
+    { nome: "Diego Santos Lima", quantidade: 12 },
+    { nome: "Iris Martins Rocha", quantidade: 11 },
+    { nome: "Lucas Ferreira Silva", quantidade: 15 },
+  ],
+  "Gate Control - Porto Salvador": [
+    { nome: "Fábio Lima Santos", quantidade: 14 },
+    { nome: "Henrique Alves Lima", quantidade: 12 },
+    { nome: "Bruno Costa Oliveira", quantidade: 11 },
+    { nome: "Carlos Eduardo Souza", quantidade: 10 },
+    { nome: "Ricardo Souza Oliveira", quantidade: 11 },
+  ],
+  "Loja Centro - Rede Varejo": [
+    { nome: "Gabriela Souza Costa", quantidade: 13 },
+    { nome: "Amanda Silva Costa", quantidade: 11 },
+    { nome: "Carla Mendes Santos", quantidade: 10 },
+    { nome: "Eliana Rocha Silva", quantidade: 9 },
+    { nome: "Iris Martins Rocha", quantidade: 8 },
+  ],
+  "Acesso Principal - Tech Park": [
+    { nome: "Henrique Alves Lima", quantidade: 12 },
+    { nome: "Gabriela Souza Costa", quantidade: 11 },
+    { nome: "Fábio Lima Santos", quantidade: 10 },
+    { nome: "Lucas Ferreira Silva", quantidade: 12 },
+  ],
+  "Prédio Anexo - Órgão Público": [
+    { nome: "Iris Martins Rocha", quantidade: 11 },
+    { nome: "Eliana Rocha Silva", quantidade: 10 },
+    { nome: "Henrique Alves Lima", quantidade: 9 },
+    { nome: "Gabriela Souza Costa", quantidade: 9 },
+  ],
+};
+
 // ============================================
 // PÁGINA 3: BANCO DE HORAS
 // ============================================
