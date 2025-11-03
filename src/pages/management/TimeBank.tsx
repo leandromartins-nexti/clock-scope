@@ -13,7 +13,6 @@ import {
 } from "@/lib/managementData";
 import { BancoHorasPostoDetailModal } from "@/components/management/BancoHorasPostoDetailModal";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ManagementTimeBank = () => {
   const [selectedPosto, setSelectedPosto] = useState<string | null>(null);
@@ -78,96 +77,91 @@ const ManagementTimeBank = () => {
           />
         </div>
 
-        {/* Top 50 Saldos de Banco de Horas */}
-        <div className="space-y-6">
-          <h3 className="text-xl font-semibold">Top 50 Saldos de Banco de Horas</h3>
-          
-          <Tabs defaultValue="colaborador" className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
-              <TabsTrigger value="colaborador">Por Colaborador</TabsTrigger>
-              <TabsTrigger value="posto">Por Posto</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="colaborador">
-              <ChartCard title="Top 10 Saldos de Banco de Horas (Colaborador) - Positivo e Negativo">
-                <div className="h-[500px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart 
-                      data={colaboradorData} 
-                      layout="vertical"
-                      margin={{ left: 100 }}
+        {/* Top 50 Saldos de Banco de Horas - Cards Separados */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Card Colaborador */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Top 50 Saldos de Banco de Horas (Colaborador)</h3>
+            <ChartCard title="Top 10 Saldos - Positivo e Negativo">
+              <div className="h-[500px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={colaboradorData} 
+                    layout="vertical"
+                    margin={{ left: 100 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis 
+                      type="category" 
+                      dataKey="nome" 
+                      width={150}
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value}h`, 'Saldo']}
+                    />
+                    <Legend />
+                    <Bar 
+                      dataKey="saldo" 
+                      name="Saldo (horas)"
+                      radius={[0, 4, 4, 0]}
                     >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" />
-                      <YAxis 
-                        type="category" 
-                        dataKey="nome" 
-                        width={150}
-                      />
-                      <Tooltip 
-                        formatter={(value: number) => [`${value}h`, 'Saldo']}
-                      />
-                      <Legend />
-                      <Bar 
-                        dataKey="saldo" 
-                        name="Saldo (horas)"
-                        radius={[0, 4, 4, 0]}
-                      >
-                        {colaboradorData.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={entry.saldo >= 0 ? "hsl(var(--chart-1))" : "hsl(var(--chart-2))"}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </ChartCard>
-            </TabsContent>
+                      {colaboradorData.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={entry.saldo >= 0 ? "hsl(var(--chart-1))" : "hsl(var(--chart-2))"}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </ChartCard>
+          </div>
 
-            <TabsContent value="posto">
-              <ChartCard title="Top 10 Saldos de Banco de Horas (Posto) - Positivo e Negativo">
-                <div className="h-[500px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart 
-                      data={postoData} 
-                      layout="vertical"
-                      margin={{ left: 150 }}
+          {/* Card Posto */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Top 50 Saldos de Banco de Horas (Posto)</h3>
+            <ChartCard title="Top 10 Saldos - Positivo e Negativo">
+              <div className="h-[500px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={postoData} 
+                    layout="vertical"
+                    margin={{ left: 150 }}
+                    onClick={handleBarClick}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis 
+                      type="category" 
+                      dataKey="nome" 
+                      width={200}
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value}h`, 'Saldo']}
+                      cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
+                    />
+                    <Legend />
+                    <Bar 
+                      dataKey="saldo" 
+                      name="Saldo (horas)"
+                      radius={[0, 4, 4, 0]}
+                      cursor="pointer"
                       onClick={handleBarClick}
                     >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" />
-                      <YAxis 
-                        type="category" 
-                        dataKey="nome" 
-                        width={200}
-                      />
-                      <Tooltip 
-                        formatter={(value: number) => [`${value}h`, 'Saldo']}
-                        cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
-                      />
-                      <Legend />
-                      <Bar 
-                        dataKey="saldo" 
-                        name="Saldo (horas)"
-                        radius={[0, 4, 4, 0]}
-                        cursor="pointer"
-                        onClick={handleBarClick}
-                      >
-                        {postoData.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={entry.saldo >= 0 ? "hsl(var(--chart-1))" : "hsl(var(--chart-2))"}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </ChartCard>
-            </TabsContent>
-          </Tabs>
+                      {postoData.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={entry.saldo >= 0 ? "hsl(var(--chart-1))" : "hsl(var(--chart-2))"}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </ChartCard>
+          </div>
         </div>
       </main>
 

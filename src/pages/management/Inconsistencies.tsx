@@ -21,11 +21,13 @@ import { AusenciaPostoDetailModal } from "@/components/management/AusenciaPostoD
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ManagementInconsistencies = () => {
-  const [inconsistencyType, setInconsistencyType] = useState("geral");
-  const [absenceType, setAbsenceType] = useState<"atestados" | "ausencias">("atestados");
+  // Filtros separados para cada card
+  const [inconsistencyTypeColaborador, setInconsistencyTypeColaborador] = useState("geral");
+  const [inconsistencyTypePosto, setInconsistencyTypePosto] = useState("geral");
+  const [absenceTypeColaborador, setAbsenceTypeColaborador] = useState<"atestados" | "ausencias">("atestados");
+  const [absenceTypePosto, setAbsenceTypePosto] = useState<"atestados" | "ausencias">("atestados");
   
   // Estados para modais de drill-down
   const [selectedInconsistenciaPosto, setSelectedInconsistenciaPosto] = useState<string | null>(null);
@@ -101,188 +103,174 @@ const ManagementInconsistencies = () => {
           </div>
         </ChartCard>
 
-        {/* Top 50 Inconsistências */}
-        <div className="space-y-6">
-          <h3 className="text-xl font-semibold">Top 50 Inconsistências</h3>
-          
-          <Tabs defaultValue="colaborador" className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
-              <TabsTrigger value="colaborador">Por Colaborador</TabsTrigger>
-              <TabsTrigger value="posto">Por Posto</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="colaborador" className="space-y-4">
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium">Tipo de Inconsistência:</label>
-                <Select value={inconsistencyType} onValueChange={setInconsistencyType}>
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="geral">Geral</SelectItem>
-                    <SelectItem value="terminal">Terminal Não Autorizado</SelectItem>
-                    <SelectItem value="nao-registrado">Não Registrado</SelectItem>
-                    <SelectItem value="perimetro">Perímetro</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <ChartCard title="Top 10 Colaboradores">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-16">Rank</TableHead>
-                      <TableHead>Colaborador</TableHead>
-                      <TableHead>Posto</TableHead>
-                      <TableHead className="text-right">Inconsistências</TableHead>
+        {/* Top 50 Inconsistências - Cards Separados */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Card Colaborador */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Top 50 Inconsistências (Colaborador)</h3>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium">Tipo de Inconsistência:</label>
+              <Select value={inconsistencyTypeColaborador} onValueChange={setInconsistencyTypeColaborador}>
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="geral">Geral</SelectItem>
+                  <SelectItem value="terminal">Terminal Não Autorizado</SelectItem>
+                  <SelectItem value="nao-registrado">Não Registrado</SelectItem>
+                  <SelectItem value="perimetro">Perímetro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <ChartCard title="Top 10 Colaboradores">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-16">Rank</TableHead>
+                    <TableHead>Colaborador</TableHead>
+                    <TableHead>Posto</TableHead>
+                    <TableHead className="text-right">Inconsistências</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {topInconsistenciasColaborador.slice(0, 10).map((item, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell className="font-bold">{idx + 1}</TableCell>
+                      <TableCell className="font-medium">{item.colaborador}</TableCell>
+                      <TableCell>{item.posto}</TableCell>
+                      <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {topInconsistenciasColaborador.slice(0, 10).map((item, idx) => (
-                      <TableRow key={idx}>
-                        <TableCell className="font-bold">{idx + 1}</TableCell>
-                        <TableCell className="font-medium">{item.colaborador}</TableCell>
-                        <TableCell>{item.posto}</TableCell>
-                        <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </ChartCard>
-            </TabsContent>
+                  ))}
+                </TableBody>
+              </Table>
+            </ChartCard>
+          </div>
 
-            <TabsContent value="posto" className="space-y-4">
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium">Tipo de Inconsistência:</label>
-                <Select value={inconsistencyType} onValueChange={setInconsistencyType}>
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="geral">Geral</SelectItem>
-                    <SelectItem value="terminal">Terminal Não Autorizado</SelectItem>
-                    <SelectItem value="nao-registrado">Não Registrado</SelectItem>
-                    <SelectItem value="perimetro">Perímetro</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <ChartCard title="Top 10 Postos">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-16">Rank</TableHead>
-                      <TableHead>Posto</TableHead>
-                      <TableHead className="text-right">Inconsistências</TableHead>
+          {/* Card Posto */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Top 50 Inconsistências (Posto)</h3>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium">Tipo de Inconsistência:</label>
+              <Select value={inconsistencyTypePosto} onValueChange={setInconsistencyTypePosto}>
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="geral">Geral</SelectItem>
+                  <SelectItem value="terminal">Terminal Não Autorizado</SelectItem>
+                  <SelectItem value="nao-registrado">Não Registrado</SelectItem>
+                  <SelectItem value="perimetro">Perímetro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <ChartCard title="Top 10 Postos">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-16">Rank</TableHead>
+                    <TableHead>Posto</TableHead>
+                    <TableHead className="text-right">Inconsistências</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {topInconsistenciasPosto.slice(0, 10).map((item, idx) => (
+                    <TableRow 
+                      key={idx}
+                      className="cursor-pointer hover:bg-accent"
+                      onClick={() => setSelectedInconsistenciaPosto(item.colaborador)}
+                    >
+                      <TableCell className="font-bold">{idx + 1}</TableCell>
+                      <TableCell className="font-medium">{item.colaborador}</TableCell>
+                      <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {topInconsistenciasPosto.slice(0, 10).map((item, idx) => (
-                      <TableRow 
-                        key={idx}
-                        className="cursor-pointer hover:bg-accent"
-                        onClick={() => setSelectedInconsistenciaPosto(item.colaborador)}
-                      >
-                        <TableCell className="font-bold">{idx + 1}</TableCell>
-                        <TableCell className="font-medium">{item.colaborador}</TableCell>
-                        <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </ChartCard>
-            </TabsContent>
-          </Tabs>
+                  ))}
+                </TableBody>
+              </Table>
+            </ChartCard>
+          </div>
         </div>
 
-        {/* Top 50 Ausências e Atestados */}
-        <div className="space-y-6">
-          <h3 className="text-xl font-semibold">Top 50 Ausências e Atestados</h3>
-          
-          <Tabs defaultValue="colaborador" className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
-              <TabsTrigger value="colaborador">Por Colaborador</TabsTrigger>
-              <TabsTrigger value="posto">Por Posto</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="colaborador" className="space-y-4">
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium">Tipo:</label>
-                <Select value={absenceType} onValueChange={(value) => setAbsenceType(value as "atestados" | "ausencias")}>
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="atestados">Atestados</SelectItem>
-                    <SelectItem value="ausencias">Ausências</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <ChartCard title={absenceType === "atestados" ? "Top 5 Atestados" : "Top 5 Ausências"}>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-16">Rank</TableHead>
-                      <TableHead>Colaborador</TableHead>
-                      <TableHead>Posto</TableHead>
-                      <TableHead className="text-right">Quantidade</TableHead>
+        {/* Top 50 Ausências e Atestados - Cards Separados */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Card Colaborador */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Top 50 Ausências e Atestados (Colaborador)</h3>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium">Tipo:</label>
+              <Select value={absenceTypeColaborador} onValueChange={(value) => setAbsenceTypeColaborador(value as "atestados" | "ausencias")}>
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="atestados">Atestados</SelectItem>
+                  <SelectItem value="ausencias">Ausências</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <ChartCard title={absenceTypeColaborador === "atestados" ? "Top 5 Atestados" : "Top 5 Ausências"}>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-16">Rank</TableHead>
+                    <TableHead>Colaborador</TableHead>
+                    <TableHead>Posto</TableHead>
+                    <TableHead className="text-right">Quantidade</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(absenceTypeColaborador === "atestados" ? topAtestadosColaborador : topAusenciasColaborador).map((item, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell className="font-bold">{idx + 1}</TableCell>
+                      <TableCell className="font-medium">{item.colaborador}</TableCell>
+                      <TableCell>{item.posto}</TableCell>
+                      <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {(absenceType === "atestados" ? topAtestadosColaborador : topAusenciasColaborador).map((item, idx) => (
-                      <TableRow key={idx}>
-                        <TableCell className="font-bold">{idx + 1}</TableCell>
-                        <TableCell className="font-medium">{item.colaborador}</TableCell>
-                        <TableCell>{item.posto}</TableCell>
-                        <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </ChartCard>
-            </TabsContent>
+                  ))}
+                </TableBody>
+              </Table>
+            </ChartCard>
+          </div>
 
-            <TabsContent value="posto" className="space-y-4">
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium">Tipo:</label>
-                <Select value={absenceType} onValueChange={(value) => setAbsenceType(value as "atestados" | "ausencias")}>
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="atestados">Atestados</SelectItem>
-                    <SelectItem value="ausencias">Ausências</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <ChartCard title={absenceType === "atestados" ? "Top 5 Atestados" : "Top 5 Ausências"}>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-16">Rank</TableHead>
-                      <TableHead>Posto</TableHead>
-                      <TableHead className="text-right">Quantidade</TableHead>
+          {/* Card Posto */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Top 50 Ausências e Atestados (Posto)</h3>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium">Tipo:</label>
+              <Select value={absenceTypePosto} onValueChange={(value) => setAbsenceTypePosto(value as "atestados" | "ausencias")}>
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="atestados">Atestados</SelectItem>
+                  <SelectItem value="ausencias">Ausências</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <ChartCard title={absenceTypePosto === "atestados" ? "Top 5 Atestados" : "Top 5 Ausências"}>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-16">Rank</TableHead>
+                    <TableHead>Posto</TableHead>
+                    <TableHead className="text-right">Quantidade</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(absenceTypePosto === "atestados" ? topAtestadosPosto : topAusenciasPosto).map((item, idx) => (
+                    <TableRow 
+                      key={idx}
+                      className="cursor-pointer hover:bg-accent"
+                      onClick={() => setSelectedAusenciaPosto(item.colaborador)}
+                    >
+                      <TableCell className="font-bold">{idx + 1}</TableCell>
+                      <TableCell className="font-medium">{item.colaborador}</TableCell>
+                      <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {(absenceType === "atestados" ? topAtestadosPosto : topAusenciasPosto).map((item, idx) => (
-                      <TableRow 
-                        key={idx}
-                        className="cursor-pointer hover:bg-accent"
-                        onClick={() => setSelectedAusenciaPosto(item.colaborador)}
-                      >
-                        <TableCell className="font-bold">{idx + 1}</TableCell>
-                        <TableCell className="font-medium">{item.colaborador}</TableCell>
-                        <TableCell className="text-right font-semibold">{item.inconsistencias}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </ChartCard>
-            </TabsContent>
-          </Tabs>
+                  ))}
+                </TableBody>
+              </Table>
+            </ChartCard>
+          </div>
         </div>
       </main>
 
@@ -301,9 +289,9 @@ const ManagementInconsistencies = () => {
           isOpen={!!selectedAusenciaPosto}
           onClose={() => setSelectedAusenciaPosto(null)}
           posto={selectedAusenciaPosto}
-          tipo={absenceType}
+          tipo={absenceTypePosto}
           colaboradores={
-            absenceType === "atestados"
+            absenceTypePosto === "atestados"
               ? colaboradoresPorPostoAtestados[selectedAusenciaPosto] || []
               : colaboradoresPorPostoAusencias[selectedAusenciaPosto] || []
           }
