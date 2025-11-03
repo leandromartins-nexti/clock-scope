@@ -176,7 +176,7 @@ const ManagementInconsistencies = () => {
                   {topInconsistenciasPosto.slice(0, 10).map((item, idx) => (
                     <TableRow 
                       key={idx}
-                      className="cursor-pointer hover:bg-accent"
+                      className="cursor-pointer hover:bg-muted/50 transition-colors"
                       onClick={() => setSelectedInconsistenciaPosto(item.colaborador)}
                     >
                       <TableCell className="font-bold">{idx + 1}</TableCell>
@@ -259,7 +259,7 @@ const ManagementInconsistencies = () => {
                   {(absenceTypePosto === "atestados" ? topAtestadosPosto : topAusenciasPosto).map((item, idx) => (
                     <TableRow 
                       key={idx}
-                      className="cursor-pointer hover:bg-accent"
+                      className="cursor-pointer hover:bg-muted/50 transition-colors"
                       onClick={() => setSelectedAusenciaPosto(item.colaborador)}
                     >
                       <TableCell className="font-bold">{idx + 1}</TableCell>
