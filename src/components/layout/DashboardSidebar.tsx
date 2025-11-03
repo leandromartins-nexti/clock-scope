@@ -179,30 +179,6 @@ export function DashboardSidebar() {
           </SidebarGroup>
         )}
 
-        {/* Mesa de Operações */}
-        <SidebarGroup className="px-3">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton className={cn("text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3", isCollapsed && "justify-center")}>
-                <Clock className={cn("w-5 h-5", !isCollapsed && "mr-3")} />
-                {!isCollapsed && <span className="font-normal text-[15px]">Mesa de Operações</span>}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-
-        {/* Mapa de Postos */}
-        <SidebarGroup className="px-3">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton className={cn("text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3", isCollapsed && "justify-center")}>
-                <Map className={cn("w-5 h-5", !isCollapsed && "mr-3")} />
-                {!isCollapsed && <span className="font-normal text-[15px]">Mapa de Postos</span>}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-
         {/* Management Analytics */}
         {!isCollapsed ? (
           <Collapsible open={managementOpen} onOpenChange={setManagementOpen} className="px-3">
@@ -287,6 +263,30 @@ export function DashboardSidebar() {
             </SidebarMenu>
           </SidebarGroup>
         )}
+
+        {/* Mesa de Operações */}
+        <SidebarGroup className="px-3">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton className={cn("text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3", isCollapsed && "justify-center")}>
+                <Clock className={cn("w-5 h-5", !isCollapsed && "mr-3")} />
+                {!isCollapsed && <span className="font-normal text-[15px]">Mesa de Operações</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+
+        {/* Mapa de Postos */}
+        <SidebarGroup className="px-3">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton className={cn("text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3", isCollapsed && "justify-center")}>
+                <Map className={cn("w-5 h-5", !isCollapsed && "mr-3")} />
+                {!isCollapsed && <span className="font-normal text-[15px]">Mapa de Postos</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
 
         {/* RH Digital Section */}
         {!isCollapsed ? (
