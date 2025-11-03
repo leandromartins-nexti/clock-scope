@@ -1,4 +1,4 @@
-import { BarChart3, Car, Clock, Map, Megaphone, CheckSquare, ArrowLeftRight, BookOpen, ChevronDown, Star, Smartphone, Users, PlusCircle, Timer, Shield } from "lucide-react";
+import { BarChart3, Car, Clock, Map, Megaphone, CheckSquare, ArrowLeftRight, BookOpen, ChevronDown, Star, Smartphone, Users, PlusCircle, Timer, Shield, TrendingUp, AlertTriangle } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -25,6 +25,7 @@ export function DashboardSidebar() {
   const isCollapsed = state === "collapsed";
   const location = useLocation();
   const [analyticsOpen, setAnalyticsOpen] = useState(true);
+  const [managementOpen, setManagementOpen] = useState(false);
   const [rhDigitalOpen, setRhDigitalOpen] = useState(false);
   const [nextiControlOpen, setNextiControlOpen] = useState(false);
   const [nextiControl2Open, setNextiControl2Open] = useState(false);
@@ -201,6 +202,91 @@ export function DashboardSidebar() {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
+
+        {/* Management Analytics */}
+        {!isCollapsed ? (
+          <Collapsible open={managementOpen} onOpenChange={setManagementOpen} className="px-3">
+            <CollapsibleTrigger className="w-full">
+              <SidebarMenuButton className="text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3 w-full justify-between">
+                <div className="flex items-center">
+                  <TrendingUp className="w-5 h-5 mr-3" />
+                  <span className="font-normal text-[15px]">Management Analytics</span>
+                </div>
+                <ChevronDown className={cn("w-4 h-4 transition-transform", managementOpen && "rotate-180")} />
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenu className="mt-1">
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to="/management/overview" 
+                      className={({ isActive }) => cn(
+                        "hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
+                      )}
+                    >
+                      <BarChart3 className="w-4 h-4 mr-2 text-[#A1A3A4] hover:text-white transition-colors" />
+                      <span className={cn("text-[#A1A3A4] hover:text-white transition-colors", location.pathname === "/management/overview" && "text-white")}>Visão Geral</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to="/management/inconsistencies" 
+                      className={({ isActive }) => cn(
+                        "hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
+                      )}
+                    >
+                      <AlertTriangle className="w-4 h-4 mr-2 text-[#A1A3A4] hover:text-white transition-colors" />
+                      <span className={cn("text-[#A1A3A4] hover:text-white transition-colors", location.pathname === "/management/inconsistencies" && "text-white")}>Inconsistências</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to="/management/time-bank" 
+                      className={({ isActive }) => cn(
+                        "hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
+                      )}
+                    >
+                      <Clock className="w-4 h-4 mr-2 text-[#A1A3A4] hover:text-white transition-colors" />
+                      <span className={cn("text-[#A1A3A4] hover:text-white transition-colors", location.pathname === "/management/time-bank" && "text-white")}>Banco de Horas</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to="/management/compliance" 
+                      className={({ isActive }) => cn(
+                        "hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
+                      )}
+                    >
+                      <Shield className="w-4 h-4 mr-2 text-[#A1A3A4] hover:text-white transition-colors" />
+                      <span className={cn("text-[#A1A3A4] hover:text-white transition-colors", location.pathname === "/management/compliance" && "text-white")}>Compliance (TACs)</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </CollapsibleContent>
+          </Collapsible>
+        ) : (
+          <SidebarGroup className="px-3">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton className="text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3 justify-center">
+                  <TrendingUp className="w-5 h-5" />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
 
         {/* RH Digital Section */}
         {!isCollapsed ? (
