@@ -2,17 +2,23 @@ import { DashboardHeader } from "@/components/layout/DashboardHeader";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { TrendingUp, TrendingDown, Clock } from "lucide-react";
+import { useState } from "react";
 import {
   bancoHorasOverview,
   topSaldoPositivoColaborador,
   topSaldoNegativoColaborador,
   topSaldoPositivoPosto,
   topSaldoNegativoPosto,
+  colaboradoresPorPostoBancoHoras,
 } from "@/lib/managementData";
+import { BancoHorasPostoDetailModal } from "@/components/management/BancoHorasPostoDetailModal";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ManagementTimeBank = () => {
+  const [selectedPosto, setSelectedPosto] = useState<string | null>(null);
+  const [selectedPostoFullName, setSelectedPostoFullName] = useState<string | null>(null);
+
   // Prepare data for diverging bar chart
   const colaboradorData = [
     ...topSaldoPositivoColaborador.map(item => ({
@@ -28,13 +34,22 @@ const ManagementTimeBank = () => {
   const postoData = [
     ...topSaldoPositivoPosto.slice(0, 5).map(item => ({
       nome: item.nome.split(' - ')[0],
+      nomeCompleto: item.nome,
       saldo: item.saldo,
     })),
     ...topSaldoNegativoPosto.slice(0, 5).map(item => ({
       nome: item.nome.split(' - ')[0],
+      nomeCompleto: item.nome,
       saldo: item.saldo,
     })),
   ].sort((a, b) => b.saldo - a.saldo);
+
+  const handleBarClick = (data: any) => {
+    if (data && data.nomeCompleto) {
+      setSelectedPostoFullName(data.nomeCompleto);
+      setSelectedPosto(data.nome);
+    }
+  };
 
   return (
     <div className="flex-1 overflow-auto bg-background">
@@ -63,9 +78,9 @@ const ManagementTimeBank = () => {
           />
         </div>
 
-        {/* Top 50 Saldos */}
+        {/* Top 50 Saldos de Banco de Horas */}
         <div className="space-y-6">
-          <h3 className="text-xl font-semibold">Top 50 Saldos</h3>
+          <h3 className="text-xl font-semibold">Top 50 Saldos de Banco de Horas</h3>
           
           <Tabs defaultValue="colaborador" className="w-full">
             <TabsList className="grid w-full max-w-md grid-cols-2">
@@ -74,7 +89,7 @@ const ManagementTimeBank = () => {
             </TabsList>
 
             <TabsContent value="colaborador">
-              <ChartCard title="Top 10 Saldos (Colaborador) - Positivo e Negativo">
+              <ChartCard title="Top 10 Saldos de Banco de Horas (Colaborador) - Positivo e Negativo">
                 <div className="h-[500px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart 
@@ -112,13 +127,14 @@ const ManagementTimeBank = () => {
             </TabsContent>
 
             <TabsContent value="posto">
-              <ChartCard title="Top 10 Saldos (Posto) - Positivo e Negativo">
+              <ChartCard title="Top 10 Saldos de Banco de Horas (Posto) - Positivo e Negativo">
                 <div className="h-[500px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart 
                       data={postoData} 
                       layout="vertical"
                       margin={{ left: 150 }}
+                      onClick={handleBarClick}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" />
@@ -129,12 +145,15 @@ const ManagementTimeBank = () => {
                       />
                       <Tooltip 
                         formatter={(value: number) => [`${value}h`, 'Saldo']}
+                        cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
                       />
                       <Legend />
                       <Bar 
                         dataKey="saldo" 
                         name="Saldo (horas)"
                         radius={[0, 4, 4, 0]}
+                        cursor="pointer"
+                        onClick={handleBarClick}
                       >
                         {postoData.map((entry, index) => (
                           <Cell 
@@ -151,6 +170,19 @@ const ManagementTimeBank = () => {
           </Tabs>
         </div>
       </main>
+
+      {/* Modal de Drill-Down */}
+      {selectedPostoFullName && (
+        <BancoHorasPostoDetailModal
+          isOpen={!!selectedPostoFullName}
+          onClose={() => {
+            setSelectedPostoFullName(null);
+            setSelectedPosto(null);
+          }}
+          posto={selectedPosto || selectedPostoFullName}
+          colaboradores={colaboradoresPorPostoBancoHoras[selectedPostoFullName] || []}
+        />
+      )}
     </div>
   );
 };

@@ -531,6 +531,88 @@ export const topSaldoNegativoPosto: SaldoBancoHoras[] = [
   { nome: "Recepção 2 - Hospital", saldo: -558, tipo: "posto" },
 ];
 
+// Detalhamento de Colaboradores por Posto - Banco de Horas
+export const colaboradoresPorPostoBancoHoras: Record<string, Array<{ nome: string; saldo: number }>> = {
+  "Portaria Norte - Shopping ABC": [
+    { nome: "João Silva Santos", saldo: 128 },
+    { nome: "Carlos Eduardo Souza", saldo: 92 },
+    { nome: "Roberto Alves Costa", saldo: 85 },
+    { nome: "Lucas Ferreira Silva", saldo: 78 },
+    { nome: "Fernanda Lima Santos", saldo: 65 },
+    { nome: "Ricardo Souza Oliveira", saldo: 58 },
+    { nome: "Patrícia Rocha Silva", saldo: 52 },
+    { nome: "Ana Paula Ferreira", saldo: 45 },
+  ],
+  "Recepção Principal - Hospital": [
+    { nome: "Maria Oliveira Costa", saldo: 115 },
+    { nome: "Amanda Silva Costa", saldo: 88 },
+    { nome: "Carla Mendes Santos", saldo: 76 },
+    { nome: "Eliana Rocha Silva", saldo: 65 },
+    { nome: "Gabriela Souza Costa", saldo: 58 },
+    { nome: "Iris Martins Rocha", saldo: 48 },
+  ],
+  "Vigilância Noturna - Banco": [
+    { nome: "Pedro Henrique Lima", saldo: 104 },
+    { nome: "Bruno Costa Oliveira", saldo: 96 },
+    { nome: "Diego Santos Lima", saldo: 82 },
+    { nome: "Fábio Lima Santos", saldo: 74 },
+    { nome: "Henrique Alves Lima", saldo: 68 },
+    { nome: "Ricardo Souza Oliveira", saldo: 55 },
+  ],
+  "Controle de Acesso - Tech Park": [
+    { nome: "Ana Paula Ferreira", saldo: 98 },
+    { nome: "Patrícia Rocha Silva", saldo: 85 },
+    { nome: "Gabriela Souza Costa", saldo: 72 },
+    { nome: "Henrique Alves Lima", saldo: 66 },
+    { nome: "Lucas Ferreira Silva", saldo: 58 },
+  ],
+  "Terminal Principal - Aeroporto": [
+    { nome: "Carlos Eduardo Souza", saldo: 92 },
+    { nome: "Roberto Alves Costa", saldo: 85 },
+    { nome: "Fábio Lima Santos", saldo: 78 },
+    { nome: "Eliana Rocha Silva", saldo: 68 },
+    { nome: "Iris Martins Rocha", saldo: 55 },
+  ],
+  "Gate Control - Porto Salvador": [
+    { nome: "Lucas Ferreira Silva", saldo: -85 },
+    { nome: "Amanda Silva Costa", saldo: -72 },
+    { nome: "Bruno Costa Oliveira", saldo: -68 },
+    { nome: "Carla Mendes Santos", saldo: -61 },
+    { nome: "Diego Santos Lima", saldo: -55 },
+    { nome: "Fernanda Lima Santos", saldo: -48 },
+    { nome: "Ricardo Souza Oliveira", saldo: -42 },
+  ],
+  "Acesso Principal - Órgão Público": [
+    { nome: "Amanda Silva Costa", saldo: -72 },
+    { nome: "Carla Mendes Santos", saldo: -61 },
+    { nome: "Diego Santos Lima", saldo: -55 },
+    { nome: "Eliana Rocha Silva", saldo: -48 },
+    { nome: "Gabriela Souza Costa", saldo: -42 },
+    { nome: "Henrique Alves Lima", saldo: -38 },
+  ],
+  "Vigilância Patrimonial - Universidade": [
+    { nome: "Bruno Costa Oliveira", saldo: -68 },
+    { nome: "Diego Santos Lima", saldo: -55 },
+    { nome: "Fábio Lima Santos", saldo: -48 },
+    { nome: "Lucas Ferreira Silva", saldo: -42 },
+    { nome: "Ricardo Souza Oliveira", saldo: -38 },
+  ],
+  "Portaria Sul - Shopping XYZ": [
+    { nome: "Carla Mendes Santos", saldo: -61 },
+    { nome: "Diego Santos Lima", saldo: -55 },
+    { nome: "Lucas Ferreira Silva", saldo: -48 },
+    { nome: "Amanda Silva Costa", saldo: -42 },
+    { nome: "Bruno Costa Oliveira", saldo: -38 },
+  ],
+  "Recepção 2 - Hospital": [
+    { nome: "Diego Santos Lima", saldo: -55 },
+    { nome: "Eliana Rocha Silva", saldo: -48 },
+    { nome: "Gabriela Souza Costa", saldo: -42 },
+    { nome: "Iris Martins Rocha", saldo: -38 },
+    { nome: "Amanda Silva Costa", saldo: -32 },
+  ],
+};
+
 // ============================================
 // PÁGINA 4: COMPLIANCE (TACs)
 // ============================================
