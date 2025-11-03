@@ -84,12 +84,12 @@ export function DashboardSidebar() {
                     <NavLink 
                       to="/prime" 
                       className={({ isActive }) => cn(
-                        "text-[#CCCCCC] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white font-medium"
+                        "group hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
                       )}
                     >
-                      <Star className="w-4 h-4 mr-2 text-[#CCCCCC]" />
-                      <span>Prime</span>
+                      <Star className="w-4 h-4 mr-2 text-[#CCCCCC] group-hover:text-white transition-colors" />
+                      <span className={cn("text-[#CCCCCC] group-hover:text-white transition-colors", location.pathname === "/prime" && "text-white")}>Prime</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -98,12 +98,12 @@ export function DashboardSidebar() {
                     <NavLink 
                       to="/haas" 
                       className={({ isActive }) => cn(
-                        "text-[#CCCCCC] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white font-medium"
+                        "group hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
                       )}
                     >
-                      <Smartphone className="w-4 h-4 mr-2 text-[#CCCCCC]" />
-                      <span>HaaS</span>
+                      <Smartphone className="w-4 h-4 mr-2 text-[#CCCCCC] group-hover:text-white transition-colors" />
+                      <span className={cn("text-[#CCCCCC] group-hover:text-white transition-colors", location.pathname === "/haas" && "text-white")}>HaaS</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -112,12 +112,12 @@ export function DashboardSidebar() {
                     <NavLink 
                       to="/rh-digital" 
                       className={() => cn(
-                        "text-[#CCCCCC] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                        location.pathname.startsWith("/rh-digital") && "text-white font-medium"
+                        "group hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        location.pathname.startsWith("/rh-digital") && "font-medium"
                       )}
                     >
-                      <Users className="w-4 h-4 mr-2 text-[#CCCCCC]" />
-                      <span>RH Digital</span>
+                      <Users className="w-4 h-4 mr-2 text-[#CCCCCC] group-hover:text-white transition-colors" />
+                      <span className={cn("text-[#CCCCCC] group-hover:text-white transition-colors", location.pathname.startsWith("/rh-digital") && "text-white")}>RH Digital</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -126,12 +126,12 @@ export function DashboardSidebar() {
                     <NavLink 
                       to="/plus" 
                       className={({ isActive }) => cn(
-                        "text-[#CCCCCC] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white font-medium"
+                        "group hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
                       )}
                     >
-                      <PlusCircle className="w-4 h-4 mr-2 text-[#CCCCCC]" />
-                      <span>Plus</span>
+                      <PlusCircle className="w-4 h-4 mr-2 text-[#CCCCCC] group-hover:text-white transition-colors" />
+                      <span className={cn("text-[#CCCCCC] group-hover:text-white transition-colors", location.pathname === "/plus" && "text-white")}>Plus</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -140,12 +140,12 @@ export function DashboardSidebar() {
                     <NavLink 
                       to="/time" 
                       className={({ isActive }) => cn(
-                        "text-[#CCCCCC] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white font-medium"
+                        "group hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
                       )}
                     >
-                      <Timer className="w-4 h-4 mr-2 text-[#CCCCCC]" />
-                      <span>Time</span>
+                      <Timer className="w-4 h-4 mr-2 text-[#CCCCCC] group-hover:text-white transition-colors" />
+                      <span className={cn("text-[#CCCCCC] group-hover:text-white transition-colors", location.pathname === "/time" && "text-white")}>Time</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -154,12 +154,12 @@ export function DashboardSidebar() {
                     <NavLink 
                       to="/control" 
                       className={({ isActive }) => cn(
-                        "text-[#CCCCCC] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
-                        isActive && "text-white font-medium"
+                        "group hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
                       )}
                     >
-                      <Shield className="w-4 h-4 mr-2 text-[#CCCCCC]" />
-                      <span>Control</span>
+                      <Shield className="w-4 h-4 mr-2 text-[#CCCCCC] group-hover:text-white transition-colors" />
+                      <span className={cn("text-[#CCCCCC] group-hover:text-white transition-colors", location.pathname === "/control" && "text-white")}>Control</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
