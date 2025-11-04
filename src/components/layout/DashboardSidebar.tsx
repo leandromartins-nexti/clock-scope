@@ -73,7 +73,7 @@ export function DashboardSidebar() {
               <SidebarMenuButton className="text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3 w-full justify-between">
                 <div className="flex items-center">
                   <BarChart3 className="w-5 h-5 mr-3" />
-                  <span className="font-normal text-[15px]">Operational Analytics</span>
+                  <span className="font-normal text-[15px]">Management Analytics</span>
                 </div>
                 <ChevronDown className={cn("w-4 h-4 transition-transform", analyticsOpen && "rotate-180")} />
               </SidebarMenuButton>
@@ -186,7 +186,7 @@ export function DashboardSidebar() {
               <SidebarMenuButton className="text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3 w-full justify-between">
                 <div className="flex items-center">
                   <TrendingUp className="w-5 h-5 mr-3" />
-                  <span className="font-normal text-[15px]">Management Analytics</span>
+                  <span className="font-normal text-[15px]">Operational Analytics</span>
                 </div>
                 <ChevronDown className={cn("w-4 h-4 transition-transform", managementOpen && "rotate-180")} />
               </SidebarMenuButton>
