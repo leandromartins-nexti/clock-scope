@@ -30,6 +30,52 @@ export const heroKPIs = {
   },
 };
 
+// ============================================
+// SEÇÃO: Jornada Prevista x Realizada
+// ============================================
+
+export interface JornadaMensalV2 {
+  mes: string;
+  previstas: number;
+  realizadas: number;
+  aderencia: number;
+}
+
+export const jornadaMensalV2: JornadaMensalV2[] = [
+  { mes: 'Jan', previstas: 248500, realizadas: 265300, aderencia: 106.8 },
+  { mes: 'Fev', previstas: 232000, realizadas: 242800, aderencia: 104.7 },
+  { mes: 'Mar', previstas: 258000, realizadas: 275400, aderencia: 106.7 },
+  { mes: 'Abr', previstas: 245000, realizadas: 259200, aderencia: 105.8 },
+  { mes: 'Mai', previstas: 262000, realizadas: 281600, aderencia: 107.5 },
+  { mes: 'Jun', previstas: 251000, realizadas: 268900, aderencia: 107.1 },
+];
+
+export interface JornadaPorUnidadeV2 {
+  unidade: string;
+  previstas: number;
+  realizadas: number;
+  desvio: number;
+  aderencia: number;
+  colaboradores: number;
+}
+
+export const jornadaPorUnidadeV2: JornadaPorUnidadeV2[] = [
+  { unidade: 'Matriz', previstas: 85000, realizadas: 92350, desvio: 7350, aderencia: 108.6, colaboradores: 320 },
+  { unidade: 'Filial SP', previstas: 68000, realizadas: 73440, desvio: 5440, aderencia: 108.0, colaboradores: 280 },
+  { unidade: 'Filial RJ', previstas: 52000, realizadas: 55120, desvio: 3120, aderencia: 106.0, colaboradores: 215 },
+  { unidade: 'Filial MG', previstas: 38000, realizadas: 40280, desvio: 2280, aderencia: 106.0, colaboradores: 165 },
+  { unidade: 'Filial PR', previstas: 28000, realizadas: 29680, desvio: 1680, aderencia: 106.0, colaboradores: 125 },
+];
+
+export const kpisJornada = {
+  horasPrevistas: 251000,
+  horasRealizadas: 268900,
+  desvioAbsoluto: 17900,
+  desvioPercentual: 7.1,
+  aderenciaMedia: 106.5,
+  colaboradoresAcimaMedia: 42, // % de colaboradores acima da jornada prevista
+};
+
 export const pressaoJornadaData = [
   { periodo: 'Jan', horasExtras: 9850, percentualColaboradores: 32 },
   { periodo: 'Fev', horasExtras: 10200, percentualColaboradores: 35 },

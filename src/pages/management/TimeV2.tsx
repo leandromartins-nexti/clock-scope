@@ -18,7 +18,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { Clock, TrendingUp, TrendingDown, AlertTriangle, Users, ShieldAlert, Timer, XCircle, Target, Scale, UserCheck, UserMinus } from "lucide-react";
+import { Clock, TrendingUp, TrendingDown, AlertTriangle, Users, ShieldAlert, Timer, XCircle, Target, Scale, UserCheck, UserMinus, Activity } from "lucide-react";
 import {
   heroKPIs,
   pressaoJornadaData,
@@ -32,7 +32,12 @@ import {
   aprovacaoReprovacaoPorGestor,
   rankingGestoresAprovacao,
   rankingGestoresReprovacao,
+  jornadaMensalV2,
+  jornadaPorUnidadeV2,
+  kpisJornada,
 } from "@/lib/timeV2Data";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AreaChart, Area } from "recharts";
 
 const COLORS = {
   primary: "hsl(var(--primary))",
@@ -217,6 +222,164 @@ export default function TimeV2() {
               </CardContent>
             </Card>
           </div>
+        </section>
+
+        {/* SEÇÃO - Jornada Prevista x Realizada */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-8 bg-chart-2 rounded-full" />
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              Jornada Prevista x Realizada
+            </h2>
+          </div>
+
+          {/* KPIs da Jornada */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between mb-2">
+                  <Clock className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <p className="text-2xl font-bold">{kpisJornada.horasPrevistas.toLocaleString('pt-BR')}h</p>
+                <p className="text-sm text-muted-foreground">Horas Previstas</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between mb-2">
+                  <Activity className="h-5 w-5 text-chart-1" />
+                </div>
+                <p className="text-2xl font-bold">{kpisJornada.horasRealizadas.toLocaleString('pt-BR')}h</p>
+                <p className="text-sm text-muted-foreground">Horas Realizadas</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-warning/5 to-transparent">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between mb-2">
+                  <TrendingUp className="h-5 w-5 text-warning" />
+                  <Badge variant="outline" className="bg-warning/10 text-warning border-warning/20 text-[10px]">
+                    +{kpisJornada.desvioPercentual.toFixed(1)}%
+                  </Badge>
+                </div>
+                <p className="text-2xl font-bold text-warning">+{kpisJornada.desvioAbsoluto.toLocaleString('pt-BR')}h</p>
+                <p className="text-sm text-muted-foreground">Desvio Absoluto</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between mb-2">
+                  <Users className="h-5 w-5 text-destructive" />
+                </div>
+                <p className="text-2xl font-bold">{kpisJornada.colaboradoresAcimaMedia}%</p>
+                <p className="text-sm text-muted-foreground">Colaboradores Acima da Média</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Evolução Mensal */}
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Evolução Mensal - Previsto vs Realizado</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={280}>
+                  <AreaChart data={jornadaMensalV2}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--popover))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                      }}
+                      formatter={(value: number, name: string) => [`${value.toLocaleString('pt-BR')}h`, name]}
+                    />
+                    <Legend />
+                    <Area type="monotone" dataKey="previstas" stroke={COLORS.chart1} fill={COLORS.chart1} fillOpacity={0.3} name="Previstas" />
+                    <Area type="monotone" dataKey="realizadas" stroke={COLORS.success} fill={COLORS.success} fillOpacity={0.3} name="Realizadas" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Taxa de Aderência */}
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Taxa de Aderência Mensal (%)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={jornadaMensalV2}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="mes" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                    <YAxis domain={[100, 112]} stroke="hsl(var(--muted-foreground))" fontSize={12} unit="%" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--popover))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                      }}
+                      formatter={(value: number) => [`${value.toFixed(1)}%`, 'Aderência']}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="aderencia" 
+                      stroke={COLORS.chart2} 
+                      strokeWidth={3} 
+                      dot={{ fill: COLORS.chart2, r: 5 }} 
+                      name="Aderência (%)" 
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Detalhamento por Unidade */}
+          <Card className="border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">Detalhamento por Unidade</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="max-h-[320px] overflow-auto rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Unidade</TableHead>
+                      <TableHead className="text-right">Previstas (h)</TableHead>
+                      <TableHead className="text-right">Realizadas (h)</TableHead>
+                      <TableHead className="text-right">Desvio (h)</TableHead>
+                      <TableHead className="text-right">Aderência</TableHead>
+                      <TableHead className="text-right">Colaboradores</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {jornadaPorUnidadeV2.map((row) => (
+                      <TableRow key={row.unidade} className="hover:bg-muted/50">
+                        <TableCell className="font-medium">{row.unidade}</TableCell>
+                        <TableCell className="text-right">{row.previstas.toLocaleString('pt-BR')}</TableCell>
+                        <TableCell className="text-right">{row.realizadas.toLocaleString('pt-BR')}</TableCell>
+                        <TableCell className={`text-right font-medium ${row.desvio > 0 ? 'text-warning' : 'text-success'}`}>
+                          {row.desvio > 0 ? '+' : ''}{row.desvio.toLocaleString('pt-BR')}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Badge 
+                            variant="outline" 
+                            className={row.aderencia > 110 ? 'bg-destructive/10 text-destructive border-destructive/20' : row.aderencia > 105 ? 'bg-warning/10 text-warning border-warning/20' : 'bg-success/10 text-success border-success/20'}
+                          >
+                            {row.aderencia.toFixed(1)}%
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right text-muted-foreground">{row.colaboradores}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* SEÇÃO 2 - Pressão de Jornada */}
