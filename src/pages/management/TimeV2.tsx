@@ -121,104 +121,107 @@ export default function TimeV2() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+            {/* Horas Previstas */}
+            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <p className="text-xl font-bold">{kpisJornada.horasPrevistas.toLocaleString('pt-BR')}h</p>
+                <p className="text-xs text-muted-foreground">Horas Previstas</p>
+              </CardContent>
+            </Card>
+
+            {/* Horas Realizadas */}
+            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <Activity className="h-4 w-4 text-chart-1" />
+                </div>
+                <p className="text-xl font-bold">{kpisJornada.horasRealizadas.toLocaleString('pt-BR')}h</p>
+                <p className="text-xs text-muted-foreground">Horas Realizadas</p>
+              </CardContent>
+            </Card>
+
+            {/* Desvio Absoluto */}
+            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-warning/5 to-transparent">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <TrendingUp className="h-4 w-4 text-warning" />
+                  <Badge variant="outline" className="bg-warning/10 text-warning border-warning/20 text-[9px] px-1">
+                    +{kpisJornada.desvioPercentual.toFixed(1)}%
+                  </Badge>
+                </div>
+                <p className="text-xl font-bold text-warning">+{kpisJornada.desvioAbsoluto.toLocaleString('pt-BR')}h</p>
+                <p className="text-xs text-muted-foreground">Desvio Absoluto</p>
+              </CardContent>
+            </Card>
+
+            {/* Colaboradores Acima da Média */}
+            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <Users className="h-4 w-4 text-destructive" />
+                </div>
+                <p className="text-xl font-bold">{kpisJornada.colaboradoresAcimaMedia}%</p>
+                <p className="text-xs text-muted-foreground">Colab. Acima Média</p>
+              </CardContent>
+            </Card>
+
             {/* Horas Extras Totais */}
             <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-y-8 translate-x-8" />
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Horas Extras Totais
-                  </CardTitle>
-                  <Clock className="h-5 w-5 text-primary" />
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <Clock className="h-4 w-4 text-primary" />
+                  <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20 text-[9px] px-1">
+                    +{heroKPIs.horasExtrasTotais.variation}%
+                  </Badge>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-3xl font-bold text-foreground">
-                    {heroKPIs.horasExtrasTotais.value.toLocaleString('pt-BR')}h
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-destructive" />
-                    <span className="text-sm text-destructive font-medium">
-                      +{heroKPIs.horasExtrasTotais.variation}%
-                    </span>
-                    <span className="text-xs text-muted-foreground">vs período anterior</span>
-                  </div>
-                </div>
+                <p className="text-xl font-bold">{heroKPIs.horasExtrasTotais.value.toLocaleString('pt-BR')}h</p>
+                <p className="text-xs text-muted-foreground">Horas Extras Totais</p>
               </CardContent>
             </Card>
 
             {/* Saldo Banco de Horas */}
             <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-warning/5 rounded-full -translate-y-8 translate-x-8" />
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Saldo Total Banco de Horas
-                  </CardTitle>
-                  <Timer className="h-5 w-5 text-warning" />
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <Timer className="h-4 w-4 text-warning" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-3xl font-bold text-foreground">
-                    {heroKPIs.saldoBancoHoras.value.toLocaleString('pt-BR')}h
-                  </p>
-                  <Badge variant="outline" className={getRiskColor(heroKPIs.saldoBancoHoras.risk)}>
-                    {getRiskLabel(heroKPIs.saldoBancoHoras.risk)}
-                  </Badge>
-                </div>
+                <p className="text-xl font-bold">{heroKPIs.saldoBancoHoras.value.toLocaleString('pt-BR')}h</p>
+                <p className="text-xs text-muted-foreground">Saldo Banco Horas</p>
+                <Badge variant="outline" className={`${getRiskColor(heroKPIs.saldoBancoHoras.risk)} text-[9px] mt-1`}>
+                  {getRiskLabel(heroKPIs.saldoBancoHoras.risk)}
+                </Badge>
               </CardContent>
             </Card>
 
             {/* Violações Trabalhistas */}
             <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full -translate-y-8 translate-x-8" />
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Colaboradores c/ Violações
-                  </CardTitle>
-                  <ShieldAlert className="h-5 w-5 text-destructive" />
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <ShieldAlert className="h-4 w-4 text-destructive" />
+                  <Badge variant="outline" className="bg-success/10 text-success border-success/20 text-[9px] px-1">
+                    {heroKPIs.violacoesTrabalhistas.variation}%
+                  </Badge>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-3xl font-bold text-foreground">
-                    {heroKPIs.violacoesTrabalhistas.value}%
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <TrendingDown className="h-4 w-4 text-success" />
-                    <span className="text-sm text-success font-medium">
-                      {heroKPIs.violacoesTrabalhistas.variation}%
-                    </span>
-                    <span className="text-xs text-muted-foreground">vs período anterior</span>
-                  </div>
-                </div>
+                <p className="text-xl font-bold">{heroKPIs.violacoesTrabalhistas.value}%</p>
+                <p className="text-xs text-muted-foreground">Colab. c/ Violações</p>
               </CardContent>
             </Card>
 
             {/* Horas Próximas Vencimento */}
             <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-destructive/5 rounded-full -translate-y-8 translate-x-8" />
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Horas Próx. Vencimento
-                  </CardTitle>
-                  <AlertTriangle className="h-5 w-5 text-destructive" />
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-3xl font-bold text-foreground">
-                    {heroKPIs.horasProximasVencimento.value.toLocaleString('pt-BR')}h
-                  </p>
-                  <Badge variant="outline" className={getRiskColor(heroKPIs.horasProximasVencimento.risk)}>
-                    {getRiskLabel(heroKPIs.horasProximasVencimento.risk)}
-                  </Badge>
-                </div>
+                <p className="text-xl font-bold">{heroKPIs.horasProximasVencimento.value.toLocaleString('pt-BR')}h</p>
+                <p className="text-xs text-muted-foreground">Horas Próx. Venc.</p>
+                <Badge variant="outline" className={`${getRiskColor(heroKPIs.horasProximasVencimento.risk)} text-[9px] mt-1`}>
+                  {getRiskLabel(heroKPIs.horasProximasVencimento.risk)}
+                </Badge>
               </CardContent>
             </Card>
           </div>
@@ -231,49 +234,6 @@ export default function TimeV2() {
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               Jornada Prevista x Realizada
             </h2>
-          </div>
-
-          {/* KPIs da Jornada */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <Clock className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <p className="text-2xl font-bold">{kpisJornada.horasPrevistas.toLocaleString('pt-BR')}h</p>
-                <p className="text-sm text-muted-foreground">Horas Previstas</p>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <Activity className="h-5 w-5 text-chart-1" />
-                </div>
-                <p className="text-2xl font-bold">{kpisJornada.horasRealizadas.toLocaleString('pt-BR')}h</p>
-                <p className="text-sm text-muted-foreground">Horas Realizadas</p>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-warning/5 to-transparent">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <TrendingUp className="h-5 w-5 text-warning" />
-                  <Badge variant="outline" className="bg-warning/10 text-warning border-warning/20 text-[10px]">
-                    +{kpisJornada.desvioPercentual.toFixed(1)}%
-                  </Badge>
-                </div>
-                <p className="text-2xl font-bold text-warning">+{kpisJornada.desvioAbsoluto.toLocaleString('pt-BR')}h</p>
-                <p className="text-sm text-muted-foreground">Desvio Absoluto</p>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <Users className="h-5 w-5 text-destructive" />
-                </div>
-                <p className="text-2xl font-bold">{kpisJornada.colaboradoresAcimaMedia}%</p>
-                <p className="text-sm text-muted-foreground">Colaboradores Acima da Média</p>
-              </CardContent>
-            </Card>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
