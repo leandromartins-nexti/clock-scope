@@ -57,7 +57,6 @@ const COLORS = {
 type FilterType = {
   kpiType?: string;
   status?: string;
-  colaboradorId?: string;
   tipoOcorrencia?: string;
   saldoTipo?: 'positivo' | 'negativo';
   periodo?: string;
@@ -109,7 +108,6 @@ export default function TimeV2Operational() {
   
   // Cross-filter state
   const [filters, setFilters] = useState<FilterType>({});
-  const [highlightedId, setHighlightedId] = useState<string | null>(null);
   
   // Modal state
   const [detailModal, setDetailModal] = useState<{ type: string; data: any } | null>(null);
@@ -130,7 +128,6 @@ export default function TimeV2Operational() {
   // Clear all filters
   const clearAllFilters = useCallback(() => {
     setFilters({});
-    setHighlightedId(null);
   }, []);
 
   // Check if any filters are active
@@ -141,9 +138,6 @@ export default function TimeV2Operational() {
     let data = [...horasExtrasPorColaborador];
     if (filters.status) {
       data = data.filter(d => d.status.toLowerCase() === filters.status?.toLowerCase());
-    }
-    if (filters.colaboradorId) {
-      data = data.filter(d => d.id === filters.colaboradorId);
     }
     if (filters.kpiType === 'horasExtrasPendentes') {
       data = data.filter(d => d.status === 'Pendente');
@@ -156,20 +150,13 @@ export default function TimeV2Operational() {
   }, [filters]);
 
   const filteredRankingHE = useMemo(() => {
-    let data = [...rankingHorasExtras];
-    if (filters.colaboradorId) {
-      data = data.filter(d => d.id === filters.colaboradorId);
-    }
-    return data;
-  }, [filters]);
+    return [...rankingHorasExtras];
+  }, []);
 
   const filteredOcorrencias = useMemo(() => {
     let data = [...ocorrenciasPorColaborador];
     if (filters.tipoOcorrencia) {
       data = data.filter(d => d.tipo === filters.tipoOcorrencia);
-    }
-    if (filters.colaboradorId) {
-      data = data.filter(d => d.id === filters.colaboradorId);
     }
     if (filters.kpiType === 'faltasRegistradas') {
       data = data.filter(d => d.tipo === 'Falta');
@@ -184,17 +171,11 @@ export default function TimeV2Operational() {
     if (filters.tipoOcorrencia) {
       data = data.filter(d => d.tipo.toLowerCase().includes(filters.tipoOcorrencia?.toLowerCase() || ''));
     }
-    if (filters.colaboradorId) {
-      data = data.filter(d => d.id === filters.colaboradorId);
-    }
     return data;
   }, [filters]);
 
   const filteredBancoHoras = useMemo(() => {
     let data = [...saldoBancoHorasPorColaborador];
-    if (filters.colaboradorId) {
-      data = data.filter(d => d.id === filters.colaboradorId);
-    }
     if (filters.saldoTipo === 'positivo') {
       data = data.filter(d => d.saldoNum >= 0);
     } else if (filters.saldoTipo === 'negativo') {
@@ -216,9 +197,6 @@ export default function TimeV2Operational() {
     if (filters.tipoViolacao) {
       data = data.filter(d => d.tipo === filters.tipoViolacao);
     }
-    if (filters.colaboradorId) {
-      data = data.filter(d => d.id === filters.colaboradorId);
-    }
     if (filters.kpiType === 'violacoesAtivas') {
       // Show all violations when this KPI is selected
     }
@@ -229,9 +207,6 @@ export default function TimeV2Operational() {
     let data = [...rankingViolacoes];
     if (filters.tipoViolacao) {
       data = data.filter(d => d.regras.includes(filters.tipoViolacao || ''));
-    }
-    if (filters.colaboradorId) {
-      data = data.filter(d => d.id === filters.colaboradorId);
     }
     return data;
   }, [filters]);
@@ -262,12 +237,6 @@ export default function TimeV2Operational() {
           <Badge variant="secondary" className="gap-1 text-xs">
             Status: {filters.status}
             <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('status')} />
-          </Badge>
-        )}
-        {filters.colaboradorId && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Colaborador selecionado
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('colaboradorId')} />
           </Badge>
         )}
         {filters.tipoOcorrencia && (
@@ -490,19 +459,11 @@ export default function TimeV2Operational() {
                       dataKey="horasExtras" 
                       fill={COLORS.chart1} 
                       radius={[0, 4, 4, 0]} 
-                      cursor="pointer"
-                      onClick={(data) => {
-                        setFilters(prev => ({ 
-                          ...prev, 
-                          colaboradorId: prev.colaboradorId === data.id ? undefined : data.id 
-                        }));
-                      }}
                     >
                       {filteredRankingHE.slice(0, 10).map((entry) => (
                         <Cell 
                           key={entry.id} 
-                          fill={filters.colaboradorId === entry.id ? COLORS.primary : COLORS.chart1}
-                          opacity={filters.colaboradorId && filters.colaboradorId !== entry.id ? 0.4 : 1}
+                          fill={COLORS.chart1}
                         />
                       ))}
                     </Bar>
@@ -541,10 +502,7 @@ export default function TimeV2Operational() {
                     {filteredHorasExtras.slice(0, 8).map((row) => (
                       <TableRow 
                         key={row.id} 
-                        className={`cursor-pointer hover:bg-muted/50 transition-colors ${highlightedId === row.id ? 'bg-primary/10' : ''} ${filters.colaboradorId === row.id ? 'bg-primary/20' : ''}`}
-                        onMouseEnter={() => setHighlightedId(row.id)}
-                        onMouseLeave={() => setHighlightedId(null)}
-                        onClick={() => setFilters(prev => ({ ...prev, colaboradorId: prev.colaboradorId === row.id ? undefined : row.id }))}
+                        className="hover:bg-muted/50 transition-colors"
                       >
                         <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
                         <TableCell className="text-xs py-2">{row.data}</TableCell>
@@ -554,7 +512,7 @@ export default function TimeV2Operational() {
                         <TableCell className="py-2">
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={(e) => { e.stopPropagation(); setDetailModal({ type: 'colaborador', data: row }); }}>
+                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setDetailModal({ type: 'colaborador', data: row })}>
                                 <ExternalLink className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
@@ -636,14 +594,11 @@ export default function TimeV2Operational() {
                       dataKey={ocorrenciasMetrica === 'quantidade' ? 'ocorrencias' : 'horasImpactadas'} 
                       fill={COLORS.warning} 
                       radius={[0, 4, 4, 0]}
-                      cursor="pointer"
-                      onClick={(data) => setFilters(prev => ({ ...prev, colaboradorId: prev.colaboradorId === data.id ? undefined : data.id }))}
                     >
                       {filteredRankingOcorrencias.slice(0, 10).map((entry) => (
                         <Cell 
                           key={entry.id} 
-                          fill={filters.colaboradorId === entry.id ? COLORS.primary : COLORS.warning}
-                          opacity={filters.colaboradorId && filters.colaboradorId !== entry.id ? 0.4 : 1}
+                          fill={COLORS.warning}
                         />
                       ))}
                     </Bar>
@@ -674,8 +629,7 @@ export default function TimeV2Operational() {
                     {filteredOcorrencias.slice(0, 6).map((row) => (
                       <TableRow 
                         key={row.id} 
-                        className={`cursor-pointer hover:bg-muted/50 ${filters.colaboradorId === row.id ? 'bg-primary/20' : ''}`}
-                        onClick={() => setFilters(prev => ({ ...prev, colaboradorId: prev.colaboradorId === row.id ? undefined : row.id }))}
+                        className="hover:bg-muted/50"
                       >
                         <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
                         <TableCell className="text-xs py-2">{row.tipo}</TableCell>
@@ -759,14 +713,11 @@ export default function TimeV2Operational() {
                       dataKey="saldo" 
                       fill={saldoTipo === 'positivo' ? COLORS.success : COLORS.destructive} 
                       radius={[0, 4, 4, 0]}
-                      cursor="pointer"
-                      onClick={(data) => setFilters(prev => ({ ...prev, colaboradorId: prev.colaboradorId === data.id ? undefined : data.id }))}
                     >
                       {(saldoTipo === 'positivo' ? rankingSaldoPositivo : rankingSaldoNegativo).slice(0, 8).map((entry) => (
                         <Cell 
                           key={entry.id} 
-                          fill={filters.colaboradorId === entry.id ? COLORS.primary : (saldoTipo === 'positivo' ? COLORS.success : COLORS.destructive)}
-                          opacity={filters.colaboradorId && filters.colaboradorId !== entry.id ? 0.4 : 1}
+                          fill={saldoTipo === 'positivo' ? COLORS.success : COLORS.destructive}
                         />
                       ))}
                     </Bar>
@@ -796,8 +747,7 @@ export default function TimeV2Operational() {
                     {filteredBancoHoras.map((row) => (
                       <TableRow 
                         key={row.id} 
-                        className={`cursor-pointer hover:bg-muted/50 ${filters.colaboradorId === row.id ? 'bg-primary/20' : ''}`}
-                        onClick={() => setFilters(prev => ({ ...prev, colaboradorId: prev.colaboradorId === row.id ? undefined : row.id }))}
+                        className="hover:bg-muted/50"
                       >
                         <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
                         <TableCell className={`text-xs text-right py-2 font-medium ${row.saldoAtual.startsWith('-') ? 'text-destructive' : 'text-success'}`}>
@@ -1002,14 +952,11 @@ export default function TimeV2Operational() {
                       dataKey="violacoes" 
                       fill={COLORS.destructive} 
                       radius={[0, 4, 4, 0]}
-                      cursor="pointer"
-                      onClick={(data) => setFilters(prev => ({ ...prev, colaboradorId: prev.colaboradorId === data.id ? undefined : data.id }))}
                     >
                       {filteredRankingViolacoes.slice(0, 10).map((entry) => (
                         <Cell 
                           key={entry.id} 
-                          fill={filters.colaboradorId === entry.id ? COLORS.primary : COLORS.destructive}
-                          opacity={filters.colaboradorId && filters.colaboradorId !== entry.id ? 0.4 : 1}
+                          fill={COLORS.destructive}
                         />
                       ))}
                     </Bar>
@@ -1040,8 +987,7 @@ export default function TimeV2Operational() {
                     {filteredViolacoes.map((row) => (
                       <TableRow 
                         key={row.id} 
-                        className={`cursor-pointer hover:bg-muted/50 ${filters.colaboradorId === row.id ? 'bg-primary/20' : ''}`}
-                        onClick={() => setFilters(prev => ({ ...prev, colaboradorId: prev.colaboradorId === row.id ? undefined : row.id }))}
+                        className="hover:bg-muted/50"
                       >
                         <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
                         <TableCell className="text-xs py-2">{row.tipo}</TableCell>
