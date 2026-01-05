@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { KPICard } from "@/components/dashboard/KPICard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   BarChart,
@@ -123,111 +124,53 @@ export default function TimeV2() {
 
           {/* Primeira linha - 4 KPIs originais */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {/* Horas Extras Totais */}
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <Clock className="h-4 w-4 text-primary" />
-                  <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20 text-[9px] px-1">
-                    +{heroKPIs.horasExtrasTotais.variation}%
-                  </Badge>
-                </div>
-                <p className="text-xl font-bold">{heroKPIs.horasExtrasTotais.value.toLocaleString('pt-BR')}h</p>
-                <p className="text-xs text-muted-foreground">Horas Extras Totais</p>
-              </CardContent>
-            </Card>
-
-            {/* Saldo Banco de Horas */}
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <Timer className="h-4 w-4 text-warning" />
-                </div>
-                <p className="text-xl font-bold">{heroKPIs.saldoBancoHoras.value.toLocaleString('pt-BR')}h</p>
-                <p className="text-xs text-muted-foreground">Saldo Banco Horas</p>
-                <Badge variant="outline" className={`${getRiskColor(heroKPIs.saldoBancoHoras.risk)} text-[9px] mt-1`}>
-                  {getRiskLabel(heroKPIs.saldoBancoHoras.risk)}
-                </Badge>
-              </CardContent>
-            </Card>
-
-            {/* Violações Trabalhistas */}
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <ShieldAlert className="h-4 w-4 text-destructive" />
-                  <Badge variant="outline" className="bg-success/10 text-success border-success/20 text-[9px] px-1">
-                    {heroKPIs.violacoesTrabalhistas.variation}%
-                  </Badge>
-                </div>
-                <p className="text-xl font-bold">{heroKPIs.violacoesTrabalhistas.value}%</p>
-                <p className="text-xs text-muted-foreground">Colab. c/ Violações</p>
-              </CardContent>
-            </Card>
-
-            {/* Horas Próximas Vencimento */}
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <AlertTriangle className="h-4 w-4 text-destructive" />
-                </div>
-                <p className="text-xl font-bold">{heroKPIs.horasProximasVencimento.value.toLocaleString('pt-BR')}h</p>
-                <p className="text-xs text-muted-foreground">Horas Próx. Venc.</p>
-                <Badge variant="outline" className={`${getRiskColor(heroKPIs.horasProximasVencimento.risk)} text-[9px] mt-1`}>
-                  {getRiskLabel(heroKPIs.horasProximasVencimento.risk)}
-                </Badge>
-              </CardContent>
-            </Card>
+            <KPICard
+              title="Horas Extras Totais"
+              value={`${heroKPIs.horasExtrasTotais.value.toLocaleString('pt-BR')}h`}
+              icon={Clock}
+              trend={{ value: heroKPIs.horasExtrasTotais.variation, isPositive: false }}
+            />
+            <KPICard
+              title="Saldo Banco de Horas"
+              value={`${heroKPIs.saldoBancoHoras.value.toLocaleString('pt-BR')}h`}
+              icon={Timer}
+            />
+            <KPICard
+              title="Colaboradores c/ Violações"
+              value={`${heroKPIs.violacoesTrabalhistas.value}%`}
+              icon={ShieldAlert}
+              trend={{ value: Math.abs(heroKPIs.violacoesTrabalhistas.variation), isPositive: true }}
+            />
+            <KPICard
+              title="Horas Próximas Vencimento"
+              value={`${heroKPIs.horasProximasVencimento.value.toLocaleString('pt-BR')}h`}
+              icon={AlertTriangle}
+            />
           </div>
 
           {/* Segunda linha - 4 KPIs de Jornada */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {/* Horas Previstas */}
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <p className="text-xl font-bold">{kpisJornada.horasPrevistas.toLocaleString('pt-BR')}h</p>
-                <p className="text-xs text-muted-foreground">Horas Previstas</p>
-              </CardContent>
-            </Card>
-
-            {/* Horas Realizadas */}
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <Activity className="h-4 w-4 text-chart-1" />
-                </div>
-                <p className="text-xl font-bold">{kpisJornada.horasRealizadas.toLocaleString('pt-BR')}h</p>
-                <p className="text-xs text-muted-foreground">Horas Realizadas</p>
-              </CardContent>
-            </Card>
-
-            {/* Desvio Absoluto */}
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-warning/5 to-transparent">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <TrendingUp className="h-4 w-4 text-warning" />
-                  <Badge variant="outline" className="bg-warning/10 text-warning border-warning/20 text-[9px] px-1">
-                    +{kpisJornada.desvioPercentual.toFixed(1)}%
-                  </Badge>
-                </div>
-                <p className="text-xl font-bold text-warning">+{kpisJornada.desvioAbsoluto.toLocaleString('pt-BR')}h</p>
-                <p className="text-xs text-muted-foreground">Desvio Absoluto</p>
-              </CardContent>
-            </Card>
-
-            {/* Colaboradores Acima da Média */}
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <Users className="h-4 w-4 text-destructive" />
-                </div>
-                <p className="text-xl font-bold">{kpisJornada.colaboradoresAcimaMedia}%</p>
-                <p className="text-xs text-muted-foreground">Colab. Acima Média</p>
-              </CardContent>
-            </Card>
+            <KPICard
+              title="Horas Previstas"
+              value={`${kpisJornada.horasPrevistas.toLocaleString('pt-BR')}h`}
+              icon={Clock}
+            />
+            <KPICard
+              title="Horas Realizadas"
+              value={`${kpisJornada.horasRealizadas.toLocaleString('pt-BR')}h`}
+              icon={Activity}
+            />
+            <KPICard
+              title="Desvio Absoluto"
+              value={`+${kpisJornada.desvioAbsoluto.toLocaleString('pt-BR')}h`}
+              icon={TrendingUp}
+              trend={{ value: kpisJornada.desvioPercentual, isPositive: false }}
+            />
+            <KPICard
+              title="Colaboradores Acima da Média"
+              value={`${kpisJornada.colaboradoresAcimaMedia}%`}
+              icon={Users}
+            />
           </div>
         </section>
 

@@ -11,15 +11,20 @@ interface KPICardProps {
     isPositive: boolean;
   };
   className?: string;
+  onClick?: () => void;
 }
 
-export function KPICard({ title, value, icon: Icon, trend, className }: KPICardProps) {
+export function KPICard({ title, value, icon: Icon, trend, className, onClick }: KPICardProps) {
   return (
-    <Card className={cn(
-      "hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-border/50",
-      "bg-gradient-to-br from-card to-surface",
-      className
-    )}>
+    <Card 
+      className={cn(
+        "hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-border/50",
+        "bg-gradient-to-br from-card to-surface",
+        onClick && "cursor-pointer",
+        className
+      )}
+      onClick={onClick}
+    >
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2 flex-1">

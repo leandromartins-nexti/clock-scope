@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { KPICard } from "@/components/dashboard/KPICard";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -362,30 +363,49 @@ export default function TimeV2Operational() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            {[
-              { key: 'horasExtrasPendentes', value: heroKPIsOperational.horasExtrasPendentes, label: 'HE Pendentes', icon: Clock, color: 'text-warning' },
-              { key: 'horasExtrasAprovadas', value: heroKPIsOperational.horasExtrasAprovadas, label: 'HE Aprovadas', icon: CheckCircle2, color: 'text-success' },
-              { key: 'horasExtrasReprovadas', value: heroKPIsOperational.horasExtrasReprovadas, label: 'HE Reprovadas', icon: XCircle, color: 'text-destructive' },
-              { key: 'faltasRegistradas', value: heroKPIsOperational.faltasRegistradas, label: 'Faltas', icon: UserX, color: 'text-destructive' },
-              { key: 'atrasosRegistrados', value: heroKPIsOperational.atrasosRegistrados, label: 'Atrasos', icon: Timer, color: 'text-warning' },
-              { key: 'violacoesAtivas', value: heroKPIsOperational.violacoesAtivas, label: 'Violações Ativas', icon: AlertTriangle, color: 'text-destructive' },
-            ].map((kpi) => (
-              <Card 
-                key={kpi.key}
-                className={`border-0 shadow-md cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] ${filters.kpiType === kpi.key ? 'ring-2 ring-primary bg-primary/5' : ''}`}
-                onClick={() => handleKPIClick(kpi.key)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
-                    {filters.kpiType === kpi.key && <Badge variant="default" className="text-[10px] px-1.5 py-0">Ativo</Badge>}
-                  </div>
-                  <p className="text-2xl font-bold">{kpi.value.toLocaleString('pt-BR')}</p>
-                  <p className="text-xs text-muted-foreground">{kpi.label}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <KPICard
+              title="HE Pendentes"
+              value={heroKPIsOperational.horasExtrasPendentes.toLocaleString('pt-BR')}
+              icon={Clock}
+              onClick={() => handleKPIClick('horasExtrasPendentes')}
+              className={filters.kpiType === 'horasExtrasPendentes' ? 'ring-2 ring-primary' : ''}
+            />
+            <KPICard
+              title="HE Aprovadas"
+              value={heroKPIsOperational.horasExtrasAprovadas.toLocaleString('pt-BR')}
+              icon={CheckCircle2}
+              onClick={() => handleKPIClick('horasExtrasAprovadas')}
+              className={filters.kpiType === 'horasExtrasAprovadas' ? 'ring-2 ring-primary' : ''}
+            />
+            <KPICard
+              title="HE Reprovadas"
+              value={heroKPIsOperational.horasExtrasReprovadas.toLocaleString('pt-BR')}
+              icon={XCircle}
+              onClick={() => handleKPIClick('horasExtrasReprovadas')}
+              className={filters.kpiType === 'horasExtrasReprovadas' ? 'ring-2 ring-primary' : ''}
+            />
+            <KPICard
+              title="Faltas"
+              value={heroKPIsOperational.faltasRegistradas.toLocaleString('pt-BR')}
+              icon={UserX}
+              onClick={() => handleKPIClick('faltasRegistradas')}
+              className={filters.kpiType === 'faltasRegistradas' ? 'ring-2 ring-primary' : ''}
+            />
+            <KPICard
+              title="Atrasos"
+              value={heroKPIsOperational.atrasosRegistrados.toLocaleString('pt-BR')}
+              icon={Timer}
+              onClick={() => handleKPIClick('atrasosRegistrados')}
+              className={filters.kpiType === 'atrasosRegistrados' ? 'ring-2 ring-primary' : ''}
+            />
+            <KPICard
+              title="Violações Ativas"
+              value={heroKPIsOperational.violacoesAtivas.toLocaleString('pt-BR')}
+              icon={AlertTriangle}
+              onClick={() => handleKPIClick('violacoesAtivas')}
+              className={filters.kpiType === 'violacoesAtivas' ? 'ring-2 ring-primary' : ''}
+            />
           </div>
         </section>
 
