@@ -17,6 +17,7 @@ import ManagementInconsistencies from "./pages/management/Inconsistencies";
 import ManagementTimeBank from "./pages/management/TimeBank";
 import ManagementCompliance from "./pages/management/Compliance";
 import TimeV2 from "./pages/management/TimeV2";
+import TimeV2Operational from "./pages/management/TimeV2Operational";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,7 +44,7 @@ const App = () => (
             <Route path="/management/inconsistencies" element={<ManagementInconsistencies />} />
             <Route path="/management/time-bank" element={<ManagementTimeBank />} />
             <Route path="/management/compliance" element={<ManagementCompliance />} />
-            <Route path="/management/time-v2" element={<TimeV2 />} />
+            <Route path="/management/time-v2" element={<TimeV2Operational />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
