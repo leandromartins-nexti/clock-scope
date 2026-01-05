@@ -53,14 +53,15 @@ export const totalHorasExtras = {
   horasAtuais: 2170,
   horasPeriodoAnterior: 1985,
   variacao: 9.3, // percentual de variação
+  mediaPerido: 310, // média diária do período
   distribuicaoPorDia: [
-    { dia: 'Seg', horas: 377 },
-    { dia: 'Ter', horas: 338 },
-    { dia: 'Qua', horas: 380 },
-    { dia: 'Qui', horas: 350 },
-    { dia: 'Sex', horas: 418 },
-    { dia: 'Sáb', horas: 186 },
-    { dia: 'Dom', horas: 121 },
+    { dia: 'Seg', horas: 377, acumulado: 377 },
+    { dia: 'Ter', horas: 338, acumulado: 715 },
+    { dia: 'Qua', horas: 380, acumulado: 1095 },
+    { dia: 'Qui', horas: 350, acumulado: 1445 },
+    { dia: 'Sex', horas: 418, acumulado: 1863 },
+    { dia: 'Sáb', horas: 186, acumulado: 2049 },
+    { dia: 'Dom', horas: 121, acumulado: 2170 },
   ],
 };
 

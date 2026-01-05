@@ -21,6 +21,7 @@ import {
   Line,
   PieChart,
   Pie,
+  ComposedChart,
 } from "recharts";
 import { Clock, CheckCircle2, XCircle, AlertTriangle, UserX, Timer, Calendar, X, TrendingUp, Users, Download, ExternalLink, Eye } from "lucide-react";
 import {
@@ -398,46 +399,100 @@ export default function TimeV2Operational() {
           </div>
 
           {/* TOPO DA SEÇÃO - Visão Rápida */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {/* Widget 1 - KPI Total de Horas Extras */}
-            <Card 
-              className={`border-0 shadow-lg bg-gradient-to-br from-primary/5 to-primary/10 cursor-pointer transition-all hover:shadow-xl hover:scale-[1.01] ${filters.kpiType === 'totalHE' ? 'ring-2 ring-primary' : ''}`}
-              onClick={() => handleKPIClick('totalHE')}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-5 w-5 text-primary" />
-                      <p className="text-sm font-medium text-muted-foreground">Total de Horas Extras</p>
-                    </div>
-                    <p className="text-4xl font-bold text-foreground">{totalHorasExtras.horasAtuais.toLocaleString('pt-BR')}h</p>
-                    <div className="flex items-center gap-2">
-                      <Badge 
-                        variant="outline" 
-                        className={`text-[10px] ${totalHorasExtras.variacao >= 0 ? 'bg-warning/10 text-warning border-warning/20' : 'bg-success/10 text-success border-success/20'}`}
-                      >
-                        {totalHorasExtras.variacao >= 0 ? '↑' : '↓'} {Math.abs(totalHorasExtras.variacao).toFixed(1)}% vs período anterior
-                      </Badge>
-                    </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Widget 1 - Distribuição de Horas Extras (Combo Chart) */}
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-primary" />
+                    <CardTitle className="text-sm font-semibold">Distribuição de Horas Extras</CardTitle>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-8 px-2 text-xs gap-1 hover:bg-primary/20"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDetailModal({ type: 'totalHE', data: totalHorasExtras });
-                    }}
-                  >
-                    <Eye className="h-3.5 w-3.5" /> Detalhes
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/20">
+                      {totalHorasExtras.horasAtuais.toLocaleString('pt-BR')}h total
+                    </Badge>
+                    <Badge 
+                      variant="outline" 
+                      className={`text-[10px] ${totalHorasExtras.variacao >= 0 ? 'bg-warning/10 text-warning border-warning/20' : 'bg-success/10 text-success border-success/20'}`}
+                    >
+                      {totalHorasExtras.variacao >= 0 ? '↑' : '↓'} {Math.abs(totalHorasExtras.variacao).toFixed(1)}%
+                    </Badge>
+                  </div>
                 </div>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={200}>
+                  <ComposedChart data={totalHorasExtras.distribuicaoPorDia}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="dia" stroke="hsl(var(--muted-foreground))" fontSize={10} />
+                    <YAxis yAxisId="left" stroke="hsl(var(--muted-foreground))" fontSize={10} />
+                    <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--muted-foreground))" fontSize={10} />
+                    <RechartsTooltip
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          const horasData = payload.find(p => p.dataKey === 'horas');
+                          const acumuladoData = payload.find(p => p.dataKey === 'acumulado');
+                          const horas = horasData?.value as number || 0;
+                          const acumulado = acumuladoData?.value as number || 0;
+                          const diferenca = horas - totalHorasExtras.mediaPerido;
+                          return (
+                            <div className="bg-popover border border-border rounded-lg p-3 shadow-lg">
+                              <p className="font-semibold text-sm mb-2">{label}</p>
+                              <div className="space-y-1">
+                                <p className="text-xs text-primary font-medium">{horas}h no dia</p>
+                                <p className="text-xs text-muted-foreground">Acumulado: {acumulado.toLocaleString('pt-BR')}h</p>
+                                <p className={`text-[10px] ${diferenca >= 0 ? 'text-warning' : 'text-success'}`}>
+                                  {diferenca >= 0 ? '+' : ''}{diferenca.toFixed(0)}h vs média ({totalHorasExtras.mediaPerido}h)
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Legend wrapperStyle={{ fontSize: '10px' }} />
+                    <Bar 
+                      yAxisId="left" 
+                      dataKey="horas" 
+                      fill={COLORS.chart1} 
+                      name="Horas/Dia"
+                      radius={[4, 4, 0, 0]}
+                      cursor="pointer"
+                      onClick={(data) => {
+                        if (data && data.dia) {
+                          setFilters(prev => ({ 
+                            ...prev, 
+                            periodo: prev.periodo === data.dia ? undefined : data.dia 
+                          }));
+                        }
+                      }}
+                    >
+                      {totalHorasExtras.distribuicaoPorDia.map((entry) => (
+                        <Cell 
+                          key={entry.dia} 
+                          fill={COLORS.chart1}
+                          opacity={filters.periodo && filters.periodo !== entry.dia ? 0.3 : 1}
+                        />
+                      ))}
+                    </Bar>
+                    <Line 
+                      yAxisId="right" 
+                      type="monotone" 
+                      dataKey="acumulado" 
+                      stroke={COLORS.chart2} 
+                      strokeWidth={2} 
+                      dot={{ fill: COLORS.chart2, r: 3 }} 
+                      name="Acumulado"
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
 
             {/* Widget 2 - Ranking de Colaboradores com mais HE */}
-            <Card className="border-0 shadow-md lg:col-span-2">
+            <Card className="border-0 shadow-md">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -455,7 +510,7 @@ export default function TimeV2Operational() {
                 </div>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={180}>
+                <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={rankingColaboradoresHE.slice(0, 10)} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} unit="h" />
