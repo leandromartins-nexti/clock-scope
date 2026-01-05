@@ -16,6 +16,7 @@ import ManagementOverview from "./pages/management/Overview";
 import ManagementInconsistencies from "./pages/management/Inconsistencies";
 import ManagementTimeBank from "./pages/management/TimeBank";
 import ManagementCompliance from "./pages/management/Compliance";
+import TimeV2 from "./pages/management/TimeV2";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,11 +37,13 @@ const App = () => (
             <Route path="/rh-digital" element={<RhDigital />} />
             <Route path="/plus" element={<Plus />} />
             <Route path="/time" element={<Time />} />
+            <Route path="/time-v2" element={<TimeV2 />} />
             <Route path="/control" element={<Control />} />
             <Route path="/management/overview" element={<ManagementOverview />} />
             <Route path="/management/inconsistencies" element={<ManagementInconsistencies />} />
             <Route path="/management/time-bank" element={<ManagementTimeBank />} />
             <Route path="/management/compliance" element={<ManagementCompliance />} />
+            <Route path="/management/time-v2" element={<TimeV2 />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
