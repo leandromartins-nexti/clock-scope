@@ -153,6 +153,20 @@ export function DashboardSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink 
+                      to="/time-v2" 
+                      className={({ isActive }) => cn(
+                        "hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
+                      )}
+                    >
+                      <Timer className="w-4 h-4 mr-2 text-[#A1A3A4] hover:text-white transition-colors" />
+                      <span className={cn("text-[#A1A3A4] hover:text-white transition-colors", location.pathname === "/time-v2" && "text-white")}>Time V2</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
                       to="/control" 
                       className={({ isActive }) => cn(
                         "hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
@@ -246,6 +260,20 @@ export function DashboardSidebar() {
                     >
                       <Shield className="w-4 h-4 mr-2 text-[#A1A3A4] hover:text-white transition-colors" />
                       <span className={cn("text-[#A1A3A4] hover:text-white transition-colors", location.pathname === "/management/compliance" && "text-white")}>Compliance (TACs)</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to="/management/time-v2" 
+                      className={({ isActive }) => cn(
+                        "hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]",
+                        isActive && "font-medium"
+                      )}
+                    >
+                      <Timer className="w-4 h-4 mr-2 text-[#A1A3A4] hover:text-white transition-colors" />
+                      <span className={cn("text-[#A1A3A4] hover:text-white transition-colors", location.pathname === "/management/time-v2" && "text-white")}>Time V2</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
