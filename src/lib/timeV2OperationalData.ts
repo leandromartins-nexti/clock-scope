@@ -1,6 +1,8 @@
 // Time V2 Operational Dashboard Data - Daily Tracking Focus
 
 export const heroKPIsOperational = {
+  totalHorasExtras: 2170,
+  totalSaldoBanco: 1245,
   horasExtrasPendentes: 234,
   horasExtrasAprovadas: 1847,
   horasExtrasReprovadas: 89,

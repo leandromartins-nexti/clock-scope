@@ -24,7 +24,7 @@ import {
   Pie,
   ComposedChart,
 } from "recharts";
-import { Clock, CheckCircle2, XCircle, AlertTriangle, UserX, Timer, Calendar, X, TrendingUp, Users, Download, ExternalLink, Eye } from "lucide-react";
+import { Clock, CheckCircle2, XCircle, AlertTriangle, UserX, Timer, Calendar, X, TrendingUp, Users, Download, ExternalLink, Eye, Scale } from "lucide-react";
 import {
   heroKPIsOperational,
   horasExtrasPorStatus,
@@ -355,7 +355,7 @@ export default function TimeV2Operational() {
         {renderActiveFilters()}
 
         {/* HERO SECTION - Status Atual */}
-        <section className="space-y-3">
+        <section className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="h-1 w-6 bg-primary rounded-full" />
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -363,7 +363,22 @@ export default function TimeV2Operational() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {/* Primeira linha - 4 KPIs */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <KPICard
+              title="Total de Horas Extras"
+              value={`${heroKPIsOperational.totalHorasExtras.toLocaleString('pt-BR')}h`}
+              icon={Clock}
+              onClick={() => handleKPIClick('totalHorasExtras')}
+              className={filters.kpiType === 'totalHorasExtras' ? 'ring-2 ring-primary' : ''}
+            />
+            <KPICard
+              title="Saldo Banco de Horas"
+              value={`${heroKPIsOperational.totalSaldoBanco.toLocaleString('pt-BR')}h`}
+              icon={Scale}
+              onClick={() => handleKPIClick('totalSaldoBanco')}
+              className={filters.kpiType === 'totalSaldoBanco' ? 'ring-2 ring-primary' : ''}
+            />
             <KPICard
               title="HE Pendentes"
               value={heroKPIsOperational.horasExtrasPendentes.toLocaleString('pt-BR')}
@@ -378,6 +393,10 @@ export default function TimeV2Operational() {
               onClick={() => handleKPIClick('horasExtrasAprovadas')}
               className={filters.kpiType === 'horasExtrasAprovadas' ? 'ring-2 ring-primary' : ''}
             />
+          </div>
+
+          {/* Segunda linha - 4 KPIs */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <KPICard
               title="HE Reprovadas"
               value={heroKPIsOperational.horasExtrasReprovadas.toLocaleString('pt-BR')}
