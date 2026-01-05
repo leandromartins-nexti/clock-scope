@@ -20,7 +20,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import { Clock, CheckCircle2, XCircle, AlertTriangle, UserX, Timer, Filter, Calendar, X, TrendingUp, Users, Download, ExternalLink, BarChart3, Target, UserCheck, UserMinus, Scale } from "lucide-react";
+import { Clock, CheckCircle2, XCircle, AlertTriangle, UserX, Timer, Calendar, X, TrendingUp, Users, Download, ExternalLink } from "lucide-react";
 import {
   heroKPIsOperational,
   horasExtrasPorStatus,
@@ -39,11 +39,6 @@ import {
   rankingSaldoNegativo,
   rankingHorasVencer,
   rankingViolacoes,
-  taxaGlobalAprovacao,
-  aprovacaoReprovacaoPorGestor,
-  rankingGestoresAprovacao,
-  rankingGestoresReprovacao,
-  consistenciaAprovacaoPorArea,
 } from "@/lib/timeV2OperationalData";
 
 const COLORS = {
@@ -66,8 +61,6 @@ type FilterType = {
   saldoTipo?: 'positivo' | 'negativo';
   periodo?: string;
   tipoViolacao?: string;
-  gestorId?: string;
-  areaId?: string;
 };
 
 const getStatusBadge = (status: string) => {
@@ -122,41 +115,7 @@ export default function TimeV2Operational() {
   // Toggle states
   const [ocorrenciasMetrica, setOcorrenciasMetrica] = useState<'quantidade' | 'horas'>('quantidade');
   const [saldoTipo, setSaldoTipo] = useState<'positivo' | 'negativo'>('positivo');
-  const [rankingAprovacaoMetrica, setRankingAprovacaoMetrica] = useState<'volume' | 'taxa'>('volume');
-  const [rankingReprovacaoMetrica, setRankingReprovacaoMetrica] = useState<'volume' | 'taxa'>('volume');
 
-  // Filtered approval data based on gestor/area cross-filter
-  const filteredGestoresAprovacao = useMemo(() => {
-    let data = [...aprovacaoReprovacaoPorGestor];
-    if (filters.areaId) {
-      data = data.filter(d => d.area === filters.areaId);
-    }
-    return data;
-  }, [filters.areaId]);
-
-  const filteredRankingAprovacao = useMemo(() => {
-    let data = [...rankingGestoresAprovacao];
-    if (filters.areaId) {
-      data = data.filter(d => d.area === filters.areaId);
-    }
-    return data.sort((a, b) => 
-      rankingAprovacaoMetrica === 'volume' 
-        ? b.horasAprovadas - a.horasAprovadas 
-        : b.taxaAprovacao - a.taxaAprovacao
-    );
-  }, [filters.areaId, rankingAprovacaoMetrica]);
-
-  const filteredRankingReprovacao = useMemo(() => {
-    let data = [...rankingGestoresReprovacao];
-    if (filters.areaId) {
-      data = data.filter(d => d.area === filters.areaId);
-    }
-    return data.sort((a, b) => 
-      rankingReprovacaoMetrica === 'volume' 
-        ? b.horasReprovadas - a.horasReprovadas 
-        : b.taxaReprovacao - a.taxaReprovacao
-    );
-  }, [filters.areaId, rankingReprovacaoMetrica]);
   // Clear specific filter
   const clearFilter = useCallback((key: keyof FilterType) => {
     setFilters(prev => {
@@ -280,18 +239,6 @@ export default function TimeV2Operational() {
             <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('status')} />
           </Badge>
         )}
-        {filters.gestorId && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Gestor: {filters.gestorId}
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('gestorId')} />
-          </Badge>
-        )}
-        {filters.areaId && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Área: {filters.areaId}
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('areaId')} />
-          </Badge>
-        )}
         {filters.tipoOcorrencia && (
           <Badge variant="secondary" className="gap-1 text-xs">
             Tipo: {filters.tipoOcorrencia}
@@ -412,288 +359,173 @@ export default function TimeV2Operational() {
         </section>
 
         {/* SEÇÃO 2 – Horas Extras */}
-        <section className="space-y-4">
+        <section className="space-y-3">
           <div className="flex items-center gap-2">
             <div className="h-1 w-6 bg-secondary rounded-full" />
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Horas Extras – Visão Estratégica de Aprovação
+              Horas Extras
             </h2>
           </div>
 
-          {/* Widget 1 - Taxa Global de Aprovação KPI Card */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-0 shadow-md bg-gradient-to-br from-success/5 to-transparent">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <Target className="h-5 w-5 text-success" />
-                  <Badge 
-                    variant="outline" 
-                    className={`text-[10px] ${taxaGlobalAprovacao.variacao >= 0 ? 'bg-success/10 text-success border-success/20' : 'bg-destructive/10 text-destructive border-destructive/20'}`}
-                  >
-                    {taxaGlobalAprovacao.variacao >= 0 ? '+' : ''}{taxaGlobalAprovacao.variacao}% vs anterior
-                  </Badge>
-                </div>
-                <p className="text-3xl font-bold text-success">{taxaGlobalAprovacao.taxaAprovacao}%</p>
-                <p className="text-xs text-muted-foreground mb-2">Taxa de Aprovação de HE</p>
-                <div className="flex gap-4 text-[10px] text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <XCircle className="h-3 w-3 text-destructive" />
-                    {taxaGlobalAprovacao.taxaReprovacao}% reprovadas
-                  </span>
-                  <span>|</span>
-                  <span>{taxaGlobalAprovacao.totalSolicitacoes.toLocaleString('pt-BR')} solicitações</span>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Stacked Bar Chart */}
+            <Card className="border-0 shadow-md">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold">Horas Extras por Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={horasExtrasPorStatus}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="periodo" stroke="hsl(var(--muted-foreground))" fontSize={10} />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} />
+                    <RechartsTooltip contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "6px", fontSize: "11px" }} />
+                    <Legend wrapperStyle={{ fontSize: '10px' }} />
+                    <Bar 
+                      dataKey="pendente" 
+                      stackId="a" 
+                      fill={COLORS.warning} 
+                      name="Pendente" 
+                      cursor="pointer"
+                      onClick={() => setFilters(prev => ({ ...prev, status: prev.status === 'Pendente' ? undefined : 'Pendente' }))}
+                    >
+                      {horasExtrasPorStatus.map((_, index) => (
+                        <Cell key={index} opacity={filters.status && filters.status !== 'Pendente' ? 0.3 : 1} />
+                      ))}
+                    </Bar>
+                    <Bar 
+                      dataKey="aprovada" 
+                      stackId="a" 
+                      fill={COLORS.success} 
+                      name="Aprovada"
+                      cursor="pointer"
+                      onClick={() => setFilters(prev => ({ ...prev, status: prev.status === 'Aprovada' ? undefined : 'Aprovada' }))}
+                    >
+                      {horasExtrasPorStatus.map((_, index) => (
+                        <Cell key={index} opacity={filters.status && filters.status !== 'Aprovada' ? 0.3 : 1} />
+                      ))}
+                    </Bar>
+                    <Bar 
+                      dataKey="reprovada" 
+                      stackId="a" 
+                      fill={COLORS.destructive} 
+                      name="Reprovada" 
+                      radius={[4, 4, 0, 0]}
+                      cursor="pointer"
+                      onClick={() => setFilters(prev => ({ ...prev, status: prev.status === 'Reprovada' ? undefined : 'Reprovada' }))}
+                    >
+                      {horasExtrasPorStatus.map((_, index) => (
+                        <Cell key={index} opacity={filters.status && filters.status !== 'Reprovada' ? 0.3 : 1} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
 
-            {/* Mini KPIs de contexto */}
+            {/* Ranking de Horas Extras */}
             <Card className="border-0 shadow-md">
-              <CardContent className="p-4 flex flex-col justify-center h-full">
-                <div className="flex items-center gap-2 mb-1">
-                  <Scale className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">Média da Empresa</span>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold">Top 10 - Horas Extras</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <p className="text-2xl font-bold">{taxaGlobalAprovacao.mediaEmpresa}%</p>
-                <p className="text-[10px] text-muted-foreground">Referência para benchmarking</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-md">
-              <CardContent className="p-4 flex flex-col justify-center h-full">
-                <div className="flex items-center gap-2 mb-1">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">Gestores Ativos</span>
-                </div>
-                <p className="text-2xl font-bold">{aprovacaoReprovacaoPorGestor.length}</p>
-                <p className="text-[10px] text-muted-foreground">Com solicitações no período</p>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={filteredRankingHE.slice(0, 10)} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} />
+                    <YAxis dataKey="colaborador" type="category" stroke="hsl(var(--muted-foreground))" fontSize={9} width={90} />
+                    <RechartsTooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          return (
+                            <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
+                              <p className="font-semibold text-xs">{data.colaborador}</p>
+                              <p className="text-xs">{data.horasExtras}h ({data.percentual}%)</p>
+                              <div className="mt-1">
+                                <span className="text-[10px] text-muted-foreground">Tendência:</span>
+                                <MiniSparkline data={data.historico} color={COLORS.chart1} />
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Bar 
+                      dataKey="horasExtras" 
+                      fill={COLORS.chart1} 
+                      radius={[0, 4, 4, 0]} 
+                    >
+                      {filteredRankingHE.slice(0, 10).map((entry) => (
+                        <Cell 
+                          key={entry.id} 
+                          fill={COLORS.chart1}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
 
-          {/* Widget 2 - Aprovação vs Reprovação por Gestor (Stacked Bar Horizontal) */}
+          {/* Tabela de Horas Extras */}
           <Card className="border-0 shadow-md">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold">Aprovação vs Reprovação por Gestor</CardTitle>
-                <span className="text-[10px] text-muted-foreground">Ordenado por volume total</span>
+                <CardTitle className="text-sm font-semibold">Lista de Horas Extras</CardTitle>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => setDetailModal({ type: 'exportar', data: filteredHorasExtras })}>
+                    <Download className="h-3 w-3" /> Exportar
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart 
-                  data={filteredGestoresAprovacao.sort((a, b) => b.total - a.total)} 
-                  layout="vertical"
-                  margin={{ left: 10, right: 20 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                  <YAxis dataKey="gestor" type="category" stroke="hsl(var(--muted-foreground))" fontSize={10} width={100} />
-                  <RechartsTooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const data = payload[0].payload;
-                        return (
-                          <div className="bg-popover border border-border rounded-md p-3 shadow-lg min-w-[200px]">
-                            <p className="font-semibold text-xs mb-2">{data.gestor}</p>
-                            <div className="space-y-1 text-xs">
-                              <p className="flex justify-between"><span>Total de solicitações:</span> <strong>{data.total}</strong></p>
-                              <p className="flex justify-between"><span className="text-success">Aprovadas:</span> <strong>{data.aprovadas}h</strong></p>
-                              <p className="flex justify-between"><span className="text-destructive">Reprovadas:</span> <strong>{data.reprovadas}h</strong></p>
-                              <p className="flex justify-between"><span>Taxa de aprovação:</span> <strong>{data.taxaAprovacao}%</strong></p>
-                              <hr className="border-border my-1" />
-                              <p className="flex justify-between text-muted-foreground"><span>Média por solicitação:</span> <strong>{data.mediaHE}h</strong></p>
-                              <p className="flex justify-between text-muted-foreground"><span>vs Média empresa:</span> 
-                                <strong className={data.taxaAprovacao > taxaGlobalAprovacao.mediaEmpresa ? 'text-success' : 'text-warning'}>
-                                  {data.taxaAprovacao > taxaGlobalAprovacao.mediaEmpresa ? '+' : ''}{(data.taxaAprovacao - taxaGlobalAprovacao.mediaEmpresa).toFixed(1)}%
-                                </strong>
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Legend wrapperStyle={{ fontSize: '10px' }} />
-                  <Bar 
-                    dataKey="aprovadas" 
-                    stackId="a" 
-                    fill={COLORS.success} 
-                    name="Aprovadas"
-                    cursor="pointer"
-                    onClick={(data) => setFilters(prev => ({ 
-                      ...prev, 
-                      gestorId: prev.gestorId === data.gestor ? undefined : data.gestor 
-                    }))}
-                  >
-                    {filteredGestoresAprovacao.map((entry) => (
-                      <Cell 
-                        key={entry.gestor} 
-                        opacity={filters.gestorId && filters.gestorId !== entry.gestor ? 0.3 : 1} 
-                      />
+              <div className="max-h-[200px] overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">Colaborador</TableHead>
+                      <TableHead className="text-xs">Data</TableHead>
+                      <TableHead className="text-xs">Qtd</TableHead>
+                      <TableHead className="text-xs">Status</TableHead>
+                      <TableHead className="text-xs">Gestor</TableHead>
+                      <TableHead className="text-xs w-[60px]">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredHorasExtras.slice(0, 8).map((row) => (
+                      <TableRow 
+                        key={row.id} 
+                        className="hover:bg-muted/50 transition-colors"
+                      >
+                        <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
+                        <TableCell className="text-xs py-2">{row.data}</TableCell>
+                        <TableCell className="text-xs py-2">{row.quantidade}</TableCell>
+                        <TableCell className="py-2">{getStatusBadge(row.status)}</TableCell>
+                        <TableCell className="text-xs py-2">{row.gestor}</TableCell>
+                        <TableCell className="py-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setDetailModal({ type: 'colaborador', data: row })}>
+                                <ExternalLink className="h-3 w-3" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent><p className="text-xs">Ver detalhes</p></TooltipContent>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </Bar>
-                  <Bar 
-                    dataKey="reprovadas" 
-                    stackId="a" 
-                    fill={COLORS.destructive} 
-                    name="Reprovadas" 
-                    radius={[0, 4, 4, 0]}
-                  >
-                    {filteredGestoresAprovacao.map((entry) => (
-                      <Cell 
-                        key={entry.gestor} 
-                        opacity={filters.gestorId && filters.gestorId !== entry.gestor ? 0.3 : 1} 
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
-
-          {/* Widget 3 e 4 - Rankings lado a lado */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Widget 3 - Ranking de Gestores por Aprovação */}
-            <Card className="border-0 shadow-md">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <UserCheck className="h-4 w-4 text-success" />
-                    <CardTitle className="text-sm font-semibold">Top Gestores – Aprovação</CardTitle>
-                  </div>
-                  <Tabs value={rankingAprovacaoMetrica} onValueChange={(v) => setRankingAprovacaoMetrica(v as 'volume' | 'taxa')} className="h-7">
-                    <TabsList className="h-7">
-                      <TabsTrigger value="volume" className="text-[10px] h-6 px-2">Volume</TabsTrigger>
-                      <TabsTrigger value="taxa" className="text-[10px] h-6 px-2">Taxa %</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={filteredRankingAprovacao.slice(0, 6)} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis 
-                      type="number" 
-                      stroke="hsl(var(--muted-foreground))" 
-                      fontSize={10} 
-                      tickFormatter={(v) => rankingAprovacaoMetrica === 'taxa' ? `${v}%` : `${v}h`}
-                    />
-                    <YAxis dataKey="gestor" type="category" stroke="hsl(var(--muted-foreground))" fontSize={9} width={90} />
-                    <RechartsTooltip
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          const data = payload[0].payload;
-                          return (
-                            <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
-                              <p className="font-semibold text-xs">{data.gestor}</p>
-                              <p className="text-[10px] text-muted-foreground">{data.area}</p>
-                              <div className="mt-1 space-y-0.5 text-xs">
-                                <p>Volume: <strong>{data.horasAprovadas}h</strong></p>
-                                <p>Taxa: <strong>{data.taxaAprovacao}%</strong></p>
-                                <p className="text-muted-foreground">
-                                  vs Empresa: <span className={data.comparativoEmpresa >= 0 ? 'text-success' : 'text-warning'}>
-                                    {data.comparativoEmpresa >= 0 ? '+' : ''}{data.comparativoEmpresa}%
-                                  </span>
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Bar 
-                      dataKey={rankingAprovacaoMetrica === 'volume' ? 'horasAprovadas' : 'taxaAprovacao'} 
-                      fill={COLORS.success} 
-                      radius={[0, 4, 4, 0]}
-                      cursor="pointer"
-                      onClick={(data) => setFilters(prev => ({ 
-                        ...prev, 
-                        gestorId: prev.gestorId === data.gestor ? undefined : data.gestor 
-                      }))}
-                    >
-                      {filteredRankingAprovacao.slice(0, 6).map((entry) => (
-                        <Cell 
-                          key={entry.gestor} 
-                          opacity={filters.gestorId && filters.gestorId !== entry.gestor ? 0.3 : 1}
-                        />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Widget 4 - Ranking de Gestores por Reprovação */}
-            <Card className="border-0 shadow-md">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <UserMinus className="h-4 w-4 text-destructive" />
-                    <CardTitle className="text-sm font-semibold">Top Gestores – Reprovação</CardTitle>
-                  </div>
-                  <Tabs value={rankingReprovacaoMetrica} onValueChange={(v) => setRankingReprovacaoMetrica(v as 'volume' | 'taxa')} className="h-7">
-                    <TabsList className="h-7">
-                      <TabsTrigger value="volume" className="text-[10px] h-6 px-2">Volume</TabsTrigger>
-                      <TabsTrigger value="taxa" className="text-[10px] h-6 px-2">Taxa %</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={filteredRankingReprovacao.slice(0, 6)} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis 
-                      type="number" 
-                      stroke="hsl(var(--muted-foreground))" 
-                      fontSize={10} 
-                      tickFormatter={(v) => rankingReprovacaoMetrica === 'taxa' ? `${v}%` : `${v}h`}
-                    />
-                    <YAxis dataKey="gestor" type="category" stroke="hsl(var(--muted-foreground))" fontSize={9} width={90} />
-                    <RechartsTooltip
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          const data = payload[0].payload;
-                          return (
-                            <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
-                              <p className="font-semibold text-xs">{data.gestor}</p>
-                              <p className="text-[10px] text-muted-foreground">{data.area}</p>
-                              <div className="mt-1 space-y-0.5 text-xs">
-                                <p>Volume: <strong>{data.horasReprovadas}h</strong></p>
-                                <p>Taxa: <strong>{data.taxaReprovacao}%</strong></p>
-                                <p className="text-muted-foreground">Motivo principal: <span className="text-foreground">{data.motivoPrincipal}</span></p>
-                              </div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Bar 
-                      dataKey={rankingReprovacaoMetrica === 'volume' ? 'horasReprovadas' : 'taxaReprovacao'} 
-                      fill={COLORS.destructive} 
-                      radius={[0, 4, 4, 0]}
-                      cursor="pointer"
-                      onClick={(data) => setFilters(prev => ({ 
-                        ...prev, 
-                        gestorId: prev.gestorId === data.gestor ? undefined : data.gestor 
-                      }))}
-                    >
-                      {filteredRankingReprovacao.slice(0, 6).map((entry) => (
-                        <Cell 
-                          key={entry.gestor} 
-                          opacity={filters.gestorId && filters.gestorId !== entry.gestor ? 0.3 : 1}
-                        />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
         </section>
 
         {/* SEÇÃO 3 – Faltas, Atrasos e Ausências */}
