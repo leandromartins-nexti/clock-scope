@@ -389,57 +389,7 @@ export default function TimeV2() {
             </h2>
           </div>
 
-          {/* Widget 1 - Taxa Global de Aprovação KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-success/10 to-transparent">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full -translate-y-8 translate-x-8" />
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <Target className="h-6 w-6 text-success" />
-                  <Badge 
-                    variant="outline" 
-                    className={`text-xs ${taxaGlobalAprovacao.variacao >= 0 ? 'bg-success/10 text-success border-success/20' : 'bg-destructive/10 text-destructive border-destructive/20'}`}
-                  >
-                    {taxaGlobalAprovacao.variacao >= 0 ? '+' : ''}{taxaGlobalAprovacao.variacao}% vs anterior
-                  </Badge>
-                </div>
-                <p className="text-4xl font-bold text-success">{taxaGlobalAprovacao.taxaAprovacao}%</p>
-                <p className="text-sm text-muted-foreground mb-3">Taxa de Aprovação de HE</p>
-                <div className="flex gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <XCircle className="h-3 w-3 text-destructive" />
-                    {taxaGlobalAprovacao.taxaReprovacao}% reprovadas
-                  </span>
-                  <span>|</span>
-                  <span>{taxaGlobalAprovacao.totalSolicitacoes.toLocaleString('pt-BR')} solicitações</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-6 flex flex-col justify-center h-full">
-                <div className="flex items-center gap-2 mb-2">
-                  <Scale className="h-5 w-5 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">Média da Empresa</span>
-                </div>
-                <p className="text-3xl font-bold">{taxaGlobalAprovacao.mediaEmpresa}%</p>
-                <p className="text-xs text-muted-foreground">Referência para benchmarking</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-6 flex flex-col justify-center h-full">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">Gestores Ativos</span>
-                </div>
-                <p className="text-3xl font-bold">{aprovacaoReprovacaoPorGestor.length}</p>
-                <p className="text-xs text-muted-foreground">Com solicitações no período</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Widget 2 - Aprovação vs Reprovação por Gestor */}
+          {/* Widget 1 - Aprovação vs Reprovação por Gestor */}
           <Card className="border-0 shadow-lg">
             <CardHeader>
               <div className="flex items-center justify-between">
