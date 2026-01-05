@@ -44,6 +44,67 @@ export const rankingHorasExtras = [
   { id: '2', colaborador: 'Maria Santos', horasExtras: 15, percentual: 4.7, historico: [12, 14, 15, 16, 15] },
 ];
 
+// ============================================
+// DADOS ESTRATÉGICOS - APROVAÇÃO DE HORAS EXTRAS
+// ============================================
+
+// Taxa Global de Aprovação
+export const taxaGlobalAprovacao = {
+  taxaAprovacao: 85.4,
+  taxaReprovacao: 14.6,
+  periodoAnterior: 82.1,
+  variacao: 3.3,
+  totalSolicitacoes: 2170,
+  mediaEmpresa: 83.0,
+};
+
+// Aprovação vs Reprovação por Gestor
+export const aprovacaoReprovacaoPorGestor = [
+  { gestor: 'Ana Oliveira', area: 'Operações', aprovadas: 520, reprovadas: 45, total: 565, taxaAprovacao: 92.0, mediaHE: 3.2, colaboradores: 28 },
+  { gestor: 'Pedro Costa', area: 'Administrativo', aprovadas: 380, reprovadas: 85, total: 465, taxaAprovacao: 81.7, mediaHE: 2.8, colaboradores: 22 },
+  { gestor: 'Maria Fernandes', area: 'Operações', aprovadas: 420, reprovadas: 38, total: 458, taxaAprovacao: 91.7, mediaHE: 3.5, colaboradores: 25 },
+  { gestor: 'Roberto Alves', area: 'Logística', aprovadas: 290, reprovadas: 52, total: 342, taxaAprovacao: 84.8, mediaHE: 2.5, colaboradores: 18 },
+  { gestor: 'Carla Mendes', area: 'Comercial', aprovadas: 180, reprovadas: 28, total: 208, taxaAprovacao: 86.5, mediaHE: 2.2, colaboradores: 15 },
+  { gestor: 'Thiago Santos', area: 'TI', aprovadas: 145, reprovadas: 65, total: 210, taxaAprovacao: 69.0, mediaHE: 2.0, colaboradores: 12 },
+  { gestor: 'Luciana Ferreira', area: 'RH', aprovadas: 95, reprovadas: 12, total: 107, taxaAprovacao: 88.8, mediaHE: 1.8, colaboradores: 8 },
+  { gestor: 'Fernando Lima', area: 'Financeiro', aprovadas: 88, reprovadas: 22, total: 110, taxaAprovacao: 80.0, mediaHE: 1.5, colaboradores: 10 },
+];
+
+// Ranking de Gestores por Aprovação (Volume Absoluto)
+export const rankingGestoresAprovacao = [
+  { gestor: 'Ana Oliveira', horasAprovadas: 520, taxaAprovacao: 92.0, area: 'Operações', totalSolicitacoes: 565, mediaPorSolicitacao: 3.2, comparativoEmpresa: 9.0 },
+  { gestor: 'Maria Fernandes', horasAprovadas: 420, taxaAprovacao: 91.7, area: 'Operações', totalSolicitacoes: 458, mediaPorSolicitacao: 3.5, comparativoEmpresa: 8.7 },
+  { gestor: 'Pedro Costa', horasAprovadas: 380, taxaAprovacao: 81.7, area: 'Administrativo', totalSolicitacoes: 465, mediaPorSolicitacao: 2.8, comparativoEmpresa: -1.3 },
+  { gestor: 'Roberto Alves', horasAprovadas: 290, taxaAprovacao: 84.8, area: 'Logística', totalSolicitacoes: 342, mediaPorSolicitacao: 2.5, comparativoEmpresa: 1.8 },
+  { gestor: 'Carla Mendes', horasAprovadas: 180, taxaAprovacao: 86.5, area: 'Comercial', totalSolicitacoes: 208, mediaPorSolicitacao: 2.2, comparativoEmpresa: 3.5 },
+  { gestor: 'Thiago Santos', horasAprovadas: 145, taxaAprovacao: 69.0, area: 'TI', totalSolicitacoes: 210, mediaPorSolicitacao: 2.0, comparativoEmpresa: -14.0 },
+  { gestor: 'Luciana Ferreira', horasAprovadas: 95, taxaAprovacao: 88.8, area: 'RH', totalSolicitacoes: 107, mediaPorSolicitacao: 1.8, comparativoEmpresa: 5.8 },
+  { gestor: 'Fernando Lima', horasAprovadas: 88, taxaAprovacao: 80.0, area: 'Financeiro', totalSolicitacoes: 110, mediaPorSolicitacao: 1.5, comparativoEmpresa: -3.0 },
+];
+
+// Ranking de Gestores por Reprovação (Volume Absoluto)
+export const rankingGestoresReprovacao = [
+  { gestor: 'Pedro Costa', horasReprovadas: 85, taxaReprovacao: 18.3, area: 'Administrativo', totalSolicitacoes: 465, motivoPrincipal: 'Justificativa insuficiente' },
+  { gestor: 'Thiago Santos', horasReprovadas: 65, taxaReprovacao: 31.0, area: 'TI', totalSolicitacoes: 210, motivoPrincipal: 'Fora do planejamento' },
+  { gestor: 'Roberto Alves', horasReprovadas: 52, taxaReprovacao: 15.2, area: 'Logística', totalSolicitacoes: 342, motivoPrincipal: 'Excesso acumulado' },
+  { gestor: 'Ana Oliveira', horasReprovadas: 45, taxaReprovacao: 8.0, area: 'Operações', totalSolicitacoes: 565, motivoPrincipal: 'Duplicidade' },
+  { gestor: 'Maria Fernandes', horasReprovadas: 38, taxaReprovacao: 8.3, area: 'Operações', totalSolicitacoes: 458, motivoPrincipal: 'Erro de registro' },
+  { gestor: 'Carla Mendes', horasReprovadas: 28, taxaReprovacao: 13.5, area: 'Comercial', totalSolicitacoes: 208, motivoPrincipal: 'Sem autorização prévia' },
+  { gestor: 'Fernando Lima', horasReprovadas: 22, taxaReprovacao: 20.0, area: 'Financeiro', totalSolicitacoes: 110, motivoPrincipal: 'Orçamento excedido' },
+  { gestor: 'Luciana Ferreira', horasReprovadas: 12, taxaReprovacao: 11.2, area: 'RH', totalSolicitacoes: 107, motivoPrincipal: 'Política interna' },
+];
+
+// Consistência de Aprovação por Área (para Box Plot / Variance Chart)
+export const consistenciaAprovacaoPorArea = [
+  { area: 'Operações', taxaMedia: 91.8, taxaMin: 89.5, taxaMax: 94.2, q1: 90.5, q3: 93.0, outlier: false, gestores: 2, desvio: 1.5 },
+  { area: 'Administrativo', taxaMedia: 81.7, taxaMin: 78.0, taxaMax: 85.0, q1: 79.5, q3: 84.0, outlier: false, gestores: 1, desvio: 3.5 },
+  { area: 'Logística', taxaMedia: 84.8, taxaMin: 82.0, taxaMax: 88.0, q1: 83.0, q3: 86.5, outlier: false, gestores: 1, desvio: 2.3 },
+  { area: 'Comercial', taxaMedia: 86.5, taxaMin: 84.0, taxaMax: 89.0, q1: 85.0, q3: 88.0, outlier: false, gestores: 1, desvio: 2.0 },
+  { area: 'TI', taxaMedia: 69.0, taxaMin: 65.0, taxaMax: 73.0, q1: 66.5, q3: 71.5, outlier: true, gestores: 1, desvio: 4.0 },
+  { area: 'RH', taxaMedia: 88.8, taxaMin: 86.0, taxaMax: 91.5, q1: 87.0, q3: 90.0, outlier: false, gestores: 1, desvio: 2.2 },
+  { area: 'Financeiro', taxaMedia: 80.0, taxaMin: 76.0, taxaMax: 84.0, q1: 77.5, q3: 82.5, outlier: false, gestores: 1, desvio: 3.2 },
+];
+
 export const ocorrenciasPorTipo = [
   { tipo: 'Faltas', quantidade: 67 },
   { tipo: 'Atrasos', quantidade: 145 },
