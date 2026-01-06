@@ -24,7 +24,7 @@ import {
   Pie,
   ComposedChart,
 } from "recharts";
-import { Clock, CheckCircle2, XCircle, AlertTriangle, UserX, Timer, Calendar, X, TrendingUp, Users, Download, ExternalLink, Eye, Scale } from "lucide-react";
+import { Clock, CheckCircle2, XCircle, AlertTriangle, UserX, Timer, Calendar, X, TrendingUp, Users, Download, ExternalLink, Eye, Scale, ArrowRight, FileText, BarChart3 } from "lucide-react";
 import {
   heroKPIsOperational,
   horasExtrasPorStatus,
@@ -65,13 +65,6 @@ const COLORS = {
 
 type FilterType = {
   kpiType?: string;
-  status?: string;
-  tipoOcorrencia?: string;
-  saldoTipo?: 'positivo' | 'negativo';
-  periodo?: string;
-  tipoViolacao?: string;
-  gestorId?: string;
-  colaboradorId?: string;
 };
 
 const getStatusBadge = (status: string) => {
@@ -112,29 +105,39 @@ const MiniSparkline = ({ data, color }: { data: number[]; color: string }) => (
   </div>
 );
 
+// Detail Modal Types
+type DetailModalType = 
+  | { type: 'distribuicaoDia'; data: { dia: string; horas: number; acumulado: number } }
+  | { type: 'colaboradorHE'; data: typeof rankingColaboradoresHE[0] }
+  | { type: 'statusHE'; data: { status: string; periodo: string; quantidade: number } }
+  | { type: 'gestorPendentes'; data: typeof rankingGestoresPendentes[0] }
+  | { type: 'decisao'; data: { tipo: string; value: number; percentual: number } }
+  | { type: 'ocorrenciaTipo'; data: typeof ocorrenciasPorTipo[0] }
+  | { type: 'ocorrenciaColaborador'; data: typeof rankingOcorrencias[0] }
+  | { type: 'creditoDebito'; data: typeof creditosDebitosData[0] }
+  | { type: 'saldoColaborador'; data: typeof rankingSaldoPositivo[0] & { tipo: 'positivo' | 'negativo' } }
+  | { type: 'horasVencer'; data: typeof rankingHorasVencer[0] }
+  | { type: 'violacaoTipo'; data: typeof violacoesPorTipoOperacional[0] }
+  | { type: 'violacaoColaborador'; data: typeof rankingViolacoes[0] }
+  | { type: 'rankingColaboradoresHE'; data: typeof rankingColaboradoresHE }
+  | { type: 'colaboradoresImpactados'; data: typeof periodosBancoHoras[0] }
+  | { type: 'exportar'; data: any[] }
+  | null;
+
 export default function TimeV2Operational() {
   const [periodoFilter, setPeriodoFilter] = useState("ultimos7dias");
   const [unidadeFilter, setUnidadeFilter] = useState("todas");
   const [areaFilter, setAreaFilter] = useState("todas");
   
-  // Cross-filter state
+  // KPI filter state (simplified)
   const [filters, setFilters] = useState<FilterType>({});
   
   // Modal state
-  const [detailModal, setDetailModal] = useState<{ type: string; data: any } | null>(null);
+  const [detailModal, setDetailModal] = useState<DetailModalType>(null);
   
   // Toggle states
   const [ocorrenciasMetrica, setOcorrenciasMetrica] = useState<'quantidade' | 'horas'>('quantidade');
   const [saldoTipo, setSaldoTipo] = useState<'positivo' | 'negativo'>('positivo');
-
-  // Clear specific filter
-  const clearFilter = useCallback((key: keyof FilterType) => {
-    setFilters(prev => {
-      const next = { ...prev };
-      delete next[key];
-      return next;
-    });
-  }, []);
 
   // Clear all filters
   const clearAllFilters = useCallback(() => {
@@ -144,21 +147,9 @@ export default function TimeV2Operational() {
   // Check if any filters are active
   const hasActiveFilters = Object.keys(filters).length > 0;
 
-  // Filtered data based on cross-filters
+  // Filtered data based on KPI filters only
   const filteredHorasExtras = useMemo(() => {
     let data = [...horasExtrasPorColaborador];
-    if (filters.status) {
-      data = data.filter(d => d.status.toLowerCase() === filters.status?.toLowerCase());
-    }
-    if (filters.gestorId) {
-      data = data.filter(d => d.gestor === filters.gestorId);
-    }
-    if (filters.colaboradorId) {
-      const colaborador = rankingColaboradoresHE.find(c => c.id === filters.colaboradorId);
-      if (colaborador) {
-        data = data.filter(d => d.colaborador === colaborador.colaborador);
-      }
-    }
     if (filters.kpiType === 'horasExtrasPendentes') {
       data = data.filter(d => d.status === 'Pendente');
     } else if (filters.kpiType === 'horasExtrasAprovadas') {
@@ -169,15 +160,8 @@ export default function TimeV2Operational() {
     return data;
   }, [filters]);
 
-  const filteredRankingHE = useMemo(() => {
-    return [...rankingHorasExtras];
-  }, []);
-
   const filteredOcorrencias = useMemo(() => {
     let data = [...ocorrenciasPorColaborador];
-    if (filters.tipoOcorrencia) {
-      data = data.filter(d => d.tipo === filters.tipoOcorrencia);
-    }
     if (filters.kpiType === 'faltasRegistradas') {
       data = data.filter(d => d.tipo === 'Falta');
     } else if (filters.kpiType === 'atrasosRegistrados') {
@@ -186,59 +170,31 @@ export default function TimeV2Operational() {
     return data;
   }, [filters]);
 
-  const filteredRankingOcorrencias = useMemo(() => {
-    let data = [...rankingOcorrencias];
-    if (filters.tipoOcorrencia) {
-      data = data.filter(d => d.tipo.toLowerCase().includes(filters.tipoOcorrencia?.toLowerCase() || ''));
-    }
-    return data;
-  }, [filters]);
-
   const filteredBancoHoras = useMemo(() => {
-    let data = [...saldoBancoHorasPorColaborador];
-    if (filters.saldoTipo === 'positivo') {
-      data = data.filter(d => d.saldoNum >= 0);
-    } else if (filters.saldoTipo === 'negativo') {
-      data = data.filter(d => d.saldoNum < 0);
-    }
-    return data;
-  }, [filters]);
-
-  const filteredPeriodos = useMemo(() => {
-    let data = [...periodosBancoHoras];
-    if (filters.periodo) {
-      data = data.filter(d => d.id === filters.periodo);
-    }
-    return data;
-  }, [filters]);
+    return [...saldoBancoHorasPorColaborador];
+  }, []);
 
   const filteredViolacoes = useMemo(() => {
-    let data = [...violacoesPorColaborador];
-    if (filters.tipoViolacao) {
-      data = data.filter(d => d.tipo === filters.tipoViolacao);
-    }
-    if (filters.kpiType === 'violacoesAtivas') {
-      // Show all violations when this KPI is selected
-    }
-    return data;
-  }, [filters]);
-
-  const filteredRankingViolacoes = useMemo(() => {
-    let data = [...rankingViolacoes];
-    if (filters.tipoViolacao) {
-      data = data.filter(d => d.regras.includes(filters.tipoViolacao || ''));
-    }
-    return data;
-  }, [filters]);
+    return [...violacoesPorColaborador];
+  }, []);
 
   // KPI Card click handler
   const handleKPIClick = (kpiType: string) => {
     if (filters.kpiType === kpiType) {
-      clearFilter('kpiType');
+      setFilters({});
     } else {
-      setFilters(prev => ({ ...prev, kpiType }));
+      setFilters({ kpiType });
     }
   };
+
+  // Clear specific filter
+  const clearFilter = useCallback((key: keyof FilterType) => {
+    setFilters(prev => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  }, []);
 
   // Active filter badges
   const renderActiveFilters = () => {
@@ -253,47 +209,669 @@ export default function TimeV2Operational() {
             <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('kpiType')} />
           </Badge>
         )}
-        {filters.status && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Status: {filters.status}
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('status')} />
-          </Badge>
-        )}
-        {filters.tipoOcorrencia && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Tipo: {filters.tipoOcorrencia}
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('tipoOcorrencia')} />
-          </Badge>
-        )}
-        {filters.tipoViolacao && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Violação: {filters.tipoViolacao}
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('tipoViolacao')} />
-          </Badge>
-        )}
-        {filters.periodo && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Período selecionado
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('periodo')} />
-          </Badge>
-        )}
-        {filters.gestorId && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Gestor: {filters.gestorId}
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('gestorId')} />
-          </Badge>
-        )}
-        {filters.colaboradorId && (
-          <Badge variant="secondary" className="gap-1 text-xs">
-            Colaborador: {rankingColaboradoresHE.find(c => c.id === filters.colaboradorId)?.colaborador || filters.colaboradorId}
-            <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('colaboradorId')} />
-          </Badge>
-        )}
         <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-6 text-xs">
           Limpar todos
         </Button>
       </div>
     );
+  };
+
+  // Render Detail Modal Content
+  const renderModalContent = () => {
+    if (!detailModal) return null;
+
+    switch (detailModal.type) {
+      case 'distribuicaoDia':
+        const diaData = detailModal.data;
+        const mediaHoras = totalHorasExtras.mediaPerido;
+        const diferenca = diaData.horas - mediaHoras;
+        const colaboradoresDia = rankingColaboradoresHE.filter(c => c.distribuicao[['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].indexOf(diaData.dia)] > 0);
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Horas no Dia</p>
+                <p className="text-2xl font-bold text-primary">{diaData.horas}h</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Acumulado</p>
+                <p className="text-2xl font-bold">{diaData.acumulado.toLocaleString('pt-BR')}h</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">vs Média</p>
+                <p className={`text-2xl font-bold ${diferenca >= 0 ? 'text-warning' : 'text-success'}`}>
+                  {diferenca >= 0 ? '+' : ''}{diferenca}h
+                </p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-3">Colaboradores com HE neste dia ({colaboradoresDia.length})</p>
+              <div className="max-h-[200px] overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">Colaborador</TableHead>
+                      <TableHead className="text-xs">Área</TableHead>
+                      <TableHead className="text-xs text-right">Horas</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {colaboradoresDia.slice(0, 10).map((col) => (
+                      <TableRow key={col.id}>
+                        <TableCell className="text-xs font-medium">{col.colaborador}</TableCell>
+                        <TableCell className="text-xs">{col.area}</TableCell>
+                        <TableCell className="text-xs text-right font-semibold">
+                          {col.distribuicao[['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].indexOf(diaData.dia)]}h
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <AlertTriangle className="h-4 w-4 text-warning" />
+              <p className="text-xs text-muted-foreground">
+                {diferenca > 50 ? 'Atenção: Volume de HE significativamente acima da média. Avaliar necessidade de reforço de escala.' : 
+                 diferenca < -50 ? 'Dia com baixo volume de HE, dentro do esperado.' :
+                 'Volume de HE dentro da média esperada para o período.'}
+              </p>
+            </div>
+          </div>
+        );
+
+      case 'colaboradorHE':
+        const colabData = detailModal.data;
+        const percentualTotal = ((colabData.horasExtras / totalHorasExtras.horasAtuais) * 100).toFixed(1);
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Total de HE</p>
+                <p className="text-2xl font-bold text-primary">{colabData.horasExtras}h</p>
+                <p className="text-[10px] text-muted-foreground">{percentualTotal}% do total</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Gestor Responsável</p>
+                <p className="text-lg font-semibold">{colabData.gestor}</p>
+                <p className="text-[10px] text-muted-foreground">{colabData.area}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Distribuição Semanal</p>
+              <div className="h-32">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={colabData.distribuicao.map((h, i) => ({ dia: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'][i], horas: h }))}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="dia" fontSize={10} />
+                    <YAxis fontSize={10} unit="h" />
+                    <Bar dataKey="horas" fill={COLORS.chart1} radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              {colabData.horasExtras > 40 ? (
+                <>
+                  <AlertTriangle className="h-4 w-4 text-warning" />
+                  <p className="text-xs text-warning">Colaborador com alto volume de HE. Recomendar análise de carga de trabalho.</p>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="h-4 w-4 text-success" />
+                  <p className="text-xs text-success">Volume de HE dentro do padrão esperado.</p>
+                </>
+              )}
+            </div>
+            <div className="flex gap-2 pt-2">
+              <Button variant="outline" size="sm" className="text-xs">
+                <FileText className="h-3 w-3 mr-1" /> Ver histórico completo
+              </Button>
+              <Button variant="outline" size="sm" className="text-xs">
+                <Download className="h-3 w-3 mr-1" /> Exportar dados
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 'statusHE':
+        const statusData = detailModal.data;
+        const colaboradoresStatus = horasExtrasPorColaborador.filter(c => c.status.toLowerCase() === statusData.status.toLowerCase());
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Quantidade</p>
+                <p className="text-2xl font-bold">{statusData.quantidade}</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Período</p>
+                <p className="text-lg font-semibold">{statusData.periodo}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Solicitações {statusData.status}s ({colaboradoresStatus.length})</p>
+              <div className="max-h-[200px] overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">Colaborador</TableHead>
+                      <TableHead className="text-xs">Data</TableHead>
+                      <TableHead className="text-xs">Gestor</TableHead>
+                      <TableHead className="text-xs text-right">Horas</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {colaboradoresStatus.map((col) => (
+                      <TableRow key={col.id}>
+                        <TableCell className="text-xs font-medium">{col.colaborador}</TableCell>
+                        <TableCell className="text-xs">{col.data}</TableCell>
+                        <TableCell className="text-xs">{col.gestor}</TableCell>
+                        <TableCell className="text-xs text-right">{col.quantidade}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'gestorPendentes':
+        const gestorData = detailModal.data;
+        const colaboradoresGestor = horasExtrasPorColaborador.filter(c => c.gestor === gestorData.gestor && c.status === 'Pendente');
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-warning/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Horas Pendentes</p>
+                <p className="text-2xl font-bold text-warning">{gestorData.horasPendentes}h</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Solicitações</p>
+                <p className="text-2xl font-bold">{gestorData.qtdSolicitacoes}</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Tempo Médio</p>
+                <p className="text-2xl font-bold">{gestorData.diasMedio}d</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Solicitações Pendentes de {gestorData.gestor}</p>
+              <div className="max-h-[200px] overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">Colaborador</TableHead>
+                      <TableHead className="text-xs">Data</TableHead>
+                      <TableHead className="text-xs text-right">Horas</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {colaboradoresGestor.map((col) => (
+                      <TableRow key={col.id}>
+                        <TableCell className="text-xs font-medium">{col.colaborador}</TableCell>
+                        <TableCell className="text-xs">{col.data}</TableCell>
+                        <TableCell className="text-xs text-right">{col.quantidade}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <AlertTriangle className="h-4 w-4 text-warning" />
+              <p className="text-xs text-muted-foreground">
+                {gestorData.diasMedio > 3 ? 
+                  'Atenção: Tempo médio de aprovação acima do SLA. Recomendar acompanhamento.' : 
+                  'Tempo de aprovação dentro do esperado.'}
+              </p>
+            </div>
+          </div>
+        );
+
+      case 'decisao':
+        const decisaoData = detailModal.data;
+        const isAprovada = decisaoData.tipo === 'Aprovadas';
+        const colaboradoresDecisao = horasExtrasPorColaborador.filter(c => 
+          isAprovada ? c.status === 'Aprovada' : c.status === 'Reprovada'
+        );
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className={`${isAprovada ? 'bg-success/10' : 'bg-destructive/10'} rounded-lg p-3`}>
+                <p className="text-xs text-muted-foreground">Total {decisaoData.tipo}</p>
+                <p className={`text-2xl font-bold ${isAprovada ? 'text-success' : 'text-destructive'}`}>
+                  {decisaoData.value.toLocaleString('pt-BR')}h
+                </p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Percentual</p>
+                <p className="text-2xl font-bold">{decisaoData.percentual.toFixed(1)}%</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Últimas solicitações {decisaoData.tipo.toLowerCase()} ({colaboradoresDecisao.length})</p>
+              <div className="max-h-[200px] overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">Colaborador</TableHead>
+                      <TableHead className="text-xs">Data</TableHead>
+                      <TableHead className="text-xs">Gestor</TableHead>
+                      <TableHead className="text-xs text-right">Horas</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {colaboradoresDecisao.slice(0, 10).map((col) => (
+                      <TableRow key={col.id}>
+                        <TableCell className="text-xs font-medium">{col.colaborador}</TableCell>
+                        <TableCell className="text-xs">{col.data}</TableCell>
+                        <TableCell className="text-xs">{col.gestor}</TableCell>
+                        <TableCell className="text-xs text-right">{col.quantidade}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'ocorrenciaTipo':
+        const tipoOcorrencia = detailModal.data;
+        const colaboradoresTipo = ocorrenciasPorColaborador.filter(c => c.tipo === tipoOcorrencia.tipo);
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-warning/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Total de Ocorrências</p>
+                <p className="text-2xl font-bold text-warning">{tipoOcorrencia.quantidade}</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Colaboradores Impactados</p>
+                <p className="text-2xl font-bold">{colaboradoresTipo.length}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Ocorrências de {tipoOcorrencia.tipo}</p>
+              <div className="max-h-[200px] overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">Colaborador</TableHead>
+                      <TableHead className="text-xs">Data</TableHead>
+                      <TableHead className="text-xs">Justificada</TableHead>
+                      <TableHead className="text-xs">Gestor</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {colaboradoresTipo.map((col) => (
+                      <TableRow key={col.id}>
+                        <TableCell className="text-xs font-medium">{col.colaborador}</TableCell>
+                        <TableCell className="text-xs">{col.data}</TableCell>
+                        <TableCell>{getJustificadaBadge(col.justificada)}</TableCell>
+                        <TableCell className="text-xs">{col.gestor}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'ocorrenciaColaborador':
+        const colabOcorrencia = detailModal.data;
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-warning/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Total Ocorrências</p>
+                <p className="text-2xl font-bold text-warning">{colabOcorrencia.ocorrencias}</p>
+              </div>
+              <div className="bg-destructive/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Horas Impactadas</p>
+                <p className="text-2xl font-bold text-destructive">{colabOcorrencia.horasImpactadas}h</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Tipo Principal</p>
+                <p className="text-lg font-semibold">{colabOcorrencia.tipo}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <AlertTriangle className="h-4 w-4 text-warning" />
+              <p className="text-xs text-muted-foreground">
+                {colabOcorrencia.ocorrencias >= 10 ? 
+                  'Colaborador com alto número de ocorrências. Recomendar acompanhamento com gestor.' :
+                  colabOcorrencia.ocorrencias >= 5 ?
+                  'Colaborador requer atenção. Avaliar padrão de ocorrências.' :
+                  'Número de ocorrências dentro do esperado.'}
+              </p>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <Button variant="outline" size="sm" className="text-xs">
+                <FileText className="h-3 w-3 mr-1" /> Ver histórico completo
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 'creditoDebito':
+        const creditoDebitoData = detailModal.data;
+        const saldo = creditoDebitoData.creditos - creditoDebitoData.debitos;
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-success/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Créditos</p>
+                <p className="text-2xl font-bold text-success">{creditoDebitoData.creditos}h</p>
+              </div>
+              <div className="bg-destructive/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Débitos</p>
+                <p className="text-2xl font-bold text-destructive">{creditoDebitoData.debitos}h</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Saldo</p>
+                <p className={`text-2xl font-bold ${saldo >= 0 ? 'text-success' : 'text-destructive'}`}>
+                  {saldo >= 0 ? '+' : ''}{saldo}h
+                </p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Análise do Período: {creditoDebitoData.periodo}</p>
+              <p className="text-xs text-muted-foreground">
+                {saldo >= 100 ? 
+                  'Período com saldo positivo significativo. Recomenda-se planejar compensações para evitar acúmulo excessivo.' :
+                  saldo >= 0 ?
+                  'Saldo equilibrado no período. Fluxo de horas dentro do esperado.' :
+                  'Período com mais débitos que créditos. Avaliar carga de trabalho da equipe.'}
+              </p>
+            </div>
+          </div>
+        );
+
+      case 'saldoColaborador':
+        const saldoColab = detailModal.data;
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className={`${saldoColab.tipo === 'positivo' ? 'bg-success/10' : 'bg-destructive/10'} rounded-lg p-3`}>
+                <p className="text-xs text-muted-foreground">Saldo Atual</p>
+                <p className={`text-2xl font-bold ${saldoColab.tipo === 'positivo' ? 'text-success' : 'text-destructive'}`}>
+                  {saldoColab.saldo}h
+                </p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Acumulado</p>
+                <p className="text-2xl font-bold">{saldoColab.acumulado}h</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Compensado</p>
+                <p className="text-2xl font-bold">{saldoColab.compensado}h</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              {saldoColab.tipo === 'positivo' && saldoColab.saldo > 35 ? (
+                <>
+                  <AlertTriangle className="h-4 w-4 text-warning" />
+                  <p className="text-xs text-warning">Saldo próximo do limite. Recomenda-se programar compensação.</p>
+                </>
+              ) : saldoColab.tipo === 'negativo' ? (
+                <>
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  <p className="text-xs text-destructive">Colaborador com saldo negativo. Verificar necessidade de ajuste.</p>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="h-4 w-4 text-success" />
+                  <p className="text-xs text-success">Saldo dentro do limite permitido.</p>
+                </>
+              )}
+            </div>
+          </div>
+        );
+
+      case 'horasVencer':
+        const horasVencerData = detailModal.data;
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className={`${horasVencerData.diasRestantes < 100 ? 'bg-destructive/10' : horasVencerData.diasRestantes < 150 ? 'bg-warning/10' : 'bg-success/10'} rounded-lg p-3`}>
+                <p className="text-xs text-muted-foreground">Horas a Vencer</p>
+                <p className={`text-2xl font-bold ${horasVencerData.diasRestantes < 100 ? 'text-destructive' : horasVencerData.diasRestantes < 150 ? 'text-warning' : 'text-success'}`}>
+                  {horasVencerData.horasVencer}h
+                </p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Dias Restantes</p>
+                <p className="text-2xl font-bold">{horasVencerData.diasRestantes}</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Colaboradores</p>
+                <p className="text-2xl font-bold">{horasVencerData.colaboradores}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <AlertTriangle className={`h-4 w-4 ${horasVencerData.diasRestantes < 100 ? 'text-destructive' : 'text-warning'}`} />
+              <p className="text-xs text-muted-foreground">
+                {horasVencerData.diasRestantes < 100 ? 
+                  'Urgente: Horas próximas do vencimento. Iniciar plano de compensação imediato.' :
+                  horasVencerData.diasRestantes < 150 ?
+                  'Atenção: Período de vencimento se aproximando. Planejar compensações.' :
+                  'Prazo confortável para planejamento de compensações.'}
+              </p>
+            </div>
+            <Button variant="outline" size="sm" className="text-xs w-full">
+              <Users className="h-3 w-3 mr-1" /> Ver colaboradores impactados
+            </Button>
+          </div>
+        );
+
+      case 'violacaoTipo':
+        const violacaoTipoData = detailModal.data;
+        const colaboradoresViolacao = violacoesPorColaborador.filter(v => v.tipo === violacaoTipoData.tipo);
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-destructive/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Total de Violações</p>
+                <p className="text-2xl font-bold text-destructive">{violacaoTipoData.quantidade}</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Colaboradores</p>
+                <p className="text-2xl font-bold">{colaboradoresViolacao.length}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Violações de {violacaoTipoData.tipo}</p>
+              <div className="max-h-[200px] overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs">Colaborador</TableHead>
+                      <TableHead className="text-xs">Data</TableHead>
+                      <TableHead className="text-xs">Regra</TableHead>
+                      <TableHead className="text-xs text-right">Reincidências</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {colaboradoresViolacao.map((col) => (
+                      <TableRow key={col.id}>
+                        <TableCell className="text-xs font-medium">{col.colaborador}</TableCell>
+                        <TableCell className="text-xs">{col.data}</TableCell>
+                        <TableCell className="text-xs">{col.regra}</TableCell>
+                        <TableCell className="text-xs text-right text-warning">{col.reincidencias}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
+              <p className="text-xs text-destructive">
+                Violação de compliance. Ação corretiva necessária para evitar passivos trabalhistas.
+              </p>
+            </div>
+          </div>
+        );
+
+      case 'violacaoColaborador':
+        const violacaoColab = detailModal.data;
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-destructive/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Violações</p>
+                <p className="text-2xl font-bold text-destructive">{violacaoColab.violacoes}</p>
+              </div>
+              <div className="bg-warning/10 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Reincidências</p>
+                <p className="text-2xl font-bold text-warning">{violacaoColab.reincidencias}</p>
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Regras Violadas</p>
+                <p className="text-lg font-semibold">{violacaoColab.regras.length}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Regras Violadas</p>
+              <div className="flex flex-wrap gap-2">
+                {violacaoColab.regras.map((regra, idx) => (
+                  <Badge key={idx} variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">
+                    {regra}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
+              <p className="text-xs text-destructive">
+                {violacaoColab.reincidencias >= 4 ?
+                  'Colaborador reincidente. Necessária intervenção do RH e gestão.' :
+                  violacaoColab.reincidencias >= 2 ?
+                  'Padrão de reincidência identificado. Agendar feedback com colaborador.' :
+                  'Monitorar comportamento para evitar recorrência.'}
+              </p>
+            </div>
+          </div>
+        );
+
+      case 'rankingColaboradoresHE':
+        return (
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Top 10 colaboradores com maior volume de horas extras no período.
+            </p>
+            <div className="max-h-[350px] overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs">#</TableHead>
+                    <TableHead className="text-xs">Colaborador</TableHead>
+                    <TableHead className="text-xs">Área</TableHead>
+                    <TableHead className="text-xs">Gestor</TableHead>
+                    <TableHead className="text-xs text-right">Total HE</TableHead>
+                    <TableHead className="text-xs w-[80px]">Distrib. Semanal</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {detailModal.data.map((row, idx) => (
+                    <TableRow key={row.id} className="hover:bg-muted/50">
+                      <TableCell className="text-xs font-medium py-2">{idx + 1}</TableCell>
+                      <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
+                      <TableCell className="text-xs py-2">{row.area}</TableCell>
+                      <TableCell className="text-xs py-2">{row.gestor}</TableCell>
+                      <TableCell className="text-xs py-2 text-right font-semibold">{row.horasExtras}h</TableCell>
+                      <TableCell className="py-2">
+                        <MiniSparkline data={row.distribuicao} color={COLORS.chart1} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <Button variant="outline" size="sm" className="text-xs">
+                <Download className="h-3 w-3 mr-1" /> Exportar dados
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 'colaboradoresImpactados':
+        return (
+          <div className="space-y-3">
+            <p className="text-sm">{detailModal.data.colaboradoresImpactados} colaboradores com horas a vencer neste período.</p>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-xs text-muted-foreground">Horas Disponíveis</p>
+                <p className="font-medium">{detailModal.data.disponiveis}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Vencimento</p>
+                <p className="font-medium">{detailModal.data.vencimento}</p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" className="text-xs w-full">Ver lista completa de colaboradores</Button>
+          </div>
+        );
+
+      case 'exportar':
+        return (
+          <div className="space-y-3">
+            <p className="text-sm">{detailModal.data.length} registros para exportar.</p>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="text-xs">Exportar CSV</Button>
+              <Button variant="outline" size="sm" className="text-xs">Exportar Excel</Button>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  // Get modal title based on type
+  const getModalTitle = () => {
+    if (!detailModal) return '';
+    
+    switch (detailModal.type) {
+      case 'distribuicaoDia':
+        return `Detalhes de Horas Extras - ${detailModal.data.dia}`;
+      case 'colaboradorHE':
+        return `Detalhes do Colaborador - ${detailModal.data.colaborador}`;
+      case 'statusHE':
+        return `Solicitações ${detailModal.data.status}s - ${detailModal.data.periodo}`;
+      case 'gestorPendentes':
+        return `Pendências - ${detailModal.data.gestor}`;
+      case 'decisao':
+        return `${detailModal.data.tipo} no Período`;
+      case 'ocorrenciaTipo':
+        return `Ocorrências - ${detailModal.data.tipo}`;
+      case 'ocorrenciaColaborador':
+        return `Detalhes - ${detailModal.data.colaborador}`;
+      case 'creditoDebito':
+        return `Créditos vs Débitos - ${detailModal.data.periodo}`;
+      case 'saldoColaborador':
+        return `Saldo de Banco de Horas - ${detailModal.data.colaborador}`;
+      case 'horasVencer':
+        return `Horas a Vencer - ${detailModal.data.periodo}`;
+      case 'violacaoTipo':
+        return `Violações - ${detailModal.data.tipo}`;
+      case 'violacaoColaborador':
+        return `Violações - ${detailModal.data.colaborador}`;
+      case 'rankingColaboradoresHE':
+        return 'Ranking de Colaboradores com Mais HE';
+      case 'colaboradoresImpactados':
+        return `Colaboradores Impactados - ${detailModal.data.periodo}`;
+      case 'exportar':
+        return 'Exportar Dados';
+      default:
+        return 'Detalhes';
+    }
   };
 
   return (
@@ -306,7 +884,7 @@ export default function TimeV2Operational() {
               Time V2 - Acompanhamento Operacional
             </h1>
             <p className="text-muted-foreground text-sm">
-              Apuração de ponto, banco de horas e compliance • Clique nos widgets para filtrar
+              Apuração de ponto, banco de horas e compliance • Clique nos gráficos para ver detalhes
             </p>
           </div>
 
@@ -474,17 +1052,14 @@ export default function TimeV2Operational() {
                           const acumuladoData = payload.find(p => p.dataKey === 'acumulado');
                           const horas = horasData?.value as number || 0;
                           const acumulado = acumuladoData?.value as number || 0;
-                          const diferenca = horas - totalHorasExtras.mediaPerido;
                           return (
                             <div className="bg-popover border border-border rounded-lg p-3 shadow-lg">
                               <p className="font-semibold text-sm mb-2">{label}</p>
                               <div className="space-y-1">
                                 <p className="text-xs text-primary font-medium">{horas}h no dia</p>
                                 <p className="text-xs text-muted-foreground">Acumulado: {acumulado.toLocaleString('pt-BR')}h</p>
-                                <p className={`text-[10px] ${diferenca >= 0 ? 'text-warning' : 'text-success'}`}>
-                                  {diferenca >= 0 ? '+' : ''}{diferenca.toFixed(0)}h vs média ({totalHorasExtras.mediaPerido}h)
-                                </p>
                               </div>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
                             </div>
                           );
                         }
@@ -500,22 +1075,11 @@ export default function TimeV2Operational() {
                       radius={[4, 4, 0, 0]}
                       cursor="pointer"
                       onClick={(data) => {
-                        if (data && data.dia) {
-                          setFilters(prev => ({ 
-                            ...prev, 
-                            periodo: prev.periodo === data.dia ? undefined : data.dia 
-                          }));
+                        if (data) {
+                          setDetailModal({ type: 'distribuicaoDia', data: { dia: data.dia, horas: data.horas, acumulado: data.acumulado } });
                         }
                       }}
-                    >
-                      {totalHorasExtras.distribuicaoPorDia.map((entry) => (
-                        <Cell 
-                          key={entry.dia} 
-                          fill={COLORS.chart1}
-                          opacity={filters.periodo && filters.periodo !== entry.dia ? 0.3 : 1}
-                        />
-                      ))}
-                    </Bar>
+                    />
                     <Line 
                       yAxisId="right" 
                       type="monotone" 
@@ -563,7 +1127,7 @@ export default function TimeV2Operational() {
                               <p className="font-semibold text-xs">{data.colaborador}</p>
                               <p className="text-xs text-primary">{data.horasExtras}h no período</p>
                               <p className="text-[10px] text-muted-foreground">Área: {data.area}</p>
-                              <p className="text-[10px] text-muted-foreground">Gestor: {data.gestor}</p>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
                             </div>
                           );
                         }
@@ -576,22 +1140,11 @@ export default function TimeV2Operational() {
                       radius={[0, 4, 4, 0]} 
                       cursor="pointer"
                       onClick={(data) => {
-                        if (data && data.id) {
-                          setFilters(prev => ({ 
-                            ...prev, 
-                            colaboradorId: prev.colaboradorId === data.id ? undefined : data.id 
-                          }));
+                        if (data) {
+                          setDetailModal({ type: 'colaboradorHE', data });
                         }
                       }}
-                    >
-                      {rankingColaboradoresHE.slice(0, 10).map((entry) => (
-                        <Cell 
-                          key={entry.id} 
-                          fill={COLORS.chart1}
-                          opacity={filters.colaboradorId && filters.colaboradorId !== entry.id ? 0.3 : 1}
-                        />
-                      ))}
-                    </Bar>
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -615,7 +1168,24 @@ export default function TimeV2Operational() {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="periodo" stroke="hsl(var(--muted-foreground))" fontSize={10} />
                   <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                  <RechartsTooltip contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "6px", fontSize: "11px" }} />
+                  <RechartsTooltip 
+                    content={({ active, payload, label }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
+                            <p className="font-semibold text-xs mb-1">{label}</p>
+                            {payload.map((entry, idx) => (
+                              <p key={idx} className="text-xs" style={{ color: entry.color }}>
+                                {entry.name}: {entry.value}
+                              </p>
+                            ))}
+                            <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                   <Legend wrapperStyle={{ fontSize: '10px' }} />
                   <Bar 
                     dataKey="pendente" 
@@ -623,24 +1193,24 @@ export default function TimeV2Operational() {
                     fill={COLORS.warning} 
                     name="Pendentes" 
                     cursor="pointer"
-                    onClick={() => setFilters(prev => ({ ...prev, status: prev.status === 'Pendente' ? undefined : 'Pendente' }))}
-                  >
-                    {horasExtrasPorStatus.map((_, index) => (
-                      <Cell key={index} opacity={filters.status && filters.status !== 'Pendente' ? 0.3 : 1} />
-                    ))}
-                  </Bar>
+                    onClick={(data) => {
+                      if (data) {
+                        setDetailModal({ type: 'statusHE', data: { status: 'Pendente', periodo: data.periodo, quantidade: data.pendente } });
+                      }
+                    }}
+                  />
                   <Bar 
                     dataKey="aprovada" 
                     stackId="a" 
                     fill={COLORS.success} 
                     name="Aprovadas"
                     cursor="pointer"
-                    onClick={() => setFilters(prev => ({ ...prev, status: prev.status === 'Aprovada' ? undefined : 'Aprovada' }))}
-                  >
-                    {horasExtrasPorStatus.map((_, index) => (
-                      <Cell key={index} opacity={filters.status && filters.status !== 'Aprovada' ? 0.3 : 1} />
-                    ))}
-                  </Bar>
+                    onClick={(data) => {
+                      if (data) {
+                        setDetailModal({ type: 'statusHE', data: { status: 'Aprovada', periodo: data.periodo, quantidade: data.aprovada } });
+                      }
+                    }}
+                  />
                   <Bar 
                     dataKey="reprovada" 
                     stackId="a" 
@@ -648,12 +1218,12 @@ export default function TimeV2Operational() {
                     name="Reprovadas" 
                     radius={[4, 4, 0, 0]}
                     cursor="pointer"
-                    onClick={() => setFilters(prev => ({ ...prev, status: prev.status === 'Reprovada' ? undefined : 'Reprovada' }))}
-                  >
-                    {horasExtrasPorStatus.map((_, index) => (
-                      <Cell key={index} opacity={filters.status && filters.status !== 'Reprovada' ? 0.3 : 1} />
-                    ))}
-                  </Bar>
+                    onClick={(data) => {
+                      if (data) {
+                        setDetailModal({ type: 'statusHE', data: { status: 'Reprovada', periodo: data.periodo, quantidade: data.reprovada } });
+                      }
+                    }}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -683,8 +1253,7 @@ export default function TimeV2Operational() {
                               <p className="font-semibold text-xs">{data.gestor}</p>
                               <p className="text-xs text-warning">{data.horasPendentes}h pendentes</p>
                               <p className="text-xs text-muted-foreground">{data.qtdSolicitacoes} solicitações</p>
-                              <p className="text-[10px] text-muted-foreground">Área: {data.area}</p>
-                              <p className="text-[10px] text-muted-foreground">Média espera: {data.diasMedio} dias</p>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
                             </div>
                           );
                         }
@@ -697,36 +1266,13 @@ export default function TimeV2Operational() {
                       radius={[0, 4, 4, 0]} 
                       cursor="pointer"
                       onClick={(data) => {
-                        if (data && data.gestor) {
-                          setFilters(prev => ({ 
-                            ...prev, 
-                            gestorId: prev.gestorId === data.gestor ? undefined : data.gestor 
-                          }));
+                        if (data) {
+                          setDetailModal({ type: 'gestorPendentes', data });
                         }
                       }}
-                    >
-                      {rankingGestoresPendentes.map((entry) => (
-                        <Cell 
-                          key={entry.gestor} 
-                          fill={COLORS.warning}
-                          opacity={filters.gestorId && filters.gestorId !== entry.gestor ? 0.3 : 1}
-                        />
-                      ))}
-                    </Bar>
+                    />
                   </BarChart>
                 </ResponsiveContainer>
-                {filters.gestorId && (
-                  <div className="mt-2 flex justify-end">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-6 text-xs gap-1"
-                      onClick={() => setDetailModal({ type: 'gestorPendentes', data: rankingGestoresPendentes.find(g => g.gestor === filters.gestorId) })}
-                    >
-                      <Eye className="h-3 w-3" /> Ver solicitações pendentes
-                    </Button>
-                  </div>
-                )}
               </CardContent>
             </Card>
 
@@ -749,27 +1295,28 @@ export default function TimeV2Operational() {
                         dataKey="value"
                         cursor="pointer"
                         onClick={(data) => {
-                          if (data && data.name) {
-                            const status = data.name === 'Aprovadas' ? 'Aprovada' : 'Reprovada';
-                            setFilters(prev => ({ 
-                              ...prev, 
-                              status: prev.status === status ? undefined : status 
-                            }));
+                          if (data) {
+                            setDetailModal({ type: 'decisao', data: { tipo: data.name, value: data.value, percentual: data.percentual } });
                           }
                         }}
                       >
-                        <Cell 
-                          fill={COLORS.success} 
-                          opacity={filters.status && filters.status !== 'Aprovada' ? 0.3 : 1}
-                        />
-                        <Cell 
-                          fill={COLORS.destructive} 
-                          opacity={filters.status && filters.status !== 'Reprovada' ? 0.3 : 1}
-                        />
+                        <Cell fill={COLORS.success} />
+                        <Cell fill={COLORS.destructive} />
                       </Pie>
                       <RechartsTooltip 
-                        contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "6px", fontSize: "11px" }}
-                        formatter={(value: number, name: string) => [`${value.toLocaleString('pt-BR')}h`, name]}
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0].payload;
+                            return (
+                              <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
+                                <p className="font-semibold text-xs">{data.name}</p>
+                                <p className="text-xs">{data.value.toLocaleString('pt-BR')}h ({data.percentual}%)</p>
+                                <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
@@ -794,7 +1341,12 @@ export default function TimeV2Operational() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold">Lista de Horas Extras</CardTitle>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => setDetailModal({ type: 'exportar', data: filteredHorasExtras })}>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-7 text-xs gap-1"
+                    onClick={() => setDetailModal({ type: 'exportar', data: filteredHorasExtras })}
+                  >
                     <Download className="h-3 w-3" /> Exportar
                   </Button>
                 </div>
@@ -807,17 +1359,17 @@ export default function TimeV2Operational() {
                     <TableRow>
                       <TableHead className="text-xs">Colaborador</TableHead>
                       <TableHead className="text-xs">Data</TableHead>
-                      <TableHead className="text-xs">Qtd</TableHead>
+                      <TableHead className="text-xs">Quantidade</TableHead>
                       <TableHead className="text-xs">Status</TableHead>
                       <TableHead className="text-xs">Gestor</TableHead>
-                      <TableHead className="text-xs w-[60px]">Ações</TableHead>
+                      <TableHead className="text-xs w-[100px]">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredHorasExtras.slice(0, 8).map((row) => (
+                    {filteredHorasExtras.map((row) => (
                       <TableRow 
                         key={row.id} 
-                        className="hover:bg-muted/50 transition-colors"
+                        className="hover:bg-muted/50"
                       >
                         <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
                         <TableCell className="text-xs py-2">{row.data}</TableCell>
@@ -825,14 +1377,19 @@ export default function TimeV2Operational() {
                         <TableCell className="py-2">{getStatusBadge(row.status)}</TableCell>
                         <TableCell className="text-xs py-2">{row.gestor}</TableCell>
                         <TableCell className="py-2">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setDetailModal({ type: 'colaborador', data: row })}>
-                                <ExternalLink className="h-3 w-3" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent><p className="text-xs">Ver detalhes</p></TooltipContent>
-                          </Tooltip>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 text-[10px] px-2 gap-1"
+                            onClick={() => {
+                              const colabData = rankingColaboradoresHE.find(c => c.colaborador === row.colaborador);
+                              if (colabData) {
+                                setDetailModal({ type: 'colaboradorHE', data: colabData });
+                              }
+                            }}
+                          >
+                            <Eye className="h-3 w-3" /> Ver detalhes
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -843,43 +1400,53 @@ export default function TimeV2Operational() {
           </Card>
         </section>
 
-        {/* SEÇÃO 3 – Faltas, Atrasos e Ausências */}
+        {/* SEÇÃO 3 – Ocorrências */}
         <section className="space-y-3">
           <div className="flex items-center gap-2">
-            <div className="h-1 w-6 bg-chart-3 rounded-full" />
+            <div className="h-1 w-6 bg-warning rounded-full" />
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Faltas, Atrasos e Ausências
+              Ocorrências
             </h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Bar Chart por Tipo */}
+            {/* Bar Chart de Ocorrências por Tipo */}
             <Card className="border-0 shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-semibold">Ocorrências por Tipo</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={ocorrenciasPorTipo} layout="vertical">
+                  <BarChart data={ocorrenciasPorTipo}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                    <YAxis dataKey="tipo" type="category" stroke="hsl(var(--muted-foreground))" fontSize={9} width={130} />
-                    <RechartsTooltip contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "6px", fontSize: "11px" }} />
+                    <XAxis dataKey="tipo" stroke="hsl(var(--muted-foreground))" fontSize={9} />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} />
+                    <RechartsTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          return (
+                            <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
+                              <p className="font-semibold text-xs">{data.tipo}</p>
+                              <p className="text-xs">{data.quantidade} ocorrências</p>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                     <Bar 
                       dataKey="quantidade" 
-                      fill={COLORS.chart3} 
-                      radius={[0, 4, 4, 0]} 
+                      fill={COLORS.warning} 
+                      radius={[4, 4, 0, 0]}
                       cursor="pointer"
-                      onClick={(data) => setFilters(prev => ({ ...prev, tipoOcorrencia: prev.tipoOcorrencia === data.tipo ? undefined : data.tipo }))}
-                    >
-                      {ocorrenciasPorTipo.map((entry) => (
-                        <Cell 
-                          key={entry.tipo} 
-                          fill={filters.tipoOcorrencia === entry.tipo ? COLORS.primary : COLORS.chart3}
-                          opacity={filters.tipoOcorrencia && filters.tipoOcorrencia !== entry.tipo ? 0.4 : 1}
-                        />
-                      ))}
-                    </Bar>
+                      onClick={(data) => {
+                        if (data) {
+                          setDetailModal({ type: 'ocorrenciaTipo', data });
+                        }
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -900,23 +1467,37 @@ export default function TimeV2Operational() {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={filteredRankingOcorrencias.slice(0, 10)} layout="vertical">
+                  <BarChart data={rankingOcorrencias.slice(0, 10)} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} />
                     <YAxis dataKey="colaborador" type="category" stroke="hsl(var(--muted-foreground))" fontSize={9} width={90} />
-                    <RechartsTooltip contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "6px", fontSize: "11px" }} />
+                    <RechartsTooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          return (
+                            <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
+                              <p className="font-semibold text-xs">{data.colaborador}</p>
+                              <p className="text-xs">{data.ocorrencias} ocorrências</p>
+                              <p className="text-xs text-muted-foreground">{data.horasImpactadas}h impactadas</p>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                     <Bar 
                       dataKey={ocorrenciasMetrica === 'quantidade' ? 'ocorrencias' : 'horasImpactadas'} 
                       fill={COLORS.warning} 
                       radius={[0, 4, 4, 0]}
-                    >
-                      {filteredRankingOcorrencias.slice(0, 10).map((entry) => (
-                        <Cell 
-                          key={entry.id} 
-                          fill={COLORS.warning}
-                        />
-                      ))}
-                    </Bar>
+                      cursor="pointer"
+                      onClick={(data) => {
+                        if (data) {
+                          setDetailModal({ type: 'ocorrenciaColaborador', data });
+                        }
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -936,16 +1517,13 @@ export default function TimeV2Operational() {
                       <TableHead className="text-xs">Colaborador</TableHead>
                       <TableHead className="text-xs">Tipo</TableHead>
                       <TableHead className="text-xs">Data</TableHead>
-                      <TableHead className="text-xs">Justif.</TableHead>
+                      <TableHead className="text-xs">Justificada</TableHead>
                       <TableHead className="text-xs">Gestor</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredOcorrencias.slice(0, 6).map((row) => (
-                      <TableRow 
-                        key={row.id} 
-                        className="hover:bg-muted/50"
-                      >
+                    {filteredOcorrencias.map((row) => (
+                      <TableRow key={row.id} className="hover:bg-muted/50">
                         <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
                         <TableCell className="text-xs py-2">{row.tipo}</TableCell>
                         <TableCell className="text-xs py-2">{row.data}</TableCell>
@@ -981,10 +1559,47 @@ export default function TimeV2Operational() {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis dataKey="periodo" stroke="hsl(var(--muted-foreground))" fontSize={10} />
                     <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                    <RechartsTooltip contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "6px", fontSize: "11px" }} />
+                    <RechartsTooltip 
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          const data = creditosDebitosData.find(d => d.periodo === label);
+                          return (
+                            <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
+                              <p className="font-semibold text-xs mb-1">{label}</p>
+                              <p className="text-xs text-success">Créditos: {data?.creditos}h</p>
+                              <p className="text-xs text-destructive">Débitos: {data?.debitos}h</p>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                     <Legend wrapperStyle={{ fontSize: '10px' }} />
-                    <Bar dataKey="creditos" fill={COLORS.success} name="Créditos" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="debitos" fill={COLORS.destructive} name="Débitos" radius={[4, 4, 0, 0]} />
+                    <Bar 
+                      dataKey="creditos" 
+                      fill={COLORS.success} 
+                      name="Créditos" 
+                      radius={[4, 4, 0, 0]}
+                      cursor="pointer"
+                      onClick={(data) => {
+                        if (data) {
+                          setDetailModal({ type: 'creditoDebito', data });
+                        }
+                      }}
+                    />
+                    <Bar 
+                      dataKey="debitos" 
+                      fill={COLORS.destructive} 
+                      name="Débitos" 
+                      radius={[4, 4, 0, 0]}
+                      cursor="pointer"
+                      onClick={(data) => {
+                        if (data) {
+                          setDetailModal({ type: 'creditoDebito', data });
+                        }
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -995,7 +1610,7 @@ export default function TimeV2Operational() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold">Ranking de Saldo</CardTitle>
-                  <Tabs value={saldoTipo} onValueChange={(v) => { setSaldoTipo(v as 'positivo' | 'negativo'); setFilters(prev => ({ ...prev, saldoTipo: v as 'positivo' | 'negativo' })); }} className="h-7">
+                  <Tabs value={saldoTipo} onValueChange={(v) => setSaldoTipo(v as 'positivo' | 'negativo')} className="h-7">
                     <TabsList className="h-7">
                       <TabsTrigger value="positivo" className="text-[10px] h-6 px-2">+ Positivo</TabsTrigger>
                       <TabsTrigger value="negativo" className="text-[10px] h-6 px-2">- Negativo</TabsTrigger>
@@ -1018,6 +1633,7 @@ export default function TimeV2Operational() {
                               <p className="font-semibold text-xs">{data.colaborador}</p>
                               <p className="text-xs">Saldo: {data.saldo}h</p>
                               <p className="text-[10px] text-muted-foreground">Acumulado: {data.acumulado}h | Compensado: {data.compensado}h</p>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
                             </div>
                           );
                         }
@@ -1028,14 +1644,13 @@ export default function TimeV2Operational() {
                       dataKey="saldo" 
                       fill={saldoTipo === 'positivo' ? COLORS.success : COLORS.destructive} 
                       radius={[0, 4, 4, 0]}
-                    >
-                      {(saldoTipo === 'positivo' ? rankingSaldoPositivo : rankingSaldoNegativo).slice(0, 8).map((entry) => (
-                        <Cell 
-                          key={entry.id} 
-                          fill={saldoTipo === 'positivo' ? COLORS.success : COLORS.destructive}
-                        />
-                      ))}
-                    </Bar>
+                      cursor="pointer"
+                      onClick={(data) => {
+                        if (data) {
+                          setDetailModal({ type: 'saldoColaborador', data: { ...data, tipo: saldoTipo } });
+                        }
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -1120,10 +1735,7 @@ export default function TimeV2Operational() {
                               <p className="font-semibold text-xs">{data.periodo}</p>
                               <p className="text-xs">{data.horasVencer}h a vencer</p>
                               <p className="text-[10px] text-muted-foreground">{data.diasRestantes} dias restantes</p>
-                              <div className="flex items-center gap-1 mt-1">
-                                <Users className="h-3 w-3" />
-                                <span className="text-[10px]">{data.colaboradores} colaboradores</span>
-                              </div>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
                             </div>
                           );
                         }
@@ -1134,13 +1746,16 @@ export default function TimeV2Operational() {
                       dataKey="horasVencer" 
                       radius={[0, 4, 4, 0]}
                       cursor="pointer"
-                      onClick={(data) => setFilters(prev => ({ ...prev, periodo: prev.periodo === data.id ? undefined : data.id }))}
+                      onClick={(data) => {
+                        if (data) {
+                          setDetailModal({ type: 'horasVencer', data });
+                        }
+                      }}
                     >
                       {rankingHorasVencer.map((entry) => (
                         <Cell 
                           key={entry.id} 
                           fill={entry.diasRestantes < 100 ? COLORS.destructive : entry.diasRestantes < 150 ? COLORS.warning : COLORS.success}
-                          opacity={filters.periodo && filters.periodo !== entry.id ? 0.4 : 1}
                         />
                       ))}
                     </Bar>
@@ -1169,11 +1784,10 @@ export default function TimeV2Operational() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredPeriodos.map((row) => (
+                    {periodosBancoHoras.map((row) => (
                       <TableRow 
                         key={row.id} 
-                        className={`cursor-pointer hover:bg-muted/50 ${filters.periodo === row.id ? 'bg-primary/20' : ''}`}
-                        onClick={() => setFilters(prev => ({ ...prev, periodo: prev.periodo === row.id ? undefined : row.id }))}
+                        className="hover:bg-muted/50"
                       >
                         <TableCell className="text-xs font-medium py-2">{row.periodo}</TableCell>
                         <TableCell className="text-xs text-right py-2">{row.disponiveis}</TableCell>
@@ -1181,7 +1795,12 @@ export default function TimeV2Operational() {
                         <TableCell className="text-xs text-right py-2 text-warning">{row.pendentes}</TableCell>
                         <TableCell className="text-xs py-2">{row.vencimento}</TableCell>
                         <TableCell className="py-2">
-                          <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2" onClick={(e) => { e.stopPropagation(); setDetailModal({ type: 'colaboradoresImpactados', data: row }); }}>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 text-[10px] px-2" 
+                            onClick={() => setDetailModal({ type: 'colaboradoresImpactados', data: row })}
+                          >
                             <Users className="h-3 w-3 mr-1" /> {row.colaboradoresImpactados}
                           </Button>
                         </TableCell>
@@ -1215,22 +1834,32 @@ export default function TimeV2Operational() {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis dataKey="tipo" stroke="hsl(var(--muted-foreground))" fontSize={8} angle={-15} textAnchor="end" height={50} />
                     <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                    <RechartsTooltip contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "6px", fontSize: "11px" }} />
+                    <RechartsTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          return (
+                            <div className="bg-popover border border-border rounded-md p-2 shadow-lg">
+                              <p className="font-semibold text-xs">{data.tipo}</p>
+                              <p className="text-xs text-destructive">{data.quantidade} violações</p>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                     <Bar 
                       dataKey="quantidade" 
                       fill={COLORS.destructive} 
                       radius={[4, 4, 0, 0]}
                       cursor="pointer"
-                      onClick={(data) => setFilters(prev => ({ ...prev, tipoViolacao: prev.tipoViolacao === data.tipo ? undefined : data.tipo }))}
-                    >
-                      {violacoesPorTipoOperacional.map((entry) => (
-                        <Cell 
-                          key={entry.tipo} 
-                          fill={filters.tipoViolacao === entry.tipo ? COLORS.primary : COLORS.destructive}
-                          opacity={filters.tipoViolacao && filters.tipoViolacao !== entry.tipo ? 0.4 : 1}
-                        />
-                      ))}
-                    </Bar>
+                      onClick={(data) => {
+                        if (data) {
+                          setDetailModal({ type: 'violacaoTipo', data });
+                        }
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -1243,7 +1872,7 @@ export default function TimeV2Operational() {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={filteredRankingViolacoes.slice(0, 10)} layout="vertical">
+                  <BarChart data={rankingViolacoes.slice(0, 10)} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} />
                     <YAxis dataKey="colaborador" type="category" stroke="hsl(var(--muted-foreground))" fontSize={9} width={90} />
@@ -1256,7 +1885,7 @@ export default function TimeV2Operational() {
                               <p className="font-semibold text-xs">{data.colaborador}</p>
                               <p className="text-xs">{data.violacoes} violações</p>
                               <p className="text-[10px] text-warning">{data.reincidencias} reincidências</p>
-                              <p className="text-[10px] text-muted-foreground">Regras: {data.regras.join(', ')}</p>
+                              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t">Clique para ver detalhes</p>
                             </div>
                           );
                         }
@@ -1267,14 +1896,13 @@ export default function TimeV2Operational() {
                       dataKey="violacoes" 
                       fill={COLORS.destructive} 
                       radius={[0, 4, 4, 0]}
-                    >
-                      {filteredRankingViolacoes.slice(0, 10).map((entry) => (
-                        <Cell 
-                          key={entry.id} 
-                          fill={COLORS.destructive}
-                        />
-                      ))}
-                    </Bar>
+                      cursor="pointer"
+                      onClick={(data) => {
+                        if (data) {
+                          setDetailModal({ type: 'violacaoColaborador', data });
+                        }
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -1323,162 +1951,12 @@ export default function TimeV2Operational() {
       <Dialog open={!!detailModal} onOpenChange={() => setDetailModal(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-lg">
-              {detailModal?.type === 'colaborador' && `Detalhes - ${detailModal.data.colaborador}`}
-              {detailModal?.type === 'colaboradoresImpactados' && `Colaboradores Impactados - ${detailModal.data.periodo}`}
-              {detailModal?.type === 'exportar' && 'Exportar Dados'}
-              {detailModal?.type === 'totalHE' && 'Total de Horas Extras - Distribuição'}
-              {detailModal?.type === 'rankingColaboradoresHE' && 'Ranking de Colaboradores com Mais HE'}
+            <DialogTitle className="text-lg flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-primary" />
+              {getModalTitle()}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            {detailModal?.type === 'totalHE' && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-xs text-muted-foreground">Total no Período</p>
-                    <p className="text-2xl font-bold">{detailModal.data.horasAtuais.toLocaleString('pt-BR')}h</p>
-                  </div>
-                  <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-xs text-muted-foreground">Período Anterior</p>
-                    <p className="text-2xl font-bold">{detailModal.data.horasPeriodoAnterior.toLocaleString('pt-BR')}h</p>
-                  </div>
-                  <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-xs text-muted-foreground">Variação</p>
-                    <p className={`text-2xl font-bold ${detailModal.data.variacao >= 0 ? 'text-warning' : 'text-success'}`}>
-                      {detailModal.data.variacao >= 0 ? '+' : ''}{detailModal.data.variacao.toFixed(1)}%
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-3">Distribuição por Dia da Semana</p>
-                  <div className="h-48">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={detailModal.data.distribuicaoPorDia}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                        <XAxis dataKey="dia" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} unit="h" />
-                        <RechartsTooltip 
-                          contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "6px", fontSize: "12px" }}
-                          formatter={(value: number) => [`${value}h`, 'Horas']}
-                        />
-                        <Bar dataKey="horas" fill={COLORS.chart1} radius={[4, 4, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-                <div className="flex gap-2 pt-2">
-                  <Button variant="outline" size="sm" className="text-xs">
-                    <Download className="h-3 w-3 mr-1" /> Exportar dados
-                  </Button>
-                </div>
-              </div>
-            )}
-            {detailModal?.type === 'rankingColaboradoresHE' && (
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  Top 10 colaboradores com maior volume de horas extras no período.
-                </p>
-                <div className="max-h-[350px] overflow-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="text-xs">#</TableHead>
-                        <TableHead className="text-xs">Colaborador</TableHead>
-                        <TableHead className="text-xs">Área</TableHead>
-                        <TableHead className="text-xs">Gestor</TableHead>
-                        <TableHead className="text-xs text-right">Total HE</TableHead>
-                        <TableHead className="text-xs w-[80px]">Distrib. Semanal</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {detailModal.data.map((row: any, idx: number) => (
-                        <TableRow key={row.id} className="hover:bg-muted/50">
-                          <TableCell className="text-xs font-medium py-2">{idx + 1}</TableCell>
-                          <TableCell className="text-xs font-medium py-2">{row.colaborador}</TableCell>
-                          <TableCell className="text-xs py-2">{row.area}</TableCell>
-                          <TableCell className="text-xs py-2">{row.gestor}</TableCell>
-                          <TableCell className="text-xs py-2 text-right font-semibold">{row.horasExtras}h</TableCell>
-                          <TableCell className="py-2">
-                            <MiniSparkline data={row.distribuicao} color={COLORS.chart1} />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-                <div className="flex gap-2 pt-2">
-                  <Button variant="outline" size="sm" className="text-xs">
-                    <Download className="h-3 w-3 mr-1" /> Exportar dados
-                  </Button>
-                </div>
-              </div>
-            )}
-            {detailModal?.type === 'colaborador' && (
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Gestor</p>
-                    <p className="text-sm font-medium">{detailModal.data.gestor}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Área</p>
-                    <p className="text-sm font-medium">{detailModal.data.area}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Data</p>
-                    <p className="text-sm font-medium">{detailModal.data.data}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Status</p>
-                    {getStatusBadge(detailModal.data.status)}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Histórico de Horas Extras (últimas 5 semanas)</p>
-                  <div className="h-20">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={detailModal.data.historico.map((v: number, i: number) => ({ semana: `S${i+1}`, valor: v }))}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                        <XAxis dataKey="semana" fontSize={10} />
-                        <YAxis fontSize={10} />
-                        <Line type="monotone" dataKey="valor" stroke={COLORS.chart1} strokeWidth={2} dot />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-                <div className="flex gap-2 pt-2">
-                  <Button variant="outline" size="sm" className="text-xs">Ver histórico mensal</Button>
-                  <Button variant="outline" size="sm" className="text-xs">Exportar dados</Button>
-                </div>
-              </div>
-            )}
-            {detailModal?.type === 'colaboradoresImpactados' && (
-              <div className="space-y-3">
-                <p className="text-sm">{detailModal.data.colaboradoresImpactados} colaboradores com horas a vencer neste período.</p>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Horas Disponíveis</p>
-                    <p className="font-medium">{detailModal.data.disponiveis}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Vencimento</p>
-                    <p className="font-medium">{detailModal.data.vencimento}</p>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" className="text-xs w-full">Ver lista completa de colaboradores</Button>
-              </div>
-            )}
-            {detailModal?.type === 'exportar' && (
-              <div className="space-y-3">
-                <p className="text-sm">{detailModal.data.length} registros para exportar.</p>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="text-xs">Exportar CSV</Button>
-                  <Button variant="outline" size="sm" className="text-xs">Exportar Excel</Button>
-                </div>
-              </div>
-            )}
-          </div>
+          {renderModalContent()}
         </DialogContent>
       </Dialog>
     </div>
