@@ -113,12 +113,12 @@ export default function TimeV2() {
           </p>
         </div>
 
-        {/* HERO SECTION - Snapshot Executivo */}
+        {/* HERO SECTION - Visão Executiva */}
         <section className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="h-1 w-8 bg-primary rounded-full" />
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Snapshot Executivo
+              Visão Executiva
             </h2>
           </div>
 

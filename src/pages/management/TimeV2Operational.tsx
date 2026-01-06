@@ -881,7 +881,7 @@ export default function TimeV2Operational() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold text-foreground tracking-tight">
-              Time V2 - Acompanhamento Operacional
+              Visão Operacional
             </h1>
             <p className="text-muted-foreground text-sm">
               Apuração de ponto, banco de horas e compliance • Clique nos gráficos para ver detalhes
@@ -932,12 +932,12 @@ export default function TimeV2Operational() {
         {/* Active Filters Display */}
         {renderActiveFilters()}
 
-        {/* HERO SECTION - Status Atual */}
+        {/* HERO SECTION - Visão Geral */}
         <section className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="h-1 w-6 bg-primary rounded-full" />
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Status Atual
+              Visão Geral
             </h2>
           </div>
 
@@ -947,29 +947,21 @@ export default function TimeV2Operational() {
               title="Total de Horas Extras"
               value={`${heroKPIsOperational.totalHorasExtras.toLocaleString('pt-BR')}h`}
               icon={Clock}
-              onClick={() => handleKPIClick('totalHorasExtras')}
-              className={filters.kpiType === 'totalHorasExtras' ? 'ring-2 ring-primary' : ''}
             />
             <KPICard
               title="Saldo Banco de Horas"
               value={`${heroKPIsOperational.totalSaldoBanco.toLocaleString('pt-BR')}h`}
               icon={Scale}
-              onClick={() => handleKPIClick('totalSaldoBanco')}
-              className={filters.kpiType === 'totalSaldoBanco' ? 'ring-2 ring-primary' : ''}
             />
             <KPICard
               title="HE Pendentes"
               value={heroKPIsOperational.horasExtrasPendentes.toLocaleString('pt-BR')}
               icon={Clock}
-              onClick={() => handleKPIClick('horasExtrasPendentes')}
-              className={filters.kpiType === 'horasExtrasPendentes' ? 'ring-2 ring-primary' : ''}
             />
             <KPICard
               title="HE Aprovadas"
               value={heroKPIsOperational.horasExtrasAprovadas.toLocaleString('pt-BR')}
               icon={CheckCircle2}
-              onClick={() => handleKPIClick('horasExtrasAprovadas')}
-              className={filters.kpiType === 'horasExtrasAprovadas' ? 'ring-2 ring-primary' : ''}
             />
           </div>
 
@@ -979,29 +971,21 @@ export default function TimeV2Operational() {
               title="HE Reprovadas"
               value={heroKPIsOperational.horasExtrasReprovadas.toLocaleString('pt-BR')}
               icon={XCircle}
-              onClick={() => handleKPIClick('horasExtrasReprovadas')}
-              className={filters.kpiType === 'horasExtrasReprovadas' ? 'ring-2 ring-primary' : ''}
             />
             <KPICard
               title="Faltas"
               value={heroKPIsOperational.faltasRegistradas.toLocaleString('pt-BR')}
               icon={UserX}
-              onClick={() => handleKPIClick('faltasRegistradas')}
-              className={filters.kpiType === 'faltasRegistradas' ? 'ring-2 ring-primary' : ''}
             />
             <KPICard
               title="Atrasos"
               value={heroKPIsOperational.atrasosRegistrados.toLocaleString('pt-BR')}
               icon={Timer}
-              onClick={() => handleKPIClick('atrasosRegistrados')}
-              className={filters.kpiType === 'atrasosRegistrados' ? 'ring-2 ring-primary' : ''}
             />
             <KPICard
               title="Violações Ativas"
               value={heroKPIsOperational.violacoesAtivas.toLocaleString('pt-BR')}
               icon={AlertTriangle}
-              onClick={() => handleKPIClick('violacoesAtivas')}
-              className={filters.kpiType === 'violacoesAtivas' ? 'ring-2 ring-primary' : ''}
             />
           </div>
         </section>
