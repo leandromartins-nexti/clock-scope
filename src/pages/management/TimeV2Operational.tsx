@@ -884,7 +884,7 @@ export default function TimeV2Operational() {
               Visão Operacional
             </h1>
             <p className="text-muted-foreground text-sm">
-              Apuração de ponto, banco de horas e compliance • Clique nos gráficos para ver detalhes
+              Apuração de ponto, banco de horas e compliance
             </p>
           </div>
 
