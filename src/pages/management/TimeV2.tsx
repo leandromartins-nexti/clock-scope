@@ -106,7 +106,7 @@ export default function TimeV2() {
         {/* Header */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            Executive Dashboard
+            Visão Executiva
           </h1>
           <p className="text-muted-foreground text-lg">
             Visão estratégica sobre jornada, banco de horas e compliance trabalhista
@@ -118,7 +118,7 @@ export default function TimeV2() {
           <div className="flex items-center gap-2">
             <div className="h-1 w-8 bg-primary rounded-full" />
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Visão Executiva
+              Visão Geral
             </h2>
           </div>
 
