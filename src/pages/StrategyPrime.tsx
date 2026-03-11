@@ -375,7 +375,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
           <p className="text-xs text-gray-400 mb-4">por Período</p>
           <div className="h-[200px] flex items-center justify-center text-gray-300 text-sm">Sem dados no período</div>
         </div>
-        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5 h-[320px]">
           <h3 className="font-bold text-sm text-gray-800">Tempo Médio Tratativa de Inconsistências</h3>
           <p className="text-xs text-gray-400 mb-4">por Período</p>
           <div className="h-[200px] flex items-center justify-center text-gray-300 text-sm">Sem dados no período</div>
