@@ -271,7 +271,7 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
   <div className="flex gap-4">
     {/* Left content */}
     <div className="flex-1 space-y-4">
-      <div className="grid grid-cols-9 gap-4">
+      <div className="grid grid-cols-8 gap-4">
         {/* Top 10 Pior Qualidade */}
         <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">Top 10 Pior Qualidade de Marcação</h3>
