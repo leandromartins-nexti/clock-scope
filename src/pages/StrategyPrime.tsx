@@ -605,6 +605,106 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
   </div>
 );
 
+// Eficiência Content
+const EficienciaContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+  <div className="flex gap-4">
+    <div className="flex-1 space-y-4">
+      <div className="grid grid-cols-9 gap-4">
+        {/* Pior Tempo Médio de Tratativa de Marcações */}
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Pior Tempo Médio de Tratativa de Marcações</h3>
+          <p className="text-xs text-gray-400 mb-4">por Operador</p>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-left py-2 text-gray-500 font-medium">Operador</th>
+                <th className="text-left py-2 text-gray-500 font-medium">Cargo</th>
+                <th className="text-right py-2 text-gray-500 font-medium">Tempo Médio (h)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {piorTempoMedioOperadores.map((item, idx) => (
+                <tr key={idx} className="border-b border-gray-50">
+                  <td className="py-2 text-gray-700">{item.operador}</td>
+                  <td className="py-2 text-gray-500 text-xs">{item.cargo}</td>
+                  <td className="py-2 text-right text-gray-600">{item.tempoMedio}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="mt-3 pt-3 border-t border-gray-100 text-right">
+            <span className="text-2xl font-bold text-gray-800">3.357,5</span>
+          </div>
+        </div>
+        {/* Top 10 Quantidade de Tratativa de Marcações */}
+        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Top 10 Quantidade de Tratativa de Marcações</h3>
+          <p className="text-xs text-gray-400 mb-4">por Operador</p>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-left py-2 text-gray-500 font-medium">Operador</th>
+                <th className="text-left py-2 text-gray-500 font-medium">Cargo</th>
+                <th className="text-right py-2 text-gray-500 font-medium">Tratativas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {top10TratativaOperadores.map((item, idx) => (
+                <tr key={idx} className="border-b border-gray-50">
+                  <td className="py-2 text-gray-700">{item.operador}</td>
+                  <td className="py-2 text-gray-500 text-xs">{item.cargo}</td>
+                  <td className="py-2 text-right text-gray-600">{item.tratativas}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="grid grid-cols-9 gap-4">
+        {/* Tempo Médio de Tratativa de Movimentações */}
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Tempo Médio de Tratativa de Movimentações</h3>
+          <p className="text-xs text-gray-400 mb-4">por Período</p>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={tempoMedioMovimentacoes}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} tickFormatter={(v) => `${(v / 1000).toFixed(1)} Mil`} />
+                <Tooltip formatter={(value: number) => value.toLocaleString("pt-BR")} />
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 3, fill: "#FF5722" }}
+                  label={{ position: "top", fontSize: 10, fill: "#666", formatter: (v: number) => `${(v / 1000).toFixed(1)} Mil` }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        {/* Evolução das Marcações Inseridas Manualmente */}
+        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Evolução das Marcações Inseridas Manualmente</h3>
+          <p className="text-xs text-gray-400 mb-4">por Período</p>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={evolucaoMarcacoesManuais}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <YAxis domain={[0, 40]} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} tickFormatter={(v) => `${v}%`} />
+                <Tooltip formatter={(value: number) => `${value}%`} />
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 4, fill: "#FF5722" }}
+                  label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="w-[280px] shrink-0">
+      <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+    </div>
+  </div>
+);
+
 // Placeholder for tabs not yet built
 const PlaceholderContent = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-64 bg-white rounded-lg border border-gray-200">
