@@ -1,7 +1,9 @@
 import { Settings, Users, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import devicesHero from "@/assets/devices-hero.png";
 
 const NextiAnalytics = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex-1 overflow-auto bg-white min-h-screen flex flex-col">
 
@@ -28,7 +30,10 @@ const NextiAnalytics = () => {
 
         {/* Buttons */}
         <div className="flex gap-6 mb-10">
-          <button className="flex items-center bg-[#FF5722] hover:bg-[#E64A19] text-white font-semibold rounded-lg text-base transition-colors min-w-[240px] h-14 shadow-sm overflow-hidden">
+          <button
+            onClick={() => navigate("/prime")}
+            className="flex items-center bg-[#FF5722] hover:bg-[#E64A19] text-white font-semibold rounded-lg text-base transition-colors min-w-[240px] h-14 shadow-sm overflow-hidden"
+          >
             <div className="flex items-center justify-center h-full px-4 bg-[rgba(0,0,0,0.1)]">
               <Users className="w-5 h-5" />
             </div>
