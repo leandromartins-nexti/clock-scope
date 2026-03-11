@@ -52,6 +52,48 @@ const origemSolicitacoes = [
   { name: "% Ajustes Origem Solicitações", value: 0, color: "#E8E8E8" },
 ];
 
+// Solicitações mock data
+const solicitacoesJustificativa = [
+  { mes: "Jan", emAberto: 580, ajustadas: 67500, canceladas: 15100 },
+  { mes: "Fev", emAberto: 620, ajustadas: 68200, canceladas: 15300 },
+  { mes: "Mar", emAberto: 550, ajustadas: 67800, canceladas: 15000 },
+  { mes: "Abr", emAberto: 610, ajustadas: 67000, canceladas: 15200 },
+  { mes: "Mai", emAberto: 590, ajustadas: 68500, canceladas: 15400 },
+  { mes: "Jun", emAberto: 640, ajustadas: 67200, canceladas: 14900 },
+  { mes: "Jul", emAberto: 570, ajustadas: 68000, canceladas: 15100 },
+  { mes: "Ago", emAberto: 600, ajustadas: 67600, canceladas: 15300 },
+  { mes: "Set", emAberto: 630, ajustadas: 67900, canceladas: 15000 },
+  { mes: "Out", emAberto: 560, ajustadas: 68300, canceladas: 15200 },
+  { mes: "Nov", emAberto: 610, ajustadas: 67700, canceladas: 15100 },
+  { mes: "Dez", emAberto: 700, ajustadas: 67400, canceladas: 14700 },
+];
+
+const solicitacoesPorTipo = [
+  { tipo: "752", pct: 29.1 },
+  { tipo: "7348", pct: 24.3 },
+  { tipo: "7349", pct: 7.6 },
+  { tipo: "4911", pct: 4.5 },
+  { tipo: "218", pct: 2.0 },
+  { tipo: "7609", pct: 1.8 },
+  { tipo: "4909", pct: 1.7 },
+  { tipo: "3512", pct: 1.6 },
+  { tipo: "3521", pct: 1.4 },
+];
+
+const solicitacoesTratadas = [
+  { mes: "Jan", valor: 99.3 }, { mes: "Fev", valor: 99.3 }, { mes: "Mar", valor: 99.3 },
+  { mes: "Abr", valor: 99.3 }, { mes: "Mai", valor: 99.3 }, { mes: "Jun", valor: 99.3 },
+  { mes: "Jul", valor: 99.3 }, { mes: "Ago", valor: 99.3 }, { mes: "Set", valor: 99.3 },
+  { mes: "Out", valor: 99.3 }, { mes: "Nov", valor: 99.3 }, { mes: "Dez", valor: 99.3 },
+];
+
+const tempoMedioTratativa = [
+  { mes: "Jan", valor: 3357.5 }, { mes: "Fev", valor: 3357.5 }, { mes: "Mar", valor: 3357.5 },
+  { mes: "Abr", valor: 3357.5 }, { mes: "Mai", valor: 3357.5 }, { mes: "Jun", valor: 3357.5 },
+  { mes: "Jul", valor: 3357.5 }, { mes: "Ago", valor: 3357.5 }, { mes: "Set", valor: 3357.5 },
+  { mes: "Out", valor: 3357.5 }, { mes: "Nov", valor: 3357.5 }, { mes: "Dez", valor: 3357.5 },
+];
+
 const tabs = [
   "Registro de Ponto",
   "Operacional",
