@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import devicesHero from "@/assets/devices-hero.png";
 
 const NextiAnalytics = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex-1 overflow-auto bg-white min-h-screen flex flex-col">
 
