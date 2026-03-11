@@ -397,7 +397,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
             ))}
           </div>
         </div>
-        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5 h-[320px]">
           <h3 className="font-bold text-sm text-gray-800">% Origem de Solicitações dos Ajustes de Ponto</h3>
           <div className="flex items-center gap-4 mt-1 mb-2">
             <div className="flex items-center gap-1.5">
