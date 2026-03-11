@@ -51,9 +51,9 @@ export function DashboardSidebar() {
         <SidebarToggleButton className="text-white hover:bg-[rgba(255,255,255,0.1)] h-8 w-8 p-0 ml-auto" />
       </SidebarHeader>
 
-      <SidebarContent className="flex-1 overflow-y-auto bg-[#3d4449]">
+      <SidebarContent className="flex-1 overflow-y-auto bg-[#3d4449] [&>*+*]:mt-0">
         {/* Nexti Analytics */}
-        <SidebarGroup className="px-3 py-2">
+        <SidebarGroup className="px-3 py-1">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild className={cn("text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3", isCollapsed && "justify-center")}>
