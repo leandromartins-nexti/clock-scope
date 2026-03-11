@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { ChevronRight, Filter, Settings, Eraser, TrendingUp, Lightbulb, RefreshCw } from "lucide-react";
+import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, Cell, LabelList
+  PieChart, Pie, Cell
 } from "recharts";
 
 // Mock data
@@ -33,6 +33,23 @@ const colaboradoresPorColetor = [
   { coletor: "SYSTEM", valor: 6749, cor: "#FF5722" },
   { coletor: "TERMINAL", valor: 6170, cor: "#FF5722" },
   { coletor: "MOBILE", valor: 115, cor: "#FF5722" },
+];
+
+const inconsistenciasReincidentes = [
+  { colaborador: "ADM DE REDES", pct: 100 },
+  { colaborador: "AGENTE DE ESTACIO...", pct: 100 },
+  { colaborador: "AGENTE DE INSPECA...", pct: 100 },
+  { colaborador: "AGENTE DE SEGURA...", pct: 100 },
+  { colaborador: "ANALISTA DE INFRAE...", pct: 100 },
+  { colaborador: "ANALISTA DE MARKE...", pct: 100 },
+  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
+  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
+  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
+];
+
+const origemSolicitacoes = [
+  { name: "% Total Ajustadas", value: 100, color: "#F5A623" },
+  { name: "% Ajustes Origem Solicitações", value: 0, color: "#E8E8E8" },
 ];
 
 const tabs = [
@@ -190,149 +207,246 @@ const StrategyPrime = () => {
 
       {/* Main Content Grid */}
       <div className="px-6 pb-4 flex-1">
-        <div className="grid grid-cols-12 gap-4">
-          {/* Top 10 Pior Qualidade */}
-          <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
-            <h3 className="font-bold text-sm text-gray-800">Top 10 Pior Qualidade de Marcação</h3>
-            <p className="text-xs text-gray-400 mb-4">por Entidade</p>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="text-left py-2 text-gray-500 font-medium flex items-center gap-1">
-                    <span className="text-[#FF5722]">👤</span> Empresa
-                  </th>
-                  <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
-                </tr>
-              </thead>
-              <tbody>
-                {topPiorQualidade.map((item) => (
-                  <tr key={item.pos} className="border-b border-gray-50">
-                    <td className="py-2 text-gray-700">
-                      <span className="text-gray-400 mr-2">{item.pos}</span>
-                      {item.empresa}
-                    </td>
-                    <td className="py-2 text-right text-gray-600">{item.pct}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Evolução da Qualidade */}
-          <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
-            <h3 className="font-bold text-sm text-gray-800 mb-4">Evolução da Qualidade das Marcações</h3>
-            <div className="h-[220px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={qualidadeEvolucao}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} />
-                  <YAxis hide />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="valor"
-                    stroke="#FF5722"
-                    strokeWidth={2}
-                    dot={{ r: 4, fill: "#FF5722" }}
-                    label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Selecione por */}
-          <div className="col-span-3 bg-white rounded-lg border border-gray-200 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Settings className="w-4 h-4 text-[#FF5722]" />
-              <span className="font-bold text-sm text-gray-800">Selecione por:</span>
-            </div>
-            <div className="flex flex-col gap-2.5">
-              {filterOptions.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => setActiveFilter(option)}
-                  className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-colors ${
-                    activeFilter === option
-                      ? "border-[#FF5722] text-[#FF5722] bg-orange-50"
-                      : "border-gray-200 text-gray-500 hover:border-gray-300"
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* % Total de Marcações */}
-          <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
-            <h3 className="font-bold text-sm text-gray-800">% Total de Marcações</h3>
-            <p className="text-xs text-gray-400 mb-4">por Tipo</p>
-            <div className="space-y-4">
-              {marcacoesPorTipo.map((item) => (
-                <div key={item.tipo} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500 w-32 shrink-0">{item.tipo}</span>
-                  <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-[#FF5722]"
-                      style={{ width: `${item.pct}%` }}
-                    />
-                  </div>
-                  <span className="text-xs text-gray-600 font-medium w-10 text-right">{item.pct}%</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Total de Colaboradores por Coletor */}
-          <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
-            <h3 className="font-bold text-sm text-gray-800">Total de Colaboradores</h3>
-            <p className="text-xs text-gray-400 mb-4">por Coletor</p>
-            <div className="space-y-3">
-              {colaboradoresPorColetor.map((item) => (
-                <div key={item.coletor} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500 w-20 shrink-0 font-medium">{item.coletor}</span>
-                  <div className="flex-1 bg-gray-100 rounded h-7 overflow-hidden flex items-center">
-                    <div
-                      className="h-full bg-[#FF5722] rounded flex items-center justify-end pr-2"
-                      style={{ width: `${(item.valor / 6749) * 100}%`, minWidth: "40px" }}
-                    >
-                      <span className="text-white text-xs font-bold">{item.valor.toLocaleString("pt-BR")}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Insights + Updated */}
-          <div className="col-span-3 flex flex-col gap-4">
-            <div className="bg-white rounded-lg border border-gray-200 p-5 flex-1">
-              <div className="flex items-center gap-2 mb-3">
-                <Lightbulb className="w-4 h-4 text-[#FF5722]" />
-                <span className="font-bold text-sm text-gray-800">Insights</span>
-              </div>
-              <div className="border-l-4 border-[#FF5722] bg-orange-50 rounded-r-lg p-3">
-                <p className="text-xs text-gray-600 leading-relaxed">
-                  Os resultados apresentam <strong>aderência parcial às metas</strong>.
-                  Embora a operação mantenha consistência, há indicadores que exigem
-                  <strong> atenção e ajustes pontuais</strong>.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-4 flex items-center gap-3">
-              <RefreshCw className="w-4 h-4 text-gray-400" />
-              <div>
-                <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Updated</p>
-                <p className="text-xs text-gray-700 font-medium">Feb 25, 2026 às 17:07</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {activeSubNav === "Visão Geral" && <VisaoGeralContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
+        {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
+        {activeSubNav === "Solicitações" && <PlaceholderContent title="Solicitações" />}
+        {activeSubNav === "Eficiência" && <PlaceholderContent title="Eficiência" />}
       </div>
     </div>
   );
 };
+
+// Shared sidebar + insights + updated
+const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+  <div className="col-span-3 flex flex-col gap-4">
+    {/* Selecione por */}
+    <div className="bg-white rounded-lg border border-gray-200 p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <Settings className="w-4 h-4 text-[#FF5722]" />
+        <span className="font-bold text-sm text-gray-800">Selecione por:</span>
+      </div>
+      <div className="flex flex-col gap-2.5">
+        {filterOptions.map((option) => (
+          <button
+            key={option}
+            onClick={() => setActiveFilter(option)}
+            className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-colors ${
+              activeFilter === option
+                ? "border-[#FF5722] text-[#FF5722] bg-orange-50"
+                : "border-gray-200 text-gray-500 hover:border-gray-300"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </div>
+    {/* Insights */}
+    <div className="bg-white rounded-lg border border-gray-200 p-5">
+      <div className="flex items-center gap-2 mb-3">
+        <Lightbulb className="w-4 h-4 text-[#FF5722]" />
+        <span className="font-bold text-sm text-gray-800">Insights</span>
+      </div>
+      <div className="border-l-4 border-[#FF5722] bg-orange-50 rounded-r-lg p-3">
+        <p className="text-xs text-gray-600 leading-relaxed">
+          Os resultados apresentam <strong>aderência parcial às metas</strong>.
+          Embora a operação mantenha consistência, há indicadores que exigem
+          <strong> atenção e ajustes pontuais</strong>.
+        </p>
+      </div>
+    </div>
+    {/* Updated */}
+    <div className="bg-white rounded-lg border border-gray-200 p-4 flex items-center gap-3">
+      <RefreshCw className="w-4 h-4 text-gray-400" />
+      <div>
+        <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Updated</p>
+        <p className="text-xs text-gray-700 font-medium">Feb 25, 2026 às 17:07</p>
+      </div>
+    </div>
+  </div>
+);
+
+// Visão Geral Content
+const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+  <div className="grid grid-cols-12 gap-4">
+    {/* Top 10 Pior Qualidade */}
+    <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="font-bold text-sm text-gray-800">Top 10 Pior Qualidade de Marcação</h3>
+      <p className="text-xs text-gray-400 mb-4">por Entidade</p>
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-gray-100">
+            <th className="text-left py-2 text-gray-500 font-medium">👤 Empresa</th>
+            <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topPiorQualidade.map((item) => (
+            <tr key={item.pos} className="border-b border-gray-50">
+              <td className="py-2 text-gray-700">
+                <span className="text-gray-400 mr-2">{item.pos}</span>
+                {item.empresa}
+              </td>
+              <td className="py-2 text-right text-gray-600">{item.pct}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {/* Evolução da Qualidade */}
+    <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="font-bold text-sm text-gray-800 mb-4">Evolução da Qualidade das Marcações</h3>
+      <div className="h-[220px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={qualidadeEvolucao}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+            <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} />
+            <YAxis hide />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="valor"
+              stroke="#FF5722"
+              strokeWidth={2}
+              dot={{ r: 4, fill: "#FF5722" }}
+              label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+
+    <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+
+    {/* % Total de Marcações */}
+    <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="font-bold text-sm text-gray-800">% Total de Marcações</h3>
+      <p className="text-xs text-gray-400 mb-4">por Tipo</p>
+      <div className="space-y-4">
+        {marcacoesPorTipo.map((item) => (
+          <div key={item.tipo} className="flex items-center gap-3">
+            <span className="text-xs text-gray-500 w-32 shrink-0">{item.tipo}</span>
+            <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
+              <div className="h-full rounded-full bg-[#FF5722]" style={{ width: `${item.pct}%` }} />
+            </div>
+            <span className="text-xs text-gray-600 font-medium w-10 text-right">{item.pct}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Total de Colaboradores por Coletor */}
+    <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="font-bold text-sm text-gray-800">Total de Colaboradores</h3>
+      <p className="text-xs text-gray-400 mb-4">por Coletor</p>
+      <div className="space-y-3">
+        {colaboradoresPorColetor.map((item) => (
+          <div key={item.coletor} className="flex items-center gap-3">
+            <span className="text-xs text-gray-500 w-20 shrink-0 font-medium">{item.coletor}</span>
+            <div className="flex-1 bg-gray-100 rounded h-7 overflow-hidden flex items-center">
+              <div
+                className="h-full bg-[#FF5722] rounded flex items-center justify-end pr-2"
+                style={{ width: `${(item.valor / 6749) * 100}%`, minWidth: "40px" }}
+              >
+                <span className="text-white text-xs font-bold">{item.valor.toLocaleString("pt-BR")}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// Inconsistências Content
+const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+  <div className="grid grid-cols-12 gap-4">
+    {/* % Inconsistências Tratadas */}
+    <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="font-bold text-sm text-gray-800">% Inconsistências Tratadas</h3>
+      <p className="text-xs text-gray-400 mb-4">por Período</p>
+      <div className="h-[200px] flex items-center justify-center text-gray-300 text-sm">
+        Sem dados no período
+      </div>
+    </div>
+
+    {/* Tempo Médio Tratativa */}
+    <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="font-bold text-sm text-gray-800">Tempo Médio Tratativa de Inconsistências</h3>
+      <p className="text-xs text-gray-400 mb-4">por Período</p>
+      <div className="h-[200px] flex items-center justify-center text-gray-300 text-sm">
+        Sem dados no período
+      </div>
+    </div>
+
+    <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+
+    {/* % Inconsistências Reincidentes */}
+    <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="font-bold text-sm text-gray-800">% Inconsistências Reincidentes</h3>
+      <p className="text-xs text-gray-400 mb-4">por Colaborador</p>
+      <div className="space-y-2">
+        {inconsistenciasReincidentes.map((item, idx) => (
+          <div key={idx} className="flex items-center gap-3">
+            <span className="text-xs text-gray-500 w-40 shrink-0 truncate">{item.colaborador}</span>
+            <div className="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+              <div className="h-full rounded-full bg-[#FF5722]" style={{ width: `${item.pct}%` }} />
+            </div>
+            <span className="text-xs text-gray-600 font-medium w-10 text-right">{item.pct}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Origem de Solicitações dos Ajustes de Ponto */}
+    <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+      <h3 className="font-bold text-sm text-gray-800">% Origem de Solicitações dos Ajustes de Ponto</h3>
+      <div className="flex items-center gap-4 mt-1 mb-2">
+        <div className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded-full bg-[#FF5722] inline-block" />
+          <span className="text-[10px] text-gray-500">% Total Ajustadas</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded-full bg-[#F5A623] inline-block" />
+          <span className="text-[10px] text-gray-500">% Ajustes Origem Solicitações</span>
+        </div>
+      </div>
+      <div className="h-[220px] flex items-center justify-center">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={origemSolicitacoes}
+              cx="50%"
+              cy="50%"
+              innerRadius={70}
+              outerRadius={95}
+              dataKey="value"
+              startAngle={90}
+              endAngle={-270}
+            >
+              {origemSolicitacoes.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="flex justify-around text-xs text-gray-500 mt-1">
+        <span>100%</span>
+        <span>0%</span>
+      </div>
+    </div>
+  </div>
+);
+
+// Placeholder for tabs not yet built
+const PlaceholderContent = ({ title }: { title: string }) => (
+  <div className="flex items-center justify-center h-64 bg-white rounded-lg border border-gray-200">
+    <p className="text-gray-400 text-lg">{title} - Em desenvolvimento</p>
+  </div>
+);
 
 // KPI Card Component
 interface KPICardProps {
@@ -351,16 +465,12 @@ const KPICard = ({ title, value, valueColor, metaLabel, metaTarget, yoyValue, yo
     <p className="text-xs text-gray-500 font-medium mb-2 text-center">{title}</p>
     <p className={`text-3xl font-bold text-center mb-3 ${valueColor}`}>{value}</p>
     <div className="border-t border-gray-100 pt-2 flex items-center justify-between">
-      <div className="text-[10px] text-gray-400">
-        <span>{metaLabel}</span>
-      </div>
+      <div className="text-[10px] text-gray-400"><span>{metaLabel}</span></div>
       <div className="text-[10px] text-gray-400">{metaTarget}</div>
     </div>
     <div className="flex items-center justify-between mt-1">
       <span className="text-[10px] text-gray-400">YoY</span>
-      <span className={`text-[10px] font-medium ${yoyColor}`}>
-        {yoyValue} {yoyIcon || ""}
-      </span>
+      <span className={`text-[10px] font-medium ${yoyColor}`}>{yoyValue} {yoyIcon || ""}</span>
     </div>
   </div>
 );
