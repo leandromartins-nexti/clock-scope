@@ -218,7 +218,7 @@ const StrategyPrime = () => {
 
 // Shared sidebar + insights + updated
 const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
-  <div className="col-span-3 flex flex-col gap-4">
+  <div className="flex flex-col gap-4">
     {/* Selecione por */}
     <div className="bg-white rounded-lg border border-gray-200 p-5">
       <div className="flex items-center gap-2 mb-4">
