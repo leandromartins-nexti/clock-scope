@@ -337,7 +337,7 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
           </div>
         </div>
         {/* Total de Colaboradores por Coletor */}
-        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5 h-[320px]">
           <h3 className="font-bold text-sm text-gray-800">Total de Colaboradores</h3>
           <p className="text-xs text-gray-400 mb-4">por Coletor</p>
           <div className="space-y-3">
