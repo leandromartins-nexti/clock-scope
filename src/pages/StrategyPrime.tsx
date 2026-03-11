@@ -285,7 +285,7 @@ const StrategyPrime = () => {
         {activeSubNav === "Visão Geral" && <VisaoGeralContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Eficiência" && <PlaceholderContent title="Eficiência" />}
+        {activeSubNav === "Eficiência" && <EficienciaContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
       </div>
     </div>
   );
