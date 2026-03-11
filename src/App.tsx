@@ -20,7 +20,7 @@ const App = () => (
           <Route element={<DashboardLayout />}>
             <Route path="/" element={<NextiAnalytics />} />
             <Route path="/nexti-analytics" element={<NextiAnalytics />} />
-            <Route path="/prime" element={<Prime />} />
+            <Route path="/strategy-prime" element={<StrategyPrime />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
