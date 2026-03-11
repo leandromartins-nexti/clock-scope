@@ -170,7 +170,7 @@ const OperacionalPrime = () => {
       <div className="px-6 pb-4 flex-1">
         {activeSubNav === "Backlog" && <BacklogContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Qualidade" && <PlaceholderContent label="Qualidade" activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
+        {activeSubNav === "Qualidade" && <QualidadeContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
       </div>
     </div>
   );
