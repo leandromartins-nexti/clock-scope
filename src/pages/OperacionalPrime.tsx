@@ -170,7 +170,7 @@ const OperacionalPrime = () => {
       <div className="px-6 pb-4 flex-1">
         {activeSubNav === "Backlog" && <BacklogContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Qualidade" && <PlaceholderContent label="Qualidade" activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
+        {activeSubNav === "Qualidade" && <QualidadeContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
       </div>
     </div>
   );
@@ -526,13 +526,153 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
   </div>
 );
 
-// ── Placeholder for other sub-tabs ─────────────────────────
+// ── Mock data – Qualidade ──────────────────────────────────
 
-const PlaceholderContent = ({ label, activeFilter, setActiveFilter }: { label: string; activeFilter: string; setActiveFilter: (v: string) => void }) => (
+const top10PiorQualidade = [
+  { posto: "ANCORA BADOTTI PARTICIPACOES LTDA - P01 - ANCORA BADOTTI PARTICIPACOES LTDA", pct: 100.0 },
+  { posto: "CARIOCA CALCADOS - CARIOCA CALCADOS ITAGUACU - ES 17", pct: 100.0 },
+  { posto: "CARIOCA CALCADOS LTDA - R GERONCIO THIVES, 1079 - CARIOCA ITAGUACU - CS11", pct: 100.0 },
+  { posto: "CARIOCA CALCADOS LTDA - RUA BERNARDINHO MACHADO, SN - CARIOCA BERNARDINO MACHADO,", pct: 100.0 },
+];
+
+const top10InconsistenciasPorEscala = [
+  { escala: "07:00-19:00 12x36 (MO)", inconsistencias: 157 },
+  { escala: "19:00-07:00 12x36 (MO)", inconsistencias: 139 },
+  { escala: "20:00-22:00/23:12-06:00 RFL", inconsistencias: 128 },
+  { escala: "19:00-07:00 12X36", inconsistencias: 113 },
+  { escala: "06:00-18:00 12x36", inconsistencias: 109 },
+  { escala: "07:00-12:00/13:12-17:00 RFL", inconsistencias: 95 },
+  { escala: "07:00-19:00 12X36", inconsistencias: 88 },
+];
+
+const top10ReincidenciaColaborador = [
+  { colaborador: "1000", pct: 100.0 },
+  { colaborador: "1001", pct: 100.0 },
+  { colaborador: "1003", pct: 100.0 },
+  { colaborador: "1008", pct: 100.0 },
+  { colaborador: "1015", pct: 100.0 },
+  { colaborador: "1017", pct: 100.0 },
+  { colaborador: "1019", pct: 100.0 },
+];
+
+const colaboradoresSemTemplate = [
+  { colaborador: "7079", semTemplate: "Facial", inconsistencias: 300 },
+  { colaborador: "7212", semTemplate: "Facial", inconsistencias: 253 },
+  { colaborador: "2240", semTemplate: "Facial", inconsistencias: 237 },
+  { colaborador: "1428", semTemplate: "Facial", inconsistencias: 221 },
+  { colaborador: "7271", semTemplate: "Facial", inconsistencias: 215 },
+  { colaborador: "967", semTemplate: "Facial", inconsistencias: 198 },
+  { colaborador: "8188", semTemplate: "Facial", inconsistencias: 184 },
+];
+
+// ── Qualidade Content ──────────────────────────────────────
+
+const QualidadeContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
-    <div className="flex-1 flex items-center justify-center min-h-[400px] bg-white rounded-lg border border-gray-200">
-      <p className="text-gray-400 text-lg font-medium">{label} — Em breve</p>
+    <div className="flex-1 grid grid-cols-2 gap-4">
+      {/* Top 10 Pior Qualidade de Marcação */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="flex items-center justify-between mb-0.5">
+          <h3 className="font-semibold text-sm text-gray-800">Top 10 Pior Qualidade de Marcação</h3>
+          <span className="text-xs border border-[#FF5722] text-[#FF5722] rounded-full px-3 py-1 font-medium">Colaborador</span>
+        </div>
+        <p className="text-xs text-gray-400 mb-3">por Posto</p>
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-100">
+              <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
+              <th className="text-xs text-gray-400 font-medium text-left pb-2">Posto</th>
+              <th className="text-xs text-gray-400 font-medium text-right pb-2">%</th>
+            </tr>
+          </thead>
+          <tbody>
+            {top10PiorQualidade.map((item, idx) => (
+              <tr key={idx} className="border-b border-gray-50">
+                <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
+                <td className="text-xs text-gray-700 py-2 pr-4">{item.posto}</td>
+                <td className="text-xs font-semibold text-gray-800 text-right py-2">{item.pct.toFixed(1)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Top 10 Inconsistências por Escala */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Top 10 Inconsistências por Escala</h3>
+        <p className="text-xs text-gray-400 mb-3">por Escala</p>
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-100">
+              <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
+              <th className="text-xs text-gray-400 font-medium text-left pb-2">Escala</th>
+              <th className="text-xs text-gray-400 font-medium text-right pb-2">Inconsistências</th>
+            </tr>
+          </thead>
+          <tbody>
+            {top10InconsistenciasPorEscala.map((item, idx) => (
+              <tr key={idx} className="border-b border-gray-50">
+                <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
+                <td className="text-xs text-gray-700 py-2">{item.escala}</td>
+                <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.inconsistencias)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Top 10 Reincidência de Inconsistências */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="flex items-center justify-between mb-0.5">
+          <h3 className="font-semibold text-sm text-gray-800">Top 10 Reincidência de Inconsistências</h3>
+          <span className="text-xs border border-[#FF5722] text-[#FF5722] rounded-full px-3 py-1 font-medium">Posto</span>
+        </div>
+        <p className="text-xs text-gray-400 mb-3">por Colaborador</p>
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-100">
+              <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
+              <th className="text-xs text-gray-400 font-medium text-left pb-2">Colaborador</th>
+              <th className="text-xs text-gray-400 font-medium text-right pb-2">%</th>
+            </tr>
+          </thead>
+          <tbody>
+            {top10ReincidenciaColaborador.map((item, idx) => (
+              <tr key={idx} className="border-b border-gray-50">
+                <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
+                <td className="text-xs text-gray-700 py-2">{item.colaborador}</td>
+                <td className="text-xs font-semibold text-gray-800 text-right py-2">{item.pct.toFixed(1)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Colaboradores sem Template */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Colaboradores sem Template</h3>
+        <p className="text-xs text-gray-400 mb-3">Inconsistências sem Template</p>
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-100">
+              <th className="text-xs text-gray-400 font-medium text-left pb-2">Colaborador</th>
+              <th className="text-xs text-gray-400 font-medium text-left pb-2">Sem Template</th>
+              <th className="text-xs text-gray-400 font-medium text-right pb-2">Inconsistências</th>
+            </tr>
+          </thead>
+          <tbody>
+            {colaboradoresSemTemplate.map((item, idx) => (
+              <tr key={idx} className="border-b border-gray-50">
+                <td className="text-xs text-gray-700 py-2">{item.colaborador}</td>
+                <td className="text-xs text-gray-700 py-2">{item.semTemplate}</td>
+                <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.inconsistencias)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
+
     <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
   </div>
 );
