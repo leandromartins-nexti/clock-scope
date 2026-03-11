@@ -68,7 +68,7 @@ export function DashboardSidebar() {
 
 
         {/* Mesa de Operações */}
-        <SidebarGroup className="px-3">
+        <SidebarGroup className="px-3 py-1">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton className={cn("text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3", isCollapsed && "justify-center")}>
@@ -80,7 +80,7 @@ export function DashboardSidebar() {
         </SidebarGroup>
 
         {/* Mapa de Postos */}
-        <SidebarGroup className="px-3">
+        <SidebarGroup className="px-3 py-1">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton className={cn("text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3", isCollapsed && "justify-center")}>
