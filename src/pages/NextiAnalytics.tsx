@@ -30,7 +30,10 @@ const NextiAnalytics = () => {
 
         {/* Buttons */}
         <div className="flex gap-6 mb-10">
-          <button className="flex items-center bg-[#FF5722] hover:bg-[#E64A19] text-white font-semibold rounded-lg text-base transition-colors min-w-[240px] h-14 shadow-sm overflow-hidden">
+          <button
+            onClick={() => navigate("/prime")}
+            className="flex items-center bg-[#FF5722] hover:bg-[#E64A19] text-white font-semibold rounded-lg text-base transition-colors min-w-[240px] h-14 shadow-sm overflow-hidden"
+          >
             <div className="flex items-center justify-center h-full px-4 bg-[rgba(0,0,0,0.1)]">
               <Users className="w-5 h-5" />
             </div>
