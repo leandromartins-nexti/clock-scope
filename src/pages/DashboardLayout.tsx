@@ -12,7 +12,7 @@ const DashboardLayout = () => {
           <div className="flex min-h-screen w-full bg-background">
             <DashboardSidebar />
             <div className="flex-1 flex flex-col">
-              <header className="h-12 flex items-center border-b border-border bg-gray-100 px-4">
+              <header className="h-12 flex items-center border-b border-border bg-white px-4">
               </header>
               <main className="flex-1">
                 <Outlet />

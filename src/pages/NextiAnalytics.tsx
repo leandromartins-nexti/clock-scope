@@ -6,7 +6,7 @@ const NextiAnalytics = () => {
     <div className="flex-1 overflow-auto bg-white min-h-screen flex flex-col">
 
       {/* Breadcrumb */}
-      <header className="border-b border-gray-200 px-8 py-3">
+      <header className="border-b border-gray-200 px-8 py-3 bg-gray-100">
         <div className="flex items-center gap-2 text-sm">
           <span className="text-[#FF5722] font-medium cursor-pointer hover:underline">Home</span>
           <ChevronRight className="h-4 w-4 text-gray-400" />
