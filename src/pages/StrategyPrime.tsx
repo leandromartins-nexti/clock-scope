@@ -454,16 +454,18 @@ interface KPICardProps {
 }
 
 const KPICard = ({ title, value, valueColor, metaLabel, metaTarget, yoyValue, yoyColor, yoyIcon }: KPICardProps) => (
-  <div className="bg-white rounded-lg border border-gray-200 p-4">
-    <p className="text-xs text-gray-500 font-medium mb-2 text-center">{title}</p>
-    <p className={`text-3xl font-bold text-center mb-3 ${valueColor}`}>{value}</p>
-    <div className="border-t border-gray-100 pt-2 flex items-center justify-between">
-      <div className="text-[10px] text-gray-400"><span>{metaLabel}</span></div>
-      <div className="text-[10px] text-gray-400">{metaTarget}</div>
-    </div>
-    <div className="flex items-center justify-between mt-1">
-      <span className="text-[10px] text-gray-400">YoY</span>
-      <span className={`text-[10px] font-medium ${yoyColor}`}>{yoyValue} {yoyIcon || ""}</span>
+  <div className="bg-white rounded-lg border border-gray-200 p-4 h-[140px] flex flex-col justify-between">
+    <p className="text-xs text-gray-500 font-medium text-center">{title}</p>
+    <p className={`text-3xl font-bold text-center ${valueColor}`}>{value}</p>
+    <div>
+      <div className="border-t border-gray-100 pt-2 flex items-center justify-between">
+        <div className="text-[10px] text-gray-400"><span>{metaLabel}</span></div>
+        <div className="text-[10px] text-gray-400">{metaTarget}</div>
+      </div>
+      <div className="flex items-center justify-between mt-1">
+        <span className="text-[10px] text-gray-400">YoY</span>
+        <span className={`text-[10px] font-medium ${yoyColor}`}>{yoyValue} {yoyIcon || ""}</span>
+      </div>
     </div>
   </div>
 );
