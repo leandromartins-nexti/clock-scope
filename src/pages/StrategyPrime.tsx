@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell
+  PieChart, Pie, Cell, BarChart, Bar, LabelList
 } from "recharts";
 
 // Mock data
@@ -50,6 +50,48 @@ const inconsistenciasReincidentes = [
 const origemSolicitacoes = [
   { name: "% Total Ajustadas", value: 100, color: "#F5A623" },
   { name: "% Ajustes Origem Solicitações", value: 0, color: "#E8E8E8" },
+];
+
+// Solicitações mock data
+const solicitacoesJustificativa = [
+  { mes: "Jan", emAberto: 580, ajustadas: 67500, canceladas: 15100 },
+  { mes: "Fev", emAberto: 620, ajustadas: 68200, canceladas: 15300 },
+  { mes: "Mar", emAberto: 550, ajustadas: 67800, canceladas: 15000 },
+  { mes: "Abr", emAberto: 610, ajustadas: 67000, canceladas: 15200 },
+  { mes: "Mai", emAberto: 590, ajustadas: 68500, canceladas: 15400 },
+  { mes: "Jun", emAberto: 640, ajustadas: 67200, canceladas: 14900 },
+  { mes: "Jul", emAberto: 570, ajustadas: 68000, canceladas: 15100 },
+  { mes: "Ago", emAberto: 600, ajustadas: 67600, canceladas: 15300 },
+  { mes: "Set", emAberto: 630, ajustadas: 67900, canceladas: 15000 },
+  { mes: "Out", emAberto: 560, ajustadas: 68300, canceladas: 15200 },
+  { mes: "Nov", emAberto: 610, ajustadas: 67700, canceladas: 15100 },
+  { mes: "Dez", emAberto: 700, ajustadas: 67400, canceladas: 14700 },
+];
+
+const solicitacoesPorTipo = [
+  { tipo: "752", pct: 29.1 },
+  { tipo: "7348", pct: 24.3 },
+  { tipo: "7349", pct: 7.6 },
+  { tipo: "4911", pct: 4.5 },
+  { tipo: "218", pct: 2.0 },
+  { tipo: "7609", pct: 1.8 },
+  { tipo: "4909", pct: 1.7 },
+  { tipo: "3512", pct: 1.6 },
+  { tipo: "3521", pct: 1.4 },
+];
+
+const solicitacoesTratadas = [
+  { mes: "Jan", valor: 99.3 }, { mes: "Fev", valor: 99.3 }, { mes: "Mar", valor: 99.3 },
+  { mes: "Abr", valor: 99.3 }, { mes: "Mai", valor: 99.3 }, { mes: "Jun", valor: 99.3 },
+  { mes: "Jul", valor: 99.3 }, { mes: "Ago", valor: 99.3 }, { mes: "Set", valor: 99.3 },
+  { mes: "Out", valor: 99.3 }, { mes: "Nov", valor: 99.3 }, { mes: "Dez", valor: 99.3 },
+];
+
+const tempoMedioTratativa = [
+  { mes: "Jan", valor: 3357.5 }, { mes: "Fev", valor: 3357.5 }, { mes: "Mar", valor: 3357.5 },
+  { mes: "Abr", valor: 3357.5 }, { mes: "Mai", valor: 3357.5 }, { mes: "Jun", valor: 3357.5 },
+  { mes: "Jul", valor: 3357.5 }, { mes: "Ago", valor: 3357.5 }, { mes: "Set", valor: 3357.5 },
+  { mes: "Out", valor: 3357.5 }, { mes: "Nov", valor: 3357.5 }, { mes: "Dez", valor: 3357.5 },
 ];
 
 const tabs = [
@@ -209,7 +251,7 @@ const StrategyPrime = () => {
       <div className="px-6 pb-4 flex-1">
         {activeSubNav === "Visão Geral" && <VisaoGeralContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Solicitações" && <PlaceholderContent title="Solicitações" />}
+        {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         {activeSubNav === "Eficiência" && <PlaceholderContent title="Eficiência" />}
       </div>
     </div>
@@ -424,6 +466,102 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
           <div className="flex justify-around text-xs text-gray-500 mt-1">
             <span>100%</span>
             <span>0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="w-[280px] shrink-0">
+      <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+    </div>
+  </div>
+);
+
+// Solicitações Content
+const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+  <div className="flex gap-4">
+    <div className="flex-1 space-y-4">
+      <div className="grid grid-cols-9 gap-4">
+        {/* Solicitações de Justificativa de Ponto */}
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Solicitações de Justificativa de Ponto</h3>
+          <div className="flex items-center gap-4 mt-1 mb-2">
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-[#FF8A65] inline-block" />
+              <span className="text-[10px] text-gray-500">Em Aberto: 7.261</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-[#F5A623] inline-block" />
+              <span className="text-[10px] text-gray-500">Ajustadas: 811.112</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-[#E91E63] inline-block" />
+              <span className="text-[10px] text-gray-500">Canceladas: 181.627</span>
+            </div>
+          </div>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={solicitacoesJustificativa} barGap={2} barSize={8}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <YAxis hide />
+                <Tooltip />
+                <Bar dataKey="emAberto" fill="#FF8A65" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="ajustadas" fill="#F5A623" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="canceladas" fill="#E91E63" radius={[2, 2, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        {/* % Solicitações por Tipo */}
+        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">% Solicitações de Justificativa de Ponto por Tipo</h3>
+          <p className="text-xs text-gray-400 mb-4">por Código</p>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={solicitacoesPorTipo} layout="vertical" barSize={16}>
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f0f0f0" />
+                <XAxis type="number" domain={[0, 35]} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} tickFormatter={(v) => `${v}%`} />
+                <YAxis type="category" dataKey="tipo" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#666" }} width={45} />
+                <Tooltip formatter={(value: number) => `${value}%`} />
+                <Bar dataKey="pct" fill="#FF5722" radius={[0, 4, 4, 0]}>
+                  <LabelList dataKey="pct" position="right" fontSize={10} fill="#666" formatter={(v: number) => `${v}%`} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-9 gap-4">
+        {/* % Solicitações Tratadas por Período */}
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">% Solicitações de Justificativa de Pontos Tratadas</h3>
+          <p className="text-xs text-gray-400 mb-4">por Período</p>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={solicitacoesTratadas}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <YAxis domain={[98, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} tickFormatter={(v) => `${v}%`} />
+                <Tooltip formatter={(value: number) => `${value}%`} />
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 3, fill: "#FF5722" }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        {/* Tempo Médio Tratativa */}
+        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">% Tempo Médio Tratativa de Solicitações</h3>
+          <p className="text-xs text-gray-400 mb-4">por Período</p>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={tempoMedioTratativa}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <YAxis domain={[0, 4000]} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <Tooltip formatter={(value: number) => value.toLocaleString("pt-BR")} />
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 3, fill: "#FF5722" }} />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
