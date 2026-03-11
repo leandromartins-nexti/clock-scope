@@ -35,6 +35,23 @@ const colaboradoresPorColetor = [
   { coletor: "MOBILE", valor: 115, cor: "#FF5722" },
 ];
 
+const inconsistenciasReincidentes = [
+  { colaborador: "ADM DE REDES", pct: 100 },
+  { colaborador: "AGENTE DE ESTACIO...", pct: 100 },
+  { colaborador: "AGENTE DE INSPECA...", pct: 100 },
+  { colaborador: "AGENTE DE SEGURA...", pct: 100 },
+  { colaborador: "ANALISTA DE INFRAE...", pct: 100 },
+  { colaborador: "ANALISTA DE MARKE...", pct: 100 },
+  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
+  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
+  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
+];
+
+const origemSolicitacoes = [
+  { name: "% Total Ajustadas", value: 100, color: "#F5A623" },
+  { name: "% Ajustes Origem Solicitações", value: 0, color: "#E8E8E8" },
+];
+
 const tabs = [
   "Registro de Ponto",
   "Operacional",
