@@ -39,7 +39,10 @@ const NextiAnalytics = () => {
             </div>
             <span className="flex-1 text-center pr-4">Strategy</span>
           </button>
-          <button className="flex items-center bg-[#FF5722] hover:bg-[#E64A19] text-white font-semibold rounded-lg text-base transition-colors min-w-[240px] h-14 shadow-sm overflow-hidden">
+          <button
+            onClick={() => navigate("/operacional-prime")}
+            className="flex items-center bg-[#FF5722] hover:bg-[#E64A19] text-white font-semibold rounded-lg text-base transition-colors min-w-[240px] h-14 shadow-sm overflow-hidden"
+          >
             <div className="flex items-center justify-center h-full px-4 bg-[rgba(0,0,0,0.1)]">
               <Settings className="w-5 h-5" />
             </div>

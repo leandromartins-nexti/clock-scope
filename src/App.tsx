@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./pages/DashboardLayout";
 import NextiAnalytics from "./pages/NextiAnalytics";
 import StrategyPrime from "./pages/StrategyPrime";
+import OperacionalPrime from "./pages/OperacionalPrime";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
             <Route path="/" element={<NextiAnalytics />} />
             <Route path="/nexti-analytics" element={<NextiAnalytics />} />
             <Route path="/strategy-prime" element={<StrategyPrime />} />
+            <Route path="/operacional-prime" element={<OperacionalPrime />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

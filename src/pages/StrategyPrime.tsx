@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -140,6 +141,7 @@ const subNavItems = ["Visão Geral", "Inconsistências", "Solicitações", "Efic
 const filterOptions = ["Empresa", "Unidade de Negócio", "Cliente", "Posto", "Tipo de Serviço"];
 
 const StrategyPrime = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Registro de Ponto");
   const [activeSubNav, setActiveSubNav] = useState("Visão Geral");
   const [activeFilter, setActiveFilter] = useState("Empresa");
@@ -176,7 +178,10 @@ const StrategyPrime = () => {
             ))}
           </div>
           <div className="flex items-center gap-3">
-            <button className="bg-[#FF5722] text-white px-5 py-2 rounded text-sm font-semibold">
+            <button
+              onClick={() => navigate("/operacional-prime")}
+              className="bg-[#FF5722] text-white px-5 py-2 rounded text-sm font-semibold"
+            >
               Operacional
             </button>
             <button className="border border-gray-300 text-gray-600 px-4 py-2 rounded text-sm font-medium flex items-center gap-2">
