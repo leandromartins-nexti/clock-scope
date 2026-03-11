@@ -321,7 +321,7 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
       </div>
       <div className="grid grid-cols-8 gap-4">
         {/* % Total de Marcações */}
-        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5 h-[320px]">
           <h3 className="font-bold text-sm text-gray-800">% Total de Marcações</h3>
           <p className="text-xs text-gray-400 mb-4">por Tipo</p>
           <div className="space-y-4">
