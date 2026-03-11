@@ -268,93 +268,99 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
 
 // Visão Geral Content
 const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
-  <div className="grid grid-cols-12 gap-4">
-    {/* Top 10 Pior Qualidade */}
-    <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
-      <h3 className="font-bold text-sm text-gray-800">Top 10 Pior Qualidade de Marcação</h3>
-      <p className="text-xs text-gray-400 mb-4">por Entidade</p>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-gray-100">
-            <th className="text-left py-2 text-gray-500 font-medium">👤 Empresa</th>
-            <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
-          </tr>
-        </thead>
-        <tbody>
-          {topPiorQualidade.map((item) => (
-            <tr key={item.pos} className="border-b border-gray-50">
-              <td className="py-2 text-gray-700">
-                <span className="text-gray-400 mr-2">{item.pos}</span>
-                {item.empresa}
-              </td>
-              <td className="py-2 text-right text-gray-600">{item.pct}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-
-    {/* Evolução da Qualidade */}
-    <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
-      <h3 className="font-bold text-sm text-gray-800 mb-4">Evolução da Qualidade das Marcações</h3>
-      <div className="h-[220px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={qualidadeEvolucao}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-            <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} />
-            <YAxis hide />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="valor"
-              stroke="#FF5722"
-              strokeWidth={2}
-              dot={{ r: 4, fill: "#FF5722" }}
-              label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-
-    <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-
-    {/* % Total de Marcações */}
-    <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
-      <h3 className="font-bold text-sm text-gray-800">% Total de Marcações</h3>
-      <p className="text-xs text-gray-400 mb-4">por Tipo</p>
-      <div className="space-y-4">
-        {marcacoesPorTipo.map((item) => (
-          <div key={item.tipo} className="flex items-center gap-3">
-            <span className="text-xs text-gray-500 w-32 shrink-0">{item.tipo}</span>
-            <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
-              <div className="h-full rounded-full bg-[#FF5722]" style={{ width: `${item.pct}%` }} />
-            </div>
-            <span className="text-xs text-gray-600 font-medium w-10 text-right">{item.pct}%</span>
+  <div className="flex gap-4">
+    {/* Left content */}
+    <div className="flex-1 space-y-4">
+      <div className="grid grid-cols-9 gap-4">
+        {/* Top 10 Pior Qualidade */}
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Top 10 Pior Qualidade de Marcação</h3>
+          <p className="text-xs text-gray-400 mb-4">por Entidade</p>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-left py-2 text-gray-500 font-medium">👤 Empresa</th>
+                <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topPiorQualidade.map((item) => (
+                <tr key={item.pos} className="border-b border-gray-50">
+                  <td className="py-2 text-gray-700">
+                    <span className="text-gray-400 mr-2">{item.pos}</span>
+                    {item.empresa}
+                  </td>
+                  <td className="py-2 text-right text-gray-600">{item.pct}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Evolução da Qualidade */}
+        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800 mb-4">Evolução da Qualidade das Marcações</h3>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={qualidadeEvolucao}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} />
+                <YAxis hide />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="valor"
+                  stroke="#FF5722"
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: "#FF5722" }}
+                  label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-
-    {/* Total de Colaboradores por Coletor */}
-    <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
-      <h3 className="font-bold text-sm text-gray-800">Total de Colaboradores</h3>
-      <p className="text-xs text-gray-400 mb-4">por Coletor</p>
-      <div className="space-y-3">
-        {colaboradoresPorColetor.map((item) => (
-          <div key={item.coletor} className="flex items-center gap-3">
-            <span className="text-xs text-gray-500 w-20 shrink-0 font-medium">{item.coletor}</span>
-            <div className="flex-1 bg-gray-100 rounded h-7 overflow-hidden flex items-center">
-              <div
-                className="h-full bg-[#FF5722] rounded flex items-center justify-end pr-2"
-                style={{ width: `${(item.valor / 6749) * 100}%`, minWidth: "40px" }}
-              >
-                <span className="text-white text-xs font-bold">{item.valor.toLocaleString("pt-BR")}</span>
+      <div className="grid grid-cols-9 gap-4">
+        {/* % Total de Marcações */}
+        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">% Total de Marcações</h3>
+          <p className="text-xs text-gray-400 mb-4">por Tipo</p>
+          <div className="space-y-4">
+            {marcacoesPorTipo.map((item) => (
+              <div key={item.tipo} className="flex items-center gap-3">
+                <span className="text-xs text-gray-500 w-32 shrink-0">{item.tipo}</span>
+                <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
+                  <div className="h-full rounded-full bg-[#FF5722]" style={{ width: `${item.pct}%` }} />
+                </div>
+                <span className="text-xs text-gray-600 font-medium w-10 text-right">{item.pct}%</span>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
+        {/* Total de Colaboradores por Coletor */}
+        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Total de Colaboradores</h3>
+          <p className="text-xs text-gray-400 mb-4">por Coletor</p>
+          <div className="space-y-3">
+            {colaboradoresPorColetor.map((item) => (
+              <div key={item.coletor} className="flex items-center gap-3">
+                <span className="text-xs text-gray-500 w-20 shrink-0 font-medium">{item.coletor}</span>
+                <div className="flex-1 bg-gray-100 rounded h-7 overflow-hidden flex items-center">
+                  <div
+                    className="h-full bg-[#FF5722] rounded flex items-center justify-end pr-2"
+                    style={{ width: `${(item.valor / 6749) * 100}%`, minWidth: "40px" }}
+                  >
+                    <span className="text-white text-xs font-bold">{item.valor.toLocaleString("pt-BR")}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+    </div>
+    {/* Right side panel */}
+    <div className="w-[280px] shrink-0">
+      <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
     </div>
   </div>
 );
