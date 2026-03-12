@@ -4,6 +4,7 @@ import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lu
 import { ImprovementProvider } from "@/contexts/ImprovementContext";
 import { ImprovementPin } from "@/components/improvements/ImprovementPin";
 import { ImprovementCenter } from "@/components/improvements/ImprovementCenter";
+import { ImprovementLayer } from "@/components/improvements/ImprovementLayer";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, LabelList, Legend
