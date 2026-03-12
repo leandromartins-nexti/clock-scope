@@ -529,6 +529,23 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
       <div className="grid grid-cols-9 gap-4">
+        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Inconsistências x Tratadas</h3>
+          <p className="text-xs text-gray-400 mb-4">Volume por Período</p>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={evolucaoInconsistenciasTratadas} barGap={2} barSize={14}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+                <YAxis hide />
+                <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+                <Bar dataKey="total" fill="#BDBDBD" radius={[2, 2, 0, 0]} name="Total Inconsistências" />
+                <Bar dataKey="tratadas" fill="#FF5722" radius={[2, 2, 0, 0]} name="Tratadas" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
         <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">Top 20 pior % Inconsistências Tratadas</h3>
           <p className="text-xs text-gray-400 mb-4">por Entidade</p>
@@ -552,23 +569,6 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Inconsistências x Tratadas</h3>
-          <p className="text-xs text-gray-400 mb-4">Volume por Período</p>
-          <div className="h-[200px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={evolucaoInconsistenciasTratadas} barGap={2} barSize={14}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
-                <YAxis hide />
-                <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-                <Bar dataKey="total" fill="#BDBDBD" radius={[2, 2, 0, 0]} name="Total Inconsistências" />
-                <Bar dataKey="tratadas" fill="#FF5722" radius={[2, 2, 0, 0]} name="Tratadas" />
-              </BarChart>
-            </ResponsiveContainer>
           </div>
         </div>
       </div>
