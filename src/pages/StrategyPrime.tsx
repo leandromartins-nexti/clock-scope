@@ -70,16 +70,18 @@ const evolucaoMarcacoesPorColetor = [
   { mes: "Dez", SYSTEM: 51.9, TERMINAL: 47.3, MOBILE: 0.8 },
 ];
 
-const inconsistenciasReincidentes = [
-  { colaborador: "ADM DE REDES", pct: 100 },
-  { colaborador: "AGENTE DE ESTACIO...", pct: 100 },
-  { colaborador: "AGENTE DE INSPECA...", pct: 100 },
-  { colaborador: "AGENTE DE SEGURA...", pct: 100 },
-  { colaborador: "ANALISTA DE INFRAE...", pct: 100 },
-  { colaborador: "ANALISTA DE MARKE...", pct: 100 },
-  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
-  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
-  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
+const evolucaoInconsistenciasReincidentes = [
+  { mes: "Jan", valor: 32.1 }, { mes: "Fev", valor: 34.5 }, { mes: "Mar", valor: 31.8 },
+  { mes: "Abr", valor: 35.2 }, { mes: "Mai", valor: 33.7 }, { mes: "Jun", valor: 36.4 },
+  { mes: "Jul", valor: 38.1 }, { mes: "Ago", valor: 35.9 }, { mes: "Set", valor: 37.3 },
+  { mes: "Out", valor: 34.8 }, { mes: "Nov", valor: 36.7 }, { mes: "Dez", valor: 33.2 },
+];
+
+const tempoMedioTratativaInconsistencias = [
+  { mes: "Jan", valor: 12.3 }, { mes: "Fev", valor: 11.8 }, { mes: "Mar", valor: 13.1 },
+  { mes: "Abr", valor: 10.5 }, { mes: "Mai", valor: 9.8 }, { mes: "Jun", valor: 11.2 },
+  { mes: "Jul", valor: 10.1 }, { mes: "Ago", valor: 9.5 }, { mes: "Set", valor: 8.7 },
+  { mes: "Out", valor: 9.2 }, { mes: "Nov", valor: 8.4 }, { mes: "Dez", valor: 7.9 },
 ];
 
 const topInconsistenciasTratadas = [
