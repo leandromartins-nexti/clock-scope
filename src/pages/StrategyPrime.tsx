@@ -546,7 +546,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">Top 20 pior % Inconsistências Tratadas</h3>
           <p className="text-xs text-gray-400 mb-4">por Entidade</p>
           <div className="max-h-[252px] overflow-y-auto">
