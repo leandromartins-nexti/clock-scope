@@ -615,17 +615,17 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
       <div className="grid grid-cols-9 gap-4">
         <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">% Inconsistências Reincidentes</h3>
-          <p className="text-xs text-gray-400 mb-4">por Colaborador</p>
-          <div className="space-y-2">
-            {inconsistenciasReincidentes.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-40 shrink-0 truncate">{item.colaborador}</span>
-                <div className="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
-                  <div className="h-full rounded-full bg-[#FF5722]" style={{ width: `${item.pct}%` }} />
-                </div>
-                <span className="text-xs text-gray-600 font-medium w-10 text-right">{item.pct}%</span>
-              </div>
-            ))}
+          <p className="text-xs text-gray-400 mb-4">por Período</p>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={evolucaoInconsistenciasReincidentes}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+                <YAxis hide domain={[0, 100]} />
+                <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ fill: "#FF5722", r: 3 }} name="% Reincidentes" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
         <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
