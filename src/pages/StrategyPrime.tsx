@@ -182,7 +182,7 @@ const StrategyPrime = () => {
 
   return (
     <ImprovementProvider>
-    <ImprovementLayer>
+    <ImprovementLayer screenId={activeSubNav}>
     <div className="bg-gray-50 min-h-screen flex flex-col">
       {/* Breadcrumb */}
       <header className="border-b border-gray-200 px-6 py-3 bg-gray-100">
