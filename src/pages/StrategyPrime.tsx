@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lucide-react";
+import { ImprovementProvider } from "@/contexts/ImprovementContext";
+import { ImprovementPin } from "@/components/improvements/ImprovementPin";
+import { ImprovementCenter } from "@/components/improvements/ImprovementCenter";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, LabelList
@@ -147,6 +150,7 @@ const StrategyPrime = () => {
   const [activeFilter, setActiveFilter] = useState("Empresa");
 
   return (
+    <ImprovementProvider>
     <div className="flex-1 overflow-auto bg-gray-50 min-h-screen flex flex-col">
       {/* Breadcrumb */}
       <header className="border-b border-gray-200 px-6 py-3 bg-gray-100">
@@ -188,6 +192,7 @@ const StrategyPrime = () => {
               <Filter className="w-4 h-4" />
               Filtros
             </button>
+            <ImprovementCenter />
           </div>
         </div>
       </div>
@@ -293,6 +298,7 @@ const StrategyPrime = () => {
         {activeSubNav === "Eficiência" && <EficienciaContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
       </div>
     </div>
+    </ImprovementProvider>
   );
 };
 
@@ -406,8 +412,11 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
           <p className="text-xs text-gray-400 mb-4">por Tipo</p>
           <div className="space-y-4">
             {marcacoesPorTipo.map((item) => (
-              <div key={item.tipo} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-32 shrink-0">{item.tipo}</span>
+              <div key={item.tipo} className="flex items-center gap-3 relative">
+                <span className="text-xs text-gray-500 w-32 shrink-0 flex items-center gap-1.5">
+                  {item.tipo}
+                  <ImprovementPin itemId="marcacoes-tipo-labels" className="-mt-0.5" />
+                </span>
                 <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
                   <div className="h-full rounded-full bg-[#FF5722]" style={{ width: `${item.pct}%` }} />
                 </div>
