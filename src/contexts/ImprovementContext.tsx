@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export type ImprovementStatus = "pending" | "resolved" | "cancelled";
 
@@ -10,8 +11,8 @@ export interface ImprovementComment {
 }
 
 export interface ImprovementPosition {
-  x: number; // percentage relative to container
-  y: number; // px from top of scrollable content
+  x: number;
+  y: number;
   route: string;
 }
 
@@ -22,7 +23,7 @@ export interface ImprovementItem {
   status: ImprovementStatus;
   comments: ImprovementComment[];
   createdAt: Date;
-  position?: ImprovementPosition; // for floating pins
+  position?: ImprovementPosition;
 }
 
 interface ImprovementContextType {
@@ -44,93 +45,95 @@ export function useImprovement() {
   return ctx;
 }
 
-const initialItems: ImprovementItem[] = [
-  {
-    id: "marcacoes-tipo-labels",
-    title: "Traduzir variáveis de tipo de marcação",
-    description: "Transformar a variável em inglês em texto legível:\n• INVALID_TIME = Horário Inválido\n• NOT_REGISTERED = Esquecimento",
-    status: "pending",
-    comments: [],
-    createdAt: new Date("2026-03-12"),
-  },
-  {
-    id: "coletores-tipo-labels",
-    title: "Traduzir tipos de coletores",
-    description: "Rever as traduções dos tipos de coletores:\n• SYSTEM = Sistema\n• TERMINAL = Terminal\n• MOBILE = Dispositivo Móvel",
-    status: "pending",
-    comments: [],
-    createdAt: new Date("2026-03-12"),
-  },
-  {
-    id: "evolucao-marcacoes-tipo-substituir",
-    title: "Substituir '% Total de Marcações por Tipo'",
-    description: "Este novo gráfico de barras empilhadas (Evolução % Marcações por Tipo) deve substituir o KPI estático '% Total de Marcações por Tipo' acima.\n\nAlém disso, deve possuir filtro cruzado com o 'Top 10 Pior Qualidade de Marcação': ao clicar em uma empresa no ranking, o gráfico deve filtrar para exibir apenas os dados daquela empresa.",
-    status: "pending",
-    comments: [],
-    createdAt: new Date("2026-03-12"),
-  },
-  {
-    id: "evolucao-colaboradores-coletor-substituir",
-    title: "Substituir 'Total de Colaboradores por Coletor'",
-    description: "Este novo gráfico de barras empilhadas (Evolução Colaboradores por Coletor) deve substituir o KPI estático 'Total de Colaboradores por Coletor' acima.\n\nDeve possuir filtro cruzado com o 'Top 10 Pior Qualidade de Marcação': ao clicar em uma empresa no ranking, o gráfico deve filtrar para exibir apenas os dados daquela empresa.",
-    status: "pending",
-    comments: [],
-    createdAt: new Date("2026-03-12"),
-  },
-];
-
 export function ImprovementProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<ImprovementItem[]>(initialItems);
+  const [items, setItems] = useState<ImprovementItem[]>([]);
   const [showPins, setShowPins] = useState(true);
 
-  const addItem = (item: Omit<ImprovementItem, "id" | "createdAt" | "comments" | "status">) => {
-    setItems((prev) => [
-      ...prev,
-      {
-        ...item,
-        id: crypto.randomUUID(),
-        status: "pending" as ImprovementStatus,
-        comments: [],
-        createdAt: new Date(),
-      },
-    ]);
+  // Load items from DB
+  const fetchItems = useCallback(async () => {
+    const { data: improvements } = await supabase
+      .from("improvements")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if (!improvements) return;
+
+    const { data: comments } = await supabase
+      .from("improvement_comments")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    const mapped: ImprovementItem[] = improvements.map((imp: any) => ({
+      id: imp.id,
+      title: imp.title,
+      description: imp.description,
+      status: imp.status as ImprovementStatus,
+      createdAt: new Date(imp.created_at),
+      position: imp.position_x != null ? {
+        x: Number(imp.position_x),
+        y: Number(imp.position_y),
+        route: imp.position_route || "",
+      } : undefined,
+      comments: (comments || [])
+        .filter((c: any) => c.improvement_id === imp.id)
+        .map((c: any) => ({
+          id: c.id,
+          text: c.text,
+          author: c.author,
+          createdAt: new Date(c.created_at),
+        })),
+    }));
+
+    setItems(mapped);
+  }, []);
+
+  useEffect(() => {
+    fetchItems();
+
+    // Realtime subscription
+    const channel = supabase
+      .channel("improvements-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "improvements" }, () => fetchItems())
+      .on("postgres_changes", { event: "*", schema: "public", table: "improvement_comments" }, () => fetchItems())
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchItems]);
+
+  const addItem = async (item: Omit<ImprovementItem, "id" | "createdAt" | "comments" | "status">) => {
+    const insertData: any = {
+      title: item.title,
+      description: item.description,
+      status: "pending",
+    };
+    if (item.position) {
+      insertData.position_x = item.position.x;
+      insertData.position_y = item.position.y;
+      insertData.position_route = item.position.route;
+    }
+    await supabase.from("improvements").insert(insertData);
   };
 
-  const addComment = (itemId: string, text: string) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === itemId
-          ? {
-              ...item,
-              comments: [
-                ...item.comments,
-                {
-                  id: crypto.randomUUID(),
-                  text,
-                  author: "UI Team",
-                  createdAt: new Date(),
-                },
-              ],
-            }
-          : item
-      )
-    );
+  const addComment = async (itemId: string, text: string) => {
+    await supabase.from("improvement_comments").insert({
+      improvement_id: itemId,
+      text,
+      author: "UI Team",
+    });
   };
 
-  const setStatus = (itemId: string, status: ImprovementStatus) => {
-    setItems((prev) =>
-      prev.map((item) => (item.id === itemId ? { ...item, status } : item))
-    );
+  const setStatus = async (itemId: string, status: ImprovementStatus) => {
+    await supabase.from("improvements").update({ status, updated_at: new Date().toISOString() }).eq("id", itemId);
   };
 
-  const editItem = (itemId: string, title: string, description: string) => {
-    setItems((prev) =>
-      prev.map((item) => (item.id === itemId ? { ...item, title, description } : item))
-    );
+  const editItem = async (itemId: string, title: string, description: string) => {
+    await supabase.from("improvements").update({ title, description, updated_at: new Date().toISOString() }).eq("id", itemId);
   };
 
-  const removeItem = (itemId: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== itemId));
+  const removeItem = async (itemId: string) => {
+    // Optimistic removal
+    setItems((prev) => prev.filter((i) => i.id !== itemId));
+    await supabase.from("improvements").delete().eq("id", itemId);
   };
 
   const togglePins = () => setShowPins((v) => !v);

@@ -14,7 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      improvement_comments: {
+        Row: {
+          author: string
+          created_at: string
+          id: string
+          improvement_id: string
+          text: string
+        }
+        Insert: {
+          author?: string
+          created_at?: string
+          id?: string
+          improvement_id: string
+          text: string
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          id?: string
+          improvement_id?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "improvement_comments_improvement_id_fkey"
+            columns: ["improvement_id"]
+            isOneToOne: false
+            referencedRelation: "improvements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      improvements: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          position_route: string | null
+          position_x: number | null
+          position_y: number | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          position_route?: string | null
+          position_x?: number | null
+          position_y?: number | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          position_route?: string | null
+          position_x?: number | null
+          position_y?: number | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
