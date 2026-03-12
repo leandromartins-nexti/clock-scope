@@ -690,7 +690,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
           </div>
         </div>
         {/* % Solicitações por Tipo */}
-        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">% Solicitações de Justificativa de Ponto por Tipo</h3>
           <p className="text-xs text-gray-400 mb-4">por Código</p>
           <div className="h-[220px]">
