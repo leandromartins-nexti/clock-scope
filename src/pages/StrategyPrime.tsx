@@ -753,9 +753,9 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
 const EficienciaContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
-      <div className="grid grid-cols-9 gap-4">
-        {/* Pior Tempo Médio de Tratativa de Marcações */}
-        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Pior Tempo Médio de Tratativa de Marcações</h3>
           <h3 className="font-bold text-sm text-gray-800">Pior Tempo Médio de Tratativa de Marcações</h3>
           <p className="text-xs text-gray-400 mb-4">por Operador</p>
           <table className="w-full text-sm">
