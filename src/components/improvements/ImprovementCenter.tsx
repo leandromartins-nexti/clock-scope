@@ -163,17 +163,31 @@ export function ImprovementCenter() {
                       <p className="text-xs text-gray-600 whitespace-pre-line leading-relaxed bg-gray-50 p-3 rounded-lg pr-8">
                         {item.description}
                       </p>
-                      <button
-                        onClick={() => {
-                          setEditingId(item.id);
-                          setEditTitle(item.title);
-                          setEditDesc(item.description);
-                        }}
-                        className="absolute top-2 right-2 p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
-                        title="Editar"
-                      >
-                        <Pencil className="w-3 h-3" />
-                      </button>
+                      <div className="absolute top-2 right-2 flex items-center gap-1">
+                        <button
+                          onClick={() => {
+                            setEditingId(item.id);
+                            setEditTitle(item.title);
+                            setEditDesc(item.description);
+                          }}
+                          className="p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                          title="Editar"
+                        >
+                          <Pencil className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm("Tem certeza que deseja excluir esta melhoria?")) {
+                              removeItem(item.id);
+                              setExpandedId(null);
+                            }
+                          }}
+                          className="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                          title="Excluir"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
                     </div>
                   )}
 
