@@ -555,17 +555,19 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
           </div>
         </div>
         <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Evolução % Inconsistências Tratadas</h3>
-          <p className="text-xs text-gray-400 mb-4">por Período</p>
+          <h3 className="font-bold text-sm text-gray-800">Inconsistências x Tratadas</h3>
+          <p className="text-xs text-gray-400 mb-4">Volume por Período</p>
           <div className="h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={evolucaoInconsistenciasTratadas}>
+              <BarChart data={evolucaoInconsistenciasTratadas} barGap={2} barSize={14}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
-                <YAxis hide domain={[0, 100]} />
-                <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
-                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ fill: "#FF5722", r: 3 }} name="% Tratadas" />
-              </LineChart>
+                <YAxis hide />
+                <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+                <Bar dataKey="total" fill="#BDBDBD" radius={[2, 2, 0, 0]} name="Total Inconsistências" />
+                <Bar dataKey="tratadas" fill="#FF5722" radius={[2, 2, 0, 0]} name="Tratadas" />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
