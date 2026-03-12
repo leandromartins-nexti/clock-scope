@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useImprovement, ImprovementStatus } from "@/contexts/ImprovementContext";
-import { Wrench, Eye, EyeOff, CheckCircle2, XCircle, Clock, MessageSquare, Send, X } from "lucide-react";
+import { Wrench, Eye, EyeOff, CheckCircle2, XCircle, Clock, MessageSquare, Send, X, Pencil, Check } from "lucide-react";
 
 const statusColors: Record<ImprovementStatus, string> = {
   pending: "bg-amber-400",
@@ -21,10 +21,13 @@ const statusBadge: Record<ImprovementStatus, string> = {
 };
 
 export function ImprovementCenter() {
-  const { items, showPins, togglePins, addComment, setStatus } = useImprovement();
+  const { items, showPins, togglePins, addComment, setStatus, editItem } = useImprovement();
   const [open, setOpen] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [commentTexts, setCommentTexts] = useState<Record<string, string>>({});
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDesc, setEditDesc] = useState("");
 
   const pendingCount = items.filter((i) => i.status === "pending").length;
 
@@ -120,9 +123,59 @@ export function ImprovementCenter() {
 
               {expandedId === item.id && (
                 <div className="px-5 pb-4">
-                  <p className="text-xs text-gray-600 whitespace-pre-line leading-relaxed mb-3 bg-gray-50 p-3 rounded-lg">
-                    {item.description}
-                  </p>
+                  {/* Edit mode */}
+                  {editingId === item.id ? (
+                    <div className="mb-3 space-y-2">
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="w-full text-sm font-medium border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-300"
+                        placeholder="Título"
+                      />
+                      <textarea
+                        value={editDesc}
+                        onChange={(e) => setEditDesc(e.target.value)}
+                        rows={4}
+                        className="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-300 resize-none"
+                        placeholder="Descrição"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            editItem(item.id, editTitle, editDesc);
+                            setEditingId(null);
+                          }}
+                          className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+                        >
+                          <Check className="w-3 h-3" /> Salvar
+                        </button>
+                        <button
+                          onClick={() => setEditingId(null)}
+                          className="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative mb-3">
+                      <p className="text-xs text-gray-600 whitespace-pre-line leading-relaxed bg-gray-50 p-3 rounded-lg pr-8">
+                        {item.description}
+                      </p>
+                      <button
+                        onClick={() => {
+                          setEditingId(item.id);
+                          setEditTitle(item.title);
+                          setEditDesc(item.description);
+                        }}
+                        className="absolute top-2 right-2 p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                        title="Editar"
+                      >
+                        <Pencil className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
 
                   {/* Status actions */}
                   <div className="flex items-center gap-2 mb-3">
