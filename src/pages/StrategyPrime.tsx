@@ -33,6 +33,21 @@ const marcacoesPorTipo = [
   { tipo: "NOT_REGISTERED", pct: 100, cor: "#FF5722" },
 ];
 
+const evolucaoMarcacoesPorTipo = [
+  { mes: "Jan", INVALID_TIME: 52, NOT_REGISTERED: 48 },
+  { mes: "Fev", INVALID_TIME: 55, NOT_REGISTERED: 45 },
+  { mes: "Mar", INVALID_TIME: 50, NOT_REGISTERED: 50 },
+  { mes: "Abr", INVALID_TIME: 58, NOT_REGISTERED: 42 },
+  { mes: "Mai", INVALID_TIME: 53, NOT_REGISTERED: 47 },
+  { mes: "Jun", INVALID_TIME: 60, NOT_REGISTERED: 40 },
+  { mes: "Jul", INVALID_TIME: 57, NOT_REGISTERED: 43 },
+  { mes: "Ago", INVALID_TIME: 62, NOT_REGISTERED: 38 },
+  { mes: "Set", INVALID_TIME: 55, NOT_REGISTERED: 45 },
+  { mes: "Out", INVALID_TIME: 59, NOT_REGISTERED: 41 },
+  { mes: "Nov", INVALID_TIME: 61, NOT_REGISTERED: 39 },
+  { mes: "Dez", INVALID_TIME: 56, NOT_REGISTERED: 44 },
+];
+
 const colaboradoresPorColetor = [
   { coletor: "SYSTEM", valor: 6749, cor: "#FF5722" },
   { coletor: "TERMINAL", valor: 6170, cor: "#FF5722" },
