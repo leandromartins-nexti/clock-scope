@@ -615,8 +615,8 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
 const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
-      <div className="grid grid-cols-9 gap-4">
-        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">% Origem de Solicitações dos Ajustes de Ponto</h3>
           <div className="flex items-center gap-4 mt-1 mb-2">
             <div className="flex items-center gap-1.5">
