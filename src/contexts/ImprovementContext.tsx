@@ -43,6 +43,14 @@ const initialItems: ImprovementItem[] = [
     comments: [],
     createdAt: new Date("2026-03-12"),
   },
+  {
+    id: "coletores-tipo-labels",
+    title: "Traduzir tipos de coletores",
+    description: "Rever as traduções dos tipos de coletores:\n• SYSTEM = Sistema\n• TERMINAL = Terminal\n• MOBILE = Dispositivo Móvel",
+    status: "pending",
+    comments: [],
+    createdAt: new Date("2026-03-12"),
+  },
 ];
 
 export function ImprovementProvider({ children }: { children: ReactNode }) {
