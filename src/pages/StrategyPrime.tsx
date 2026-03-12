@@ -432,7 +432,10 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
           <div className="space-y-3">
             {colaboradoresPorColetor.map((item) => (
               <div key={item.coletor} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-20 shrink-0 font-medium">{item.coletor}</span>
+                <span className="text-xs text-gray-500 w-20 shrink-0 font-medium flex items-center gap-1.5">
+                  {item.coletor}
+                  <ImprovementPin itemId="coletores-tipo-labels" className="-mt-0.5" />
+                </span>
                 <div className="flex-1 bg-gray-100 rounded h-7 overflow-hidden flex items-center">
                   <div
                     className="h-full bg-[#FF5722] rounded flex items-center justify-end pr-2"
