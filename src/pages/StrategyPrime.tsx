@@ -471,50 +471,6 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-9 gap-4">
-        {/* % Total de Marcações */}
-        <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">% Total de Marcações</h3>
-          <p className="text-xs text-gray-400 mb-4">por Tipo</p>
-          <div className="space-y-4">
-            {marcacoesPorTipo.map((item) => (
-              <div key={item.tipo} className="flex items-center gap-3 relative">
-                <span className="text-xs text-gray-500 w-32 shrink-0 flex items-center gap-1.5">
-                  {item.tipo}
-                  <ImprovementPin itemId="marcacoes-tipo-labels" className="-mt-0.5" />
-                </span>
-                <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
-                  <div className="h-full rounded-full bg-[#FF5722]" style={{ width: `${item.pct}%` }} />
-                </div>
-                <span className="text-xs text-gray-600 font-medium w-10 text-right">{item.pct}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Total de Colaboradores por Coletor */}
-        <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Total de Colaboradores</h3>
-          <p className="text-xs text-gray-400 mb-4">por Coletor</p>
-          <div className="space-y-3">
-            {colaboradoresPorColetor.map((item) => (
-              <div key={item.coletor} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-20 shrink-0 font-medium flex items-center gap-1.5">
-                  {item.coletor}
-                  <ImprovementPin itemId="coletores-tipo-labels" className="-mt-0.5" />
-                </span>
-                <div className="flex-1 bg-gray-100 rounded h-7 overflow-hidden flex items-center">
-                  <div
-                    className="h-full bg-[#FF5722] rounded flex items-center justify-end pr-2"
-                    style={{ width: `${(item.valor / 6749) * 100}%`, minWidth: "40px" }}
-                  >
-                    <span className="text-white text-xs font-bold">{item.valor.toLocaleString("pt-BR")}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
       <div className="grid grid-cols-2 gap-4">
         {/* Evolução % Marcações por Tipo - Stacked Bar */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
