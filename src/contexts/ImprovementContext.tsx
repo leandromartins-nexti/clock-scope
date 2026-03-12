@@ -60,6 +60,14 @@ const initialItems: ImprovementItem[] = [
     comments: [],
     createdAt: new Date("2026-03-12"),
   },
+  {
+    id: "evolucao-colaboradores-coletor-substituir",
+    title: "Substituir 'Total de Colaboradores por Coletor'",
+    description: "Este novo gráfico de barras empilhadas (Evolução Colaboradores por Coletor) deve substituir o KPI estático 'Total de Colaboradores por Coletor' acima.\n\nDeve possuir filtro cruzado com o 'Top 10 Pior Qualidade de Marcação': ao clicar em uma empresa no ranking, o gráfico deve filtrar para exibir apenas os dados daquela empresa.",
+    status: "pending",
+    comments: [],
+    createdAt: new Date("2026-03-12"),
+  },
 ];
 
 export function ImprovementProvider({ children }: { children: ReactNode }) {

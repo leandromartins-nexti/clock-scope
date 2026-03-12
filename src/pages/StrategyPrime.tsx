@@ -54,6 +54,21 @@ const colaboradoresPorColetor = [
   { coletor: "MOBILE", valor: 115, cor: "#FF5722" },
 ];
 
+const evolucaoColaboradoresPorColetor = [
+  { mes: "Jan", SYSTEM: 5800, TERMINAL: 5200, MOBILE: 90 },
+  { mes: "Fev", SYSTEM: 5900, TERMINAL: 5300, MOBILE: 95 },
+  { mes: "Mar", SYSTEM: 6000, TERMINAL: 5500, MOBILE: 98 },
+  { mes: "Abr", SYSTEM: 6100, TERMINAL: 5600, MOBILE: 100 },
+  { mes: "Mai", SYSTEM: 6200, TERMINAL: 5700, MOBILE: 102 },
+  { mes: "Jun", SYSTEM: 6300, TERMINAL: 5800, MOBILE: 105 },
+  { mes: "Jul", SYSTEM: 6400, TERMINAL: 5900, MOBILE: 108 },
+  { mes: "Ago", SYSTEM: 6500, TERMINAL: 6000, MOBILE: 110 },
+  { mes: "Set", SYSTEM: 6600, TERMINAL: 6050, MOBILE: 112 },
+  { mes: "Out", SYSTEM: 6749, TERMINAL: 6170, MOBILE: 115 },
+  { mes: "Nov", SYSTEM: 6700, TERMINAL: 6100, MOBILE: 113 },
+  { mes: "Dez", SYSTEM: 6650, TERMINAL: 6080, MOBILE: 111 },
+];
+
 const inconsistenciasReincidentes = [
   { colaborador: "ADM DE REDES", pct: 100 },
   { colaborador: "AGENTE DE ESTACIO...", pct: 100 },
@@ -481,6 +496,28 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
               <Legend wrapperStyle={{ fontSize: "11px" }} />
               <Bar dataKey="INVALID_TIME" stackId="a" fill="#FF5722" name="Horário Inválido" radius={[0, 0, 0, 0]} />
               <Bar dataKey="NOT_REGISTERED" stackId="a" fill="#FF9800" name="Esquecimento" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      {/* Evolução Colaboradores por Coletor - Stacked Bar */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="font-bold text-sm text-gray-800">Evolução Colaboradores por Coletor</h3>
+          <ImprovementPin itemId="evolucao-colaboradores-coletor-substituir" />
+        </div>
+        <p className="text-xs text-gray-400 mb-4">Quantidade mensal por tipo de coletor</p>
+        <div className="h-[250px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={evolucaoColaboradoresPorColetor}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+              <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+              <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+              <Legend wrapperStyle={{ fontSize: "11px" }} />
+              <Bar dataKey="SYSTEM" stackId="a" fill="#FF5722" name="System" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="TERMINAL" stackId="a" fill="#FF9800" name="Terminal" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="MOBILE" stackId="a" fill="#FFC107" name="Mobile" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
