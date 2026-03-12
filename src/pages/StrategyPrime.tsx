@@ -6,7 +6,7 @@ import { ImprovementPin } from "@/components/improvements/ImprovementPin";
 import { ImprovementCenter } from "@/components/improvements/ImprovementCenter";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar, LabelList
+  PieChart, Pie, Cell, BarChart, Bar, LabelList, Legend
 } from "recharts";
 
 // Mock data
@@ -31,6 +31,21 @@ const topPiorQualidade = [
 const marcacoesPorTipo = [
   { tipo: "INVALID_TIME", pct: 100, cor: "#FF5722" },
   { tipo: "NOT_REGISTERED", pct: 100, cor: "#FF5722" },
+];
+
+const evolucaoMarcacoesPorTipo = [
+  { mes: "Jan", INVALID_TIME: 52, NOT_REGISTERED: 48 },
+  { mes: "Fev", INVALID_TIME: 55, NOT_REGISTERED: 45 },
+  { mes: "Mar", INVALID_TIME: 50, NOT_REGISTERED: 50 },
+  { mes: "Abr", INVALID_TIME: 58, NOT_REGISTERED: 42 },
+  { mes: "Mai", INVALID_TIME: 53, NOT_REGISTERED: 47 },
+  { mes: "Jun", INVALID_TIME: 60, NOT_REGISTERED: 40 },
+  { mes: "Jul", INVALID_TIME: 57, NOT_REGISTERED: 43 },
+  { mes: "Ago", INVALID_TIME: 62, NOT_REGISTERED: 38 },
+  { mes: "Set", INVALID_TIME: 55, NOT_REGISTERED: 45 },
+  { mes: "Out", INVALID_TIME: 59, NOT_REGISTERED: 41 },
+  { mes: "Nov", INVALID_TIME: 61, NOT_REGISTERED: 39 },
+  { mes: "Dez", INVALID_TIME: 56, NOT_REGISTERED: 44 },
 ];
 
 const colaboradoresPorColetor = [
@@ -447,6 +462,27 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
               </div>
             ))}
           </div>
+        </div>
+      </div>
+      {/* Evolução % Marcações por Tipo - Stacked Bar */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="font-bold text-sm text-gray-800">Evolução % Marcações por Tipo</h3>
+          <ImprovementPin itemId="evolucao-marcacoes-tipo-substituir" />
+        </div>
+        <p className="text-xs text-gray-400 mb-4">Percentual mensal por tipo de marcação</p>
+        <div className="h-[250px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={evolucaoMarcacoesPorTipo}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+              <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} tickFormatter={(v) => `${v}%`} />
+              <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+              <Legend wrapperStyle={{ fontSize: "11px" }} />
+              <Bar dataKey="INVALID_TIME" stackId="a" fill="#FF5722" name="Horário Inválido" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="NOT_REGISTERED" stackId="a" fill="#FF9800" name="Esquecimento" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
