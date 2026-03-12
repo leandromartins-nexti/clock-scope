@@ -710,7 +710,6 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">% Solicitações de Justificativa de Pontos Tratadas</h3>
-          <h3 className="font-bold text-sm text-gray-800">% Solicitações de Justificativa de Pontos Tratadas</h3>
           <p className="text-xs text-gray-400 mb-4">por Período</p>
           <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
