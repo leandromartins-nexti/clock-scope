@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useImprovement, ImprovementStatus } from "@/contexts/ImprovementContext";
-import { MessageSquare, CheckCircle2, XCircle, Send } from "lucide-react";
+import { MessageSquareMore, CheckCircle2, XCircle, Send } from "lucide-react";
 
-const statusColors: Record<ImprovementStatus, { bg: string; border: string; ring: string }> = {
-  pending: { bg: "bg-amber-400", border: "border-amber-500", ring: "ring-amber-300" },
-  resolved: { bg: "bg-emerald-400", border: "border-emerald-500", ring: "ring-emerald-300" },
-  cancelled: { bg: "bg-gray-400", border: "border-gray-500", ring: "ring-gray-300" },
+const statusColors: Record<ImprovementStatus, { bg: string; text: string }> = {
+  pending: { bg: "bg-amber-400", text: "text-white" },
+  resolved: { bg: "bg-emerald-400", text: "text-white" },
+  cancelled: { bg: "bg-gray-400", text: "text-white" },
 };
 
 const statusLabels: Record<ImprovementStatus, string> = {
@@ -17,36 +17,71 @@ const statusLabels: Record<ImprovementStatus, string> = {
 interface ImprovementPinProps {
   itemId: string;
   className?: string;
+  onDragEnd?: (deltaX: number, deltaY: number) => void;
 }
 
-export function ImprovementPin({ itemId, className = "" }: ImprovementPinProps) {
+export function ImprovementPin({ itemId, className = "", onDragEnd }: ImprovementPinProps) {
   const { items, addComment, setStatus, showPins } = useImprovement();
   const [open, setOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const dragRef = useRef<{ startX: number; startY: number; dragging: boolean }>({ startX: 0, startY: 0, dragging: false });
 
   const item = items.find((i) => i.id === itemId);
   if (!item || !showPins) return null;
 
   const colors = statusColors[item.status];
 
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    dragRef.current = { startX: e.clientX, startY: e.clientY, dragging: false };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (d.startX === 0 && d.startY === 0) return;
+    const dx = Math.abs(e.clientX - d.startX);
+    const dy = Math.abs(e.clientY - d.startY);
+    if (dx > 4 || dy > 4) {
+      d.dragging = true;
+    }
+  }, []);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (d.dragging && onDragEnd) {
+      onDragEnd(e.clientX - d.startX, e.clientY - d.startY);
+    } else if (!d.dragging) {
+      setOpen((prev) => !prev);
+    }
+    dragRef.current = { startX: 0, startY: 0, dragging: false };
+  }, [onDragEnd]);
+
   return (
     <div className={`relative inline-flex ${className}`}>
-      {/* Pin */}
-      <button
-        onClick={() => setOpen(!open)}
-        className={`w-4 h-4 rounded-full ${colors.bg} ${colors.border} border ring-2 ${colors.ring} ring-opacity-50 cursor-pointer hover:scale-125 transition-transform z-10 animate-pulse`}
-        title="Melhoria UI"
-      />
+      {/* Comment bubble icon */}
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        className={`${colors.bg} ${colors.text} rounded-full p-1.5 cursor-grab active:cursor-grabbing shadow-lg hover:scale-110 transition-transform z-10`}
+        title="Comentário"
+        style={{ touchAction: "none" }}
+      >
+        <MessageSquareMore className="w-4 h-4" />
+      </div>
 
       {/* Popover */}
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute left-6 top-0 z-50 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
+          <div className="absolute left-8 top-0 z-50 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-3 border-b border-gray-100">
               <div className="flex items-center justify-between">
-                <h4 className="font-bold text-sm text-gray-800">🔧 Melhoria UI</h4>
+                <h4 className="font-bold text-sm text-gray-800 flex items-center gap-1.5">
+                  <MessageSquareMore className="w-4 h-4 text-[#FF5722]" />
+                  Comentário
+                </h4>
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                   item.status === "pending" ? "bg-amber-100 text-amber-700" :
                   item.status === "resolved" ? "bg-emerald-100 text-emerald-700" :
@@ -99,13 +134,13 @@ export function ImprovementPin({ itemId, className = "" }: ImprovementPinProps) 
             {/* Comments */}
             <div className="px-4 py-3 max-h-40 overflow-y-auto">
               <div className="flex items-center gap-1 mb-2">
-                <MessageSquare className="w-3 h-3 text-gray-400" />
+                <MessageSquareMore className="w-3 h-3 text-gray-400" />
                 <span className="text-[10px] text-gray-400 font-semibold uppercase">
-                  Comentários ({item.comments.length})
+                  Respostas ({item.comments.length})
                 </span>
               </div>
               {item.comments.length === 0 && (
-                <p className="text-[11px] text-gray-400 italic">Nenhum comentário ainda.</p>
+                <p className="text-[11px] text-gray-400 italic">Nenhuma resposta ainda.</p>
               )}
               {item.comments.map((c) => (
                 <div key={c.id} className="mb-2 p-2 bg-gray-50 rounded-lg">
@@ -132,7 +167,7 @@ export function ImprovementPin({ itemId, className = "" }: ImprovementPinProps) 
                     setCommentText("");
                   }
                 }}
-                placeholder="Adicionar comentário..."
+                placeholder="Adicionar resposta..."
                 className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-300"
               />
               <button

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useImprovement, ImprovementStatus } from "@/contexts/ImprovementContext";
-import { Wrench, Eye, EyeOff, CheckCircle2, XCircle, Clock, MessageSquare, Send, X, Pencil, Check, Trash2 } from "lucide-react";
+import { MessageSquareMore, Eye, EyeOff, CheckCircle2, XCircle, Clock, Send, X, Pencil, Check, Trash2 } from "lucide-react";
 
 const statusColors: Record<ImprovementStatus, string> = {
   pending: "bg-amber-400",
@@ -37,8 +37,8 @@ export function ImprovementCenter() {
         onClick={() => setOpen(!open)}
         className="border border-gray-300 text-gray-600 px-4 py-2 rounded text-sm font-medium flex items-center gap-2 hover:bg-gray-50 transition-colors relative"
       >
-        <Wrench className="w-4 h-4" />
-        Melhorias
+        <MessageSquareMore className="w-4 h-4" />
+        Comentários
         {pendingCount > 0 && (
           <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
             {pendingCount}
@@ -61,8 +61,8 @@ export function ImprovementCenter() {
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <div>
             <h3 className="font-bold text-gray-800 flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-[#FF5722]" />
-              Central de Melhorias
+              <MessageSquareMore className="w-4 h-4 text-[#FF5722]" />
+              Central de Comentários
             </h3>
             <p className="text-xs text-gray-500 mt-0.5">{items.length} itens registrados</p>
           </div>
@@ -116,7 +116,7 @@ export function ImprovementCenter() {
                     </span>
                   </div>
                   <p className="text-[11px] text-gray-400 mt-0.5">
-                    {item.createdAt.toLocaleDateString("pt-BR")} · {item.comments.length} comentário(s)
+                    {item.createdAt.toLocaleDateString("pt-BR")} · {item.comments.length} resposta(s)
                   </p>
                 </div>
               </button>
@@ -177,7 +177,7 @@ export function ImprovementCenter() {
                         </button>
                         <button
                           onClick={() => {
-                            if (confirm("Tem certeza que deseja excluir esta melhoria?")) {
+                            if (confirm("Tem certeza que deseja excluir este comentário?")) {
                               removeItem(item.id);
                               setExpandedId(null);
                             }
@@ -212,11 +212,11 @@ export function ImprovementCenter() {
                   {/* Comments */}
                   <div className="space-y-2 mb-3">
                     <div className="flex items-center gap-1">
-                      <MessageSquare className="w-3 h-3 text-gray-400" />
-                      <span className="text-[10px] text-gray-400 font-semibold uppercase">Comentários</span>
+                      <MessageSquareMore className="w-3 h-3 text-gray-400" />
+                      <span className="text-[10px] text-gray-400 font-semibold uppercase">Respostas</span>
                     </div>
                     {item.comments.length === 0 && (
-                      <p className="text-[11px] text-gray-400 italic">Nenhum comentário ainda.</p>
+                      <p className="text-[11px] text-gray-400 italic">Nenhuma resposta ainda.</p>
                     )}
                     {item.comments.map((c) => (
                       <div key={c.id} className="p-2 bg-gray-50 rounded-lg">
@@ -241,7 +241,7 @@ export function ImprovementCenter() {
                           setCommentTexts({ ...commentTexts, [item.id]: "" });
                         }
                       }}
-                      placeholder="Comentar..."
+                      placeholder="Responder..."
                       className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-300"
                     />
                     <button
