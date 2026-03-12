@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, ReactNode } from "react";
 import { useImprovement } from "@/contexts/ImprovementContext";
 import { ImprovementPin } from "./ImprovementPin";
-import { Send, X, MapPin } from "lucide-react";
+import { Send, X, MessageSquareMore } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 interface ContextMenuState {
@@ -24,7 +24,7 @@ interface ImprovementLayerProps {
 }
 
 export function ImprovementLayer({ children, screenId }: ImprovementLayerProps) {
-  const { items, addItem, showPins } = useImprovement();
+  const { items, addItem, updatePosition, showPins } = useImprovement();
   const location = useLocation();
   const currentRoute = screenId ? `${location.pathname}#${screenId}` : location.pathname;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -83,6 +83,20 @@ export function ImprovementLayer({ children, screenId }: ImprovementLayerProps) 
     setForm({ visible: false, x: 0, y: 0, scrollY: 0 });
   };
 
+  const handleDragEnd = useCallback((itemId: string, currentX: number, currentY: number) => {
+    return (deltaX: number, deltaY: number) => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      const newXPx = (currentX / 100) * container.scrollWidth + deltaX;
+      const newYPx = currentY + deltaY;
+
+      const newXPct = (newXPx / container.scrollWidth) * 100;
+
+      updatePosition(itemId, newXPct, newYPx);
+    };
+  }, [updatePosition]);
+
   const floatingPins = items.filter(
     (item) => item.position && item.position.route === currentRoute
   );
@@ -110,7 +124,10 @@ export function ImprovementLayer({ children, screenId }: ImprovementLayerProps) 
               transform: "translate(-50%, -50%)",
             }}
           >
-            <ImprovementPin itemId={item.id} />
+            <ImprovementPin
+              itemId={item.id}
+              onDragEnd={handleDragEnd(item.id, item.position!.x, item.position!.y)}
+            />
           </div>
         ))}
 
@@ -132,14 +149,14 @@ export function ImprovementLayer({ children, screenId }: ImprovementLayerProps) 
               onClick={handleAddPin}
               className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-[#FF5722] transition-colors"
             >
-              <MapPin className="w-4 h-4" />
-              Adicionar melhoria UX aqui
+              <MessageSquareMore className="w-4 h-4" />
+              Adicionar comentário aqui
             </button>
           </div>
         </>
       )}
 
-      {/* New improvement form */}
+      {/* New comment form */}
       {form.visible && (
         <>
           <div
@@ -156,8 +173,8 @@ export function ImprovementLayer({ children, screenId }: ImprovementLayerProps) 
             {/* Header */}
             <div className="bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-3 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#FF5722]" />
-                <h4 className="font-bold text-sm text-gray-800">Nova Melhoria UX</h4>
+                <MessageSquareMore className="w-4 h-4 text-[#FF5722]" />
+                <h4 className="font-bold text-sm text-gray-800">Novo Comentário</h4>
               </div>
               <button
                 onClick={() => setForm({ visible: false, x: 0, y: 0, scrollY: 0 })}
@@ -186,7 +203,7 @@ export function ImprovementLayer({ children, screenId }: ImprovementLayerProps) 
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Descreva a melhoria desejada..."
+                  placeholder="Descreva o comentário..."
                   rows={3}
                   className="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-300 resize-none"
                 />
@@ -197,7 +214,7 @@ export function ImprovementLayer({ children, screenId }: ImprovementLayerProps) 
                 className="w-full flex items-center justify-center gap-2 bg-[#FF5722] text-white py-2 rounded-lg text-sm font-medium hover:bg-[#E64A19] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <Send className="w-3.5 h-3.5" />
-                Criar Melhoria
+                Criar Comentário
               </button>
             </div>
           </div>

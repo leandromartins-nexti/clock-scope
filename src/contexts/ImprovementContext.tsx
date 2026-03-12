@@ -33,6 +33,7 @@ interface ImprovementContextType {
   setStatus: (itemId: string, status: ImprovementStatus) => void;
   editItem: (itemId: string, title: string, description: string) => void;
   removeItem: (itemId: string) => void;
+  updatePosition: (itemId: string, x: number, y: number) => void;
   showPins: boolean;
   togglePins: () => void;
 }
@@ -136,10 +137,15 @@ export function ImprovementProvider({ children }: { children: ReactNode }) {
     await supabase.from("improvements").delete().eq("id", itemId);
   };
 
+  const updatePosition = async (itemId: string, x: number, y: number) => {
+    setItems((prev) => prev.map((i) => i.id === itemId && i.position ? { ...i, position: { ...i.position, x, y } } : i));
+    await supabase.from("improvements").update({ position_x: x, position_y: y, updated_at: new Date().toISOString() }).eq("id", itemId);
+  };
+
   const togglePins = () => setShowPins((v) => !v);
 
   return (
-    <ImprovementContext.Provider value={{ items, addItem, addComment, setStatus, editItem, removeItem, showPins, togglePins }}>
+    <ImprovementContext.Provider value={{ items, addItem, addComment, setStatus, editItem, removeItem, updatePosition, showPins, togglePins }}>
       {children}
     </ImprovementContext.Provider>
   );
