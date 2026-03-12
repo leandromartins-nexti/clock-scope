@@ -70,16 +70,18 @@ const evolucaoMarcacoesPorColetor = [
   { mes: "Dez", SYSTEM: 51.9, TERMINAL: 47.3, MOBILE: 0.8 },
 ];
 
-const inconsistenciasReincidentes = [
-  { colaborador: "ADM DE REDES", pct: 100 },
-  { colaborador: "AGENTE DE ESTACIO...", pct: 100 },
-  { colaborador: "AGENTE DE INSPECA...", pct: 100 },
-  { colaborador: "AGENTE DE SEGURA...", pct: 100 },
-  { colaborador: "ANALISTA DE INFRAE...", pct: 100 },
-  { colaborador: "ANALISTA DE MARKE...", pct: 100 },
-  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
-  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
-  { colaborador: "ANALISTA DE SISTEM...", pct: 100 },
+const evolucaoInconsistenciasReincidentes = [
+  { mes: "Jan", valor: 32.1 }, { mes: "Fev", valor: 34.5 }, { mes: "Mar", valor: 31.8 },
+  { mes: "Abr", valor: 35.2 }, { mes: "Mai", valor: 33.7 }, { mes: "Jun", valor: 36.4 },
+  { mes: "Jul", valor: 38.1 }, { mes: "Ago", valor: 35.9 }, { mes: "Set", valor: 37.3 },
+  { mes: "Out", valor: 34.8 }, { mes: "Nov", valor: 36.7 }, { mes: "Dez", valor: 33.2 },
+];
+
+const tempoMedioTratativaInconsistencias = [
+  { mes: "Jan", valor: 12.3 }, { mes: "Fev", valor: 11.8 }, { mes: "Mar", valor: 13.1 },
+  { mes: "Abr", valor: 10.5 }, { mes: "Mai", valor: 9.8 }, { mes: "Jun", valor: 11.2 },
+  { mes: "Jul", valor: 10.1 }, { mes: "Ago", valor: 9.5 }, { mes: "Set", valor: 8.7 },
+  { mes: "Out", valor: 9.2 }, { mes: "Nov", valor: 8.4 }, { mes: "Dez", valor: 7.9 },
 ];
 
 const topInconsistenciasTratadas = [
@@ -572,7 +574,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
     <div className="flex-1 space-y-4">
       <div className="grid grid-cols-9 gap-4">
         <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Top 20 % Inconsistências Tratadas</h3>
+          <h3 className="font-bold text-sm text-gray-800">Top 20 pior % Inconsistências Tratadas</h3>
           <p className="text-xs text-gray-400 mb-4">por Entidade</p>
           <div className="max-h-[252px] overflow-y-auto">
             <table className="w-full text-sm">
@@ -615,23 +617,33 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
       <div className="grid grid-cols-9 gap-4">
         <div className="col-span-4 bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">% Inconsistências Reincidentes</h3>
-          <p className="text-xs text-gray-400 mb-4">por Colaborador</p>
-          <div className="space-y-2">
-            {inconsistenciasReincidentes.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-40 shrink-0 truncate">{item.colaborador}</span>
-                <div className="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
-                  <div className="h-full rounded-full bg-[#FF5722]" style={{ width: `${item.pct}%` }} />
-                </div>
-                <span className="text-xs text-gray-600 font-medium w-10 text-right">{item.pct}%</span>
-              </div>
-            ))}
+          <p className="text-xs text-gray-400 mb-4">por Período</p>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={evolucaoInconsistenciasReincidentes}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+                <YAxis hide domain={[0, 100]} />
+                <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ fill: "#FF5722", r: 3 }} name="% Reincidentes" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
         <div className="col-span-5 bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">Tempo Médio Tratativa de Inconsistências</h3>
           <p className="text-xs text-gray-400 mb-4">por Período</p>
-          <div className="h-[200px] flex items-center justify-center text-gray-300 text-sm">Sem dados no período</div>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={tempoMedioTratativaInconsistencias}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+                <YAxis hide />
+                <Tooltip formatter={(value: number) => `${value.toFixed(1)}h`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ fill: "#FF5722", r: 3 }} name="Tempo Médio (h)" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>
