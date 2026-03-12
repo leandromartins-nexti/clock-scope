@@ -9,6 +9,12 @@ export interface ImprovementComment {
   createdAt: Date;
 }
 
+export interface ImprovementPosition {
+  x: number; // percentage relative to container
+  y: number; // px from top of scrollable content
+  route: string;
+}
+
 export interface ImprovementItem {
   id: string;
   title: string;
@@ -16,13 +22,16 @@ export interface ImprovementItem {
   status: ImprovementStatus;
   comments: ImprovementComment[];
   createdAt: Date;
+  position?: ImprovementPosition; // for floating pins
 }
 
 interface ImprovementContextType {
   items: ImprovementItem[];
+  addItem: (item: Omit<ImprovementItem, "id" | "createdAt" | "comments" | "status">) => void;
   addComment: (itemId: string, text: string) => void;
   setStatus: (itemId: string, status: ImprovementStatus) => void;
   editItem: (itemId: string, title: string, description: string) => void;
+  removeItem: (itemId: string) => void;
   showPins: boolean;
   togglePins: () => void;
 }
@@ -74,6 +83,19 @@ export function ImprovementProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<ImprovementItem[]>(initialItems);
   const [showPins, setShowPins] = useState(true);
 
+  const addItem = (item: Omit<ImprovementItem, "id" | "createdAt" | "comments" | "status">) => {
+    setItems((prev) => [
+      ...prev,
+      {
+        ...item,
+        id: crypto.randomUUID(),
+        status: "pending" as ImprovementStatus,
+        comments: [],
+        createdAt: new Date(),
+      },
+    ]);
+  };
+
   const addComment = (itemId: string, text: string) => {
     setItems((prev) =>
       prev.map((item) =>
@@ -107,10 +129,14 @@ export function ImprovementProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const removeItem = (itemId: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== itemId));
+  };
+
   const togglePins = () => setShowPins((v) => !v);
 
   return (
-    <ImprovementContext.Provider value={{ items, addComment, setStatus, editItem, showPins, togglePins }}>
+    <ImprovementContext.Provider value={{ items, addItem, addComment, setStatus, editItem, removeItem, showPins, togglePins }}>
       {children}
     </ImprovementContext.Provider>
   );

@@ -4,6 +4,7 @@ import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lu
 import { ImprovementProvider } from "@/contexts/ImprovementContext";
 import { ImprovementPin } from "@/components/improvements/ImprovementPin";
 import { ImprovementCenter } from "@/components/improvements/ImprovementCenter";
+import { ImprovementLayer } from "@/components/improvements/ImprovementLayer";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, LabelList, Legend
@@ -181,7 +182,8 @@ const StrategyPrime = () => {
 
   return (
     <ImprovementProvider>
-    <div className="flex-1 overflow-auto bg-gray-50 min-h-screen flex flex-col">
+    <ImprovementLayer>
+    <div className="bg-gray-50 min-h-screen flex flex-col">
       {/* Breadcrumb */}
       <header className="border-b border-gray-200 px-6 py-3 bg-gray-100">
         <div className="flex items-center gap-2 text-sm">
@@ -328,6 +330,7 @@ const StrategyPrime = () => {
         {activeSubNav === "Eficiência" && <EficienciaContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
       </div>
     </div>
+    </ImprovementLayer>
     </ImprovementProvider>
   );
 };
