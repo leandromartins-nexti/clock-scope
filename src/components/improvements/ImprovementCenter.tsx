@@ -21,10 +21,13 @@ const statusBadge: Record<ImprovementStatus, string> = {
 };
 
 export function ImprovementCenter() {
-  const { items, showPins, togglePins, addComment, setStatus } = useImprovement();
+  const { items, showPins, togglePins, addComment, setStatus, editItem } = useImprovement();
   const [open, setOpen] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [commentTexts, setCommentTexts] = useState<Record<string, string>>({});
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDesc, setEditDesc] = useState("");
 
   const pendingCount = items.filter((i) => i.status === "pending").length;
 
