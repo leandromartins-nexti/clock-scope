@@ -120,9 +120,11 @@ const topInconsistenciasTratadas = [
   { pos: 20, empresa: "KEEP SAFE", pct: "74,1%" },
 ];
 
-const origemSolicitacoes = [
-  { name: "% Total Ajustadas", value: 100, color: "#F5A623" },
-  { name: "% Ajustes Origem Solicitações", value: 0, color: "#E8E8E8" },
+const origemJustificativas = [
+  { name: "Solicitação", value: 68, color: "#FF5722" },
+  { name: "Importação", value: 15, color: "#F5A623" },
+  { name: "Ajuste Manual", value: 12, color: "#42A5F5" },
+  { name: "Outras Fontes", value: 5, color: "#E8E8E8" },
 ];
 
 const evolucaoJustificativasPonto = [
