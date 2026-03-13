@@ -128,16 +128,27 @@ const solicitacoesJustificativa = [
   { mes: "Dez", emAberto: 700, ajustadas: 67400, canceladas: 14700 },
 ];
 
-const solicitacoesPorTipo = [
-  { tipo: "752", pct: 29.1 },
-  { tipo: "7348", pct: 24.3 },
-  { tipo: "7349", pct: 7.6 },
-  { tipo: "4911", pct: 4.5 },
-  { tipo: "218", pct: 2.0 },
-  { tipo: "7609", pct: 1.8 },
-  { tipo: "4909", pct: 1.7 },
-  { tipo: "3512", pct: 1.6 },
-  { tipo: "3521", pct: 1.4 },
+const topSolicitacoesTratadas = [
+  { pos: 1, empresa: "ORSEGUPS SEGURANÇA", pct: "8,1%" },
+  { pos: 2, empresa: "ORSEGUPS MONITORAMENTO", pct: "12,4%" },
+  { pos: 3, empresa: "OBJETIVA", pct: "15,7%" },
+  { pos: 4, empresa: "PROSERV", pct: "19,3%" },
+  { pos: 5, empresa: "Victória da Paz", pct: "22,8%" },
+  { pos: 6, empresa: "PROFISER", pct: "26,1%" },
+  { pos: 7, empresa: "Rio Oregon", pct: "29,5%" },
+  { pos: 8, empresa: "SEGURPRO", pct: "33,2%" },
+  { pos: 9, empresa: "GOCIL", pct: "36,8%" },
+  { pos: 10, empresa: "SERVIAN", pct: "40,3%" },
+  { pos: 11, empresa: "PROTEGE", pct: "43,9%" },
+  { pos: 12, empresa: "HAGANÁ", pct: "47,2%" },
+  { pos: 13, empresa: "GRABER", pct: "50,6%" },
+  { pos: 14, empresa: "PREMIUM", pct: "54,1%" },
+  { pos: 15, empresa: "FORTE", pct: "57,8%" },
+  { pos: 16, empresa: "CONTINENTAL", pct: "61,4%" },
+  { pos: 17, empresa: "NORDESTE SEG.", pct: "65,0%" },
+  { pos: 18, empresa: "ASERP", pct: "68,7%" },
+  { pos: 19, empresa: "ALIANÇA", pct: "72,3%" },
+  { pos: 20, empresa: "KEEP SAFE", pct: "75,9%" },
 ];
 
 const solicitacoesTratadas = [
