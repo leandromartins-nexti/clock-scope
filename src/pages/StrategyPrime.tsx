@@ -217,13 +217,13 @@ const tempoMedioTratativa = [
 
 // Eficiência mock data
 const piorTempoMedioOperadores = [
-  { operador: "552", cargo: "VIGILANTE", tempoMedio: 30 },
-  { operador: "799", cargo: "VIGILANTE", tempoMedio: 29 },
-  { operador: "4358", cargo: "VIGILANTE", tempoMedio: 27 },
-  { operador: "762", cargo: "VIGILANTE", tempoMedio: 27 },
-  { operador: "7370", cargo: "MONITOR DE ACESSO", tempoMedio: 26 },
-  { operador: "4465", cargo: "VIGILANTE", tempoMedio: 25 },
-  { operador: "609", cargo: "VIGILANTE", tempoMedio: 21 },
+  { operador: "Carlos Mendes", tempoMedio: 30 },
+  { operador: "Ana Rodrigues", tempoMedio: 29 },
+  { operador: "Felipe Santos", tempoMedio: 27 },
+  { operador: "Juliana Costa", tempoMedio: 27 },
+  { operador: "Ricardo Almeida", tempoMedio: 26 },
+  { operador: "Patrícia Lima", tempoMedio: 25 },
+  { operador: "Eduardo Ferreira", tempoMedio: 21 },
 ];
 
 const top10TratativaOperadores = [
@@ -999,14 +999,12 @@ const EficienciaContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
     <div className="flex-1 space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Pior Tempo Médio de Tratativa de Marcações</h3>
-          <h3 className="font-bold text-sm text-gray-800">Pior Tempo Médio de Tratativa de Marcações</h3>
+          <h3 className="font-bold text-sm text-gray-800">Tempo Médio de Tratativa de Inconsistência por Operador</h3>
           <p className="text-xs text-gray-400 mb-4">por Operador</p>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
                 <th className="text-left py-2 text-gray-500 font-medium">Operador</th>
-                <th className="text-left py-2 text-gray-500 font-medium">Cargo</th>
                 <th className="text-right py-2 text-gray-500 font-medium">Tempo Médio (h)</th>
               </tr>
             </thead>
@@ -1014,15 +1012,11 @@ const EficienciaContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
               {piorTempoMedioOperadores.map((item, idx) => (
                 <tr key={idx} className="border-b border-gray-50">
                   <td className="py-2 text-gray-700">{item.operador}</td>
-                  <td className="py-2 text-gray-500 text-xs">{item.cargo}</td>
                   <td className="py-2 text-right text-gray-600">{item.tempoMedio}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="mt-3 pt-3 border-t border-gray-100 text-right">
-            <span className="text-2xl font-bold text-gray-800">3.357,5</span>
-          </div>
         </div>
         {/* Top 10 Quantidade de Tratativa de Marcações */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
