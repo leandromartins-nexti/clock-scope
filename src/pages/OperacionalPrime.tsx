@@ -119,6 +119,7 @@ const OperacionalPrime = () => {
               <Filter className="w-4 h-4" />
               Filtros
             </button>
+            <ImprovementCenter />
           </div>
         </div>
       </div>
