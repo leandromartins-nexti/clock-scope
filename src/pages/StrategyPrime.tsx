@@ -472,28 +472,30 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
     <div className="flex-1 space-y-4">
       <div className="grid grid-cols-2 gap-4">
         {/* Top 10 Pior Qualidade */}
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: '320px' }}>
           <h3 className="font-bold text-sm text-gray-800">Top 20 Pior Qualidade de Marcação</h3>
           <p className="text-xs text-gray-400 mb-4">por Entidade</p>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100">
-                <th className="text-left py-2 text-gray-500 font-medium">👤 Empresa</th>
-                <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
-              </tr>
-            </thead>
-            <tbody>
-              {topPiorQualidade.map((item) => (
-                <tr key={item.pos} className="border-b border-gray-50">
-                  <td className="py-2 text-gray-700">
-                    <span className="text-gray-400 mr-2">{item.pos}</span>
-                    {item.empresa}
-                  </td>
-                  <td className="py-2 text-right text-gray-600">{item.pct}</td>
+          <div className="overflow-y-auto flex-1">
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-white">
+                <tr className="border-b border-gray-100">
+                  <th className="text-left py-2 text-gray-500 font-medium">👤 Empresa</th>
+                  <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {topPiorQualidade.map((item) => (
+                  <tr key={item.pos} className="border-b border-gray-50">
+                    <td className="py-2 text-gray-700">
+                      <span className="text-gray-400 mr-2">{item.pos}</span>
+                      {item.empresa}
+                    </td>
+                    <td className="py-2 text-right text-gray-600">{item.pct}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
         {/* Evolução da Qualidade */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
