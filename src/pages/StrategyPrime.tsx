@@ -751,7 +751,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
               <LineChart data={tempoMedioTratativa}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
-                <YAxis domain={[0, 4000]} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <YAxis hide domain={[0, 4000]} />
                 <Tooltip formatter={(value: number) => value.toLocaleString("pt-BR")} />
                 <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 3, fill: "#FF5722" }} />
               </LineChart>
