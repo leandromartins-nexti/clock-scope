@@ -27,6 +27,19 @@ const topPiorQualidade = [
   { pos: 5, empresa: "ORSEGUPS SEGURANÇA", pct: "52,5%" },
   { pos: 6, empresa: "OBJETIVA", pct: "52,8%" },
   { pos: 7, empresa: "PROSERV", pct: "54,6%" },
+  { pos: 8, empresa: "GUARDIÃO SEG", pct: "56,1%" },
+  { pos: 9, empresa: "VERZANI & SANDRINI", pct: "58,3%" },
+  { pos: 10, empresa: "ORBENK", pct: "60,2%" },
+  { pos: 11, empresa: "SEGURPRO", pct: "61,5%" },
+  { pos: 12, empresa: "GOCIL", pct: "63,0%" },
+  { pos: 13, empresa: "HAGANÁ", pct: "64,8%" },
+  { pos: 14, empresa: "GRABER", pct: "66,1%" },
+  { pos: 15, empresa: "FORTESEG", pct: "67,9%" },
+  { pos: 16, empresa: "PROTEGE", pct: "69,4%" },
+  { pos: 17, empresa: "ORCALI", pct: "71,2%" },
+  { pos: 18, empresa: "CONSERVO", pct: "72,8%" },
+  { pos: 19, empresa: "AFORT", pct: "74,3%" },
+  { pos: 20, empresa: "LIDERANÇA", pct: "75,6%" },
 ];
 
 const marcacoesPorTipo = [
@@ -460,7 +473,7 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
       <div className="grid grid-cols-2 gap-4">
         {/* Top 10 Pior Qualidade */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Top 10 Pior Qualidade de Marcação</h3>
+          <h3 className="font-bold text-sm text-gray-800">Top 20 Pior Qualidade de Marcação</h3>
           <p className="text-xs text-gray-400 mb-4">por Entidade</p>
           <table className="w-full text-sm">
             <thead>
