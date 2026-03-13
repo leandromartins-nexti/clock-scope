@@ -793,32 +793,26 @@ const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
       {/* Row 2: Origem Solicitações + Evolução Marcações Manuais */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">% Origem de Solicitações dos Ajustes de Ponto</h3>
-          <div className="flex items-center gap-4 mt-1 mb-2">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#FF5722] inline-block" />
-              <span className="text-[10px] text-gray-500">% Total Ajustadas</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#F5A623] inline-block" />
-              <span className="text-[10px] text-gray-500">% Ajustes Origem Solicitações</span>
-            </div>
+          <h3 className="font-bold text-sm text-gray-800">% Origem das Justificativas de Ponto</h3>
+          <div className="flex items-center gap-4 mt-1 mb-2 flex-wrap">
+            {origemJustificativas.map((item) => (
+              <div key={item.name} className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full inline-block" style={{ backgroundColor: item.color }} />
+                <span className="text-[10px] text-gray-500">{item.name}: {item.value}%</span>
+              </div>
+            ))}
           </div>
           <div className="h-[220px] flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={origemSolicitacoes} cx="50%" cy="50%" innerRadius={70} outerRadius={95} dataKey="value" startAngle={90} endAngle={-270}>
-                  {origemSolicitacoes.map((entry, index) => (
+                <Pie data={origemJustificativas} cx="50%" cy="50%" innerRadius={70} outerRadius={95} dataKey="value" startAngle={90} endAngle={-270}>
+                  {origemJustificativas.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip formatter={(value: number) => `${value}%`} />
               </PieChart>
             </ResponsiveContainer>
-          </div>
-          <div className="flex justify-around text-xs text-gray-500 mt-1">
-            <span>100%</span>
-            <span>0%</span>
           </div>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-5">
