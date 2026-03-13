@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ImprovementProvider } from "@/contexts/ImprovementContext";
+import { ImprovementLayer } from "@/components/improvements/ImprovementLayer";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList,
 } from "recharts";
@@ -73,6 +75,8 @@ const OperacionalPrime = () => {
   const [activeFilter, setActiveFilter] = useState("Empresa");
 
   return (
+    <ImprovementProvider>
+    <ImprovementLayer screenId={activeSubNav}>
     <div className="flex-1 overflow-auto bg-gray-50 min-h-screen flex flex-col">
       {/* Breadcrumb */}
       <header className="border-b border-gray-200 px-6 py-3 bg-gray-100">
@@ -173,6 +177,8 @@ const OperacionalPrime = () => {
         {activeSubNav === "Qualidade" && <QualidadeContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
       </div>
     </div>
+    </ImprovementLayer>
+    </ImprovementProvider>
   );
 };
 
