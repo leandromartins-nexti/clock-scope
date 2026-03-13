@@ -193,6 +193,29 @@ const evolucaoInconsistenciasTratadas = [
   { mes: "Out", total: 335, tratadas: 218 }, { mes: "Nov", total: 342, tratadas: 234 }, { mes: "Dez", total: 318, tratadas: 230 },
 ];
 
+const topMaisInconsistencias = [
+  { pos: 1, empresa: "ORSEGUPS SEGURANÇA", qtd: 1245 },
+  { pos: 2, empresa: "OBJETIVA", qtd: 1102 },
+  { pos: 3, empresa: "ORSEGUPS MONITORAMENTO", qtd: 987 },
+  { pos: 4, empresa: "PROSERV", qtd: 876 },
+  { pos: 5, empresa: "SEGURPRO", qtd: 823 },
+  { pos: 6, empresa: "Victória da Paz", qtd: 754 },
+  { pos: 7, empresa: "PROFISER", qtd: 698 },
+  { pos: 8, empresa: "Rio Oregon", qtd: 645 },
+  { pos: 9, empresa: "GOCIL", qtd: 612 },
+  { pos: 10, empresa: "SERVIAN", qtd: 578 },
+  { pos: 11, empresa: "PROTEGE", qtd: 534 },
+  { pos: 12, empresa: "HAGANÁ", qtd: 498 },
+  { pos: 13, empresa: "GRABER", qtd: 467 },
+  { pos: 14, empresa: "PREMIUM", qtd: 423 },
+  { pos: 15, empresa: "FORTE", qtd: 389 },
+  { pos: 16, empresa: "CONTINENTAL", qtd: 356 },
+  { pos: 17, empresa: "NORDESTE SEG.", qtd: 312 },
+  { pos: 18, empresa: "ASERP", qtd: 287 },
+  { pos: 19, empresa: "ALIANÇA", qtd: 254 },
+  { pos: 20, empresa: "KEEP SAFE", qtd: 221 },
+];
+
 const tempoMedioMovimentacoes = [
   { mes: "Jan", valor: 9100 }, { mes: "Fev", valor: 9100 }, { mes: "Mar", valor: 9100 },
   { mes: "Abr", valor: 9100 }, { mes: "Mai", valor: 9100 }, { mes: "Jun", valor: 9100 },
@@ -539,22 +562,49 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
 const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
+      {/* Row 1: Inconsistências x Tratadas - full width */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <h3 className="font-bold text-sm text-gray-800">Inconsistências x Tratadas</h3>
+        <p className="text-xs text-gray-400 mb-4">Volume por Período</p>
+        <div className="h-[220px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={evolucaoInconsistenciasTratadas} barGap={2} barSize={14}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+              <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+              <YAxis hide />
+              <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+              <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+              <Bar dataKey="total" fill="#BDBDBD" radius={[2, 2, 0, 0]} name="Total Inconsistências" />
+              <Bar dataKey="tratadas" fill="#FF5722" radius={[2, 2, 0, 0]} name="Tratadas" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      {/* Row 2: Top 20 mais inconsistências + Top 20 pior % tratadas */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Inconsistências x Tratadas</h3>
-          <p className="text-xs text-gray-400 mb-4">Volume por Período</p>
-          <div className="h-[220px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={evolucaoInconsistenciasTratadas} barGap={2} barSize={14}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
-                <YAxis hide />
-                <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-                <Bar dataKey="total" fill="#BDBDBD" radius={[2, 2, 0, 0]} name="Total Inconsistências" />
-                <Bar dataKey="tratadas" fill="#FF5722" radius={[2, 2, 0, 0]} name="Tratadas" />
-              </BarChart>
-            </ResponsiveContainer>
+          <h3 className="font-bold text-sm text-gray-800">Top 20 Entidades com Mais Inconsistências</h3>
+          <p className="text-xs text-gray-400 mb-4">por Entidade</p>
+          <div className="max-h-[252px] overflow-y-auto">
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-white">
+                <tr className="border-b border-gray-100">
+                  <th className="text-left py-2 text-gray-500 font-medium">👤 Empresa</th>
+                  <th className="text-right py-2 text-gray-500 font-medium">Qtd</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topMaisInconsistencias.map((item) => (
+                  <tr key={item.pos} className="border-b border-gray-50">
+                    <td className="py-2 text-gray-700">
+                      <span className="text-gray-400 mr-2">{item.pos}</span>
+                      {item.empresa}
+                    </td>
+                    <td className="py-2 text-right text-gray-600">{item.qtd.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-5">
@@ -583,6 +633,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
           </div>
         </div>
       </div>
+      {/* Row 3: Reincidentes + Tempo Médio */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">% Inconsistências Reincidentes</h3>
