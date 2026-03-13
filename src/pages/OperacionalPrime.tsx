@@ -610,7 +610,7 @@ const QualidadeContent = ({ activeFilter, setActiveFilter }: { activeFilter: str
             </tr>
           </thead>
           <tbody>
-            {top10PiorQualidade.map((item, idx) => (
+            {top20PiorQualidade.map((item, idx) => (
               <tr key={idx} className="border-b border-gray-50">
                 <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                 <td className="text-xs text-gray-700 py-2 pr-4">{item.posto}</td>
