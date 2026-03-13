@@ -597,7 +597,7 @@ const QualidadeContent = ({ activeFilter, setActiveFilter }: { activeFilter: str
       {/* Top 10 Pior Qualidade de Marcação */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
         <div className="flex items-center justify-between mb-0.5">
-          <h3 className="font-semibold text-sm text-gray-800">Top 10 Pior Qualidade de Marcação</h3>
+          <h3 className="font-semibold text-sm text-gray-800">Top 20 Pior Qualidade de Marcação</h3>
           <span className="text-xs border border-[#FF5722] text-[#FF5722] rounded-full px-3 py-1 font-medium">Colaborador</span>
         </div>
         <p className="text-xs text-gray-400 mb-3">por Posto</p>
