@@ -1000,7 +1000,6 @@ const EficienciaContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">Tempo Médio de Tratativa de Inconsistência por Operador</h3>
-          <p className="text-xs text-gray-400 mb-4">por Operador</p>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
