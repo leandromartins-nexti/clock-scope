@@ -159,8 +159,8 @@ const solicitacoesReincidentes = [
 ];
 
 const tempoMedioTratativa = [
-  { mes: "Jan", valor: 3357.5 }, { mes: "Fev", valor: 3357.5 }, { mes: "Mar", valor: 3357.5 },
-  { mes: "Abr", valor: 3357.5 }, { mes: "Mai", valor: 3357.5 }, { mes: "Jun", valor: 3357.5 },
+  { mes: "Jan", valor: 2850 }, { mes: "Fev", valor: 3120 }, { mes: "Mar", valor: 2690 },
+  { mes: "Abr", valor: 3480 }, { mes: "Mai", valor: 3150 }, { mes: "Jun", valor: 2970 },
   { mes: "Jul", valor: 3357.5 }, { mes: "Ago", valor: 3357.5 }, { mes: "Set", valor: 3357.5 },
   { mes: "Out", valor: 3357.5 }, { mes: "Nov", valor: 3357.5 }, { mes: "Dez", valor: 3357.5 },
 ];
