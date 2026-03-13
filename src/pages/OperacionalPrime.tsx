@@ -536,11 +536,27 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
 
 // ── Mock data – Qualidade ──────────────────────────────────
 
-const top10PiorQualidade = [
+const top20PiorQualidade = [
   { posto: "ANCORA BADOTTI PARTICIPACOES LTDA - P01 - ANCORA BADOTTI PARTICIPACOES LTDA", pct: 100.0 },
   { posto: "CARIOCA CALCADOS - CARIOCA CALCADOS ITAGUACU - ES 17", pct: 100.0 },
   { posto: "CARIOCA CALCADOS LTDA - R GERONCIO THIVES, 1079 - CARIOCA ITAGUACU - CS11", pct: 100.0 },
   { posto: "CARIOCA CALCADOS LTDA - RUA BERNARDINHO MACHADO, SN - CARIOCA BERNARDINO MACHADO,", pct: 100.0 },
+  { posto: "LOJAS RENNER - FILIAL CENTRO FLORIANÓPOLIS - P03", pct: 98.5 },
+  { posto: "SHOPPING MUELLER - PORTARIA PRINCIPAL - P01", pct: 97.2 },
+  { posto: "CONDOMÍNIO EDIFÍCIO AURORA - RECEPÇÃO - P02", pct: 96.8 },
+  { posto: "HOSPITAL SÃO LUCAS - CONTROLE ACESSO - P01", pct: 95.3 },
+  { posto: "UNIVERSIDADE FEDERAL - CAMPUS NORTE - P04", pct: 94.7 },
+  { posto: "BANCO DO BRASIL - AG CENTRO - P01", pct: 93.1 },
+  { posto: "SUPERMERCADO ANGELONI - LOJA 12 - P02", pct: 92.4 },
+  { posto: "TRIBUNAL DE JUSTIÇA - FÓRUM CENTRAL - P03", pct: 91.8 },
+  { posto: "PREFEITURA MUNICIPAL - SEDE ADMINISTRATIVA - P01", pct: 90.5 },
+  { posto: "CENTRO EMPRESARIAL ALPHA - TORRE A - P02", pct: 89.2 },
+  { posto: "PARQUE INDUSTRIAL SUL - PORTARIA 2 - P01", pct: 88.6 },
+  { posto: "CONDOMÍNIO RESIDENCIAL VERDE - P03", pct: 87.1 },
+  { posto: "ESCOLA ESTADUAL DOM PEDRO - P01", pct: 86.4 },
+  { posto: "ATACADÃO DISTRIBUIÇÃO - CD NORTE - P02", pct: 85.7 },
+  { posto: "FARMÁCIA RAIA - FILIAL 45 - P01", pct: 84.3 },
+  { posto: "CLÍNICA SÃO RAFAEL - RECEPÇÃO - P01", pct: 83.9 },
 ];
 
 const top10InconsistenciasPorEscala = [
