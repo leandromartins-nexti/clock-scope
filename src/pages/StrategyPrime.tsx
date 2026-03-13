@@ -824,25 +824,19 @@ const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
       {/* Row 3: Origem Justificativas + Evolução Marcações Manuais */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">% Origem das Justificativas de Ponto</h3>
-          <div className="flex items-center gap-4 mt-1 mb-2 flex-wrap">
-            {origemJustificativas.map((item) => (
-              <div key={item.name} className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full inline-block" style={{ backgroundColor: item.color }} />
-                <span className="text-[10px] text-gray-500">{item.name}: {item.value}%</span>
-              </div>
-            ))}
-          </div>
-          <div className="h-[220px] flex items-center justify-center">
+          <h3 className="font-bold text-sm text-gray-800">Colaboradores Reincidentes nas Justificativas de Ponto</h3>
+          <p className="text-xs text-gray-400 mb-4">% Reincidência por Período</p>
+          <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={origemJustificativas} cx="50%" cy="50%" innerRadius={70} outerRadius={95} dataKey="value" startAngle={90} endAngle={-270}>
-                  {origemJustificativas.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
+              <LineChart data={evolucaoReincidentesJustificativas} margin={{ top: 20, right: 20, bottom: 5, left: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <YAxis hide />
                 <Tooltip formatter={(value: number) => `${value}%`} />
-              </PieChart>
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 4, fill: "#FF5722" }}
+                  label={{ position: "top", fontSize: 10, fill: "#333", formatter: (v: number) => `${v}%` }}
+                />
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
