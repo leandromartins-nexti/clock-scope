@@ -292,8 +292,10 @@ const tempoMedioMovimentacoes = [
 ];
 
 const evolucaoMarcacoesManuais = [
-  { mes: "Jun", valor: 31.6 },
-  { mes: "Out", valor: 22.0 },
+  { mes: "Jan", valor: 35.2 }, { mes: "Fev", valor: 33.8 }, { mes: "Mar", valor: 34.5 },
+  { mes: "Abr", valor: 32.1 }, { mes: "Mai", valor: 30.9 }, { mes: "Jun", valor: 31.6 },
+  { mes: "Jul", valor: 28.4 }, { mes: "Ago", valor: 26.7 }, { mes: "Set", valor: 24.3 },
+  { mes: "Out", valor: 22.0 }, { mes: "Nov", valor: 20.5 }, { mes: "Dez", valor: 19.8 },
 ];
 
 const tabs = [
@@ -820,13 +822,13 @@ const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
           <p className="text-xs text-gray-400 mb-4">por Período</p>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={evolucaoMarcacoesManuais}>
+              <LineChart data={evolucaoMarcacoesManuais} margin={{ top: 20, right: 20, bottom: 5, left: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
-                <YAxis hide />
+                <YAxis hide domain={[0, 'auto']} />
                 <Tooltip formatter={(value: number) => `${value}%`} />
                 <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 4, fill: "#FF5722" }}
-                  label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
+                  label={{ position: "top", fontSize: 10, fill: "#333", formatter: (v: number) => `${v}%` }}
                 />
               </LineChart>
             </ResponsiveContainer>
