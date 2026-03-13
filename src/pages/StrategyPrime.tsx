@@ -859,7 +859,6 @@ const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
         </div>
       </div>
     </div>
-    </div>
     <div className="w-[280px] shrink-0">
       <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
     </div>
