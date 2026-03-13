@@ -229,6 +229,29 @@ const topMaisInconsistencias = [
   { pos: 20, empresa: "KEEP SAFE", qtd: 221 },
 ];
 
+const topMaisSolicitacoes = [
+  { pos: 1, empresa: "ORSEGUPS SEGURANÇA", qtd: 2345 },
+  { pos: 2, empresa: "OBJETIVA", qtd: 2102 },
+  { pos: 3, empresa: "ORSEGUPS MONITORAMENTO", qtd: 1987 },
+  { pos: 4, empresa: "PROSERV", qtd: 1876 },
+  { pos: 5, empresa: "SEGURPRO", qtd: 1723 },
+  { pos: 6, empresa: "Victória da Paz", qtd: 1654 },
+  { pos: 7, empresa: "PROFISER", qtd: 1598 },
+  { pos: 8, empresa: "Rio Oregon", qtd: 1445 },
+  { pos: 9, empresa: "GOCIL", qtd: 1312 },
+  { pos: 10, empresa: "SERVIAN", qtd: 1278 },
+  { pos: 11, empresa: "PROTEGE", qtd: 1134 },
+  { pos: 12, empresa: "HAGANÁ", qtd: 1098 },
+  { pos: 13, empresa: "GRABER", qtd: 967 },
+  { pos: 14, empresa: "PREMIUM", qtd: 923 },
+  { pos: 15, empresa: "FORTE", qtd: 889 },
+  { pos: 16, empresa: "CONTINENTAL", qtd: 756 },
+  { pos: 17, empresa: "NORDESTE SEG.", qtd: 712 },
+  { pos: 18, empresa: "ASERP", qtd: 687 },
+  { pos: 19, empresa: "ALIANÇA", qtd: 654 },
+  { pos: 20, empresa: "KEEP SAFE", qtd: 621 },
+];
+
 const tempoMedioMovimentacoes = [
   { mes: "Jan", valor: 9100 }, { mes: "Fev", valor: 9100 }, { mes: "Mar", valor: 9100 },
   { mes: "Abr", valor: 9100 }, { mes: "Mai", valor: 9100 }, { mes: "Jun", valor: 9100 },
@@ -733,42 +756,68 @@ const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
 const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Solicitações de Justificativa de Ponto</h3>
-          <div className="flex items-center gap-4 mt-1 mb-2">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#FF8A65] inline-block" />
-              <span className="text-[10px] text-gray-500">Em Aberto: 7.261</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#F5A623] inline-block" />
-              <span className="text-[10px] text-gray-500">Ajustadas: 811.112</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#E91E63] inline-block" />
-              <span className="text-[10px] text-gray-500">Canceladas: 181.627</span>
-            </div>
+      {/* Row 1: Solicitações de Justificativa de Ponto - full width */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <h3 className="font-bold text-sm text-gray-800">Solicitações de Justificativa de Ponto</h3>
+        <div className="flex items-center gap-4 mt-1 mb-2">
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-[#FF8A65] inline-block" />
+            <span className="text-[10px] text-gray-500">Em Aberto: 7.261</span>
           </div>
-          <div className="h-[220px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={solicitacoesJustificativa} barGap={2} barSize={8}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
-                <YAxis hide />
-                <Tooltip />
-                <Bar dataKey="emAberto" fill="#FF8A65" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="ajustadas" fill="#F5A623" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="canceladas" fill="#E91E63" radius={[2, 2, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-[#F5A623] inline-block" />
+            <span className="text-[10px] text-gray-500">Ajustadas: 811.112</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-[#E91E63] inline-block" />
+            <span className="text-[10px] text-gray-500">Canceladas: 181.627</span>
           </div>
         </div>
-        {/* Top 20 pior % Solicitações Tratadas */}
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="h-[220px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={solicitacoesJustificativa} barGap={2} barSize={8}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+              <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+              <YAxis hide />
+              <Tooltip />
+              <Bar dataKey="emAberto" fill="#FF8A65" radius={[2, 2, 0, 0]} />
+              <Bar dataKey="ajustadas" fill="#F5A623" radius={[2, 2, 0, 0]} />
+              <Bar dataKey="canceladas" fill="#E91E63" radius={[2, 2, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      {/* Row 2: Top 20 Mais Solicitações + Top 20 pior % Tratadas */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: 320 }}>
+          <h3 className="font-bold text-sm text-gray-800">Top 20 Entidades com Mais Solicitações</h3>
+          <p className="text-xs text-gray-400 mb-2">por Entidade</p>
+          <div className="overflow-y-auto flex-1">
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-white">
+                <tr className="border-b border-gray-100">
+                  <th className="text-left py-2 text-gray-500 font-medium">👤 Empresa</th>
+                  <th className="text-right py-2 text-gray-500 font-medium">▲ Qtd</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topMaisSolicitacoes.map((item) => (
+                  <tr key={item.pos} className="border-b border-gray-50">
+                    <td className="py-2 text-gray-700">
+                      <span className="text-gray-400 mr-2">{item.pos}</span>
+                      {item.empresa}
+                    </td>
+                    <td className="py-2 text-right text-gray-600">{item.qtd.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: 320 }}>
           <h3 className="font-bold text-sm text-gray-800">Top 20 pior % Solicitações Tratadas</h3>
-          <p className="text-xs text-gray-400 mb-4">por Entidade</p>
-          <div className="max-h-[252px] overflow-y-auto">
+          <p className="text-xs text-gray-400 mb-2">por Entidade</p>
+          <div className="overflow-y-auto flex-1">
             <table className="w-full text-sm">
               <thead className="sticky top-0 bg-white">
                 <tr className="border-b border-gray-100">
