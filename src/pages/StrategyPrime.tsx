@@ -744,6 +744,51 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
 const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
+      {/* Row 1: Evolução da Quantidade de Justificativas + Top 20 */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-bold text-sm text-gray-800">Evolução da Quantidade de Justificativas de Ponto</h3>
+          <p className="text-xs text-gray-400 mb-4">por Período</p>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={evolucaoJustificativasPonto}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
+                <YAxis hide />
+                <Tooltip formatter={(value: number) => value.toLocaleString("pt-BR")} />
+                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 4, fill: "#FF5722" }}
+                  label={{ position: "top", fontSize: 10, fill: "#333", formatter: (v: number) => `${(v / 1000).toFixed(1)} Mil` }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: 320 }}>
+          <h3 className="font-bold text-sm text-gray-800">Top 20 Entidades com Justificativas de Ponto</h3>
+          <p className="text-xs text-gray-400 mb-2">por Volume</p>
+          <div className="overflow-y-auto flex-1">
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-white">
+                <tr className="border-b border-gray-100">
+                  <th className="text-left py-2 text-gray-500 font-medium">#</th>
+                  <th className="text-left py-2 text-gray-500 font-medium">Entidade</th>
+                  <th className="text-right py-2 text-gray-500 font-medium">Qtd</th>
+                </tr>
+              </thead>
+              <tbody>
+                {top20JustificativasPonto.map((item) => (
+                  <tr key={item.pos} className="border-b border-gray-50">
+                    <td className="py-1.5 text-gray-400 text-xs">{item.pos}</td>
+                    <td className="py-1.5 text-gray-700 text-xs">{item.empresa}</td>
+                    <td className="py-1.5 text-right text-gray-600 text-xs font-medium">{item.qtd.toLocaleString("pt-BR")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {/* Row 2: Origem Solicitações + Evolução Marcações Manuais */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">% Origem de Solicitações dos Ajustes de Ponto</h3>
@@ -782,7 +827,7 @@ const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
               <LineChart data={evolucaoMarcacoesManuais}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
-                <YAxis domain={[0, 40]} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} tickFormatter={(v) => `${v}%`} />
+                <YAxis hide />
                 <Tooltip formatter={(value: number) => `${value}%`} />
                 <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 4, fill: "#FF5722" }}
                   label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
@@ -792,50 +837,7 @@ const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
           </div>
         </div>
       </div>
-      {/* Row 2: Evolução da Quantidade de Justificativas + Top 20 */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Evolução da Quantidade de Justificativas de Ponto</h3>
-          <p className="text-xs text-gray-400 mb-4">por Período</p>
-          <div className="h-[220px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={evolucaoJustificativasPonto}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} tickFormatter={(v) => `${(v / 1000).toFixed(1)} Mil`} />
-                <Tooltip formatter={(value: number) => value.toLocaleString("pt-BR")} />
-                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 4, fill: "#FF5722" }}
-                  label={{ position: "top", fontSize: 10, fill: "#333", formatter: (v: number) => `${(v / 1000).toFixed(1)} Mil` }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: 320 }}>
-          <h3 className="font-bold text-sm text-gray-800">Top 20 Entidades com Justificativas de Ponto</h3>
-          <p className="text-xs text-gray-400 mb-2">por Volume</p>
-          <div className="overflow-y-auto flex-1">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-white">
-                <tr className="border-b border-gray-100">
-                  <th className="text-left py-2 text-gray-500 font-medium">#</th>
-                  <th className="text-left py-2 text-gray-500 font-medium">Entidade</th>
-                  <th className="text-right py-2 text-gray-500 font-medium">Qtd</th>
-                </tr>
-              </thead>
-              <tbody>
-                {top20JustificativasPonto.map((item) => (
-                  <tr key={item.pos} className="border-b border-gray-50">
-                    <td className="py-1.5 text-gray-400 text-xs">{item.pos}</td>
-                    <td className="py-1.5 text-gray-700 text-xs">{item.empresa}</td>
-                    <td className="py-1.5 text-right text-gray-600 text-xs font-medium">{item.qtd.toLocaleString("pt-BR")}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+    </div>
     </div>
     <div className="w-[280px] shrink-0">
       <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
