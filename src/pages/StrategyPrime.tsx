@@ -229,6 +229,29 @@ const topMaisInconsistencias = [
   { pos: 20, empresa: "KEEP SAFE", qtd: 221 },
 ];
 
+const topMaisSolicitacoes = [
+  { pos: 1, empresa: "ORSEGUPS SEGURANÇA", qtd: 2345 },
+  { pos: 2, empresa: "OBJETIVA", qtd: 2102 },
+  { pos: 3, empresa: "ORSEGUPS MONITORAMENTO", qtd: 1987 },
+  { pos: 4, empresa: "PROSERV", qtd: 1876 },
+  { pos: 5, empresa: "SEGURPRO", qtd: 1723 },
+  { pos: 6, empresa: "Victória da Paz", qtd: 1654 },
+  { pos: 7, empresa: "PROFISER", qtd: 1598 },
+  { pos: 8, empresa: "Rio Oregon", qtd: 1445 },
+  { pos: 9, empresa: "GOCIL", qtd: 1312 },
+  { pos: 10, empresa: "SERVIAN", qtd: 1278 },
+  { pos: 11, empresa: "PROTEGE", qtd: 1134 },
+  { pos: 12, empresa: "HAGANÁ", qtd: 1098 },
+  { pos: 13, empresa: "GRABER", qtd: 967 },
+  { pos: 14, empresa: "PREMIUM", qtd: 923 },
+  { pos: 15, empresa: "FORTE", qtd: 889 },
+  { pos: 16, empresa: "CONTINENTAL", qtd: 756 },
+  { pos: 17, empresa: "NORDESTE SEG.", qtd: 712 },
+  { pos: 18, empresa: "ASERP", qtd: 687 },
+  { pos: 19, empresa: "ALIANÇA", qtd: 654 },
+  { pos: 20, empresa: "KEEP SAFE", qtd: 621 },
+];
+
 const tempoMedioMovimentacoes = [
   { mes: "Jan", valor: 9100 }, { mes: "Fev", valor: 9100 }, { mes: "Mar", valor: 9100 },
   { mes: "Abr", valor: 9100 }, { mes: "Mai", valor: 9100 }, { mes: "Jun", valor: 9100 },
