@@ -151,11 +151,11 @@ const topSolicitacoesTratadas = [
   { pos: 20, empresa: "KEEP SAFE", pct: "75,9%" },
 ];
 
-const solicitacoesTratadas = [
-  { mes: "Jan", valor: 99.3 }, { mes: "Fev", valor: 99.3 }, { mes: "Mar", valor: 99.3 },
-  { mes: "Abr", valor: 99.3 }, { mes: "Mai", valor: 99.3 }, { mes: "Jun", valor: 99.3 },
-  { mes: "Jul", valor: 99.3 }, { mes: "Ago", valor: 99.3 }, { mes: "Set", valor: 99.3 },
-  { mes: "Out", valor: 99.3 }, { mes: "Nov", valor: 99.3 }, { mes: "Dez", valor: 99.3 },
+const solicitacoesReincidentes = [
+  { mes: "Jan", valor: 12.5 }, { mes: "Fev", valor: 14.2 }, { mes: "Mar", valor: 11.8 },
+  { mes: "Abr", valor: 13.1 }, { mes: "Mai", valor: 15.7 }, { mes: "Jun", valor: 10.9 },
+  { mes: "Jul", valor: 16.3 }, { mes: "Ago", valor: 14.8 }, { mes: "Set", valor: 12.1 },
+  { mes: "Out", valor: 13.6 }, { mes: "Nov", valor: 11.4 }, { mes: "Dez", valor: 15.2 },
 ];
 
 const tempoMedioTratativa = [
