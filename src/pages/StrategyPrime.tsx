@@ -1039,23 +1039,6 @@ const EficienciaContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
           </table>
         </div>
       </div>
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-bold text-sm text-gray-800">Tempo Médio de Tratativa de Movimentações</h3>
-        <p className="text-xs text-gray-400 mb-4">por Período</p>
-        <div className="h-[220px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={tempoMedioMovimentacoes}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-              <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} tickFormatter={(v) => `${(v / 1000).toFixed(1)} Mil`} />
-              <Tooltip formatter={(value: number) => value.toLocaleString("pt-BR")} />
-              <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ r: 3, fill: "#FF5722" }}
-                label={{ position: "top", fontSize: 10, fill: "#666", formatter: (v: number) => `${(v / 1000).toFixed(1)} Mil` }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
     </div>
     <div className="w-[280px] shrink-0">
       <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
