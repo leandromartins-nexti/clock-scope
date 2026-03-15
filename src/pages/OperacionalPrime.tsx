@@ -1085,7 +1085,8 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter, selectedEntity,
               </thead>
               <tbody>
                 {buildTop20Totais(activeFilter, baseInconsistenciasTabTotais).map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50">
+                  <tr key={idx} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${selectedEntity === item.entidade ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.entidade ? null : item.entidade)}>
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.total)}</td>
