@@ -404,22 +404,22 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
 
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Colaboradores sem Template</h3>
-          <p className="text-xs text-gray-400 mb-3">Top 20 entidades com mais colaboradores sem template</p>
+          <p className="text-xs text-gray-400 mb-3">Lista de colaboradores sem template cadastrado</p>
           <div className="max-h-[252px] overflow-y-auto">
             <table className="w-full">
               <thead className="sticky top-0 bg-white">
                 <tr className="border-b border-gray-100">
-                  <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
-                  <th className="text-xs text-gray-400 font-medium text-left pb-2">Entidade</th>
-                  <th className="text-xs text-gray-400 font-medium text-right pb-2">Colaboradores</th>
+                  <th className="text-xs text-gray-400 font-medium text-left pb-2">Colaborador</th>
+                  <th className="text-xs text-gray-400 font-medium text-left pb-2">Template</th>
+                  <th className="text-xs text-gray-400 font-medium text-right pb-2">Inconsistências</th>
                 </tr>
               </thead>
               <tbody>
-                {top20ColaboradoresSemTemplate.map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50 cursor-pointer">
-                    <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
-                    <td className="text-xs text-gray-700 py-2">{item.entidade}</td>
-                    <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.total)}</td>
+                {colaboradoresSemTemplateList.map((item, idx) => (
+                  <tr key={idx} className="border-b border-gray-50">
+                    <td className="text-xs text-gray-700 py-2">{item.colaborador}</td>
+                    <td className="text-xs text-gray-500 py-2">{item.template}</td>
+                    <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.inconsistencias)}</td>
                   </tr>
                 ))}
               </tbody>
