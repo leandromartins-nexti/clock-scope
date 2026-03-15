@@ -71,7 +71,7 @@ const heatmapSolicitacoes = [
   { dia: "dom", hours: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0] },
 ];
 
-const tiposInconsistencias = [
+const tiposInconsistenciasBase = [
   { tipo: "Esquecimento", pct: 76 },
   { tipo: "Horário Inválido", pct: 24 },
   { tipo: "Duplicada", pct: 3 },
