@@ -209,12 +209,6 @@ export default function Executive() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate("/strategy-prime")}
-              className="bg-[#FF5722] text-white px-5 py-2 rounded text-sm font-semibold"
-            >
-              Strategy
-            </button>
-            <button
               onClick={() => setFilterOpen(true)}
               className="border border-gray-300 text-gray-600 px-4 py-2 rounded text-sm font-medium flex items-center gap-2"
             >
