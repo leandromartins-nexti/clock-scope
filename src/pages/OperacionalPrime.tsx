@@ -5,7 +5,7 @@ import { ImprovementProvider } from "@/contexts/ImprovementContext";
 import { ImprovementCenter } from "@/components/improvements/ImprovementCenter";
 import { ImprovementLayer } from "@/components/improvements/ImprovementLayer";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Legend,
 } from "recharts";
 
 // ── Mock data ──────────────────────────────────────────────
