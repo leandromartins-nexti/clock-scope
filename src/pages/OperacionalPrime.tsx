@@ -304,34 +304,32 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
 const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
-      {/* Row 1: Evolução do Backlog - full width */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-semibold text-sm text-gray-800 mb-1">Evolução do Backlog</h3>
-        <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações de Ajuste de Ponto por Dia</p>
-        <div className="h-[220px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolucaoBacklogDiario} barGap={2} barSize={8}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
-              <XAxis dataKey="dia" tick={{ fontSize: 10 }} stroke="#9CA3AF" />
-              <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" />
-              <Tooltip
-                contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
-                formatter={(v: number) => formatNumber(v)}
-              />
-              <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-              <Bar dataKey="inconsistencias" fill="#FF5722" radius={[2, 2, 0, 0]} name="Inconsistências" />
-              <Bar dataKey="solicitacoes" fill="#FDB813" radius={[2, 2, 0, 0]} name="Solicitações de Ajuste" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Row 2: Aging + Heatmap */}
+      {/* Row 1: Evolução do Backlog + Aging */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Aging de Inconsistências em Aberto */}
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-1">Evolução do Backlog</h3>
+          <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações por Dia</p>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={evolucaoBacklogDiario} barGap={2} barSize={6}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
+                <XAxis dataKey="dia" tick={{ fontSize: 9 }} stroke="#9CA3AF" />
+                <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" />
+                <Tooltip
+                  contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
+                  formatter={(v: number) => formatNumber(v)}
+                />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+                <Bar dataKey="inconsistencias" fill="#FF5722" radius={[2, 2, 0, 0]} name="Inconsistências" />
+                <Bar dataKey="solicitacoes" fill="#FDB813" radius={[2, 2, 0, 0]} name="Solicitações" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-semibold text-sm text-gray-800 mb-1">Aging de Inconsistências em Aberto</h3>
-          <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações por faixa de dias pendentes</p>
+          <p className="text-xs text-gray-400 mb-4">Por faixa de dias pendentes</p>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={agingInconsistencias} barGap={4} barSize={20}>
@@ -344,26 +342,19 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
                 />
                 <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
                 <Bar dataKey="inconsistencias" fill="#FF5722" radius={[4, 4, 0, 0]} name="Inconsistências">
-                  <LabelList
-                    dataKey="inconsistencias"
-                    position="top"
-                    formatter={(v: number) => formatNumber(v)}
-                    style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }}
-                  />
+                  <LabelList dataKey="inconsistencias" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
                 </Bar>
                 <Bar dataKey="solicitacoes" fill="#FDB813" radius={[4, 4, 0, 0]} name="Solicitações">
-                  <LabelList
-                    dataKey="solicitacoes"
-                    position="top"
-                    formatter={(v: number) => formatNumber(v)}
-                    style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }}
-                  />
+                  <LabelList dataKey="solicitacoes" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
+      </div>
 
+      {/* Row 2: Heatmap Inconsistências + Heatmap Solicitações */}
+      <div className="grid grid-cols-2 gap-4">
         {/* Heatmap – Total de Inconsistências por Dia e Horário */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-semibold text-sm text-gray-800 mb-1">Total de Inconsistências</h3>
@@ -374,9 +365,7 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
                 <tr>
                   <th className="text-[10px] text-gray-400 font-normal text-left pr-2 pb-1">Dia</th>
                   {Array.from({ length: 13 }, (_, i) => (
-                    <th key={i} className="text-[10px] text-gray-400 font-normal pb-1 px-0.5">
-                      {String(i).padStart(2, "0")}h
-                    </th>
+                    <th key={i} className="text-[10px] text-gray-400 font-normal pb-1 px-0.5">{String(i).padStart(2, "0")}h</th>
                   ))}
                 </tr>
               </thead>
@@ -386,38 +375,60 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
                     <td className="text-[11px] text-gray-500 pr-2 py-0.5">{row.dia}</td>
                     {row.hours.map((v, i) => (
                       <td key={i} className="px-0.5 py-0.5">
-                        <div
-                          className="w-full h-6 rounded-sm"
-                          style={{ backgroundColor: getHeatColor(v), minWidth: 28 }}
-                          title={`${row.dia} ${String(i).padStart(2, "0")}h: ${v}`}
-                        />
+                        <div className="w-full h-6 rounded-sm" style={{ backgroundColor: getHeatColor(v), minWidth: 28 }} title={`${row.dia} ${String(i).padStart(2, "0")}h: ${v}`} />
                       </td>
                     ))}
                   </tr>
                 ))}
               </tbody>
             </table>
-            {/* Legend gradient */}
             <div className="flex items-center gap-1 mt-3 justify-center">
               <span className="text-[10px] text-gray-400">Menos</span>
               {[0, 2, 4, 6, 8, 10].map((v) => (
-                <div
-                  key={v}
-                  className="w-5 h-3 rounded-sm"
-                  style={{ backgroundColor: getHeatColor(v) }}
-                />
+                <div key={v} className="w-5 h-3 rounded-sm" style={{ backgroundColor: getHeatColor(v) }} />
+              ))}
+              <span className="text-[10px] text-gray-400">Mais</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Heatmap – Total de Solicitações por Dia e Horário */}
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-1">Total de Solicitações</h3>
+          <p className="text-xs text-gray-400 mb-4">por Dia e Horário</p>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className="text-[10px] text-gray-400 font-normal text-left pr-2 pb-1">Dia</th>
+                  {Array.from({ length: 13 }, (_, i) => (
+                    <th key={i} className="text-[10px] text-gray-400 font-normal pb-1 px-0.5">{String(i).padStart(2, "0")}h</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {heatmapSolicitacoes.map((row) => (
+                  <tr key={row.dia}>
+                    <td className="text-[11px] text-gray-500 pr-2 py-0.5">{row.dia}</td>
+                    {row.hours.map((v, i) => (
+                      <td key={i} className="px-0.5 py-0.5">
+                        <div className="w-full h-6 rounded-sm" style={{ backgroundColor: getHeatColor(v), minWidth: 28 }} title={`${row.dia} ${String(i).padStart(2, "0")}h: ${v}`} />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="flex items-center gap-1 mt-3 justify-center">
+              <span className="text-[10px] text-gray-400">Menos</span>
+              {[0, 2, 4, 6, 8, 10].map((v) => (
+                <div key={v} className="w-5 h-3 rounded-sm" style={{ backgroundColor: getHeatColor(v) }} />
               ))}
               <span className="text-[10px] text-gray-400">Mais</span>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Row 3: Tipos + Motivos */}
-      <div className="grid grid-cols-2 gap-4">
-        {/* % Tipos de Inconsistências */}
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Tipos de Inconsistências</h3>
           <div className="space-y-3">
             {tiposInconsistencias.map((item) => (
               <div key={item.tipo} className="flex items-center gap-3">
