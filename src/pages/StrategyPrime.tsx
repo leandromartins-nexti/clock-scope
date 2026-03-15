@@ -1268,8 +1268,7 @@ const KPICard = ({ title, value, valueColor, metaLabel, metaTarget, yoyValue, yo
         <span className={`text-[10px] font-medium ${yoyColor}`}>{yoyValue} {yoyIcon || ""}</span>
       </div>
     </div>
-      <FilterPanel open={filterOpen} onClose={() => setFilterOpen(false)} />
-    </div>
-  );
+  </div>
+);
 
 export default StrategyPrime;
