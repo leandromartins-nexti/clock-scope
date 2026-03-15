@@ -5,24 +5,50 @@ import { ImprovementProvider } from "@/contexts/ImprovementContext";
 import { ImprovementCenter } from "@/components/improvements/ImprovementCenter";
 import { ImprovementLayer } from "@/components/improvements/ImprovementLayer";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Legend,
 } from "recharts";
 
 // ── Mock data ──────────────────────────────────────────────
 
-const evolucaoBacklog = [
-  { mes: "Jan", valor: 7000 }, { mes: "Fev", valor: 7000 }, { mes: "Mar", valor: 7000 },
-  { mes: "Abr", valor: 7000 }, { mes: "Mai", valor: 2000 }, { mes: "Jun", valor: 182000 },
-  { mes: "Jul", valor: 47000 }, { mes: "Ago", valor: 7000 }, { mes: "Set", valor: 24000 },
-  { mes: "Out", valor: 27000 }, { mes: "Nov", valor: 7000 }, { mes: "Dez", valor: 7000 },
+const evolucaoBacklogDiario = [
+  { dia: "01", inconsistencias: 1250, solicitacoes: 380 },
+  { dia: "02", inconsistencias: 1180, solicitacoes: 420 },
+  { dia: "03", inconsistencias: 1320, solicitacoes: 350 },
+  { dia: "04", inconsistencias: 980, solicitacoes: 290 },
+  { dia: "05", inconsistencias: 1450, solicitacoes: 510 },
+  { dia: "06", inconsistencias: 1100, solicitacoes: 370 },
+  { dia: "07", inconsistencias: 890, solicitacoes: 260 },
+  { dia: "08", inconsistencias: 1380, solicitacoes: 440 },
+  { dia: "09", inconsistencias: 1520, solicitacoes: 480 },
+  { dia: "10", inconsistencias: 1210, solicitacoes: 390 },
+  { dia: "11", inconsistencias: 1060, solicitacoes: 310 },
+  { dia: "12", inconsistencias: 1430, solicitacoes: 460 },
+  { dia: "13", inconsistencias: 1150, solicitacoes: 340 },
+  { dia: "14", inconsistencias: 970, solicitacoes: 280 },
+  { dia: "15", inconsistencias: 1340, solicitacoes: 410 },
+  { dia: "16", inconsistencias: 1280, solicitacoes: 370 },
+  { dia: "17", inconsistencias: 1490, solicitacoes: 520 },
+  { dia: "18", inconsistencias: 1100, solicitacoes: 350 },
+  { dia: "19", inconsistencias: 1030, solicitacoes: 300 },
+  { dia: "20", inconsistencias: 1260, solicitacoes: 430 },
+  { dia: "21", inconsistencias: 880, solicitacoes: 240 },
+  { dia: "22", inconsistencias: 1370, solicitacoes: 450 },
+  { dia: "23", inconsistencias: 1190, solicitacoes: 380 },
+  { dia: "24", inconsistencias: 1410, solicitacoes: 470 },
+  { dia: "25", inconsistencias: 1050, solicitacoes: 320 },
+  { dia: "26", inconsistencias: 1300, solicitacoes: 400 },
+  { dia: "27", inconsistencias: 920, solicitacoes: 270 },
+  { dia: "28", inconsistencias: 1160, solicitacoes: 360 },
+  { dia: "29", inconsistencias: 1480, solicitacoes: 500 },
+  { dia: "30", inconsistencias: 1220, solicitacoes: 390 },
 ];
 
 const agingInconsistencias = [
-  { faixa: "0–2 dias", quantidade: 12450, cor: "#4CAF50" },
-  { faixa: "3–5 dias", quantidade: 8320, cor: "#FFC107" },
-  { faixa: "6–10 dias", quantidade: 5180, cor: "#FF9800" },
-  { faixa: "11–20 dias", quantidade: 3740, cor: "#FF5722" },
-  { faixa: "+20 dias", quantidade: 2185, cor: "#D32F2F" },
+  { faixa: "0–2 dias", inconsistencias: 12450, solicitacoes: 3820, cor: "#4CAF50" },
+  { faixa: "3–5 dias", inconsistencias: 8320, solicitacoes: 2150, cor: "#FFC107" },
+  { faixa: "6–10 dias", inconsistencias: 5180, solicitacoes: 1340, cor: "#FF9800" },
+  { faixa: "11–20 dias", inconsistencias: 3740, solicitacoes: 890, cor: "#FF5722" },
+  { faixa: "+20 dias", inconsistencias: 2185, solicitacoes: 620, cor: "#D32F2F" },
 ];
 
 const heatmapData = [
@@ -271,32 +297,20 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
       {/* Row 1: Evolução do Backlog - full width */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
         <h3 className="font-semibold text-sm text-gray-800 mb-1">Evolução do Backlog</h3>
-        <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações em Aberto</p>
+        <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações de Ajuste de Ponto por Dia</p>
         <div className="h-[220px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolucaoBacklog}>
+            <BarChart data={evolucaoBacklogDiario} barGap={2} barSize={8}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
-              <XAxis dataKey="mes" tick={{ fontSize: 11 }} stroke="#9CA3AF" />
-              <YAxis
-                tick={{ fontSize: 11 }}
-                stroke="#9CA3AF"
-                tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)} Mil` : v}
-              />
+              <XAxis dataKey="dia" tick={{ fontSize: 10 }} stroke="#9CA3AF" />
+              <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" />
               <Tooltip
-                formatter={(v: number) => [formatNumber(v), "Total"]}
                 contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
+                formatter={(v: number) => formatNumber(v)}
               />
-              <Bar dataKey="valor" radius={[4, 4, 0, 0]}>
-                {evolucaoBacklog.map((entry, i) => (
-                  <rect key={i} fill={entry.valor > 50000 ? "#FF5722" : "#FDB813"} />
-                ))}
-                <LabelList
-                  dataKey="valor"
-                  position="top"
-                  formatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)} Mil` : v}
-                  style={{ fontSize: 10, fill: "#6B7280" }}
-                />
-              </Bar>
+              <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+              <Bar dataKey="inconsistencias" fill="#FF5722" radius={[2, 2, 0, 0]} name="Inconsistências" />
+              <Bar dataKey="solicitacoes" fill="#FDB813" radius={[2, 2, 0, 0]} name="Solicitações de Ajuste" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -307,26 +321,32 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
         {/* Aging de Inconsistências em Aberto */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-semibold text-sm text-gray-800 mb-1">Aging de Inconsistências em Aberto</h3>
-          <p className="text-xs text-gray-400 mb-4">Quantidade por faixa de dias pendentes</p>
+          <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações por faixa de dias pendentes</p>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={agingInconsistencias} barSize={40}>
+              <BarChart data={agingInconsistencias} barGap={4} barSize={20}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
                 <XAxis dataKey="faixa" tick={{ fontSize: 10 }} stroke="#9CA3AF" />
                 <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
                 <Tooltip
-                  formatter={(v: number) => [formatNumber(v), "Inconsistências"]}
                   contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
+                  formatter={(v: number) => formatNumber(v)}
                 />
-                <Bar dataKey="quantidade" radius={[4, 4, 0, 0]}>
-                  {agingInconsistencias.map((entry, i) => (
-                    <rect key={i} fill={entry.cor} />
-                  ))}
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+                <Bar dataKey="inconsistencias" fill="#FF5722" radius={[4, 4, 0, 0]} name="Inconsistências">
                   <LabelList
-                    dataKey="quantidade"
+                    dataKey="inconsistencias"
                     position="top"
                     formatter={(v: number) => formatNumber(v)}
-                    style={{ fontSize: 10, fill: "#374151", fontWeight: 600 }}
+                    style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }}
+                  />
+                </Bar>
+                <Bar dataKey="solicitacoes" fill="#FDB813" radius={[4, 4, 0, 0]} name="Solicitações">
+                  <LabelList
+                    dataKey="solicitacoes"
+                    position="top"
+                    formatter={(v: number) => formatNumber(v)}
+                    style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }}
                   />
                 </Bar>
               </BarChart>
