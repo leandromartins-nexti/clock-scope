@@ -833,17 +833,17 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: 320 }}>
           <h3 className="font-bold text-sm text-gray-800">Top 20 pior % Solicitações Tratadas</h3>
-          <p className="text-xs text-gray-400 mb-2">por Entidade</p>
+          <p className="text-xs text-gray-400 mb-2">por {activeFilter}</p>
           <div className="overflow-y-auto flex-1">
             <table className="w-full text-sm">
               <thead className="sticky top-0 bg-white">
                 <tr className="border-b border-gray-100">
-                  <th className="text-left py-2 text-gray-500 font-medium">👤 Empresa</th>
+                  <th className="text-left py-2 text-gray-500 font-medium">👤 {activeFilter}</th>
                   <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
                 </tr>
               </thead>
               <tbody>
-                {topSolicitacoesTratadas.map((item) => (
+                {buildStrategyRankingPct(activeFilter, baseSolTratadasPcts).map((item) => (
                   <tr key={item.pos} className="border-b border-gray-50">
                     <td className="py-2 text-gray-700">
                       <span className="text-gray-400 mr-2">{item.pos}</span>
