@@ -698,11 +698,11 @@ const evolucaoSolicitacoesMensal = [
 const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
-      {/* Evolução Mensal por Status - Barra Empilhada (primeiro) */}
+      {/* Row 1: Evolução Mensal por Status - Largura total */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
         <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Evolução das Solicitações por Status</h3>
         <p className="text-xs text-gray-400 mb-4">Volume mensal por status</p>
-        <div className="h-64">
+        <div className="h-[220px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={evolucaoSolicitacoesMensal} barSize={28}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
@@ -723,7 +723,6 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
 
       {/* Row 2: Motivos + Tratativa */}
       <div className="grid grid-cols-2 gap-4">
-        {/* % Motivos de Abertura de Justificativa de Ponto */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-semibold text-sm text-gray-800 mb-0.5">% Motivos de Abertura de Justificativa</h3>
           <p className="text-xs text-gray-400 mb-4">Motivo de abertura das solicitações</p>
@@ -732,13 +731,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
               <div key={idx} className="flex items-center gap-3">
                 <span className="text-xs text-gray-500 w-40 shrink-0 truncate" title={item.motivo}>{item.motivo}</span>
                 <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                  <div
-                    className="h-full rounded"
-                    style={{
-                      width: `${(item.pct / 44.7) * 100}%`,
-                      backgroundColor: "#FF5722",
-                    }}
-                  />
+                  <div className="h-full rounded" style={{ width: `${(item.pct / 44.7) * 100}%`, backgroundColor: "#FF5722" }} />
                 </div>
                 <span className="text-xs font-semibold text-gray-700 w-12 text-right">{item.pct}%</span>
               </div>
@@ -746,7 +739,6 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
           </div>
         </div>
 
-        {/* % Motivo de Tratativa */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-semibold text-sm text-gray-800 mb-0.5">% Motivo de Tratativa</h3>
           <p className="text-xs text-gray-400 mb-4">Tratativa das solicitações de justificativa</p>
@@ -755,20 +747,13 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
               <div key={idx} className="flex items-center gap-3">
                 <span className="text-xs text-gray-500 w-40 shrink-0 truncate" title={item.motivo}>{item.motivo}</span>
                 <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                  <div
-                    className="h-full rounded"
-                    style={{
-                      width: `${(item.pct / 38.2) * 100}%`,
-                      backgroundColor: "#FDB813",
-                    }}
-                  />
+                  <div className="h-full rounded" style={{ width: `${(item.pct / 38.2) * 100}%`, backgroundColor: "#FDB813" }} />
                 </div>
                 <span className="text-xs font-semibold text-gray-700 w-12 text-right">{item.pct}%</span>
               </div>
             ))}
           </div>
         </div>
-      </div>
       </div>
 
       {/* Row 3: Top 20 + Reincidentes */}
@@ -825,6 +810,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
           </div>
         </div>
       </div>
+    </div>
 
     <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
   </div>
