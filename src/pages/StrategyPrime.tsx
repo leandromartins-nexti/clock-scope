@@ -219,11 +219,54 @@ const subNavItems = ["Visão Geral", "Inconsistências", "Solicitações", "Just
 
 const filterOptions = ["Empresa", "Unidade de Negócio", "Cliente", "Posto", "Tipo de Serviço", "Área", "Filtro de Mesa"];
 
+// Helper to compute KPI values based on selected entity
+const computeKPIs = (selectedEntity: string | null) => {
+  if (!selectedEntity) {
+    return {
+      qualidade: { value: "57,5%", color: "text-green-500", yoy: "57,5%", yoyColor: "text-green-500", yoyIcon: "↑" },
+      incTratada: { value: "72,4%", color: "text-red-500", yoy: "3,2%", yoyColor: "text-green-500", yoyIcon: "↑" },
+      tratativaInc: { value: "11,2h", color: "text-red-500", yoy: "-1,5%", yoyColor: "text-green-500", yoyIcon: "↓" },
+      solTratadas: { value: "99,3%", color: "text-green-500", yoy: "0,0%", yoyColor: "text-green-500", yoyIcon: "↑" },
+      tratativaSol: { value: "3357,5h", color: "text-red-500", yoy: "0,0%", yoyColor: "text-green-500", yoyIcon: "↑" },
+    };
+  }
+  // Vary values based on entity name hash
+  const hash = selectedEntity.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const q = 30 + (hash % 50);
+  const it = 40 + (hash % 55);
+  const ti = 4 + (hash % 20);
+  const st = 85 + (hash % 15);
+  const ts = 1000 + (hash % 4000);
+  return {
+    qualidade: { value: `${q},${hash % 10}%`, color: q >= 75 ? "text-green-500" : "text-red-500", yoy: `${(hash % 15)},${hash % 10}%`, yoyColor: "text-green-500", yoyIcon: "↑" },
+    incTratada: { value: `${it},${hash % 10}%`, color: it >= 90 ? "text-green-500" : "text-red-500", yoy: `${(hash % 8)},${hash % 10}%`, yoyColor: "text-green-500", yoyIcon: "↑" },
+    tratativaInc: { value: `${ti},${hash % 10}h`, color: ti <= 8 ? "text-green-500" : "text-red-500", yoy: `${(hash % 5)},${hash % 10}%`, yoyColor: ti <= 8 ? "text-green-500" : "text-red-500", yoyIcon: ti <= 8 ? "↓" : "↑" },
+    solTratadas: { value: `${st},${hash % 10}%`, color: st >= 90 ? "text-green-500" : "text-red-500", yoy: `${(hash % 4)},${hash % 10}%`, yoyColor: "text-green-500", yoyIcon: "↑" },
+    tratativaSol: { value: `${ts},${hash % 10}h`, color: ts <= 480 ? "text-green-500" : "text-red-500", yoy: `${(hash % 10)},${hash % 10}%`, yoyColor: "text-green-500", yoyIcon: "↑" },
+  };
+};
+
+interface ContentProps {
+  activeFilter: string;
+  setActiveFilter: (v: string) => void;
+  selectedEntity: string | null;
+  setSelectedEntity: (v: string | null) => void;
+}
+
 const StrategyPrime = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Registro de Ponto");
   const [activeSubNav, setActiveSubNav] = useState("Visão Geral");
   const [activeFilter, setActiveFilter] = useState("Empresa");
+  const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
+
+  const kpis = useMemo(() => computeKPIs(selectedEntity), [selectedEntity]);
+
+  // Clear entity when filter type changes
+  const handleFilterChange = (f: string) => {
+    setActiveFilter(f);
+    setSelectedEntity(null);
+  };
 
   return (
     <ImprovementProvider>
@@ -276,7 +319,7 @@ const StrategyPrime = () => {
 
       {/* Filtros Aplicados */}
       <div className="bg-white px-6 py-3 border-b border-gray-200 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 text-sm">
             <Filter className="w-4 h-4 text-[#FF5722]" />
             <span className="font-semibold text-gray-700">Filtros Aplicados:</span>
@@ -284,8 +327,19 @@ const StrategyPrime = () => {
           <span className="bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-3 py-1 text-xs font-medium">
             Período: jan/2017 - dez/2017
           </span>
+          {selectedEntity && (
+            <span className="bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-3 py-1 text-xs font-medium flex items-center gap-1.5">
+              {activeFilter}: {selectedEntity}
+              <button onClick={() => setSelectedEntity(null)} className="hover:text-red-600">
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          )}
         </div>
-        <button className="flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline">
+        <button
+          onClick={() => setSelectedEntity(null)}
+          className="flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline"
+        >
           <Eraser className="w-4 h-4" />
           Limpar Filtros
         </button>
@@ -296,51 +350,53 @@ const StrategyPrime = () => {
         <div className="grid grid-cols-5 gap-4">
           <KPICard
             title="Qualidade da Marcação"
-            value="57,5%"
-            valueColor="text-green-500"
+            value={kpis.qualidade.value}
+            valueColor={kpis.qualidade.color}
             metaLabel="Taxa Qualidade"
             metaTarget="≥ 75%"
-            yoyValue="57,5%"
-            yoyColor="text-green-500"
-            yoyIcon="↑"
+            yoyValue={kpis.qualidade.yoy}
+            yoyColor={kpis.qualidade.yoyColor}
+            yoyIcon={kpis.qualidade.yoyIcon}
           />
           <KPICard
             title="Inconsistência Tratada"
-            value="-"
-            valueColor="text-gray-400"
+            value={kpis.incTratada.value}
+            valueColor={kpis.incTratada.color}
             metaLabel="Taxa Tratada"
             metaTarget="≥ 90%"
-            yoyValue="-"
-            yoyColor="text-gray-400"
+            yoyValue={kpis.incTratada.yoy}
+            yoyColor={kpis.incTratada.yoyColor}
+            yoyIcon={kpis.incTratada.yoyIcon}
           />
           <KPICard
             title="Tratativa Inconsistência"
-            value="-"
-            valueColor="text-gray-400"
+            value={kpis.tratativaInc.value}
+            valueColor={kpis.tratativaInc.color}
             metaLabel="Tempo Médio"
             metaTarget="≤ 8h"
-            yoyValue="-"
-            yoyColor="text-gray-400"
+            yoyValue={kpis.tratativaInc.yoy}
+            yoyColor={kpis.tratativaInc.yoyColor}
+            yoyIcon={kpis.tratativaInc.yoyIcon}
           />
           <KPICard
             title="Solicitações Tratadas"
-            value="99,3%"
-            valueColor="text-green-500"
+            value={kpis.solTratadas.value}
+            valueColor={kpis.solTratadas.color}
             metaLabel="Taxa Tratada"
             metaTarget="≥ 90%"
-            yoyValue="0,0%"
-            yoyColor="text-green-500"
-            yoyIcon="↑"
+            yoyValue={kpis.solTratadas.yoy}
+            yoyColor={kpis.solTratadas.yoyColor}
+            yoyIcon={kpis.solTratadas.yoyIcon}
           />
           <KPICard
             title="Tratativa de Solicitações"
-            value="3357,5h"
-            valueColor="text-red-500"
+            value={kpis.tratativaSol.value}
+            valueColor={kpis.tratativaSol.color}
             metaLabel="Tempo Médio"
             metaTarget="≤ 8h"
-            yoyValue="0,0%"
-            yoyColor="text-green-500"
-            yoyIcon="↑"
+            yoyValue={kpis.tratativaSol.yoy}
+            yoyColor={kpis.tratativaSol.yoyColor}
+            yoyIcon={kpis.tratativaSol.yoyIcon}
           />
         </div>
       </div>
@@ -369,11 +425,11 @@ const StrategyPrime = () => {
 
       {/* Main Content Grid */}
       <div className="px-6 pb-4 flex-1">
-        {activeSubNav === "Visão Geral" && <VisaoGeralContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Justificativa" && <AjustesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Eficiência" && <EficienciaContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
+        {activeSubNav === "Visão Geral" && <VisaoGeralContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Justificativa" && <AjustesContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Eficiência" && <EficienciaContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
       </div>
     </div>
     </ImprovementLayer>
