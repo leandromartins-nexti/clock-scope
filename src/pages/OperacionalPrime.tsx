@@ -61,6 +61,16 @@ const heatmapData = [
   { dia: "dom", hours: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0] },
 ];
 
+const heatmapSolicitacoes = [
+  { dia: "seg", hours: [1, 1, 0, 0, 0, 0, 1, 2, 5, 7, 6, 4, 3] },
+  { dia: "ter", hours: [1, 0, 0, 0, 0, 1, 1, 3, 6, 7, 5, 4, 2] },
+  { dia: "qua", hours: [1, 1, 0, 0, 0, 0, 2, 3, 5, 6, 5, 3, 2] },
+  { dia: "qui", hours: [2, 1, 0, 0, 0, 1, 1, 2, 6, 7, 6, 5, 3] },
+  { dia: "sex", hours: [1, 0, 0, 0, 0, 0, 1, 3, 5, 6, 4, 3, 2] },
+  { dia: "sáb", hours: [0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 0, 0] },
+  { dia: "dom", hours: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0] },
+];
+
 const tiposInconsistencias = [
   { tipo: "REGISTERED", pct: 135 },
   { tipo: "NOT_REGISTERED", pct: 76 },
