@@ -267,12 +267,12 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
 
 const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
-    <div className="flex-1 grid grid-cols-2 gap-4">
-      {/* Evolução do Backlog */}
+    <div className="flex-1 space-y-4">
+      {/* Row 1: Evolução do Backlog - full width */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
         <h3 className="font-semibold text-sm text-gray-800 mb-1">Evolução do Backlog</h3>
         <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações em Aberto</p>
-        <div className="h-64">
+        <div className="h-[220px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={evolucaoBacklog}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
@@ -302,95 +302,131 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
         </div>
       </div>
 
-      {/* Heatmap – Total de Inconsistências por Dia e Horário */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-semibold text-sm text-gray-800 mb-1">Total de Inconsistências</h3>
-        <p className="text-xs text-gray-400 mb-4">por Dia e Horário</p>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="text-[10px] text-gray-400 font-normal text-left pr-2 pb-1">Dia</th>
-                {Array.from({ length: 13 }, (_, i) => (
-                  <th key={i} className="text-[10px] text-gray-400 font-normal pb-1 px-0.5">
-                    {String(i).padStart(2, "0")}h
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {heatmapData.map((row) => (
-                <tr key={row.dia}>
-                  <td className="text-[11px] text-gray-500 pr-2 py-0.5">{row.dia}</td>
-                  {row.hours.map((v, i) => (
-                    <td key={i} className="px-0.5 py-0.5">
-                      <div
-                        className="w-full h-6 rounded-sm"
-                        style={{ backgroundColor: getHeatColor(v), minWidth: 28 }}
-                        title={`${row.dia} ${String(i).padStart(2, "0")}h: ${v}`}
-                      />
-                    </td>
+      {/* Row 2: Aging + Heatmap */}
+      <div className="grid grid-cols-2 gap-4">
+        {/* Aging de Inconsistências em Aberto */}
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-1">Aging de Inconsistências em Aberto</h3>
+          <p className="text-xs text-gray-400 mb-4">Quantidade por faixa de dias pendentes</p>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={agingInconsistencias} barSize={40}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
+                <XAxis dataKey="faixa" tick={{ fontSize: 10 }} stroke="#9CA3AF" />
+                <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
+                <Tooltip
+                  formatter={(v: number) => [formatNumber(v), "Inconsistências"]}
+                  contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
+                />
+                <Bar dataKey="quantidade" radius={[4, 4, 0, 0]}>
+                  {agingInconsistencias.map((entry, i) => (
+                    <rect key={i} fill={entry.cor} />
+                  ))}
+                  <LabelList
+                    dataKey="quantidade"
+                    position="top"
+                    formatter={(v: number) => formatNumber(v)}
+                    style={{ fontSize: 10, fill: "#374151", fontWeight: 600 }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Heatmap – Total de Inconsistências por Dia e Horário */}
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-1">Total de Inconsistências</h3>
+          <p className="text-xs text-gray-400 mb-4">por Dia e Horário</p>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className="text-[10px] text-gray-400 font-normal text-left pr-2 pb-1">Dia</th>
+                  {Array.from({ length: 13 }, (_, i) => (
+                    <th key={i} className="text-[10px] text-gray-400 font-normal pb-1 px-0.5">
+                      {String(i).padStart(2, "0")}h
+                    </th>
                   ))}
                 </tr>
+              </thead>
+              <tbody>
+                {heatmapData.map((row) => (
+                  <tr key={row.dia}>
+                    <td className="text-[11px] text-gray-500 pr-2 py-0.5">{row.dia}</td>
+                    {row.hours.map((v, i) => (
+                      <td key={i} className="px-0.5 py-0.5">
+                        <div
+                          className="w-full h-6 rounded-sm"
+                          style={{ backgroundColor: getHeatColor(v), minWidth: 28 }}
+                          title={`${row.dia} ${String(i).padStart(2, "0")}h: ${v}`}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {/* Legend gradient */}
+            <div className="flex items-center gap-1 mt-3 justify-center">
+              <span className="text-[10px] text-gray-400">Menos</span>
+              {[0, 2, 4, 6, 8, 10].map((v) => (
+                <div
+                  key={v}
+                  className="w-5 h-3 rounded-sm"
+                  style={{ backgroundColor: getHeatColor(v) }}
+                />
               ))}
-            </tbody>
-          </table>
-          {/* Legend gradient */}
-          <div className="flex items-center gap-1 mt-3 justify-center">
-            <span className="text-[10px] text-gray-400">Menos</span>
-            {[0, 2, 4, 6, 8, 10].map((v) => (
-              <div
-                key={v}
-                className="w-5 h-3 rounded-sm"
-                style={{ backgroundColor: getHeatColor(v) }}
-              />
-            ))}
-            <span className="text-[10px] text-gray-400">Mais</span>
+              <span className="text-[10px] text-gray-400">Mais</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* % Tipos de Inconsistências */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-semibold text-sm text-gray-800 mb-4">% Tipos de Inconsistências</h3>
-        <div className="space-y-3">
-          {tiposInconsistencias.map((item) => (
-            <div key={item.tipo} className="flex items-center gap-3">
-              <span className="text-xs text-gray-500 w-32 shrink-0 text-right">{item.tipo}</span>
-              <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                <div
-                  className="h-full rounded"
-                  style={{
-                    width: `${Math.min((item.pct / 135) * 100, 100)}%`,
-                    backgroundColor: "#FF5722",
-                  }}
-                />
+      {/* Row 3: Tipos + Motivos */}
+      <div className="grid grid-cols-2 gap-4">
+        {/* % Tipos de Inconsistências */}
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Tipos de Inconsistências</h3>
+          <div className="space-y-3">
+            {tiposInconsistencias.map((item) => (
+              <div key={item.tipo} className="flex items-center gap-3">
+                <span className="text-xs text-gray-500 w-32 shrink-0 text-right">{item.tipo}</span>
+                <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
+                  <div
+                    className="h-full rounded"
+                    style={{
+                      width: `${Math.min((item.pct / 135) * 100, 100)}%`,
+                      backgroundColor: "#FF5722",
+                    }}
+                  />
+                </div>
+                <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
               </div>
-              <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* % Motivo de Ajustes de Inconsistências */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-semibold text-sm text-gray-800 mb-4">% Motivo de Ajustes de Inconsistências</h3>
-        <div className="space-y-3">
-          {motivoAjustes.map((item) => (
-            <div key={item.motivo} className="flex items-center gap-3">
-              <span className="text-xs text-gray-500 w-28 shrink-0 text-right">{item.motivo}</span>
-              <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                <div
-                  className="h-full rounded"
-                  style={{
-                    width: `${(item.pct / 42) * 100}%`,
-                    background: `linear-gradient(90deg, #FF5722, #FDB813)`,
-                  }}
-                />
+        {/* % Motivo de Ajustes de Inconsistências */}
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Motivo de Ajustes de Inconsistências</h3>
+          <div className="space-y-3">
+            {motivoAjustes.map((item) => (
+              <div key={item.motivo} className="flex items-center gap-3">
+                <span className="text-xs text-gray-500 w-28 shrink-0 text-right">{item.motivo}</span>
+                <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
+                  <div
+                    className="h-full rounded"
+                    style={{
+                      width: `${(item.pct / 42) * 100}%`,
+                      background: `linear-gradient(90deg, #FF5722, #FDB813)`,
+                    }}
+                  />
+                </div>
+                <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
               </div>
-              <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
