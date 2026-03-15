@@ -611,38 +611,40 @@ const AnalisePadroesContent = ({ activeFilter, setActiveFilter }: { activeFilter
 // ── Mock data – Solicitações ───────────────────────────────
 
 const motivosJustificativa = [
-  { codigo: "12", pct: 44.7 },
-  { codigo: "10", pct: 12.5 },
-  { codigo: "18", pct: 9.5 },
-  { codigo: "17", pct: 9.1 },
-  { codigo: "13", pct: 7.0 },
-  { codigo: "191", pct: 5.0 },
-  { codigo: "16", pct: 3.8 },
-  { codigo: "16", pct: 3.6 },
-  { codigo: "15", pct: 2.5 },
+  { motivo: "Esquecimento de Marcação", pct: 44.7 },
+  { motivo: "Falha no Equipamento", pct: 12.5 },
+  { motivo: "Troca de Turno", pct: 9.5 },
+  { motivo: "Hora Extra Não Prevista", pct: 9.1 },
+  { motivo: "Atraso Justificado", pct: 7.0 },
+  { motivo: "Saída Antecipada", pct: 5.0 },
+  { motivo: "Erro de Digitação", pct: 3.8 },
+  { motivo: "Falta de Energia", pct: 3.6 },
+  { motivo: "Outros", pct: 2.5 },
 ];
 
-const solicitacoesAbertoPorEntidade = [
-  { empresa: "EBS2 TRADE E GESTAO LTDA", emAberto: 1648 },
-  { empresa: "WORKS CONSTRUCAO E SERVICOS", emAberto: 1423 },
-  { empresa: "SAFEMED Filial 0006", emAberto: 800 },
-  { empresa: "GOCIL VIGILANCIA", emAberto: 614 },
-  { empresa: "CONSTRUPOPP", emAberto: 558 },
-  { empresa: "GOCIL SERVICOS", emAberto: 447 },
-  { empresa: "TELOS CONSULTORIA EMPRESARIAL LTDA", emAberto: 433 },
+const motivosTratativa = [
+  { motivo: "Ajuste Manual pelo Gestor", pct: 38.2 },
+  { motivo: "Aprovação Automática", pct: 22.5 },
+  { motivo: "Análise de Documentação", pct: 14.8 },
+  { motivo: "Validação com Supervisor", pct: 10.3 },
+  { motivo: "Cancelamento por Duplicidade", pct: 6.1 },
+  { motivo: "Rejeição por Prazo", pct: 4.5 },
+  { motivo: "Outros", pct: 3.6 },
 ];
 
-const statusSolicitacoes = [
-  { status: 1, label: "Em aberto", pct: 0.7, cor: "#FF5722" },
-  { status: 2, label: "Ajustadas", pct: 81.1, cor: "#FDB813" },
-  { status: 3, label: "Canceladas", pct: 18.2, cor: "#FF5722" },
-];
-
-const evolucaoSolicitacoesAberto = [
-  { mes: "Jan", valor: 7300 }, { mes: "Fev", valor: 7300 }, { mes: "Mar", valor: 7300 },
-  { mes: "Abr", valor: 7300 }, { mes: "Mai", valor: 7300 }, { mes: "Jun", valor: 7300 },
-  { mes: "Jul", valor: 7300 }, { mes: "Ago", valor: 7300 }, { mes: "Set", valor: 7300 },
-  { mes: "Out", valor: 7300 }, { mes: "Nov", valor: 7300 }, { mes: "Dez", valor: 7300 },
+const evolucaoSolicitacoesMensal = [
+  { mes: "Jan", emAberto: 520, ajustadas: 5920, canceladas: 1330 },
+  { mes: "Fev", emAberto: 480, ajustadas: 6100, canceladas: 1280 },
+  { mes: "Mar", emAberto: 610, ajustadas: 5750, canceladas: 1410 },
+  { mes: "Abr", emAberto: 390, ajustadas: 6340, canceladas: 1190 },
+  { mes: "Mai", emAberto: 550, ajustadas: 5880, canceladas: 1350 },
+  { mes: "Jun", emAberto: 470, ajustadas: 6200, canceladas: 1260 },
+  { mes: "Jul", emAberto: 430, ajustadas: 6450, canceladas: 1150 },
+  { mes: "Ago", emAberto: 680, ajustadas: 5600, canceladas: 1480 },
+  { mes: "Set", emAberto: 510, ajustadas: 6050, canceladas: 1300 },
+  { mes: "Out", emAberto: 440, ajustadas: 6280, canceladas: 1220 },
+  { mes: "Nov", emAberto: 560, ajustadas: 5950, canceladas: 1370 },
+  { mes: "Dez", emAberto: 490, ajustadas: 6150, canceladas: 1290 },
 ];
 
 // ── Solicitações Content ───────────────────────────────────
