@@ -869,7 +869,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
       {/* Row 3: Top 20 + Reincidentes */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Top 20 Entidades com mais Solicitações</h3>
+          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Top 20 com mais Solicitações</h3>
           <p className="text-xs text-gray-400 mb-3">Solicitações de justificativa de ponto</p>
           <div className="max-h-[320px] overflow-y-auto">
             <table className="w-full">
