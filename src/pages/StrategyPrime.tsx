@@ -488,7 +488,7 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
 );
 
 // Visão Geral Content
-const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+const VisaoGeralContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => (
   <div className="flex gap-4">
     {/* Left content */}
     <div className="flex-1 space-y-4">
@@ -507,7 +507,8 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
               </thead>
               <tbody>
                 {buildStrategyRankingPct(activeFilter, basePiorQualidadePcts).map((item) => (
-                  <tr key={item.pos} className="border-b border-gray-50">
+                  <tr key={item.pos} className={`border-b border-gray-50 cursor-pointer hover:bg-orange-50 transition-colors ${selectedEntity === item.empresa ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.empresa ? null : item.empresa)}>
                     <td className="py-2 text-gray-700">
                       <span className="text-gray-400 mr-2">{item.pos}</span>
                       {item.empresa}
