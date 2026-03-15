@@ -164,7 +164,7 @@ const tabs = [
   "Engajamento e Retenção", "Ausências e Coberturas",
 ];
 
-const subNavItems = ["Backlog", "Análise de Padrões", "Solicitações", "Inconsistências", "Qualidade"];
+const subNavItems = ["Backlog", "Análise de Padrões", "Solicitações", "Inconsistências"];
 const filterOptions = ["Empresa", "Unidade de Negócio", "Cliente", "Posto", "Tipo de Serviço", "Área", "Filtro de Mesa", "Colaborador"];
 
 // ── Helpers ────────────────────────────────────────────────
