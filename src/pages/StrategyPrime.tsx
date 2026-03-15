@@ -676,7 +676,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter, selectedEntity,
           </div>
           <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={evolucaoInconsistenciasTratadas} barGap={2} barSize={14} onClick={handleBarClick} style={{ cursor: "pointer" }}>
+              <BarChart data={incTratadasData} barGap={2} barSize={14} onClick={handleBarClick} style={{ cursor: "pointer" }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
                 <YAxis hide />
