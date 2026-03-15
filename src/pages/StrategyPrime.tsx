@@ -758,7 +758,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter, selectedEntity,
             <p className="text-xs text-gray-400 mb-4">por Período</p>
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={evolucaoInconsistenciasReincidentes}>
+                <LineChart data={reincidentesIncData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                   <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
                   <YAxis hide domain={[0, 100]} />
