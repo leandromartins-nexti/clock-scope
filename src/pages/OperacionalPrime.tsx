@@ -172,13 +172,31 @@ const baseSolicitacoesReincOcorrencias = [14, 12, 11, 10, 9, 9, 8, 8, 7, 7, 6, 6
 const baseQualidadePcts = [100.0, 100.0, 100.0, 98.5, 97.2, 96.8, 95.3, 94.7, 93.1, 92.4, 91.8, 90.5, 89.2, 88.6, 87.1, 86.4, 85.7, 84.3, 83.9, 82.5];
 const baseMeses = ["Mar/2026", "Mar/2026", "Fev/2026", "Mar/2026", "Jan/2026", "Mar/2026", "Fev/2026", "Mar/2026", "Fev/2026", "Mar/2026", "Jan/2026", "Mar/2026", "Fev/2026", "Jan/2026", "Mar/2026", "Fev/2026", "Mar/2026", "Fev/2026", "Jan/2026", "Fev/2026"];
 
-const motivoAjustes = [
+const motivoAjustesBase = [
   { motivo: "Esquecimento", pct: 42 },
   { motivo: "Falha Sistema", pct: 28 },
   { motivo: "Troca Turno", pct: 15 },
   { motivo: "Hora Extra", pct: 10 },
   { motivo: "Outros", pct: 5 },
 ];
+
+const variarTiposPorMes = (base: { tipo: string; pct: number }[], mesIdx: number) => {
+  const seed = mesIdx + 1;
+  return base.map((item, i) => {
+    const variation = ((seed * (i + 2) * 5) % 11) - 5;
+    const newPct = Math.max(0.5, +(item.pct + variation * (item.pct / 25)).toFixed(1));
+    return { ...item, pct: newPct };
+  });
+};
+
+const variarMotivoAjustesPorMes = (base: { motivo: string; pct: number }[], mesIdx: number) => {
+  const seed = mesIdx + 1;
+  return base.map((item, i) => {
+    const variation = ((seed * (i + 4) * 3) % 13) - 6;
+    const newPct = Math.max(0.5, +(item.pct + variation * (item.pct / 28)).toFixed(1));
+    return { ...item, pct: newPct };
+  });
+};
 
 const colaboradoresSemTemplateList = [
   { colaborador: "João Silva", template: "Facial", inconsistencias: 300 },
