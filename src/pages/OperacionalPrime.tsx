@@ -409,7 +409,7 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
 
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-0.5">
-            <h3 className="font-semibold text-sm text-gray-800">Top 20 Entidades com Mais Solicitações</h3>
+            <h3 className="font-semibold text-sm text-gray-800">Top 20 Entidades com Mais Solicitações em Aberto</h3>
           </div>
           <p className="text-xs text-gray-400 mb-3">por Entidade</p>
           <div className="max-h-[252px] overflow-y-auto">
