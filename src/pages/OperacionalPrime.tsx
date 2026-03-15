@@ -905,4 +905,50 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
   </div>
 );
 
+const top20PiorQualidade = [
+  { entidade: "ANCORA BADOTTI PARTICIPACOES LTDA", pct: 100.0 },
+  { entidade: "CARIOCA CALCADOS LTDA", pct: 100.0 },
+  { entidade: "EBS2 TRADE E GESTAO LTDA", pct: 100.0 },
+  { entidade: "WORKS CONSTRUCAO E SERVICOS", pct: 98.5 },
+  { entidade: "LOJAS RENNER S.A.", pct: 97.2 },
+  { entidade: "SHOPPING MUELLER", pct: 96.8 },
+  { entidade: "CONDOMÍNIO EDIFÍCIO AURORA", pct: 95.3 },
+  { entidade: "HOSPITAL SÃO LUCAS", pct: 94.7 },
+  { entidade: "UNIVERSIDADE FEDERAL", pct: 93.1 },
+  { entidade: "BANCO DO BRASIL", pct: 92.4 },
+  { entidade: "SUPERMERCADO ANGELONI", pct: 91.8 },
+  { entidade: "TRIBUNAL DE JUSTIÇA", pct: 90.5 },
+  { entidade: "PREFEITURA MUNICIPAL", pct: 89.2 },
+  { entidade: "CENTRO EMPRESARIAL ALPHA", pct: 88.6 },
+  { entidade: "PARQUE INDUSTRIAL SUL", pct: 87.1 },
+  { entidade: "CONDOMÍNIO RESIDENCIAL VERDE", pct: 86.4 },
+  { entidade: "ESCOLA ESTADUAL DOM PEDRO", pct: 85.7 },
+  { entidade: "ATACADÃO DISTRIBUIÇÃO", pct: 84.3 },
+  { entidade: "FARMÁCIA RAIA", pct: 83.9 },
+  { entidade: "CLÍNICA SÃO RAFAEL", pct: 82.5 },
+];
+
+const top20EscalaInconsistenciasSolicitacoes = [
+  { escala: "07:00-19:00 12x36 (MO)", inconsistencias: 157, solicitacoes: 83 },
+  { escala: "19:00-07:00 12x36 (MO)", inconsistencias: 139, solicitacoes: 72 },
+  { escala: "20:00-22:00/23:12-06:00 RFL", inconsistencias: 128, solicitacoes: 65 },
+  { escala: "19:00-07:00 12X36", inconsistencias: 113, solicitacoes: 58 },
+  { escala: "06:00-18:00 12x36", inconsistencias: 109, solicitacoes: 54 },
+  { escala: "07:00-12:00/13:12-17:00 RFL", inconsistencias: 95, solicitacoes: 48 },
+  { escala: "07:00-19:00 12X36", inconsistencias: 88, solicitacoes: 42 },
+  { escala: "08:00-18:00 5x2", inconsistencias: 82, solicitacoes: 39 },
+  { escala: "22:00-06:00 5x1", inconsistencias: 76, solicitacoes: 35 },
+  { escala: "06:00-14:00 6x1", inconsistencias: 71, solicitacoes: 31 },
+  { escala: "14:00-22:00 6x1", inconsistencias: 65, solicitacoes: 28 },
+  { escala: "07:00-15:00 5x2", inconsistencias: 59, solicitacoes: 25 },
+  { escala: "08:00-14:00/15:00-17:00 RFL", inconsistencias: 54, solicitacoes: 22 },
+  { escala: "18:00-06:00 12x36", inconsistencias: 48, solicitacoes: 19 },
+  { escala: "06:00-12:00 6x1", inconsistencias: 43, solicitacoes: 17 },
+  { escala: "12:00-18:00 6x1", inconsistencias: 39, solicitacoes: 15 },
+  { escala: "07:00-16:00 5x2", inconsistencias: 35, solicitacoes: 13 },
+  { escala: "09:00-18:00 5x2", inconsistencias: 31, solicitacoes: 11 },
+  { escala: "10:00-19:00 5x2", inconsistencias: 27, solicitacoes: 9 },
+  { escala: "06:00-15:00 6x1", inconsistencias: 24, solicitacoes: 8 },
+];
+
 export default OperacionalPrime;
