@@ -82,6 +82,123 @@ const baseMaisIncQtds = [1245, 1102, 987, 876, 823, 754, 698, 645, 612, 578, 534
 const baseMaisSolQtds = [2345, 2102, 1987, 1876, 1723, 1654, 1598, 1445, 1312, 1278, 1134, 1098, 967, 923, 889, 756, 712, 687, 654, 621];
 const baseJustPontoQtds = [4250, 3890, 3520, 3180, 2950, 2780, 2610, 2440, 2280, 2150, 1980, 1820, 1690, 1540, 1380, 1250, 1120, 980, 850, 720];
 
+const qualidadeEvolucao = [
+  { mes: "Jun", valor: 56 }, { mes: "Jul", valor: 14 }, { mes: "Ago", valor: 70 },
+  { mes: "Set", valor: 88 }, { mes: "Out", valor: 70 },
+];
+
+const marcacoesPorTipo = [
+  { tipo: "INVALID_TIME", pct: 100, cor: "#FF5722" },
+  { tipo: "NOT_REGISTERED", pct: 100, cor: "#FF5722" },
+];
+
+const evolucaoMarcacoesPorTipo = [
+  { mes: "Jan", INVALID_TIME: 52, NOT_REGISTERED: 48 }, { mes: "Fev", INVALID_TIME: 55, NOT_REGISTERED: 45 },
+  { mes: "Mar", INVALID_TIME: 50, NOT_REGISTERED: 50 }, { mes: "Abr", INVALID_TIME: 58, NOT_REGISTERED: 42 },
+  { mes: "Mai", INVALID_TIME: 53, NOT_REGISTERED: 47 }, { mes: "Jun", INVALID_TIME: 60, NOT_REGISTERED: 40 },
+  { mes: "Jul", INVALID_TIME: 57, NOT_REGISTERED: 43 }, { mes: "Ago", INVALID_TIME: 62, NOT_REGISTERED: 38 },
+  { mes: "Set", INVALID_TIME: 55, NOT_REGISTERED: 45 }, { mes: "Out", INVALID_TIME: 59, NOT_REGISTERED: 41 },
+  { mes: "Nov", INVALID_TIME: 61, NOT_REGISTERED: 39 }, { mes: "Dez", INVALID_TIME: 56, NOT_REGISTERED: 44 },
+];
+
+const colaboradoresPorColetor = [
+  { coletor: "SYSTEM", valor: 6749, cor: "#FF5722" },
+  { coletor: "TERMINAL", valor: 6170, cor: "#FF5722" },
+  { coletor: "MOBILE", valor: 115, cor: "#FF5722" },
+];
+
+const evolucaoMarcacoesPorColetor = [
+  { mes: "Jan", SYSTEM: 52.3, TERMINAL: 46.9, MOBILE: 0.8 }, { mes: "Fev", SYSTEM: 52.2, TERMINAL: 46.9, MOBILE: 0.9 },
+  { mes: "Mar", SYSTEM: 51.8, TERMINAL: 47.4, MOBILE: 0.8 }, { mes: "Abr", SYSTEM: 51.7, TERMINAL: 47.5, MOBILE: 0.8 },
+  { mes: "Mai", SYSTEM: 51.6, TERMINAL: 47.5, MOBILE: 0.9 }, { mes: "Jun", SYSTEM: 51.6, TERMINAL: 47.5, MOBILE: 0.9 },
+  { mes: "Jul", SYSTEM: 51.5, TERMINAL: 47.5, MOBILE: 1.0 }, { mes: "Ago", SYSTEM: 51.5, TERMINAL: 47.6, MOBILE: 0.9 },
+  { mes: "Set", SYSTEM: 51.7, TERMINAL: 47.4, MOBILE: 0.9 }, { mes: "Out", SYSTEM: 51.8, TERMINAL: 47.3, MOBILE: 0.9 },
+  { mes: "Nov", SYSTEM: 51.9, TERMINAL: 47.2, MOBILE: 0.9 }, { mes: "Dez", SYSTEM: 52.0, TERMINAL: 47.1, MOBILE: 0.9 },
+];
+
+const evolucaoInconsistenciasReincidentes = [
+  { mes: "Jan", valor: 32.1 }, { mes: "Fev", valor: 34.5 }, { mes: "Mar", valor: 31.8 },
+  { mes: "Abr", valor: 35.2 }, { mes: "Mai", valor: 33.7 }, { mes: "Jun", valor: 36.4 },
+  { mes: "Jul", valor: 38.1 }, { mes: "Ago", valor: 35.9 }, { mes: "Set", valor: 37.3 },
+  { mes: "Out", valor: 34.8 }, { mes: "Nov", valor: 36.7 }, { mes: "Dez", valor: 33.2 },
+];
+
+const tempoMedioTratativaInconsistencias = [
+  { mes: "Jan", valor: 12.3 }, { mes: "Fev", valor: 11.8 }, { mes: "Mar", valor: 13.1 },
+  { mes: "Abr", valor: 10.5 }, { mes: "Mai", valor: 9.8 }, { mes: "Jun", valor: 11.2 },
+  { mes: "Jul", valor: 10.1 }, { mes: "Ago", valor: 9.5 }, { mes: "Set", valor: 8.7 },
+  { mes: "Out", valor: 9.2 }, { mes: "Nov", valor: 8.4 }, { mes: "Dez", valor: 7.9 },
+];
+
+const origemJustificativas = [
+  { name: "Solicitação de Justificativa de Ponto", value: 68, color: "#FF5722" },
+  { name: "Outras Fontes", value: 32, color: "#E8E8E8" },
+];
+
+const evolucaoJustificativasPonto = [
+  { mes: "Jan", valor: 12500 }, { mes: "Fev", valor: 13200 }, { mes: "Mar", valor: 11800 },
+  { mes: "Abr", valor: 14100 }, { mes: "Mai", valor: 13700 }, { mes: "Jun", valor: 15200 },
+  { mes: "Jul", valor: 14800 }, { mes: "Ago", valor: 16100 }, { mes: "Set", valor: 15500 },
+  { mes: "Out", valor: 14300 }, { mes: "Nov", valor: 15800 }, { mes: "Dez", valor: 16500 },
+];
+
+const evolucaoReincidentesJustificativas = [
+  { mes: "Jan", valor: 18.5 }, { mes: "Fev", valor: 19.2 }, { mes: "Mar", valor: 17.8 },
+  { mes: "Abr", valor: 20.1 }, { mes: "Mai", valor: 21.3 }, { mes: "Jun", valor: 19.7 },
+  { mes: "Jul", valor: 22.4 }, { mes: "Ago", valor: 21.8 }, { mes: "Set", valor: 20.5 },
+  { mes: "Out", valor: 23.1 }, { mes: "Nov", valor: 22.6 }, { mes: "Dez", valor: 21.9 },
+];
+
+const solicitacoesJustificativa = [
+  { mes: "Jan", emAberto: 580, ajustadas: 67500, canceladas: 15100 },
+  { mes: "Fev", emAberto: 620, ajustadas: 68200, canceladas: 15300 },
+  { mes: "Mar", emAberto: 550, ajustadas: 67800, canceladas: 15000 },
+  { mes: "Abr", emAberto: 610, ajustadas: 67000, canceladas: 15200 },
+  { mes: "Mai", emAberto: 590, ajustadas: 68500, canceladas: 15400 },
+  { mes: "Jun", emAberto: 640, ajustadas: 67200, canceladas: 14900 },
+  { mes: "Jul", emAberto: 570, ajustadas: 68000, canceladas: 15100 },
+  { mes: "Ago", emAberto: 600, ajustadas: 67600, canceladas: 15300 },
+  { mes: "Set", emAberto: 630, ajustadas: 67900, canceladas: 15000 },
+  { mes: "Out", emAberto: 560, ajustadas: 68300, canceladas: 15200 },
+  { mes: "Nov", emAberto: 610, ajustadas: 67700, canceladas: 15100 },
+  { mes: "Dez", emAberto: 700, ajustadas: 67400, canceladas: 14700 },
+];
+
+const solicitacoesReincidentes = [
+  { mes: "Jan", valor: 12.5 }, { mes: "Fev", valor: 14.2 }, { mes: "Mar", valor: 11.8 },
+  { mes: "Abr", valor: 13.1 }, { mes: "Mai", valor: 15.7 }, { mes: "Jun", valor: 10.9 },
+  { mes: "Jul", valor: 16.3 }, { mes: "Ago", valor: 14.8 }, { mes: "Set", valor: 12.1 },
+  { mes: "Out", valor: 13.6 }, { mes: "Nov", valor: 11.4 }, { mes: "Dez", valor: 15.2 },
+];
+
+const tempoMedioTratativa = [
+  { mes: "Jan", valor: 2850 }, { mes: "Fev", valor: 3120 }, { mes: "Mar", valor: 2690 },
+  { mes: "Abr", valor: 3480 }, { mes: "Mai", valor: 3150 }, { mes: "Jun", valor: 2970 },
+  { mes: "Jul", valor: 3610 }, { mes: "Ago", valor: 2780 }, { mes: "Set", valor: 3250 },
+  { mes: "Out", valor: 3420 }, { mes: "Nov", valor: 2910 }, { mes: "Dez", valor: 3180 },
+];
+
+const piorTempoMedioOperadores = [
+  { operador: "Carlos Mendes", tempoMedio: 30 }, { operador: "Ana Rodrigues", tempoMedio: 29 },
+  { operador: "Felipe Santos", tempoMedio: 27 }, { operador: "Juliana Costa", tempoMedio: 27 },
+  { operador: "Ricardo Almeida", tempoMedio: 26 }, { operador: "Patrícia Lima", tempoMedio: 25 },
+  { operador: "Eduardo Ferreira", tempoMedio: 21 },
+];
+
+const top10TratativaOperadores = [
+  { operador: "Marcos Silva", tratativas: 30 }, { operador: "Luciana Pereira", tratativas: 29 },
+  { operador: "Bruno Oliveira", tratativas: 27 }, { operador: "Camila Souza", tratativas: 27 },
+  { operador: "Thiago Martins", tratativas: 26 }, { operador: "Renata Barbosa", tratativas: 25 },
+  { operador: "Diego Nascimento", tratativas: 21 },
+];
+
+const evolucaoInconsistenciasTratadas = [
+  { mes: "Jan", total: 320, tratadas: 144 }, { mes: "Fev", total: 298, tratadas: 145 }, { mes: "Mar", total: 345, tratadas: 180 },
+  { mes: "Abr", total: 310, tratadas: 157 }, { mes: "Mai", total: 330, tratadas: 182 }, { mes: "Jun", total: 305, tratadas: 180 },
+  { mes: "Jul", total: 289, tratadas: 178 }, { mes: "Ago", total: 312, tratadas: 197 }, { mes: "Set", total: 278, tratadas: 169 },
+  { mes: "Out", total: 335, tratadas: 218 }, { mes: "Nov", total: 342, tratadas: 234 }, { mes: "Dez", total: 318, tratadas: 230 },
+];
+
 const tempoMedioMovimentacoes = [
   { mes: "Jan", valor: 9100 }, { mes: "Fev", valor: 9100 }, { mes: "Mar", valor: 9100 },
   { mes: "Abr", valor: 9100 }, { mes: "Mai", valor: 9100 }, { mes: "Jun", valor: 9100 },
