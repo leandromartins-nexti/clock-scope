@@ -946,7 +946,7 @@ const AjustesContent = ({ activeFilter, setActiveFilter, selectedEntity, setSele
 };
 
 // Solicitações Content
-const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => {
+const SolicitacoesContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => {
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
   const handleBarClick = (data: any) => {
