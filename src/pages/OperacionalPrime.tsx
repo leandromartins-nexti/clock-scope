@@ -357,9 +357,9 @@ const OperacionalPrime = () => {
       {/* KPI Cards */}
       <div className="px-6 py-4">
         <div className="grid grid-cols-3 gap-4">
-          <OperacionalKPI title="Inconsistências em Aberto" value="282.873" yoy="-" />
-          <OperacionalKPI title="Solicitações em Aberto" value="7.261" yoy="0,0%" trend="down" />
-          <OperacionalKPI title="Colaboradores sem Template" value="1.842" yoy="12,3%" trend="up" />
+          <OperacionalKPI title="Inconsistências em Aberto" value={formatNumber(kpis.inc)} yoy="-" />
+          <OperacionalKPI title="Solicitações em Aberto" value={formatNumber(kpis.sol)} yoy="0,0%" trend="down" />
+          <OperacionalKPI title="Colaboradores sem Template" value={formatNumber(kpis.semTemplate)} yoy="12,3%" trend="up" />
         </div>
       </div>
 
