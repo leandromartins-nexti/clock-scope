@@ -328,7 +328,8 @@ const StrategyPrime = () => {
             >
               Operacional
             </button>
-            <button className="border border-gray-300 text-gray-600 px-4 py-2 rounded text-sm font-medium flex items-center gap-2">
+            <button className="border border-gray-300 text-gray-600 px-4 py-2 rounded text-sm font-medium flex items-center gap-2"
+              onClick={() => setFilterOpen(true)}>
               <Filter className="w-4 h-4" />
               Filtros
             </button>
