@@ -506,112 +506,118 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
 );
 
 // Visão Geral Content
-const VisaoGeralContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => (
-  <div className="flex gap-4">
-    {/* Left content */}
-    <div className="flex-1 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        {/* Top 10 Pior Qualidade */}
-        <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: '320px' }}>
-          <h3 className="font-bold text-sm text-gray-800">Top 20 Pior Qualidade de Marcação</h3>
-          <p className="text-xs text-gray-400 mb-4">por {activeFilter}</p>
-          <div className="overflow-y-auto flex-1">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-white">
-                <tr className="border-b border-gray-100">
-                  <th className="text-left py-2 text-gray-500 font-medium">👤 {activeFilter}</th>
-                  <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
-                </tr>
-              </thead>
-              <tbody>
-                {buildStrategyRankingPct(activeFilter, basePiorQualidadePcts).map((item) => (
-                  <tr key={item.pos} className={`border-b border-gray-50 cursor-pointer hover:bg-orange-50 transition-colors ${selectedEntity === item.empresa ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
-                    onClick={() => setSelectedEntity(selectedEntity === item.empresa ? null : item.empresa)}>
-                    <td className="py-2 text-gray-700">
-                      <span className="text-gray-400 mr-2">{item.pos}</span>
-                      {item.empresa}
-                    </td>
-                    <td className="py-2 text-right text-gray-600">{item.pct}</td>
+const VisaoGeralContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => {
+  const qualidadeData = variarSerieSimples(qualidadeEvolucao, "valor", selectedEntity);
+  const marcTipoData = variarSerieMulti(evolucaoMarcacoesPorTipo, ["INVALID_TIME", "NOT_REGISTERED"], selectedEntity);
+  const marcColetorData = variarSerieMulti(evolucaoMarcacoesPorColetor, ["SYSTEM", "TERMINAL", "MOBILE"], selectedEntity);
+
+  return (
+    <div className="flex gap-4">
+      {/* Left content */}
+      <div className="flex-1 space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          {/* Top 10 Pior Qualidade */}
+          <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: '320px' }}>
+            <h3 className="font-bold text-sm text-gray-800">Top 20 Pior Qualidade de Marcação</h3>
+            <p className="text-xs text-gray-400 mb-4">por {activeFilter}</p>
+            <div className="overflow-y-auto flex-1">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 bg-white">
+                  <tr className="border-b border-gray-100">
+                    <th className="text-left py-2 text-gray-500 font-medium">👤 {activeFilter}</th>
+                    <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {buildStrategyRankingPct(activeFilter, basePiorQualidadePcts).map((item) => (
+                    <tr key={item.pos} className={`border-b border-gray-50 cursor-pointer hover:bg-orange-50 transition-colors ${selectedEntity === item.empresa ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                      onClick={() => setSelectedEntity(selectedEntity === item.empresa ? null : item.empresa)}>
+                      <td className="py-2 text-gray-700">
+                        <span className="text-gray-400 mr-2">{item.pos}</span>
+                        {item.empresa}
+                      </td>
+                      <td className="py-2 text-right text-gray-600">{item.pct}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: '320px' }}>
+            <h3 className="font-bold text-sm text-gray-800 mb-4">Evolução da Qualidade das Marcações</h3>
+            <div className="flex-1">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={qualidadeData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="valor"
+                    stroke="#FF5722"
+                    strokeWidth={2}
+                    dot={{ r: 4, fill: "#FF5722" }}
+                    label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ height: '320px' }}>
-          <h3 className="font-bold text-sm text-gray-800 mb-4">Evolução da Qualidade das Marcações</h3>
-          <div className="flex-1">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={qualidadeEvolucao}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} />
-                <YAxis hide />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="valor"
-                  stroke="#FF5722"
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: "#FF5722" }}
-                  label={{ position: "top", fontSize: 11, fill: "#333", formatter: (v: number) => `${v}%` }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+        <div className="grid grid-cols-2 gap-4">
+          {/* Evolução % Marcações por Tipo - Stacked Bar */}
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-bold text-sm text-gray-800">Evolução % Marcações por Tipo</h3>
+              <ImprovementPin itemId="evolucao-marcacoes-tipo-substituir" />
+            </div>
+            <p className="text-xs text-gray-400 mb-4">Percentual mensal por tipo de marcação</p>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={marcTipoData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                  <Legend wrapperStyle={{ fontSize: "11px" }} />
+                  <Bar dataKey="INVALID_TIME" stackId="a" fill="#FF5722" name="Horário Inválido" radius={[0, 0, 0, 0]} />
+                  <Bar dataKey="NOT_REGISTERED" stackId="a" fill="#FF9800" name="Esquecimento" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          {/* Evolução Colaboradores por Coletor - Stacked Bar */}
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-bold text-sm text-gray-800">Evolução % Marcações por Coletor</h3>
+              <ImprovementPin itemId="evolucao-colaboradores-coletor-substituir" />
+            </div>
+            <p className="text-xs text-gray-400 mb-4">Percentual mensal de marcações por tipo de coletor</p>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={marcColetorData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} formatter={(value: number) => `${value.toFixed(1)}%`} />
+                  <Legend wrapperStyle={{ fontSize: "11px" }} />
+                  <Bar dataKey="SYSTEM" stackId="a" fill="#FF5722" name="System" radius={[0, 0, 0, 0]} />
+                  <Bar dataKey="TERMINAL" stackId="a" fill="#FF9800" name="Terminal" radius={[0, 0, 0, 0]} />
+                  <Bar dataKey="MOBILE" stackId="a" fill="#FFC107" name="Mobile" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        {/* Evolução % Marcações por Tipo - Stacked Bar */}
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-bold text-sm text-gray-800">Evolução % Marcações por Tipo</h3>
-            <ImprovementPin itemId="evolucao-marcacoes-tipo-substituir" />
-          </div>
-          <p className="text-xs text-gray-400 mb-4">Percentual mensal por tipo de marcação</p>
-          <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={evolucaoMarcacoesPorTipo}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} tickFormatter={(v) => `${v}%`} />
-                <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
-                <Legend wrapperStyle={{ fontSize: "11px" }} />
-                <Bar dataKey="INVALID_TIME" stackId="a" fill="#FF5722" name="Horário Inválido" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="NOT_REGISTERED" stackId="a" fill="#FF9800" name="Esquecimento" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        {/* Evolução Colaboradores por Coletor - Stacked Bar */}
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-bold text-sm text-gray-800">Evolução % Marcações por Coletor</h3>
-            <ImprovementPin itemId="evolucao-colaboradores-coletor-substituir" />
-          </div>
-          <p className="text-xs text-gray-400 mb-4">Percentual mensal de marcações por tipo de coletor</p>
-          <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={evolucaoMarcacoesPorColetor}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
-                <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} formatter={(value: number) => `${value.toFixed(1)}%`} />
-                <Legend wrapperStyle={{ fontSize: "11px" }} />
-                <Bar dataKey="SYSTEM" stackId="a" fill="#FF5722" name="System" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="TERMINAL" stackId="a" fill="#FF9800" name="Terminal" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="MOBILE" stackId="a" fill="#FFC107" name="Mobile" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+      {/* Right side panel */}
+      <div className="w-[280px] shrink-0">
+        <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
       </div>
     </div>
-    {/* Right side panel */}
-    <div className="w-[280px] shrink-0">
-      <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-    </div>
-  </div>
-);
+  );
+};
 
 // Inconsistências Content
 const InconsistenciasContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => {
