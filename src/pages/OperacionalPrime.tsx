@@ -312,7 +312,7 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
           <button
             key={option}
             onClick={() => setActiveFilter(option)}
-            className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-colors ${
+            className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-colors whitespace-nowrap ${
               activeFilter === option
                 ? "border-[#FF5722] text-[#FF5722] bg-orange-50"
                 : "border-gray-200 text-gray-500 hover:border-gray-300"
