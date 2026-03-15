@@ -622,8 +622,10 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter, selectedEntity, setS
 // Inconsistências Content
 const InconsistenciasContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => {
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
+  const incTratadasData = variarSerieMulti(evolucaoInconsistenciasTratadas, ["total", "tratadas"], selectedEntity);
+  const reincidentesIncData = variarSerieSimples(evolucaoInconsistenciasReincidentes, "valor", selectedEntity);
+  const tempoIncData = variarSerieSimples(tempoMedioTratativaInconsistencias, "valor", selectedEntity);
 
-  const handleBarClick = (data: any) => {
     if (data?.activeLabel) {
       setSelectedMes(prev => prev === data.activeLabel ? null : data.activeLabel);
     }
