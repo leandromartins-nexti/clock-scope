@@ -72,12 +72,73 @@ const heatmapSolicitacoes = [
 ];
 
 const tiposInconsistencias = [
-  { tipo: "REGISTERED", pct: 135 },
-  { tipo: "NOT_REGISTERED", pct: 76 },
-  { tipo: "INVALID_TIME", pct: 24 },
-  { tipo: "DUPLICATE", pct: 3 },
-  { tipo: "ADJUSTED", pct: 1 },
-  { tipo: "CANCELED", pct: 1 },
+  { tipo: "Esquecimento", pct: 76 },
+  { tipo: "Horário Inválido", pct: 24 },
+  { tipo: "Duplicada", pct: 3 },
+  { tipo: "Ajustada", pct: 1 },
+  { tipo: "Terminal Não Autorizado", pct: 8 },
+  { tipo: "Fora de Perímetro", pct: 5 },
+];
+
+const evolucaoInconsistenciasMensal = [
+  { mes: "Jan", emAberto: 420, tratadas: 4850, canceladas: 980 },
+  { mes: "Fev", emAberto: 380, tratadas: 5120, canceladas: 910 },
+  { mes: "Mar", emAberto: 510, tratadas: 4680, canceladas: 1050 },
+  { mes: "Abr", emAberto: 350, tratadas: 5340, canceladas: 870 },
+  { mes: "Mai", emAberto: 460, tratadas: 4920, canceladas: 1020 },
+  { mes: "Jun", emAberto: 390, tratadas: 5200, canceladas: 940 },
+  { mes: "Jul", emAberto: 340, tratadas: 5450, canceladas: 860 },
+  { mes: "Ago", emAberto: 580, tratadas: 4600, canceladas: 1130 },
+  { mes: "Set", emAberto: 410, tratadas: 5050, canceladas: 970 },
+  { mes: "Out", emAberto: 370, tratadas: 5280, canceladas: 900 },
+  { mes: "Nov", emAberto: 490, tratadas: 4780, canceladas: 1060 },
+  { mes: "Dez", emAberto: 400, tratadas: 5150, canceladas: 920 },
+];
+
+const top20EntidadesInconsistenciasTab = [
+  { entidade: "EBS2 TRADE E GESTAO LTDA", total: 18420 },
+  { entidade: "WORKS CONSTRUCAO E SERVICOS", total: 15380 },
+  { entidade: "SAFEMED Filial 0006", total: 12750 },
+  { entidade: "GOCIL VIGILANCIA", total: 11200 },
+  { entidade: "CONSTRUPOPP", total: 9840 },
+  { entidade: "GOCIL SERVICOS", total: 8650 },
+  { entidade: "TELOS CONSULTORIA EMPRESARIAL LTDA", total: 7920 },
+  { entidade: "ANCORA BADOTTI PARTICIPACOES LTDA", total: 7100 },
+  { entidade: "CARIOCA CALCADOS LTDA", total: 6540 },
+  { entidade: "LOJAS RENNER S.A.", total: 5980 },
+  { entidade: "SHOPPING MUELLER", total: 5420 },
+  { entidade: "CONDOMÍNIO EDIFÍCIO AURORA", total: 4870 },
+  { entidade: "HOSPITAL SÃO LUCAS", total: 4350 },
+  { entidade: "UNIVERSIDADE FEDERAL", total: 3920 },
+  { entidade: "BANCO DO BRASIL", total: 3480 },
+  { entidade: "SUPERMERCADO ANGELONI", total: 3100 },
+  { entidade: "TRIBUNAL DE JUSTIÇA", total: 2750 },
+  { entidade: "PREFEITURA MUNICIPAL", total: 2380 },
+  { entidade: "CENTRO EMPRESARIAL ALPHA", total: 2100 },
+  { entidade: "PARQUE INDUSTRIAL SUL", total: 1850 },
+];
+
+const top20EntidadesReincidentesInconsistencias = [
+  { entidade: "EBS2 TRADE E GESTAO LTDA", ocorrencias: 12, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "WORKS CONSTRUCAO E SERVICOS", ocorrencias: 11, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "GOCIL VIGILANCIA", ocorrencias: 10, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "SAFEMED Filial 0006", ocorrencias: 9, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "CONSTRUPOPP", ocorrencias: 9, ultimaOcorrencia: "Jan/2026" },
+  { entidade: "GOCIL SERVICOS", ocorrencias: 8, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "TELOS CONSULTORIA EMPRESARIAL LTDA", ocorrencias: 8, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "ANCORA BADOTTI PARTICIPACOES LTDA", ocorrencias: 7, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "CARIOCA CALCADOS LTDA", ocorrencias: 7, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "LOJAS RENNER S.A.", ocorrencias: 6, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "SHOPPING MUELLER", ocorrencias: 6, ultimaOcorrencia: "Jan/2026" },
+  { entidade: "CONDOMÍNIO EDIFÍCIO AURORA", ocorrencias: 5, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "HOSPITAL SÃO LUCAS", ocorrencias: 5, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "UNIVERSIDADE FEDERAL", ocorrencias: 5, ultimaOcorrencia: "Jan/2026" },
+  { entidade: "BANCO DO BRASIL", ocorrencias: 4, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "SUPERMERCADO ANGELONI", ocorrencias: 4, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "TRIBUNAL DE JUSTIÇA", ocorrencias: 3, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "PREFEITURA MUNICIPAL", ocorrencias: 3, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "CENTRO EMPRESARIAL ALPHA", ocorrencias: 3, ultimaOcorrencia: "Jan/2026" },
+  { entidade: "PARQUE INDUSTRIAL SUL", ocorrencias: 2, ultimaOcorrencia: "Mar/2026" },
 ];
 
 const top20EntidadesInconsistencias = [
