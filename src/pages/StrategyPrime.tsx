@@ -539,119 +539,178 @@ const VisaoGeralContent = ({ activeFilter, setActiveFilter }: { activeFilter: st
 );
 
 // Inconsistências Content
-const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
-  <div className="flex gap-4">
-    <div className="flex-1 space-y-4">
-      {/* Row 1: Inconsistências x Tratadas - full width */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-bold text-sm text-gray-800">Inconsistências x Tratadas</h3>
-        <p className="text-xs text-gray-400 mb-4">Volume por Período</p>
-        <div className="h-[220px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolucaoInconsistenciasTratadas} barGap={2} barSize={14}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-              <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
-              <YAxis hide />
-              <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
-              <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-              <Bar dataKey="total" fill="#BDBDBD" radius={[2, 2, 0, 0]} name="Total Inconsistências" />
-              <Bar dataKey="tratadas" fill="#FF5722" radius={[2, 2, 0, 0]} name="Tratadas" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-      {/* Row 2: Top 20 mais inconsistências + Top 20 pior % tratadas */}
-      <div className="grid grid-cols-2 gap-4">
+const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => {
+  const [selectedMes, setSelectedMes] = useState<string | null>(null);
+
+  const handleBarClick = (data: any) => {
+    if (data?.activeLabel) {
+      setSelectedMes(prev => prev === data.activeLabel ? null : data.activeLabel);
+    }
+  };
+
+  const mesIndex = selectedMes ? evolucaoInconsistenciasTratadas.findIndex(d => d.mes === selectedMes) : -1;
+
+  const variarRankingQtd = (baseQtds: number[]) => {
+    if (mesIndex < 0) return buildStrategyRankingQtd(activeFilter, baseQtds);
+    return getStrategyEntities(activeFilter).map((empresa, i) => ({
+      pos: i + 1,
+      empresa,
+      qtd: Math.round(baseQtds[i] * (0.7 + ((mesIndex + i) % 5) * 0.15)),
+    }));
+  };
+
+  const variarRankingPct = (basePcts: string[]) => {
+    if (mesIndex < 0) return buildStrategyRankingPct(activeFilter, basePcts);
+    return getStrategyEntities(activeFilter).map((empresa, i) => {
+      const base = parseFloat(basePcts[i].replace(",", "."));
+      const varied = Math.min(99.9, Math.max(0.1, base * (0.8 + ((mesIndex + i) % 4) * 0.15)));
+      return { pos: i + 1, empresa, pct: varied.toFixed(1).replace(".", ",") + "%" };
+    });
+  };
+
+  const mesBadge = selectedMes ? (
+    <span className="ml-2 bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-2 py-0.5 text-[10px] font-medium">
+      {selectedMes}
+    </span>
+  ) : null;
+
+  return (
+    <div className="flex gap-4">
+      <div className="flex-1 space-y-4">
+        {/* Row 1: Inconsistências x Tratadas - full width */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Top 20 com Mais Inconsistências</h3>
-          <p className="text-xs text-gray-400 mb-4">por {activeFilter}</p>
-          <div className="max-h-[252px] overflow-y-auto">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-white">
-                <tr className="border-b border-gray-100">
-                  <th className="text-left py-2 text-gray-500 font-medium">👤 {activeFilter}</th>
-                  <th className="text-right py-2 text-gray-500 font-medium">Qtd</th>
-                </tr>
-              </thead>
-              <tbody>
-                {buildStrategyRankingQtd(activeFilter, baseMaisIncQtds).map((item) => (
-                  <tr key={item.pos} className="border-b border-gray-50">
-                    <td className="py-2 text-gray-700">
-                      <span className="text-gray-400 mr-2">{item.pos}</span>
-                      {item.empresa}
-                    </td>
-                    <td className="py-2 text-right text-gray-600">{item.qtd.toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex items-center justify-between mb-1">
+            <div>
+              <h3 className="font-bold text-sm text-gray-800">Inconsistências x Tratadas</h3>
+              <p className="text-xs text-gray-400 mb-4">Volume por Período — clique em um mês para filtrar</p>
+            </div>
+            {selectedMes && (
+              <button onClick={() => setSelectedMes(null)} className="flex items-center gap-1 text-xs text-[#FF5722] hover:underline">
+                <RefreshCw className="w-3 h-3" /> Limpar filtro
+              </button>
+            )}
           </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Top 20 pior % Inconsistências Tratadas</h3>
-          <p className="text-xs text-gray-400 mb-4">por {activeFilter}</p>
-          <div className="max-h-[252px] overflow-y-auto">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-white">
-                <tr className="border-b border-gray-100">
-                  <th className="text-left py-2 text-gray-500 font-medium">👤 {activeFilter}</th>
-                  <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
-                </tr>
-              </thead>
-              <tbody>
-                {buildStrategyRankingPct(activeFilter, baseIncTratadasPcts).map((item) => (
-                  <tr key={item.pos} className="border-b border-gray-50">
-                    <td className="py-2 text-gray-700">
-                      <span className="text-gray-400 mr-2">{item.pos}</span>
-                      {item.empresa}
-                    </td>
-                    <td className="py-2 text-right text-gray-600">{item.pct}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      {/* Row 3: Reincidentes + Tempo Médio */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">% Inconsistências Reincidentes</h3>
-          <p className="text-xs text-gray-400 mb-4">por Período</p>
           <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={evolucaoInconsistenciasReincidentes}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
-                <YAxis hide domain={[0, 100]} />
-                <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
-                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ fill: "#FF5722", r: 3 }} name="% Reincidentes" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-bold text-sm text-gray-800">Tempo Médio Tratativa de Inconsistências</h3>
-          <p className="text-xs text-gray-400 mb-4">por Período</p>
-          <div className="h-[220px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={tempoMedioTratativaInconsistencias}>
+              <BarChart data={evolucaoInconsistenciasTratadas} barGap={2} barSize={14} onClick={handleBarClick} style={{ cursor: "pointer" }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
                 <YAxis hide />
-                <Tooltip formatter={(value: number) => `${value.toFixed(1)}h`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
-                <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={{ fill: "#FF5722", r: 3 }} name="Tempo Médio (h)" />
-              </LineChart>
+                <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+                <Bar dataKey="total" fill="#BDBDBD" radius={[2, 2, 0, 0]} name="Total Inconsistências">
+                  {evolucaoInconsistenciasTratadas.map((entry) => (
+                    <Cell key={entry.mes} opacity={!selectedMes || entry.mes === selectedMes ? 1 : 0.3} />
+                  ))}
+                </Bar>
+                <Bar dataKey="tratadas" fill="#FF5722" radius={[2, 2, 0, 0]} name="Tratadas">
+                  {evolucaoInconsistenciasTratadas.map((entry) => (
+                    <Cell key={entry.mes} opacity={!selectedMes || entry.mes === selectedMes ? 1 : 0.3} />
+                  ))}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
+        {/* Row 2: Top 20 mais inconsistências + Top 20 pior % tratadas */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="font-bold text-sm text-gray-800 flex items-center">Top 20 com Mais Inconsistências{mesBadge}</h3>
+            <p className="text-xs text-gray-400 mb-4">por {activeFilter}</p>
+            <div className="max-h-[252px] overflow-y-auto">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 bg-white">
+                  <tr className="border-b border-gray-100">
+                    <th className="text-left py-2 text-gray-500 font-medium">👤 {activeFilter}</th>
+                    <th className="text-right py-2 text-gray-500 font-medium">Qtd</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {variarRankingQtd(baseMaisIncQtds).map((item) => (
+                    <tr key={item.pos} className="border-b border-gray-50">
+                      <td className="py-2 text-gray-700">
+                        <span className="text-gray-400 mr-2">{item.pos}</span>
+                        {item.empresa}
+                      </td>
+                      <td className="py-2 text-right text-gray-600">{item.qtd.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="font-bold text-sm text-gray-800 flex items-center">Top 20 pior % Inconsistências Tratadas{mesBadge}</h3>
+            <p className="text-xs text-gray-400 mb-4">por {activeFilter}</p>
+            <div className="max-h-[252px] overflow-y-auto">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 bg-white">
+                  <tr className="border-b border-gray-100">
+                    <th className="text-left py-2 text-gray-500 font-medium">👤 {activeFilter}</th>
+                    <th className="text-right py-2 text-gray-500 font-medium">▲ %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {variarRankingPct(baseIncTratadasPcts).map((item) => (
+                    <tr key={item.pos} className="border-b border-gray-50">
+                      <td className="py-2 text-gray-700">
+                        <span className="text-gray-400 mr-2">{item.pos}</span>
+                        {item.empresa}
+                      </td>
+                      <td className="py-2 text-right text-gray-600">{item.pct}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {/* Row 3: Reincidentes + Tempo Médio */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="font-bold text-sm text-gray-800 flex items-center">% Inconsistências Reincidentes{mesBadge}</h3>
+            <p className="text-xs text-gray-400 mb-4">por Período</p>
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={evolucaoInconsistenciasReincidentes}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+                  <YAxis hide domain={[0, 100]} />
+                  <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                  <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={(props: any) => {
+                    const isSelected = selectedMes === props.payload?.mes;
+                    return <circle cx={props.cx} cy={props.cy} r={isSelected ? 6 : 3} fill="#FF5722" stroke={isSelected ? "#fff" : "none"} strokeWidth={2} opacity={!selectedMes || isSelected ? 1 : 0.3} />;
+                  }} name="% Reincidentes" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="font-bold text-sm text-gray-800 flex items-center">Tempo Médio Tratativa de Inconsistências{mesBadge}</h3>
+            <p className="text-xs text-gray-400 mb-4">por Período</p>
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={tempoMedioTratativaInconsistencias}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#999" }} />
+                  <YAxis hide />
+                  <Tooltip formatter={(value: number) => `${value.toFixed(1)}h`} contentStyle={{ backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }} />
+                  <Line type="monotone" dataKey="valor" stroke="#FF5722" strokeWidth={2} dot={(props: any) => {
+                    const isSelected = selectedMes === props.payload?.mes;
+                    return <circle cx={props.cx} cy={props.cy} r={isSelected ? 6 : 3} fill="#FF5722" stroke={isSelected ? "#fff" : "none"} strokeWidth={2} opacity={!selectedMes || isSelected ? 1 : 0.3} />;
+                  }} name="Tempo Médio (h)" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-[280px] shrink-0">
+        <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
       </div>
     </div>
-    <div className="w-[280px] shrink-0">
-      <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-    </div>
-  </div>
-);
+  );
+};
 
 // Ajustes Content
 const AjustesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
