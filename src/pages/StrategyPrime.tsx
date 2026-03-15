@@ -7,7 +7,7 @@ import { ImprovementCenter } from "@/components/improvements/ImprovementCenter";
 import { ImprovementLayer } from "@/components/improvements/ImprovementLayer";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar, LabelList, Legend
+  PieChart, Pie, Cell, BarChart, Bar, LabelList, Legend,
 } from "recharts";
 
 
