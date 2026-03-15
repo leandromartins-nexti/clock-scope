@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lucide-react";
+import { useState, useMemo } from "react";
+import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ImprovementProvider } from "@/contexts/ImprovementContext";
 import { FilterPanel } from "@/components/layout/FilterPanel";
