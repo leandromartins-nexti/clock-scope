@@ -883,7 +883,8 @@ const AjustesContent = ({ activeFilter, setActiveFilter, selectedEntity, setSele
                 </thead>
                 <tbody>
                   {variarRankingQtd(baseJustPontoQtds).map((item) => (
-                    <tr key={item.pos} className="border-b border-gray-50">
+                    <tr key={item.pos} className={`border-b border-gray-50 cursor-pointer hover:bg-orange-50 transition-colors ${selectedEntity === item.empresa ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                      onClick={() => setSelectedEntity(selectedEntity === item.empresa ? null : item.empresa)}>
                       <td className="py-1.5 text-gray-400 text-xs">{item.pos}</td>
                       <td className="py-1.5 text-gray-700 text-xs">{item.empresa}</td>
                       <td className="py-1.5 text-right text-gray-600 text-xs font-medium">{item.qtd.toLocaleString("pt-BR")}</td>
