@@ -985,7 +985,8 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter, selectedEntity, se
   const solReincData = variarSerieSimples(solicitacoesReincidentes, "valor", selectedEntity);
   const tempoSolData = variarSerieSimples(tempoMedioTratativa, "valor", selectedEntity);
 
-    const handleBarClick = (data: any) => {
+  const handleBarClick = (data: any) => {
+    if (data?.activeLabel) {
       setSelectedMes(prev => prev === data.activeLabel ? null : data.activeLabel);
     }
   };
