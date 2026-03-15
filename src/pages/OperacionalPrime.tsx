@@ -1015,8 +1015,8 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Top 20 Entidades Reincidentes</h3>
-          <p className="text-xs text-gray-400 mb-3">Entidades com inconsistências recorrentes</p>
+          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Top 20 Reincidentes</h3>
+          <p className="text-xs text-gray-400 mb-3">{activeFilter} com inconsistências recorrentes</p>
           <div className="max-h-[320px] overflow-y-auto">
             <table className="w-full">
               <thead className="sticky top-0 bg-white">
