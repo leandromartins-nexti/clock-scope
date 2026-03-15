@@ -932,7 +932,7 @@ const AjustesContent = ({ activeFilter, setActiveFilter, selectedEntity, setSele
             <p className="text-xs text-gray-400 mb-4">% Reincidência por Período</p>
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={evolucaoReincidentesJustificativas} margin={{ top: 20, right: 20, bottom: 5, left: 5 }}>
+                <LineChart data={reincJustData} margin={{ top: 20, right: 20, bottom: 5, left: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                   <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#999" }} />
                   <YAxis hide />
