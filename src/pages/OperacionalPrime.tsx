@@ -134,6 +134,29 @@ const motivoAjustes = [
   { motivo: "Outros", pct: 5 },
 ];
 
+const top20ColaboradoresSemTemplate = [
+  { entidade: "WORKS CONSTRUCAO E SERVICOS", total: 245 },
+  { entidade: "EBS2 TRADE E GESTAO LTDA", total: 198 },
+  { entidade: "GOCIL VIGILANCIA", total: 172 },
+  { entidade: "SAFEMED Filial 0006", total: 156 },
+  { entidade: "CONSTRUPOPP", total: 134 },
+  { entidade: "TELOS CONSULTORIA EMPRESARIAL LTDA", total: 118 },
+  { entidade: "GOCIL SERVICOS", total: 105 },
+  { entidade: "LOJAS RENNER S.A.", total: 92 },
+  { entidade: "CARIOCA CALCADOS LTDA", total: 84 },
+  { entidade: "ANCORA BADOTTI PARTICIPACOES LTDA", total: 76 },
+  { entidade: "SHOPPING MUELLER", total: 68 },
+  { entidade: "HOSPITAL SÃO LUCAS", total: 61 },
+  { entidade: "CONDOMÍNIO EDIFÍCIO AURORA", total: 54 },
+  { entidade: "UNIVERSIDADE FEDERAL", total: 47 },
+  { entidade: "BANCO DO BRASIL", total: 41 },
+  { entidade: "SUPERMERCADO ANGELONI", total: 35 },
+  { entidade: "TRIBUNAL DE JUSTIÇA", total: 29 },
+  { entidade: "PREFEITURA MUNICIPAL", total: 23 },
+  { entidade: "CENTRO EMPRESARIAL ALPHA", total: 18 },
+  { entidade: "PARQUE INDUSTRIAL SUL", total: 12 },
+];
+
 // ── Constants ──────────────────────────────────────────────
 
 const tabs = [
