@@ -785,57 +785,6 @@ const colaboradoresSemTemplate = [
 const QualidadeContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 grid grid-cols-2 gap-4">
-      {/* Top 10 Pior Qualidade de Marcação */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <div className="flex items-center justify-between mb-0.5">
-          <h3 className="font-semibold text-sm text-gray-800">Top 20 Pior Qualidade de Marcação</h3>
-          <span className="text-xs border border-[#FF5722] text-[#FF5722] rounded-full px-3 py-1 font-medium">Colaborador</span>
-        </div>
-        <p className="text-xs text-gray-400 mb-3">por Posto</p>
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-100">
-              <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
-              <th className="text-xs text-gray-400 font-medium text-left pb-2">Posto</th>
-              <th className="text-xs text-gray-400 font-medium text-right pb-2">%</th>
-            </tr>
-          </thead>
-          <tbody>
-            {top20PiorQualidade.map((item, idx) => (
-              <tr key={idx} className="border-b border-gray-50">
-                <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
-                <td className="text-xs text-gray-700 py-2 pr-4">{item.posto}</td>
-                <td className="text-xs font-semibold text-gray-800 text-right py-2">{item.pct.toFixed(1)}%</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Top 10 Inconsistências por Escala */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Top 10 Inconsistências por Escala</h3>
-        <p className="text-xs text-gray-400 mb-3">por Escala</p>
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-100">
-              <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
-              <th className="text-xs text-gray-400 font-medium text-left pb-2">Escala</th>
-              <th className="text-xs text-gray-400 font-medium text-right pb-2">Inconsistências</th>
-            </tr>
-          </thead>
-          <tbody>
-            {top10InconsistenciasPorEscala.map((item, idx) => (
-              <tr key={idx} className="border-b border-gray-50">
-                <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
-                <td className="text-xs text-gray-700 py-2">{item.escala}</td>
-                <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.inconsistencias)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
       {/* Top 10 Reincidência de Inconsistências */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
         <div className="flex items-center justify-between mb-0.5">
