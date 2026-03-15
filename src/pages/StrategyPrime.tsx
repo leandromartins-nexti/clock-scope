@@ -1081,7 +1081,8 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter, selectedEntity, se
                 </thead>
                 <tbody>
                   {variarRankingPct(baseSolTratadasPcts).map((item) => (
-                    <tr key={item.pos} className="border-b border-gray-50">
+                    <tr key={item.pos} className={`border-b border-gray-50 cursor-pointer hover:bg-orange-50 transition-colors ${selectedEntity === item.empresa ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                      onClick={() => setSelectedEntity(selectedEntity === item.empresa ? null : item.empresa)}>
                       <td className="py-2 text-gray-700">
                         <span className="text-gray-400 mr-2">{item.pos}</span>
                         {item.empresa}
