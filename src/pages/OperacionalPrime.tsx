@@ -549,15 +549,15 @@ const AnalisePadroesContent = ({ activeFilter, setActiveFilter }: { activeFilter
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-0.5">
             <h3 className="font-semibold text-sm text-gray-800">Top 20 Pior Qualidade de Marcação</h3>
-            <span className="text-xs border border-[#FF5722] text-[#FF5722] rounded-full px-3 py-1 font-medium">Colaborador</span>
+            <span className="text-xs border border-[#FF5722] text-[#FF5722] rounded-full px-3 py-1 font-medium">Posto</span>
           </div>
-          <p className="text-xs text-gray-400 mb-3">por Posto</p>
+          <p className="text-xs text-gray-400 mb-3">por Entidade</p>
           <div className="max-h-[252px] overflow-y-auto">
             <table className="w-full">
               <thead className="sticky top-0 bg-white">
                 <tr className="border-b border-gray-100">
                   <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
-                  <th className="text-xs text-gray-400 font-medium text-left pb-2">Posto</th>
+                  <th className="text-xs text-gray-400 font-medium text-left pb-2">Entidade</th>
                   <th className="text-xs text-gray-400 font-medium text-right pb-2">%</th>
                 </tr>
               </thead>
@@ -565,7 +565,7 @@ const AnalisePadroesContent = ({ activeFilter, setActiveFilter }: { activeFilter
                 {top20PiorQualidade.map((item, idx) => (
                   <tr key={idx} className="border-b border-gray-50">
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
-                    <td className="text-xs text-gray-700 py-2 pr-4">{item.posto}</td>
+                    <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{item.pct.toFixed(1)}%</td>
                   </tr>
                 ))}
