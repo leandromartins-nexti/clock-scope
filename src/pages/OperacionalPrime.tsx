@@ -352,33 +352,58 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
 const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
-      {/* Row 1: Aging */}
-      <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-semibold text-sm text-gray-800 mb-1">Aging de Justificativas em Aberto</h3>
-        <p className="text-xs text-gray-400 mb-4">Por faixa de dias pendentes</p>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={agingInconsistencias} barGap={4} barSize={20}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
-              <XAxis dataKey="faixa" tick={{ fontSize: 10 }} stroke="#9CA3AF" />
-              <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
-              <Tooltip
-                contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
-                formatter={(v: number) => formatNumber(v)}
-              />
-              <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-              <Bar dataKey="inconsistencias" fill="#FF5722" radius={[4, 4, 0, 0]} name="Inconsistências">
-                <LabelList dataKey="inconsistencias" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
-              </Bar>
-              <Bar dataKey="solicitacoes" fill="#FDB813" radius={[4, 4, 0, 0]} name="Solicitações">
-                <LabelList dataKey="solicitacoes" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+      {/* Row 1: Aging + Colaboradores sem Template */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-1">Aging de Justificativas em Aberto</h3>
+          <p className="text-xs text-gray-400 mb-4">Por faixa de dias pendentes</p>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={agingInconsistencias} barGap={4} barSize={20}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
+                <XAxis dataKey="faixa" tick={{ fontSize: 10 }} stroke="#9CA3AF" />
+                <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
+                <Tooltip
+                  contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
+                  formatter={(v: number) => formatNumber(v)}
+                />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+                <Bar dataKey="inconsistencias" fill="#FF5722" radius={[4, 4, 0, 0]} name="Inconsistências">
+                  <LabelList dataKey="inconsistencias" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
+                </Bar>
+                <Bar dataKey="solicitacoes" fill="#FDB813" radius={[4, 4, 0, 0]} name="Solicitações">
+                  <LabelList dataKey="solicitacoes" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Colaboradores sem Template</h3>
+          <p className="text-xs text-gray-400 mb-3">Top 20 entidades com mais colaboradores sem template</p>
+          <div className="max-h-[252px] overflow-y-auto">
+            <table className="w-full">
+              <thead className="sticky top-0 bg-white">
+                <tr className="border-b border-gray-100">
+                  <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
+                  <th className="text-xs text-gray-400 font-medium text-left pb-2">Entidade</th>
+                  <th className="text-xs text-gray-400 font-medium text-right pb-2">Colaboradores</th>
+                </tr>
+              </thead>
+              <tbody>
+                {top20ColaboradoresSemTemplate.map((item, idx) => (
+                  <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50 cursor-pointer">
+                    <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
+                    <td className="text-xs text-gray-700 py-2">{item.entidade}</td>
+                    <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.total)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
-
       {/* Row 2: Top 20 Entidades */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
