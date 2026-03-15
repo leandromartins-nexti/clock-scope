@@ -688,7 +688,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter, selectedEntity,
                   ))}
                 </Bar>
                 <Bar dataKey="tratadas" fill="#FF5722" radius={[2, 2, 0, 0]} name="Tratadas">
-                  {evolucaoInconsistenciasTratadas.map((entry) => (
+                  {incTratadasData.map((entry) => (
                     <Cell key={entry.mes} opacity={!selectedMes || entry.mes === selectedMes ? 1 : 0.3} />
                   ))}
                 </Bar>
