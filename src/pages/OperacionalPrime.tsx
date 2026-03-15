@@ -610,6 +610,52 @@ const AnalisePadroesContent = ({ activeFilter, setActiveFilter }: { activeFilter
 
 // ── Mock data – Solicitações ───────────────────────────────
 
+const top20EntidadesSolicitacoesJustificativa = [
+  { entidade: "WORKS CONSTRUCAO E SERVICOS", total: 1820 },
+  { entidade: "EBS2 TRADE E GESTAO LTDA", total: 1650 },
+  { entidade: "GOCIL VIGILANCIA", total: 1480 },
+  { entidade: "SAFEMED Filial 0006", total: 1310 },
+  { entidade: "CONSTRUPOPP", total: 1190 },
+  { entidade: "TELOS CONSULTORIA EMPRESARIAL LTDA", total: 1040 },
+  { entidade: "GOCIL SERVICOS", total: 980 },
+  { entidade: "LOJAS RENNER S.A.", total: 850 },
+  { entidade: "CARIOCA CALCADOS LTDA", total: 720 },
+  { entidade: "ANCORA BADOTTI PARTICIPACOES LTDA", total: 630 },
+  { entidade: "SHOPPING MUELLER", total: 580 },
+  { entidade: "HOSPITAL SÃO LUCAS", total: 510 },
+  { entidade: "CONDOMÍNIO EDIFÍCIO AURORA", total: 450 },
+  { entidade: "UNIVERSIDADE FEDERAL", total: 390 },
+  { entidade: "BANCO DO BRASIL", total: 340 },
+  { entidade: "SUPERMERCADO ANGELONI", total: 290 },
+  { entidade: "TRIBUNAL DE JUSTIÇA", total: 250 },
+  { entidade: "PREFEITURA MUNICIPAL", total: 210 },
+  { entidade: "CENTRO EMPRESARIAL ALPHA", total: 180 },
+  { entidade: "PARQUE INDUSTRIAL SUL", total: 150 },
+];
+
+const entidadesReincidentes = [
+  { entidade: "WORKS CONSTRUCAO E SERVICOS", ocorrencias: 14, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "EBS2 TRADE E GESTAO LTDA", ocorrencias: 12, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "GOCIL VIGILANCIA", ocorrencias: 11, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "CONSTRUPOPP", ocorrencias: 10, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "SAFEMED Filial 0006", ocorrencias: 9, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "TELOS CONSULTORIA EMPRESARIAL LTDA", ocorrencias: 9, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "GOCIL SERVICOS", ocorrencias: 8, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "LOJAS RENNER S.A.", ocorrencias: 8, ultimaOcorrencia: "Jan/2026" },
+  { entidade: "CARIOCA CALCADOS LTDA", ocorrencias: 7, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "ANCORA BADOTTI PARTICIPACOES LTDA", ocorrencias: 7, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "SHOPPING MUELLER", ocorrencias: 6, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "HOSPITAL SÃO LUCAS", ocorrencias: 6, ultimaOcorrencia: "Jan/2026" },
+  { entidade: "CONDOMÍNIO EDIFÍCIO AURORA", ocorrencias: 5, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "UNIVERSIDADE FEDERAL", ocorrencias: 5, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "BANCO DO BRASIL", ocorrencias: 4, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "SUPERMERCADO ANGELONI", ocorrencias: 4, ultimaOcorrencia: "Jan/2026" },
+  { entidade: "TRIBUNAL DE JUSTIÇA", ocorrencias: 3, ultimaOcorrencia: "Fev/2026" },
+  { entidade: "PREFEITURA MUNICIPAL", ocorrencias: 3, ultimaOcorrencia: "Mar/2026" },
+  { entidade: "CENTRO EMPRESARIAL ALPHA", ocorrencias: 3, ultimaOcorrencia: "Jan/2026" },
+  { entidade: "PARQUE INDUSTRIAL SUL", ocorrencias: 2, ultimaOcorrencia: "Fev/2026" },
+];
+
 const motivosJustificativa = [
   { motivo: "Esquecimento de Marcação", pct: 44.7 },
   { motivo: "Falha no Equipamento", pct: 12.5 },
