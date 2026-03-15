@@ -95,7 +95,7 @@ const tabs = [
   "Engajamento e Retenção", "Ausências e Coberturas",
 ];
 
-const subNavItems = ["Backlog", "Solicitações", "Qualidade"];
+const subNavItems = ["Backlog", "Análise de Padrões", "Solicitações", "Qualidade"];
 const filterOptions = ["Empresa", "Unidade de Negócio", "Cliente", "Posto", "Tipo de Serviço"];
 
 // ── Helpers ────────────────────────────────────────────────
@@ -219,6 +219,7 @@ const OperacionalPrime = () => {
       {/* Main Content */}
       <div className="px-6 pb-4 flex-1">
         {activeSubNav === "Backlog" && <BacklogContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
+        {activeSubNav === "Análise de Padrões" && <AnalisePadroesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         {activeSubNav === "Qualidade" && <QualidadeContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
       </div>
