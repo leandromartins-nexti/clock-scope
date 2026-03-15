@@ -387,10 +387,10 @@ const OperacionalPrime = () => {
 
       {/* Main Content */}
       <div className="px-6 pb-4 flex-1">
-        {activeSubNav === "Backlog" && <BacklogContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Análise de Padrões" && <AnalisePadroesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
+        {activeSubNav === "Backlog" && <BacklogContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Análise de Padrões" && <AnalisePadroesContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
         
       </div>
       <FilterPanel open={filterOpen} onClose={() => setFilterOpen(false)} />
