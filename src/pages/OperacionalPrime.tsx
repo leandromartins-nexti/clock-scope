@@ -784,7 +784,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Entidades Reincidentes</h3>
+          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Top 20 Entidades Reincidentes</h3>
           <p className="text-xs text-gray-400 mb-3">Entidades com solicitações recorrentes</p>
           <div className="max-h-[320px] overflow-y-auto">
             <table className="w-full">
@@ -793,7 +793,6 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
                   <th className="text-xs text-gray-400 font-medium text-left pb-2 w-6">#</th>
                   <th className="text-xs text-gray-400 font-medium text-left pb-2">Entidade</th>
                   <th className="text-xs text-gray-400 font-medium text-right pb-2">Ocorrências</th>
-                  <th className="text-xs text-gray-400 font-medium text-right pb-2">Última</th>
                 </tr>
               </thead>
               <tbody>
@@ -802,7 +801,6 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{item.ocorrencias}</td>
-                    <td className="text-xs text-gray-500 text-right py-2">{item.ultimaOcorrencia}</td>
                   </tr>
                 ))}
               </tbody>
