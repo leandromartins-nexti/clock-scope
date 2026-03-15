@@ -305,56 +305,98 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
 const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
-      {/* Row 1: Evolução do Backlog + Aging */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-1">Evolução do Backlog</h3>
-          <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações por Dia</p>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={evolucaoBacklogDiario} barGap={2} barSize={6}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
-                <XAxis dataKey="dia" tick={{ fontSize: 9 }} stroke="#9CA3AF" />
-                <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" />
-                <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
-                  formatter={(v: number) => formatNumber(v)}
-                />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-                <Bar dataKey="inconsistencias" fill="#FF5722" radius={[2, 2, 0, 0]} name="Inconsistências" />
-                <Bar dataKey="solicitacoes" fill="#FDB813" radius={[2, 2, 0, 0]} name="Solicitações" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-1">Aging de Inconsistências em Aberto</h3>
-          <p className="text-xs text-gray-400 mb-4">Por faixa de dias pendentes</p>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={agingInconsistencias} barGap={4} barSize={20}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
-                <XAxis dataKey="faixa" tick={{ fontSize: 10 }} stroke="#9CA3AF" />
-                <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
-                <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
-                  formatter={(v: number) => formatNumber(v)}
-                />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-                <Bar dataKey="inconsistencias" fill="#FF5722" radius={[4, 4, 0, 0]} name="Inconsistências">
-                  <LabelList dataKey="inconsistencias" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
-                </Bar>
-                <Bar dataKey="solicitacoes" fill="#FDB813" radius={[4, 4, 0, 0]} name="Solicitações">
-                  <LabelList dataKey="solicitacoes" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+      {/* Row 1: Aging */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <h3 className="font-semibold text-sm text-gray-800 mb-1">Aging de Inconsistências em Aberto</h3>
+        <p className="text-xs text-gray-400 mb-4">Por faixa de dias pendentes</p>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={agingInconsistencias} barGap={4} barSize={20}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
+              <XAxis dataKey="faixa" tick={{ fontSize: 10 }} stroke="#9CA3AF" />
+              <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
+              <Tooltip
+                contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
+                formatter={(v: number) => formatNumber(v)}
+              />
+              <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+              <Bar dataKey="inconsistencias" fill="#FF5722" radius={[4, 4, 0, 0]} name="Inconsistências">
+                <LabelList dataKey="inconsistencias" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
+              </Bar>
+              <Bar dataKey="solicitacoes" fill="#FDB813" radius={[4, 4, 0, 0]} name="Solicitações">
+                <LabelList dataKey="solicitacoes" position="top" formatter={(v: number) => formatNumber(v)} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Row 2: Heatmap Inconsistências + Heatmap Solicitações */}
+      {/* Row 2: Tipos + Motivos */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Tipos de Inconsistências</h3>
+          <div className="space-y-3">
+            {tiposInconsistencias.map((item) => (
+              <div key={item.tipo} className="flex items-center gap-3">
+                <span className="text-xs text-gray-500 w-32 shrink-0 text-right">{item.tipo}</span>
+                <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
+                  <div className="h-full rounded" style={{ width: `${Math.min((item.pct / 135) * 100, 100)}%`, backgroundColor: "#FF5722" }} />
+                </div>
+                <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Motivo de Ajustes de Inconsistências</h3>
+          <div className="space-y-3">
+            {motivoAjustes.map((item) => (
+              <div key={item.motivo} className="flex items-center gap-3">
+                <span className="text-xs text-gray-500 w-28 shrink-0 text-right">{item.motivo}</span>
+                <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
+                  <div className="h-full rounded" style={{ width: `${(item.pct / 42) * 100}%`, background: `linear-gradient(90deg, #FF5722, #FDB813)` }} />
+                </div>
+                <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+  </div>
+);
+
+// ── Análise de Padrões Content ─────────────────────────────
+
+const AnalisePadroesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+  <div className="flex gap-4">
+    <div className="flex-1 space-y-4">
+      {/* Row 1: Evolução do Backlog */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <h3 className="font-semibold text-sm text-gray-800 mb-1">Evolução do Backlog</h3>
+        <p className="text-xs text-gray-400 mb-4">Inconsistências e Solicitações por Dia</p>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={evolucaoBacklogDiario} barGap={2} barSize={6}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
+              <XAxis dataKey="dia" tick={{ fontSize: 9 }} stroke="#9CA3AF" />
+              <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" />
+              <Tooltip
+                contentStyle={{ borderRadius: 8, border: "1px solid #E5E7EB", fontSize: 12 }}
+                formatter={(v: number) => formatNumber(v)}
+              />
+              <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
+              <Bar dataKey="inconsistencias" fill="#FF5722" radius={[2, 2, 0, 0]} name="Inconsistências" />
+              <Bar dataKey="solicitacoes" fill="#FDB813" radius={[2, 2, 0, 0]} name="Solicitações" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Row 2: Heatmaps */}
       <div className="grid grid-cols-2 gap-4">
         {/* Heatmap – Total de Inconsistências por Dia e Horário */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
@@ -427,39 +469,6 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
               ))}
               <span className="text-[10px] text-gray-400">Mais</span>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Row 3: Tipos + Motivos */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Tipos de Inconsistências</h3>
-          <div className="space-y-3">
-            {tiposInconsistencias.map((item) => (
-              <div key={item.tipo} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-32 shrink-0 text-right">{item.tipo}</span>
-                <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                  <div className="h-full rounded" style={{ width: `${Math.min((item.pct / 135) * 100, 100)}%`, backgroundColor: "#FF5722" }} />
-                </div>
-                <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Motivo de Ajustes de Inconsistências</h3>
-          <div className="space-y-3">
-            {motivoAjustes.map((item) => (
-              <div key={item.motivo} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-28 shrink-0 text-right">{item.motivo}</span>
-                <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                  <div className="h-full rounded" style={{ width: `${(item.pct / 42) * 100}%`, background: `linear-gradient(90deg, #FF5722, #FDB813)` }} />
-                </div>
-                <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>
