@@ -626,7 +626,7 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter, selectedEntity,
   const reincidentesIncData = variarSerieSimples(evolucaoInconsistenciasReincidentes, "valor", selectedEntity);
   const tempoIncData = variarSerieSimples(tempoMedioTratativaInconsistencias, "valor", selectedEntity);
 
-    if (data?.activeLabel) {
+  const handleBarClick = (data: any) => {
       setSelectedMes(prev => prev === data.activeLabel ? null : data.activeLabel);
     }
   };
