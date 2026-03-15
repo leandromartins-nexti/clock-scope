@@ -1,4 +1,4 @@
-import { Settings, Users, ChevronRight } from "lucide-react";
+import { Settings, Users, ChevronRight, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import devicesHero from "@/assets/devices-hero.png";
 
