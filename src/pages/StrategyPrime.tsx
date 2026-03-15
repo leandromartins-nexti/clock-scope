@@ -1060,7 +1060,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter, selectedEntity, se
                   ))}
                 </Bar>
                 <Bar dataKey="ajustadas" fill="#F5A623" radius={[2, 2, 0, 0]}>
-                  {solicitacoesJustificativa.map((entry) => (
+                  {solJustData.map((entry) => (
                     <Cell key={entry.mes} opacity={!selectedMes || entry.mes === selectedMes ? 1 : 0.3} />
                   ))}
                 </Bar>
