@@ -934,16 +934,42 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
 
 // ── Inconsistências Content ────────────────────────────────
 
-const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => {
+  const [selectedMes, setSelectedMes] = useState<string | null>(null);
+
+  const mesIdx = selectedMes ? mesesLabels.indexOf(selectedMes) : -1;
+  const tiposInconsistencias = mesIdx >= 0 ? variarTiposPorMes(tiposInconsistenciasBase, mesIdx) : tiposInconsistenciasBase;
+  const motivoAjustes = mesIdx >= 0 ? variarMotivoAjustesPorMes(motivoAjustesBase, mesIdx) : motivoAjustesBase;
+  const maxTipos = Math.max(...tiposInconsistencias.map(t => t.pct));
+  const maxAjustes = Math.max(...motivoAjustes.map(m => m.pct));
+
+  const handleBarClick = (data: any) => {
+    if (data?.activeLabel) {
+      setSelectedMes(prev => prev === data.activeLabel ? null : data.activeLabel);
+    }
+  };
+
+  return (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
       {/* Row 1: Evolução Mensal por Status - Largura total */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Evolução das Inconsistências por Status</h3>
-        <p className="text-xs text-gray-400 mb-4">Volume mensal por status</p>
+        <div className="flex items-center justify-between mb-0.5">
+          <h3 className="font-semibold text-sm text-gray-800">Evolução das Inconsistências por Status</h3>
+          {selectedMes && (
+            <button
+              onClick={() => setSelectedMes(null)}
+              className="text-xs text-[#FF5722] hover:underline flex items-center gap-1"
+            >
+              <RefreshCw className="w-3 h-3" />
+              Limpar filtro ({selectedMes})
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-gray-400 mb-4">Volume mensal por status · Clique em um mês para filtrar</p>
         <div className="h-[220px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolucaoInconsistenciasMensal} barSize={28}>
+            <BarChart data={evolucaoInconsistenciasMensal} barSize={28} onClick={handleBarClick} style={{ cursor: "pointer" }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
               <XAxis dataKey="mes" tick={{ fontSize: 11 }} stroke="#9CA3AF" />
               <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
@@ -952,9 +978,9 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
                 formatter={(v: number, name: string) => [formatNumber(v), name]}
               />
               <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-              <Bar dataKey="tratadas" stackId="a" fill="#FDB813" name="Tratadas" radius={[0, 0, 0, 0]} />
-              <Bar dataKey="canceladas" stackId="a" fill="#9CA3AF" name="Canceladas" radius={[0, 0, 0, 0]} />
-              <Bar dataKey="emAberto" stackId="a" fill="#FF5722" name="Em Aberto" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="tratadas" stackId="a" fill="#FDB813" name="Tratadas" radius={[0, 0, 0, 0]} opacity={selectedMes ? 0.4 : 1} />
+              <Bar dataKey="canceladas" stackId="a" fill="#9CA3AF" name="Canceladas" radius={[0, 0, 0, 0]} opacity={selectedMes ? 0.4 : 1} />
+              <Bar dataKey="emAberto" stackId="a" fill="#FF5722" name="Em Aberto" radius={[4, 4, 0, 0]} opacity={selectedMes ? 0.4 : 1} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -962,15 +988,18 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
 
       {/* Row 2: Tipos + Motivo de Ajustes */}
       <div className="grid grid-cols-2 gap-4">
-        {/* % Tipos de Inconsistências */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Tipos de Inconsistências</h3>
+          <div className="flex items-center justify-between mb-0.5">
+            <h3 className="font-semibold text-sm text-gray-800">% Tipos de Inconsistências</h3>
+            {selectedMes && <span className="text-[10px] bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-2 py-0.5 font-medium">{selectedMes}</span>}
+          </div>
+          <p className="text-xs text-gray-400 mb-3">Distribuição por tipo</p>
           <div className="space-y-3">
             {tiposInconsistencias.map((item) => (
               <div key={item.tipo} className="flex items-center gap-3">
                 <span className="text-xs text-gray-500 w-40 shrink-0 text-right">{item.tipo}</span>
                 <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                  <div className="h-full rounded" style={{ width: `${Math.min((item.pct / 76) * 100, 100)}%`, backgroundColor: "#FF5722" }} />
+                  <div className="h-full rounded transition-all duration-300" style={{ width: `${(item.pct / maxTipos) * 100}%`, backgroundColor: "#FF5722" }} />
                 </div>
                 <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
               </div>
@@ -978,15 +1007,18 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
           </div>
         </div>
 
-        {/* % Motivo de Ajustes de Inconsistências */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-4">% Motivo de Ajustes de Inconsistências</h3>
+          <div className="flex items-center justify-between mb-0.5">
+            <h3 className="font-semibold text-sm text-gray-800">% Motivo de Ajustes de Inconsistências</h3>
+            {selectedMes && <span className="text-[10px] bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-2 py-0.5 font-medium">{selectedMes}</span>}
+          </div>
+          <p className="text-xs text-gray-400 mb-3">Motivo dos ajustes</p>
           <div className="space-y-3">
             {motivoAjustes.map((item) => (
               <div key={item.motivo} className="flex items-center gap-3">
                 <span className="text-xs text-gray-500 w-28 shrink-0 text-right">{item.motivo}</span>
                 <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                  <div className="h-full rounded" style={{ width: `${(item.pct / 42) * 100}%`, background: `linear-gradient(90deg, #FF5722, #FDB813)` }} />
+                  <div className="h-full rounded transition-all duration-300" style={{ width: `${(item.pct / maxAjustes) * 100}%`, background: `linear-gradient(90deg, #FF5722, #FDB813)` }} />
                 </div>
                 <span className="text-xs font-semibold text-gray-700 w-10">{item.pct}%</span>
               </div>
@@ -1051,7 +1083,8 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
 
     <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
   </div>
-);
+  );
+};
 
 
 const top20EscalaInconsistenciasSolicitacoes = [
