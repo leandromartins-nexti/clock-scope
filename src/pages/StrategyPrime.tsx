@@ -1142,7 +1142,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter, selectedEntity, se
 };
 
 // Eficiência Content
-const EficienciaContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+const EficienciaContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
       <div className="grid grid-cols-2 gap-4">
