@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw } from "lucide-react";
+import { useState, useMemo } from "react";
+import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ImprovementProvider } from "@/contexts/ImprovementContext";
 import { FilterPanel } from "@/components/layout/FilterPanel";
@@ -245,6 +245,20 @@ const getHeatColor = (v: number) => {
   return "#CB181D";
 };
 
+// ── Entity hash for cross-filter variation ─────────────────
+const entityHash = (name: string) => name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+
+const computeOperacionalKPIs = (entity: string | null) => {
+  const base = { inc: 282873, sol: 7261, semTemplate: 1842 };
+  if (!entity) return base;
+  const h = entityHash(entity);
+  return {
+    inc: Math.round(base.inc * (0.02 + (h % 15) * 0.008)),
+    sol: Math.round(base.sol * (0.03 + (h % 12) * 0.01)),
+    semTemplate: Math.round(base.semTemplate * (0.01 + (h % 10) * 0.012)),
+  };
+};
+
 // ── Page ───────────────────────────────────────────────────
 
 const OperacionalPrime = () => {
@@ -253,6 +267,14 @@ const OperacionalPrime = () => {
   const [activeSubNav, setActiveSubNav] = useState("Backlog");
   const [activeFilter, setActiveFilter] = useState("Empresa");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
+
+  const kpis = useMemo(() => computeOperacionalKPIs(selectedEntity), [selectedEntity]);
+
+  const handleFilterChange = (f: string) => {
+    setActiveFilter(f);
+    setSelectedEntity(null);
+  };
 
   return (
     <ImprovementProvider>
@@ -314,8 +336,19 @@ const OperacionalPrime = () => {
           <span className="bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-3 py-1 text-xs font-medium">
             Período: jan/2017 - dez/2017
           </span>
+          {selectedEntity && (
+            <span className="bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-3 py-1 text-xs font-medium flex items-center gap-1.5">
+              {activeFilter}: {selectedEntity}
+              <button onClick={() => setSelectedEntity(null)} className="hover:text-red-600">
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          )}
         </div>
-        <button className="flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline">
+        <button
+          onClick={() => setSelectedEntity(null)}
+          className="flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline"
+        >
           <Eraser className="w-4 h-4" />
           Limpar Filtros
         </button>
@@ -324,9 +357,9 @@ const OperacionalPrime = () => {
       {/* KPI Cards */}
       <div className="px-6 py-4">
         <div className="grid grid-cols-3 gap-4">
-          <OperacionalKPI title="Inconsistências em Aberto" value="282.873" yoy="-" />
-          <OperacionalKPI title="Solicitações em Aberto" value="7.261" yoy="0,0%" trend="down" />
-          <OperacionalKPI title="Colaboradores sem Template" value="1.842" yoy="12,3%" trend="up" />
+          <OperacionalKPI title="Inconsistências em Aberto" value={formatNumber(kpis.inc)} yoy="-" />
+          <OperacionalKPI title="Solicitações em Aberto" value={formatNumber(kpis.sol)} yoy="0,0%" trend="down" />
+          <OperacionalKPI title="Colaboradores sem Template" value={formatNumber(kpis.semTemplate)} yoy="12,3%" trend="up" />
         </div>
       </div>
 
@@ -354,10 +387,10 @@ const OperacionalPrime = () => {
 
       {/* Main Content */}
       <div className="px-6 pb-4 flex-1">
-        {activeSubNav === "Backlog" && <BacklogContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Análise de Padrões" && <AnalisePadroesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
-        {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
+        {activeSubNav === "Backlog" && <BacklogContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Análise de Padrões" && <AnalisePadroesContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Solicitações" && <SolicitacoesContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
+        {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={handleFilterChange} selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} />}
         
       </div>
       <FilterPanel open={filterOpen} onClose={() => setFilterOpen(false)} />
@@ -440,7 +473,7 @@ const SidePanel = ({ activeFilter, setActiveFilter }: { activeFilter: string; se
 
 // ── Backlog Content ────────────────────────────────────────
 
-const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+const BacklogContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: { activeFilter: string; setActiveFilter: (v: string) => void; selectedEntity: string | null; setSelectedEntity: (v: string | null) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
       {/* Row 1: Aging + Colaboradores sem Template */}
@@ -513,7 +546,8 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
               </thead>
               <tbody>
                 {buildTop20Totais(activeFilter, baseInconsistenciasBacklogTotais).map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50 cursor-pointer">
+                  <tr key={idx} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${selectedEntity === item.entidade ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.entidade ? null : item.entidade)}>
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.total)}</td>
@@ -540,7 +574,8 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
               </thead>
               <tbody>
                 {buildTop20Totais(activeFilter, baseSolicitacoesBacklogTotais).map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50 cursor-pointer">
+                  <tr key={idx} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${selectedEntity === item.entidade ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.entidade ? null : item.entidade)}>
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.total)}</td>
@@ -559,7 +594,7 @@ const BacklogContent = ({ activeFilter, setActiveFilter }: { activeFilter: strin
 
 // ── Análise de Padrões Content ─────────────────────────────
 
-const AnalisePadroesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+const AnalisePadroesContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: { activeFilter: string; setActiveFilter: (v: string) => void; selectedEntity: string | null; setSelectedEntity: (v: string | null) => void }) => (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
       {/* Row 1: Evolução do Backlog */}
@@ -679,7 +714,8 @@ const AnalisePadroesContent = ({ activeFilter, setActiveFilter }: { activeFilter
               </thead>
               <tbody>
                 {buildTop20Qualidade(activeFilter, baseQualidadePcts).map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50">
+                  <tr key={idx} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${selectedEntity === item.entidade ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.entidade ? null : item.entidade)}>
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{item.pct.toFixed(1)}%</td>
@@ -778,7 +814,7 @@ const evolucaoSolicitacoesMensal = [
 
 // ── Solicitações Content ───────────────────────────────────
 
-const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => {
+const SolicitacoesContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: { activeFilter: string; setActiveFilter: (v: string) => void; selectedEntity: string | null; setSelectedEntity: (v: string | null) => void }) => {
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
   const mesIdx = selectedMes ? mesesLabels.indexOf(selectedMes) : -1;
@@ -893,7 +929,8 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
               </thead>
               <tbody>
                 {buildTop20Totais(activeFilter, baseSolicitacoesJustTotais).map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50">
+                  <tr key={idx} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${selectedEntity === item.entidade ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.entidade ? null : item.entidade)}>
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.total)}</td>
@@ -918,7 +955,8 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
               </thead>
               <tbody>
                 {buildTop20Reincidentes(activeFilter, baseSolicitacoesReincOcorrencias, baseMeses).map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50">
+                  <tr key={idx} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${selectedEntity === item.entidade ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.entidade ? null : item.entidade)}>
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{item.ocorrencias}</td>
@@ -938,7 +976,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
 
 // ── Inconsistências Content ────────────────────────────────
 
-const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => {
+const InconsistenciasContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: { activeFilter: string; setActiveFilter: (v: string) => void; selectedEntity: string | null; setSelectedEntity: (v: string | null) => void }) => {
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
   const mesIdx = selectedMes ? mesesLabels.indexOf(selectedMes) : -1;
@@ -1047,7 +1085,8 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
               </thead>
               <tbody>
                 {buildTop20Totais(activeFilter, baseInconsistenciasTabTotais).map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50">
+                  <tr key={idx} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${selectedEntity === item.entidade ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.entidade ? null : item.entidade)}>
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{formatNumber(item.total)}</td>
@@ -1072,7 +1111,8 @@ const InconsistenciasContent = ({ activeFilter, setActiveFilter }: { activeFilte
               </thead>
               <tbody>
                 {buildTop20Reincidentes(activeFilter, baseInconsistenciasReincOcorrencias, baseMeses).map((item, idx) => (
-                  <tr key={idx} className="border-b border-gray-50">
+                  <tr key={idx} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${selectedEntity === item.entidade ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : ""}`}
+                    onClick={() => setSelectedEntity(selectedEntity === item.entidade ? null : item.entidade)}>
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
                     <td className="text-xs font-semibold text-gray-800 text-right py-2">{item.ocorrencias}</td>
