@@ -10,19 +10,45 @@ import {
 
 // ── Mock data ──────────────────────────────────────────────
 
-const evolucaoBacklog = [
-  { mes: "Jan", valor: 7000 }, { mes: "Fev", valor: 7000 }, { mes: "Mar", valor: 7000 },
-  { mes: "Abr", valor: 7000 }, { mes: "Mai", valor: 2000 }, { mes: "Jun", valor: 182000 },
-  { mes: "Jul", valor: 47000 }, { mes: "Ago", valor: 7000 }, { mes: "Set", valor: 24000 },
-  { mes: "Out", valor: 27000 }, { mes: "Nov", valor: 7000 }, { mes: "Dez", valor: 7000 },
+const evolucaoBacklogDiario = [
+  { dia: "01", inconsistencias: 1250, solicitacoes: 380 },
+  { dia: "02", inconsistencias: 1180, solicitacoes: 420 },
+  { dia: "03", inconsistencias: 1320, solicitacoes: 350 },
+  { dia: "04", inconsistencias: 980, solicitacoes: 290 },
+  { dia: "05", inconsistencias: 1450, solicitacoes: 510 },
+  { dia: "06", inconsistencias: 1100, solicitacoes: 370 },
+  { dia: "07", inconsistencias: 890, solicitacoes: 260 },
+  { dia: "08", inconsistencias: 1380, solicitacoes: 440 },
+  { dia: "09", inconsistencias: 1520, solicitacoes: 480 },
+  { dia: "10", inconsistencias: 1210, solicitacoes: 390 },
+  { dia: "11", inconsistencias: 1060, solicitacoes: 310 },
+  { dia: "12", inconsistencias: 1430, solicitacoes: 460 },
+  { dia: "13", inconsistencias: 1150, solicitacoes: 340 },
+  { dia: "14", inconsistencias: 970, solicitacoes: 280 },
+  { dia: "15", inconsistencias: 1340, solicitacoes: 410 },
+  { dia: "16", inconsistencias: 1280, solicitacoes: 370 },
+  { dia: "17", inconsistencias: 1490, solicitacoes: 520 },
+  { dia: "18", inconsistencias: 1100, solicitacoes: 350 },
+  { dia: "19", inconsistencias: 1030, solicitacoes: 300 },
+  { dia: "20", inconsistencias: 1260, solicitacoes: 430 },
+  { dia: "21", inconsistencias: 880, solicitacoes: 240 },
+  { dia: "22", inconsistencias: 1370, solicitacoes: 450 },
+  { dia: "23", inconsistencias: 1190, solicitacoes: 380 },
+  { dia: "24", inconsistencias: 1410, solicitacoes: 470 },
+  { dia: "25", inconsistencias: 1050, solicitacoes: 320 },
+  { dia: "26", inconsistencias: 1300, solicitacoes: 400 },
+  { dia: "27", inconsistencias: 920, solicitacoes: 270 },
+  { dia: "28", inconsistencias: 1160, solicitacoes: 360 },
+  { dia: "29", inconsistencias: 1480, solicitacoes: 500 },
+  { dia: "30", inconsistencias: 1220, solicitacoes: 390 },
 ];
 
 const agingInconsistencias = [
-  { faixa: "0–2 dias", quantidade: 12450, cor: "#4CAF50" },
-  { faixa: "3–5 dias", quantidade: 8320, cor: "#FFC107" },
-  { faixa: "6–10 dias", quantidade: 5180, cor: "#FF9800" },
-  { faixa: "11–20 dias", quantidade: 3740, cor: "#FF5722" },
-  { faixa: "+20 dias", quantidade: 2185, cor: "#D32F2F" },
+  { faixa: "0–2 dias", inconsistencias: 12450, solicitacoes: 3820, cor: "#4CAF50" },
+  { faixa: "3–5 dias", inconsistencias: 8320, solicitacoes: 2150, cor: "#FFC107" },
+  { faixa: "6–10 dias", inconsistencias: 5180, solicitacoes: 1340, cor: "#FF9800" },
+  { faixa: "11–20 dias", inconsistencias: 3740, solicitacoes: 890, cor: "#FF5722" },
+  { faixa: "+20 dias", inconsistencias: 2185, solicitacoes: 620, cor: "#D32F2F" },
 ];
 
 const heatmapData = [
