@@ -17,6 +17,14 @@ const evolucaoBacklog = [
   { mes: "Out", valor: 27000 }, { mes: "Nov", valor: 7000 }, { mes: "Dez", valor: 7000 },
 ];
 
+const agingInconsistencias = [
+  { faixa: "0–2 dias", quantidade: 12450, cor: "#4CAF50" },
+  { faixa: "3–5 dias", quantidade: 8320, cor: "#FFC107" },
+  { faixa: "6–10 dias", quantidade: 5180, cor: "#FF9800" },
+  { faixa: "11–20 dias", quantidade: 3740, cor: "#FF5722" },
+  { faixa: "+20 dias", quantidade: 2185, cor: "#D32F2F" },
+];
+
 const heatmapData = [
   { dia: "seg", hours: [3, 2, 1, 0, 0, 1, 2, 3, 8, 9, 7, 6, 5] },
   { dia: "ter", hours: [2, 1, 0, 0, 0, 1, 2, 4, 7, 8, 6, 5, 4] },
