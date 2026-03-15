@@ -866,7 +866,7 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
                 </tr>
               </thead>
               <tbody>
-                {top20EntidadesSolicitacoesJustificativa.map((item, idx) => (
+                {buildTop20Totais(activeFilter, baseSolicitacoesJustTotais).map((item, idx) => (
                   <tr key={idx} className="border-b border-gray-50">
                     <td className="text-xs text-gray-500 py-2">{idx + 1}</td>
                     <td className="text-xs text-gray-700 py-2 pr-4">{item.entidade}</td>
