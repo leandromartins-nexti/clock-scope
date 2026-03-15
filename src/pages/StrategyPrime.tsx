@@ -313,7 +313,7 @@ const tabs = [
 
 const subNavItems = ["Visão Geral", "Inconsistências", "Solicitações", "Justificativa", "Eficiência"];
 
-const filterOptions = ["Empresa", "Unidade de Negócio", "Cliente", "Posto", "Tipo de Serviço"];
+const filterOptions = ["Empresa", "Unidade de Negócio", "Cliente", "Posto", "Tipo de Serviço", "Área", "Filtro de Mesa"];
 
 const StrategyPrime = () => {
   const navigate = useNavigate();
