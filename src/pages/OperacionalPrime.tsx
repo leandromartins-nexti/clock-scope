@@ -360,6 +360,7 @@ const OperacionalPrime = () => {
         {activeSubNav === "Inconsistências" && <InconsistenciasContent activeFilter={activeFilter} setActiveFilter={setActiveFilter} />}
         
       </div>
+      <FilterPanel open={filterOpen} onClose={() => setFilterOpen(false)} />
     </div>
     </ImprovementLayer>
     </ImprovementProvider>
