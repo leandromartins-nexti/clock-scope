@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Filter, Eraser, TrendingUp, TrendingDown, AlertTriangle, FileText, Wrench, DollarSign, Clock, Users } from "lucide-react";
+import { ChevronRight, Filter, Eraser, AlertTriangle, FileText, Wrench, DollarSign, Clock, Users } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { FilterPanel } from "@/components/layout/FilterPanel";
 
 /* ── Mock data ── */
 const meses = ["Jul", "Ago", "Set", "Out", "Nov", "Dez", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
@@ -48,7 +49,7 @@ function formatCurrency(v: number) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
-/* ── KPI Card (same pattern as Strategy) ── */
+/* ── KPI Card (same pattern as Strategy/Operacional) ── */
 interface KPICardProps {
   title: string;
   value: string;
@@ -78,10 +79,11 @@ const KPICard = ({ title, value, valueColor, metaLabel, metaTarget, yoyValue, yo
 );
 
 /* ── Trend helpers ── */
-function trendStr(curr: number, prev: number, invert = true) {
+function trendStr(curr: number, prev: number) {
   const pct = pctChange(curr, prev);
   const isPositive = pct > 0;
-  const isGood = invert ? !isPositive : isPositive;
+  // For cost/effort, decrease is good
+  const isGood = !isPositive;
   return {
     value: `${isPositive ? "+" : ""}${pct.toFixed(1)}%`,
     color: isGood ? "text-green-600" : "text-red-500",
@@ -154,6 +156,7 @@ function CategoryCard({ cat }: { cat: typeof categories[0] }) {
 export default function Executive() {
   const navigate = useNavigate();
   const [activeTab] = useState("Prime");
+  const [filterOpen, setFilterOpen] = useState(false);
 
   // Totals for KPI cards
   const totalVolume = categories.reduce((s, c) => s + c.volume, 0);
@@ -205,7 +208,16 @@ export default function Executive() {
             ))}
           </div>
           <div className="flex items-center gap-3">
-            <button className="border border-gray-300 text-gray-600 px-4 py-2 rounded text-sm font-medium flex items-center gap-2">
+            <button
+              onClick={() => navigate("/strategy-prime")}
+              className="bg-[#FF5722] text-white px-5 py-2 rounded text-sm font-semibold"
+            >
+              Strategy
+            </button>
+            <button
+              onClick={() => setFilterOpen(true)}
+              className="border border-gray-300 text-gray-600 px-4 py-2 rounded text-sm font-medium flex items-center gap-2"
+            >
               <Filter className="w-4 h-4" />
               Filtros
             </button>
@@ -284,6 +296,9 @@ export default function Executive() {
           ))}
         </div>
       </div>
+
+      {/* Filter Panel */}
+      <FilterPanel open={filterOpen} onClose={() => setFilterOpen(false)} />
     </div>
   );
 }
