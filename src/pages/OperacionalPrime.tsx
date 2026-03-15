@@ -705,7 +705,7 @@ const AnalisePadroesContent = ({ activeFilter, setActiveFilter }: { activeFilter
 
 // ── Mock data – Solicitações ───────────────────────────────
 
-const motivosJustificativa = [
+const motivosJustificativaBase = [
   { motivo: "Esquecimento de Marcação", pct: 44.7 },
   { motivo: "Falha no Equipamento", pct: 12.5 },
   { motivo: "Troca de Turno", pct: 9.5 },
@@ -717,7 +717,7 @@ const motivosJustificativa = [
   { motivo: "Outros", pct: 2.5 },
 ];
 
-const motivosTratativa = [
+const motivosTratativaBase = [
   { motivo: "Ajuste Manual pelo Gestor", pct: 38.2 },
   { motivo: "Aprovação Automática", pct: 22.5 },
   { motivo: "Análise de Documentação", pct: 14.8 },
@@ -726,6 +726,18 @@ const motivosTratativa = [
   { motivo: "Rejeição por Prazo", pct: 4.5 },
   { motivo: "Outros", pct: 3.6 },
 ];
+
+// Seed-based variation per month index
+const variarPorMes = (base: { motivo: string; pct: number }[], mesIdx: number) => {
+  const seed = mesIdx + 1;
+  return base.map((item, i) => {
+    const variation = ((seed * (i + 3) * 7) % 15) - 7; // -7 to +7
+    const newPct = Math.max(0.5, +(item.pct + variation * (item.pct / 30)).toFixed(1));
+    return { ...item, pct: newPct };
+  });
+};
+
+const mesesLabels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
 const evolucaoSolicitacoesMensal = [
   { mes: "Jan", emAberto: 520, ajustadas: 5920, canceladas: 1330 },
@@ -744,16 +756,42 @@ const evolucaoSolicitacoesMensal = [
 
 // ── Solicitações Content ───────────────────────────────────
 
-const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => (
+const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: string; setActiveFilter: (v: string) => void }) => {
+  const [selectedMes, setSelectedMes] = useState<string | null>(null);
+
+  const mesIdx = selectedMes ? mesesLabels.indexOf(selectedMes) : -1;
+  const motivosJustificativa = mesIdx >= 0 ? variarPorMes(motivosJustificativaBase, mesIdx) : motivosJustificativaBase;
+  const motivosTratativa = mesIdx >= 0 ? variarPorMes(motivosTratativaBase, mesIdx) : motivosTratativaBase;
+  const maxJustificativa = Math.max(...motivosJustificativa.map(m => m.pct));
+  const maxTratativa = Math.max(...motivosTratativa.map(m => m.pct));
+
+  const handleBarClick = (data: any) => {
+    if (data?.activeLabel) {
+      setSelectedMes(prev => prev === data.activeLabel ? null : data.activeLabel);
+    }
+  };
+
+  return (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
       {/* Row 1: Evolução Mensal por Status - Largura total */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="font-semibold text-sm text-gray-800 mb-0.5">Evolução das Solicitações por Status</h3>
-        <p className="text-xs text-gray-400 mb-4">Volume mensal por status</p>
+        <div className="flex items-center justify-between mb-0.5">
+          <h3 className="font-semibold text-sm text-gray-800">Evolução das Solicitações por Status</h3>
+          {selectedMes && (
+            <button
+              onClick={() => setSelectedMes(null)}
+              className="text-xs text-[#FF5722] hover:underline flex items-center gap-1"
+            >
+              <RefreshCw className="w-3 h-3" />
+              Limpar filtro ({selectedMes})
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-gray-400 mb-4">Volume mensal por status · Clique em um mês para filtrar</p>
         <div className="h-[220px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolucaoSolicitacoesMensal} barSize={28}>
+            <BarChart data={evolucaoSolicitacoesMensal} barSize={28} onClick={handleBarClick} style={{ cursor: "pointer" }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
               <XAxis dataKey="mes" tick={{ fontSize: 11 }} stroke="#9CA3AF" />
               <YAxis tick={{ fontSize: 11 }} stroke="#9CA3AF" tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
@@ -762,9 +800,15 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
                 formatter={(v: number, name: string) => [formatNumber(v), name]}
               />
               <Legend iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
-              <Bar dataKey="ajustadas" stackId="a" fill="#FDB813" name="Ajustadas" radius={[0, 0, 0, 0]} />
-              <Bar dataKey="canceladas" stackId="a" fill="#9CA3AF" name="Canceladas" radius={[0, 0, 0, 0]} />
-              <Bar dataKey="emAberto" stackId="a" fill="#FF5722" name="Em Aberto" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="ajustadas" stackId="a" fill="#FDB813" name="Ajustadas" radius={[0, 0, 0, 0]}
+                opacity={selectedMes ? 0.4 : 1}
+              />
+              <Bar dataKey="canceladas" stackId="a" fill="#9CA3AF" name="Canceladas" radius={[0, 0, 0, 0]}
+                opacity={selectedMes ? 0.4 : 1}
+              />
+              <Bar dataKey="emAberto" stackId="a" fill="#FF5722" name="Em Aberto" radius={[4, 4, 0, 0]}
+                opacity={selectedMes ? 0.4 : 1}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -773,14 +817,17 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
       {/* Row 2: Motivos + Tratativa */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">% Motivos de Abertura de Justificativa</h3>
+          <div className="flex items-center justify-between mb-0.5">
+            <h3 className="font-semibold text-sm text-gray-800">% Motivos de Abertura de Justificativa</h3>
+            {selectedMes && <span className="text-[10px] bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-2 py-0.5 font-medium">{selectedMes}</span>}
+          </div>
           <p className="text-xs text-gray-400 mb-4">Motivo de abertura das solicitações</p>
           <div className="space-y-2.5">
             {motivosJustificativa.map((item, idx) => (
               <div key={idx} className="flex items-center gap-3">
                 <span className="text-xs text-gray-500 w-40 shrink-0 truncate" title={item.motivo}>{item.motivo}</span>
                 <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                  <div className="h-full rounded" style={{ width: `${(item.pct / 44.7) * 100}%`, backgroundColor: "#FF5722" }} />
+                  <div className="h-full rounded transition-all duration-300" style={{ width: `${(item.pct / maxJustificativa) * 100}%`, backgroundColor: "#FF5722" }} />
                 </div>
                 <span className="text-xs font-semibold text-gray-700 w-12 text-right">{item.pct}%</span>
               </div>
@@ -789,14 +836,17 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-sm text-gray-800 mb-0.5">% Motivo de Tratativa</h3>
+          <div className="flex items-center justify-between mb-0.5">
+            <h3 className="font-semibold text-sm text-gray-800">% Motivo de Tratativa</h3>
+            {selectedMes && <span className="text-[10px] bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-2 py-0.5 font-medium">{selectedMes}</span>}
+          </div>
           <p className="text-xs text-gray-400 mb-4">Tratativa das solicitações de justificativa</p>
           <div className="space-y-2.5">
             {motivosTratativa.map((item, idx) => (
               <div key={idx} className="flex items-center gap-3">
                 <span className="text-xs text-gray-500 w-40 shrink-0 truncate" title={item.motivo}>{item.motivo}</span>
                 <div className="flex-1 h-5 bg-gray-100 rounded overflow-hidden">
-                  <div className="h-full rounded" style={{ width: `${(item.pct / 38.2) * 100}%`, backgroundColor: "#FDB813" }} />
+                  <div className="h-full rounded transition-all duration-300" style={{ width: `${(item.pct / maxTratativa) * 100}%`, backgroundColor: "#FDB813" }} />
                 </div>
                 <span className="text-xs font-semibold text-gray-700 w-12 text-right">{item.pct}%</span>
               </div>
@@ -861,7 +911,8 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter }: { activeFilter: 
 
     <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
   </div>
-);
+  );
+};
 
 // ── Inconsistências Content ────────────────────────────────
 
