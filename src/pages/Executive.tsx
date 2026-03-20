@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Filter, Eraser, AlertTriangle, FileText, Wrench, DollarSign, Clock, Users, Lightbulb } from "lucide-react";
+import { ChevronRight, Filter, Eraser, AlertTriangle, FileText, Wrench, DollarSign, Clock, Users } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { ImprovementProvider } from "@/contexts/ImprovementContext";
