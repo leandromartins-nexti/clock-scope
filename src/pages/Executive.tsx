@@ -160,6 +160,7 @@ export default function Executive() {
   const navigate = useNavigate();
   const [activeTab] = useState("Prime");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [showCenter, setShowCenter] = useState(false);
 
   // Totals for KPI cards
   const totalVolume = categories.reduce((s, c) => s + c.volume, 0);
