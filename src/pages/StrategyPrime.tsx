@@ -205,6 +205,19 @@ const top10TratativaOperadores = [
   { operador: "Diego Nascimento", tratativas: 21 },
 ];
 
+const top10MotivosJustificativa = [
+  { motivo: "Esquecimento de Registro", quantidade: 482 },
+  { motivo: "Falha no Equipamento", quantidade: 347 },
+  { motivo: "Troca de Turno", quantidade: 289 },
+  { motivo: "Atraso no Transporte", quantidade: 256 },
+  { motivo: "Problema de Biometria", quantidade: 234 },
+  { motivo: "Trabalho Externo", quantidade: 198 },
+  { motivo: "Reunião Prolongada", quantidade: 176 },
+  { motivo: "Erro de Sistema", quantidade: 154 },
+  { motivo: "Licença Médica Parcial", quantidade: 132 },
+  { motivo: "Compensação de Horas", quantidade: 118 },
+];
+
 const evolucaoInconsistenciasTratadas = [
   { mes: "Jan", total: 320, tratadas: 144 }, { mes: "Fev", total: 298, tratadas: 145 }, { mes: "Mar", total: 345, tratadas: 180 },
   { mes: "Abr", total: 310, tratadas: 157 }, { mes: "Mai", total: 330, tratadas: 182 }, { mes: "Jun", total: 305, tratadas: 180 },
@@ -1184,13 +1197,80 @@ const SolicitacoesContent = ({ activeFilter, setActiveFilter, selectedEntity, se
 };
 
 // Eficiência Content
-const EficienciaContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => (
+const EficienciaContent = ({ activeFilter, setActiveFilter, selectedEntity, setSelectedEntity }: ContentProps) => {
+  const [selectedMotivo, setSelectedMotivo] = useState<string | null>(null);
+
+  // Cross-filter: vary operator data based on selected motivo
+  const filteredTempoMedio = selectedMotivo
+    ? piorTempoMedioOperadores.map((op, i) => ({
+        ...op,
+        tempoMedio: +(op.tempoMedio * (0.6 + ((selectedMotivo.length + i) % 5) * 0.15)).toFixed(1),
+      }))
+    : piorTempoMedioOperadores;
+
+  const filteredTratativas = selectedMotivo
+    ? top10TratativaOperadores.map((op, i) => ({
+        ...op,
+        tratativas: Math.round(op.tratativas * (0.5 + ((selectedMotivo.length + i) % 6) * 0.12)),
+      }))
+    : top10TratativaOperadores;
+
+  return (
   <div className="flex gap-4">
     <div className="flex-1 space-y-4">
+      {/* Top 10 Motivos - full width */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="flex items-center justify-between mb-1">
+          <div>
+            <h3 className="font-bold text-sm text-gray-800">Top 10 Motivos de Justificativa</h3>
+            <p className="text-xs text-gray-400">Clique em um motivo para filtrar os demais KPIs</p>
+          </div>
+          {selectedMotivo && (
+            <button
+              onClick={() => setSelectedMotivo(null)}
+              className="text-xs text-[#FF5722] hover:underline flex items-center gap-1"
+            >
+              <Eraser className="w-3 h-3" /> Limpar
+            </button>
+          )}
+        </div>
+        <table className="w-full text-sm mt-3">
+          <thead>
+            <tr className="border-b border-gray-100">
+              <th className="text-left py-2 text-gray-500 font-medium">#</th>
+              <th className="text-left py-2 text-gray-500 font-medium">Motivo</th>
+              <th className="text-right py-2 text-gray-500 font-medium">Quantidade</th>
+              <th className="text-right py-2 text-gray-500 font-medium">%</th>
+            </tr>
+          </thead>
+          <tbody>
+            {top10MotivosJustificativa.map((item, idx) => {
+              const total = top10MotivosJustificativa.reduce((s, m) => s + m.quantidade, 0);
+              const pct = ((item.quantidade / total) * 100).toFixed(1);
+              const isSelected = selectedMotivo === item.motivo;
+              return (
+                <tr
+                  key={idx}
+                  className={`border-b border-gray-50 cursor-pointer transition-colors ${
+                    isSelected ? "bg-orange-50 border-l-2 border-l-[#FF5722]" : selectedMotivo ? "opacity-50 hover:opacity-80" : "hover:bg-gray-50"
+                  }`}
+                  onClick={() => setSelectedMotivo(isSelected ? null : item.motivo)}
+                >
+                  <td className="py-2 text-gray-400 text-xs">{idx + 1}</td>
+                  <td className="py-2 text-gray-700">{item.motivo}</td>
+                  <td className="py-2 text-right font-semibold text-gray-800">{item.quantidade.toLocaleString("pt-BR")}</td>
+                  <td className="py-2 text-right text-gray-500">{pct}%</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">Tempo Médio de Tratativa de Inconsistência</h3>
-          <p className="text-xs text-gray-400 mb-4">por Operador</p>
+          <p className="text-xs text-gray-400 mb-4">por Operador {selectedMotivo && <span className="text-[#FF5722]">• filtrado por: {selectedMotivo}</span>}</p>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
@@ -1199,7 +1279,7 @@ const EficienciaContent = ({ activeFilter, setActiveFilter, selectedEntity, setS
               </tr>
             </thead>
             <tbody>
-              {piorTempoMedioOperadores.map((item, idx) => (
+              {filteredTempoMedio.map((item, idx) => (
                 <tr key={idx} className="border-b border-gray-50">
                   <td className="py-2 text-gray-700">{item.operador}</td>
                   <td className="py-2 text-right text-gray-600">{item.tempoMedio}</td>
@@ -1210,7 +1290,7 @@ const EficienciaContent = ({ activeFilter, setActiveFilter, selectedEntity, setS
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm text-gray-800">Quantidade de Tratativa de Marcações</h3>
-          <p className="text-xs text-gray-400 mb-4">por Operador</p>
+          <p className="text-xs text-gray-400 mb-4">por Operador {selectedMotivo && <span className="text-[#FF5722]">• filtrado por: {selectedMotivo}</span>}</p>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
@@ -1219,7 +1299,7 @@ const EficienciaContent = ({ activeFilter, setActiveFilter, selectedEntity, setS
               </tr>
             </thead>
             <tbody>
-              {top10TratativaOperadores.map((item, idx) => (
+              {filteredTratativas.map((item, idx) => (
                 <tr key={idx} className="border-b border-gray-50">
                   <td className="py-2 text-gray-700">{item.operador}</td>
                   <td className="py-2 text-right text-gray-600">{item.tratativas}</td>
@@ -1234,7 +1314,8 @@ const EficienciaContent = ({ activeFilter, setActiveFilter, selectedEntity, setS
       <SidePanel activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
     </div>
   </div>
-);
+  );
+};
 
 // Placeholder for tabs not yet built
 const PlaceholderContent = ({ title }: { title: string }) => (
