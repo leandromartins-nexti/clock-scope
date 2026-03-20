@@ -205,6 +205,19 @@ const top10TratativaOperadores = [
   { operador: "Diego Nascimento", tratativas: 21 },
 ];
 
+const top10MotivosJustificativa = [
+  { motivo: "Esquecimento de Registro", quantidade: 482 },
+  { motivo: "Falha no Equipamento", quantidade: 347 },
+  { motivo: "Troca de Turno", quantidade: 289 },
+  { motivo: "Atraso no Transporte", quantidade: 256 },
+  { motivo: "Problema de Biometria", quantidade: 234 },
+  { motivo: "Trabalho Externo", quantidade: 198 },
+  { motivo: "Reunião Prolongada", quantidade: 176 },
+  { motivo: "Erro de Sistema", quantidade: 154 },
+  { motivo: "Licença Médica Parcial", quantidade: 132 },
+  { motivo: "Compensação de Horas", quantidade: 118 },
+];
+
 const evolucaoInconsistenciasTratadas = [
   { mes: "Jan", total: 320, tratadas: 144 }, { mes: "Fev", total: 298, tratadas: 145 }, { mes: "Mar", total: 345, tratadas: 180 },
   { mes: "Abr", total: 310, tratadas: 157 }, { mes: "Mai", total: 330, tratadas: 182 }, { mes: "Jun", total: 305, tratadas: 180 },
