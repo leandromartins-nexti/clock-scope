@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { AusenciasCoberturasContent } from "@/pages/strategy/AusenciasCoberturas";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Filter, Settings, Eraser, Lightbulb, RefreshCw, X } from "lucide-react";
 import { ImprovementProvider } from "@/contexts/ImprovementContext";
