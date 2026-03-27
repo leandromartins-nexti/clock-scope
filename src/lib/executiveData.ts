@@ -255,6 +255,8 @@ export const prevPeriod = {
   horasDescobertas: 3100,
   custoTotal: 390000,
   economiaTotal: 155000,
+  economiaAbsenteismo: 92000,
+  economiaCobertura: 63000,
   scoreEficiencia: 58,
   pctCobPlanejada: 52,
   pctCobEmergencial: 48,
