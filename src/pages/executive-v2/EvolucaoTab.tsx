@@ -1,4 +1,4 @@
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine, ComposedChart, Bar } from "recharts";
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ComposedChart, Bar } from "recharts";
 import { trendROI, getDriversMonetarios, formatCurrency, ownership, mesesROI } from "@/lib/roiData";
 
 export default function EvolucaoTab() {
@@ -8,7 +8,6 @@ export default function EvolucaoTab() {
   const ganhoPeriodo = monetarios.reduce((s, d) => s + d.ganhoBruto, 0);
   const variacao = baselineAvg > 0 ? (((atualAvg - baselineAvg) / baselineAvg) * 100).toFixed(1) : "0";
 
-  // Payback curve data
   const ownershipMensal = ownership.ownershipTotal / 12;
   const paybackData = trendROI.map((t, i) => ({
     mes: t.mes,
@@ -16,7 +15,6 @@ export default function EvolucaoTab() {
     economiaAcumulada: t.economiaAcumulada,
   }));
 
-  // Before/After per driver (top 5)
   const topDrivers = [...monetarios].sort((a, b) => b.ganhoBruto - a.ganhoBruto).slice(0, 5);
   const beforeAfterData = topDrivers.map(d => ({
     name: d.nome.length > 16 ? d.nome.slice(0, 14) + "…" : d.nome,
@@ -41,8 +39,37 @@ export default function EvolucaoTab() {
         ))}
       </div>
 
-      {/* Evolução Economia */}
+      {/* Evolução separada: comprovado vs referencial */}
+      <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <h3 className="text-sm font-semibold text-gray-800 mb-3">Evolução: Valor Comprovado vs Referencial</h3>
+        <p className="text-[10px] text-gray-400 mb-3">O valor comprovado está crescendo em relação ao referencial?</p>
+        <div className="h-[250px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={trendROI}>
+              <defs>
+                <linearGradient id="gradComprov" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="gradRef" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#9ca3af" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#9ca3af" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+              <YAxis tickFormatter={(v) => `R$ ${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 10 }} />
+              <Tooltip formatter={(v: number) => formatCurrency(v)} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Area type="monotone" dataKey="valorComprovado" stroke="#22c55e" fill="url(#gradComprov)" name="Comprovado" />
+              <Area type="monotone" dataKey="valorReferencial" stroke="#9ca3af" fill="url(#gradRef)" name="Referencial" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Economia Bruta vs Líquida */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-3">Economia Bruta vs Líquida (Mensal)</h3>
           <div className="h-[250px]">
@@ -73,6 +100,7 @@ export default function EvolucaoTab() {
         {/* Payback Curve */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-3">Curva de Payback</h3>
+          <p className="text-[10px] text-gray-400 mb-2">O cruzamento das linhas indica o momento em que o investimento se paga</p>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={paybackData}>
@@ -109,7 +137,8 @@ export default function EvolucaoTab() {
 
       {/* % Comprovado Evolution */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
-        <h3 className="text-sm font-semibold text-gray-800 mb-3">Evolução da % Comprovada</h3>
+        <h3 className="text-sm font-semibold text-gray-800 mb-3">Evolução do % Comprovado</h3>
+        <p className="text-[10px] text-gray-400 mb-2">O valor está ficando mais comprovado ao longo do tempo?</p>
         <div className="h-[220px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={trendROI}>
