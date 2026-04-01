@@ -351,9 +351,20 @@ export function getROITotal() {
 }
 
 export function getPaybackMeses() {
-  const economiaMensalMedia = getEconomiaBruta() / 12;
+  /* Payback = mês em que economia acumulada supera ownership acumulado */
+  let acumEco = 0;
   const ownershipMensal = ownership.ownershipTotal / 12;
-  return economiaMensalMedia > 0 ? ownershipMensal / (economiaMensalMedia - ownershipMensal) * 12 : Infinity;
+  for (let i = 0; i < economiaMensal.length; i++) {
+    acumEco += economiaMensal[i];
+    const acumOwn = (i + 1) * ownershipMensal;
+    if (acumEco >= acumOwn) {
+      /* Interpolar fração do mês */
+      const falta = acumOwn - (acumEco - economiaMensal[i]);
+      const fracao = falta / economiaMensal[i];
+      return +(i + fracao).toFixed(1);
+    }
+  }
+  return 12;
 }
 
 export function getConfiancaBreakdown() {
