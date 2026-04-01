@@ -26,6 +26,7 @@ const App = () => (
             <Route path="/strategy-prime" element={<StrategyPrime />} />
             <Route path="/operacional-prime" element={<OperacionalPrime />} />
             <Route path="/executive" element={<Executive />} />
+            <Route path="/executive-v2" element={<ExecutiveV2 />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
