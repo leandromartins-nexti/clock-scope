@@ -679,10 +679,10 @@ export function generateROIInsights() {
   const driversComUpgrade = drivers.filter(d => d.upgradePaths.length > 0);
 
   return [
-    { severity: "info" as const, text: `A Nexti gerou ${formatCurrency(liq)} de economia líquida anual no período abr/2025 – mar/2026, com ${conf.comprovado.toFixed(0)}% do valor sustentado por dados reais do cliente.` },
-    { severity: "info" as const, text: `A captura de valor evoluiu ao longo dos 12 meses, com comprovação saindo de 45% para 76% ao final do período.` },
-    { severity: "critical" as const, text: `Os principais drivers foram ${top3.join(", ")}, representando ${((top3.reduce((s, n) => s + (monetarios.find(d => d.nome === n)?.ganhoBruto || 0), 0) / eco) * 100).toFixed(0)}% da economia bruta.` },
-    { severity: "warning" as const, text: `${driversComUpgrade.length} driver(s) podem elevar confiança com importação de dados: ${driversComUpgrade.map(d => d.nome).join(", ")}.` },
-    { severity: "info" as const, text: `O ROI anual de ${getROITotal().toFixed(1)}x com payback de ${getPaybackMeses()} meses é positivo e defensável frente ao ownership de ${formatCurrency(ownership.ownershipTotal)}.` },
+    { severity: "info" as const, text: `A operação capturou ${formatCurrency(eco)} em economia bruta no período abr/2025 – mar/2026, com redução de custos em ${monetarios.length} drivers ativos.` },
+    { severity: "critical" as const, text: `Os maiores ganhos vieram de ${top3.join(", ")}, representando ${((top3.reduce((s, n) => s + (monetarios.find(d => d.nome === n)?.ganhoBruto || 0), 0) / eco) * 100).toFixed(0)}% do valor total capturado.` },
+    { severity: "info" as const, text: `Do valor total, ${conf.comprovado.toFixed(0)}% (${formatCurrency(conf["comprovadoR$"])}) é sustentado por dados reais, com a maturidade de comprovação evoluindo de 45% para 76% no período.` },
+    { severity: "warning" as const, text: `${driversComUpgrade.length} driver(s) podem elevar nível de comprovação com importação de dados: ${driversComUpgrade.map(d => d.nome).join(", ")}.` },
+    { severity: "info" as const, text: `A economia líquida no período foi de ${formatCurrency(liq)}, resultado direto da evolução operacional e da captura de valor pela operação.` },
   ];
 }
