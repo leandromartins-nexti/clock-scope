@@ -8,6 +8,7 @@ import NextiAnalytics from "./pages/NextiAnalytics";
 import StrategyPrime from "./pages/StrategyPrime";
 import OperacionalPrime from "./pages/OperacionalPrime";
 import Executive from "./pages/Executive";
+import ExecutiveV2 from "./pages/ExecutiveV2";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
