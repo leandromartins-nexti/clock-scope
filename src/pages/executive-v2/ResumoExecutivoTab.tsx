@@ -3,7 +3,9 @@ import {
   getEconomiaBruta, getEconomiaLiquida, getROITotal, getPaybackMeses,
   getConfiancaBreakdown, getDriversMonetarios, ownership, trendROI,
   formatCurrency, formatNumber, generateROIInsights, drivers, operacoes,
+  confidenceBadge,
 } from "@/lib/roiData";
+import { Info } from "lucide-react";
 
 const COLORS_CONF = ["#22c55e", "#eab308", "#9ca3af"];
 
@@ -26,39 +28,67 @@ export default function ResumoExecutivoTab() {
   const waterfallData = [...monetarios]
     .sort((a, b) => b.ganhoBruto - a.ganhoBruto)
     .slice(0, 8)
-    .map(d => ({ name: d.nome.length > 20 ? d.nome.slice(0, 18) + "…" : d.nome, value: d.ganhoBruto }));
+    .map(d => {
+      const badge = confidenceBadge(d.confianca);
+      return {
+        name: d.nome.length > 20 ? d.nome.slice(0, 18) + "…" : d.nome,
+        value: d.ganhoBruto,
+        confianca: d.confianca,
+        fill: d.confianca === "comprovado" ? "#22c55e" : d.confianca === "hibrido" ? "#eab308" : "#9ca3af",
+      };
+    });
 
   const topOps = [...operacoes].sort((a, b) => b.economiaLiquida - a.economiaLiquida).slice(0, 5);
 
   return (
     <div className="space-y-6">
       {/* ROI Hero Banner */}
-      <div className="bg-gradient-to-r from-[#FF5722] to-[#FF7043] rounded-xl p-6 text-white flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium opacity-90">RETORNO SOBRE INVESTIMENTO</p>
-          <p className="text-5xl font-bold mt-1">{roi.toFixed(1)}x</p>
-        </div>
-        <div className="flex gap-8 text-right">
+      <div className="bg-gradient-to-r from-[#FF5722] to-[#FF7043] rounded-xl p-6 text-white">
+        <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs opacity-80">ECONOMIA</p>
-            <p className="text-2xl font-bold">{formatCurrency(eco)}</p>
+            <p className="text-sm font-medium opacity-90">RETORNO SOBRE INVESTIMENTO</p>
+            <p className="text-5xl font-bold mt-1">{roi.toFixed(1)}x</p>
+            <p className="text-xs opacity-75 mt-1">Payback em {payback.toFixed(1)} meses</p>
           </div>
-          <div>
-            <p className="text-xs opacity-80">CONTRATO</p>
-            <p className="text-2xl font-bold">{formatCurrency(ownership.ownershipTotal)}</p>
+          <div className="flex gap-8 text-right">
+            <div>
+              <p className="text-xs opacity-80">ECONOMIA BRUTA</p>
+              <p className="text-2xl font-bold">{formatCurrency(eco)}</p>
+            </div>
+            <div>
+              <p className="text-xs opacity-80">ECONOMIA LÍQUIDA</p>
+              <p className="text-2xl font-bold">{formatCurrency(liq)}</p>
+            </div>
+            <div>
+              <p className="text-xs opacity-80">OWNERSHIP NEXTI</p>
+              <p className="text-2xl font-bold">{formatCurrency(ownership.ownershipTotal)}</p>
+            </div>
+          </div>
+        </div>
+        {/* Confidence strip */}
+        <div className="mt-4 pt-3 border-t border-white/20 flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-green-300" />
+            <span className="text-xs opacity-90">Comprovado: <strong>{formatCurrency(conf["comprovadoR$"])}</strong> ({conf.comprovado.toFixed(0)}%)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-yellow-300" />
+            <span className="text-xs opacity-90">Híbrido: <strong>{formatCurrency(conf["hibridoR$"])}</strong> ({conf.hibrido.toFixed(0)}%)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-gray-300" />
+            <span className="text-xs opacity-90">Referencial: <strong>{formatCurrency(conf["referencialR$"])}</strong> ({conf.referencial.toFixed(0)}%)</span>
           </div>
         </div>
       </div>
 
-      {/* Big Numbers */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+      {/* Big Numbers with confidence values */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {[
           { label: "ROI Total", value: `${roi.toFixed(1)}x`, color: "text-[#FF5722]" },
           { label: "Economia Bruta", value: formatCurrency(eco), color: "text-green-600" },
           { label: "Economia Líquida", value: formatCurrency(liq), color: "text-green-600" },
-          { label: "Ownership Nexti", value: formatCurrency(ownership.ownershipTotal), color: "text-gray-700" },
           { label: "Payback", value: `${payback.toFixed(1)} meses`, color: "text-gray-700" },
-          { label: "% Comprovado", value: `${conf.comprovado.toFixed(0)}%`, color: "text-green-600" },
           { label: "Drivers Ativos", value: `${driversAtivos}`, color: "text-gray-700" },
           { label: "Módulos com Valor", value: `${new Set(monetarios.map(d => d.moduloNexti)).size}`, color: "text-gray-700" },
         ].map((kpi, i) => (
@@ -69,10 +99,45 @@ export default function ResumoExecutivoTab() {
         ))}
       </div>
 
+      {/* Confidence breakdown cards */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-white rounded-lg border-2 border-green-200 p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+            <p className="text-[10px] text-gray-500 font-medium uppercase">Valor Comprovado</p>
+          </div>
+          <p className="text-xl font-bold text-green-600">{formatCurrency(conf["comprovadoR$"])}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{conf.comprovado.toFixed(0)}% do total — dado real + custo real</p>
+        </div>
+        <div className="bg-white rounded-lg border-2 border-yellow-200 p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+            <p className="text-[10px] text-gray-500 font-medium uppercase">Valor Híbrido</p>
+          </div>
+          <p className="text-xl font-bold text-yellow-600">{formatCurrency(conf["hibridoR$"])}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{conf.hibrido.toFixed(0)}% do total — dado real + premissa ajustável</p>
+        </div>
+        <div className="bg-white rounded-lg border-2 border-gray-200 p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2.5 h-2.5 rounded-full bg-gray-400" />
+            <p className="text-[10px] text-gray-500 font-medium uppercase">Valor Referencial</p>
+          </div>
+          <p className="text-xl font-bold text-gray-600">{formatCurrency(conf["referencialR$"])}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{conf.referencial.toFixed(0)}% do total — benchmark / Base Case</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Waterfall – Top Drivers */}
+        {/* Waterfall – Top Drivers colored by confidence */}
         <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="text-sm font-semibold text-gray-800 mb-3">Composição da Economia por Driver</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-800">Composição da Economia por Driver</h3>
+            <div className="flex items-center gap-3 text-[10px] text-gray-500">
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500" /> Comprovado</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-500" /> Híbrido</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-gray-400" /> Referencial</span>
+            </div>
+          </div>
           <div className="h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={waterfallData} layout="vertical" margin={{ left: 10, right: 20 }}>
@@ -80,7 +145,9 @@ export default function ResumoExecutivoTab() {
                 <XAxis type="number" tickFormatter={(v) => `R$ ${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 10 }} />
                 <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 10 }} />
                 <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                <Bar dataKey="value" fill="#FF5722" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                  {waterfallData.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -88,7 +155,7 @@ export default function ResumoExecutivoTab() {
 
         {/* Confidence Donut */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="text-sm font-semibold text-gray-800 mb-3">Cobertura do ROI</h3>
+          <h3 className="text-sm font-semibold text-gray-800 mb-3">Composição de Confiança do ROI</h3>
           <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -100,6 +167,7 @@ export default function ResumoExecutivoTab() {
               </PieChart>
             </ResponsiveContainer>
           </div>
+          <p className="text-[10px] text-gray-400 text-center mt-2">Quanto maior o % comprovado, mais defensável o ROI</p>
         </div>
       </div>
 
@@ -152,20 +220,26 @@ export default function ResumoExecutivoTab() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Top Drivers */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="text-sm font-semibold text-gray-800 mb-3">Top Drivers por Ganho</h3>
+          <h3 className="text-sm font-semibold text-gray-800 mb-3">Top Drivers por Contribuição</h3>
           <div className="space-y-2 max-h-[280px] overflow-y-auto">
-            {[...monetarios].sort((a, b) => b.ganhoBruto - a.ganhoBruto).slice(0, 6).map((d, i) => (
-              <div key={d.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-gray-400 w-4">{i + 1}</span>
-                  <div>
-                    <p className="text-xs font-medium text-gray-700">{d.nome}</p>
-                    <p className="text-[10px] text-gray-400">{d.moduloNexti}</p>
+            {[...monetarios].sort((a, b) => b.ganhoBruto - a.ganhoBruto).slice(0, 6).map((d, i) => {
+              const badge = confidenceBadge(d.confianca);
+              return (
+                <div key={d.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-gray-400 w-4">{i + 1}</span>
+                    <div>
+                      <p className="text-xs font-medium text-gray-700">{d.nome}</p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
+                        <p className="text-[10px] text-gray-400">{badge.label}</p>
+                      </div>
+                    </div>
                   </div>
+                  <span className="text-xs font-bold text-green-600">{formatCurrency(d.ganhoBruto)}</span>
                 </div>
-                <span className="text-xs font-bold text-green-600">{formatCurrency(d.ganhoBruto)}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -179,7 +253,7 @@ export default function ResumoExecutivoTab() {
                   <span className="text-xs font-bold text-gray-400 w-4">{i + 1}</span>
                   <div>
                     <p className="text-xs font-medium text-gray-700">{op.nome}</p>
-                    <span className="text-[10px] text-gray-400">{op.tipo}</span>
+                    <span className="text-[10px] text-gray-400">{op.pctComprovado}% comprovado</span>
                   </div>
                 </div>
                 <span className="text-xs font-bold text-green-600">{formatCurrency(op.economiaLiquida)}</span>
@@ -190,7 +264,7 @@ export default function ResumoExecutivoTab() {
 
         {/* Insights */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="text-sm font-semibold text-gray-800 mb-3">💡 Insights Automáticos</h3>
+          <h3 className="text-sm font-semibold text-gray-800 mb-3">💡 Narrativa Executiva</h3>
           <div className="space-y-2">
             {insights.map((ins, i) => {
               const cfg = ins.severity === "critical"
