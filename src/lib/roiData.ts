@@ -305,8 +305,8 @@ export const operacoes: ROIOperacao[] = [
 
 export const mesesROI = ["Abr/25", "Mai/25", "Jun/25", "Jul/25", "Ago/25", "Set/25", "Out/25", "Nov/25", "Dez/25", "Jan/26", "Fev/26", "Mar/26"];
 
-/* Economia mensal com crescimento suave */
-const economiaMensal = [370000, 400000, 450000, 490000, 530000, 550000, 570000, 590000, 620000, 640000, 660000, 700000];
+/* Economia mensal com crescimento suave — total ~R$6,4M */
+const economiaMensal = [310000, 350000, 400000, 450000, 510000, 540000, 560000, 580000, 610000, 640000, 670000, 720000];
 /* % comprovado evoluindo gradualmente */
 const pctComprovadoMensal = [18, 20, 24, 27, 30, 34, 37, 40, 45, 48, 50, 52];
 const ownershipMensal = 130000;
