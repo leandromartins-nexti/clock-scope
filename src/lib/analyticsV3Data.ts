@@ -367,7 +367,7 @@ export const driversV3: V3Driver[] = [
     janelaComparacao: "Estimativa anual",
     observacoes: "Cliente não utiliza módulo de Benefícios. Valor referencial apenas.",
     evolucaoMensal: mesesPeriodo.map((mes) => ({
-      mes, baseline: 0, atual: 0, delta: 0, valor: 8000
+      mes, baseline: 0, atual: 0, delta: 0, valor: Math.round(96000 / 12)
     })),
     porOperacao: gerarOperacoes("Benefícios"),
     upgradePaths: [
