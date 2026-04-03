@@ -1,10 +1,8 @@
-import { TrendingUp, ShieldAlert, Lightbulb, Info, Trophy, Target, AlertTriangle, CheckCircle2, TrendingDown, Zap, ArrowUpRight } from "lucide-react";
-import { getV3KPIs, formatCurrencyV3, generateV3Insights, driversV3, getNivelConfianca, getScoreOperacional, getScoreFaixa, absenteismoV3, getEvolucaoEmpilhada, getMediaPeriodo, driverColors, getDriverName } from "@/lib/analyticsV3Data";
+import { TrendingUp, ShieldAlert, Lightbulb, Info, Trophy, Target, AlertTriangle, CheckCircle2, Zap, ArrowUpRight } from "lucide-react";
+import { getV3KPIs, formatCurrencyV3, generateV3Insights, getNivelConfianca, getScoreOperacional, getScoreFaixa, absenteismoV3, getEvolucaoConsolidada, getEvolucaoOperacional } from "@/lib/analyticsV3Data";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import SpeedometerGauge from "./SpeedometerGauge";
-
-const driverKeys = ["he", "an", "desc", "rhd", "fech", "disp", "quad", "hpnf", "benef"];
 
 export default function V3ResumoExecutivoTab() {
   const kpis = getV3KPIs();
@@ -12,11 +10,17 @@ export default function V3ResumoExecutivoTab() {
   const nivelConfianca = getNivelConfianca();
   const scoreOp = getScoreOperacional();
   const scoreFaixa = getScoreFaixa(scoreOp);
-  const topDriver = driversV3.filter(d => d.categoria === "monetario" && d.ativo).sort((a, b) => b.valorMonetizado - a.valorMonetizado)[0];
-  const evolucaoEmpilhada = getEvolucaoEmpilhada();
-  const mediaPeriodo = getMediaPeriodo();
+  const topDriver = [...([] as any[])].length; // avoid unused
+  const evolucao = getEvolucaoConsolidada();
+  const evolucaoOp = getEvolucaoOperacional();
+  const mediaEconomia = Math.round(evolucao.reduce((s, e) => s + e.economiaGerada, 0) / evolucao.length);
 
-  const insightIcons = [Zap, ArrowUpRight, AlertTriangle, TrendingUp, CheckCircle2, AlertTriangle, TrendingUp];
+  const topDriverData = (() => {
+    const { driversV3 } = require("@/lib/analyticsV3Data");
+    return driversV3.filter((d: any) => d.categoria === "monetario" && d.ativo).sort((a: any, b: any) => b.valorMonetizado - a.valorMonetizado)[0];
+  })();
+
+  const insightIcons = [Zap, ArrowUpRight, AlertTriangle, CheckCircle2, Target, AlertTriangle, TrendingUp];
   const insightStyles = [
     "border-l-4 border-l-primary bg-primary/5",
     "border-l-4 border-l-green-500 bg-green-50",
@@ -31,7 +35,7 @@ export default function V3ResumoExecutivoTab() {
   return (
     <TooltipProvider>
       <div className="space-y-5">
-        {/* Hero: Economia + Score lado a lado */}
+        {/* Hero: Economia + Score */}
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border">
             <div className="p-8">
@@ -55,7 +59,7 @@ export default function V3ResumoExecutivoTab() {
                     <Info className="w-3.5 h-3.5 text-muted-foreground/50 cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs text-xs">
-                    Leitura consolidada da eficiência, estabilidade e risco operacional da operação no período analisado.
+                    Composição: qualidade do ponto, absenteísmo, coberturas, postos descobertos, reserva técnica e dependência de HE.
                   </TooltipContent>
                 </Tooltip>
               </p>
@@ -74,7 +78,7 @@ export default function V3ResumoExecutivoTab() {
                 Nível de Confiança
                 <Tooltip>
                   <TooltipTrigger asChild><Info className="w-3 h-3 text-muted-foreground/50 cursor-help" /></TooltipTrigger>
-                  <TooltipContent className="max-w-xs text-xs">Indicador que representa a confiabilidade da economia gerada, considerando a composição entre drivers comprovados, híbridos e referenciais e os pesos definidos na configuração.</TooltipContent>
+                  <TooltipContent className="max-w-xs text-xs">Confiabilidade da economia: soma(valor × peso_confiança) / soma(valor)</TooltipContent>
                 </Tooltip>
               </p>
               <Target className="w-4 h-4 text-primary" />
@@ -89,8 +93,8 @@ export default function V3ResumoExecutivoTab() {
               <p className="text-xs text-muted-foreground">Principal Alavanca</p>
               <Trophy className="w-4 h-4 text-amber-500" />
             </div>
-            <p className="text-sm font-bold text-foreground leading-tight">{topDriver.nome}</p>
-            <p className="text-xs text-muted-foreground mt-1">{formatCurrencyV3(topDriver.valorMonetizado)} · {topDriver.participacao}%</p>
+            <p className="text-sm font-bold text-foreground leading-tight">{topDriverData?.nome}</p>
+            <p className="text-xs text-muted-foreground mt-1">{formatCurrencyV3(topDriverData?.valorMonetizado ?? 0)} · {topDriverData?.participacao}%</p>
           </div>
           <div className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-center justify-between mb-1">
@@ -110,84 +114,97 @@ export default function V3ResumoExecutivoTab() {
           </div>
         </div>
 
-        {/* Evolução empilhada + Insights */}
+        {/* Two charts + Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-          {/* Gráfico empilhado - 3 colunas */}
-          <div className="lg:col-span-3 bg-card rounded-xl border border-border p-5">
-            <div className="mb-4">
-              <h3 className="font-semibold text-foreground text-sm">Evolução da Economia por Competência</h3>
-              <p className="text-xs text-muted-foreground">Composição por driver em cada competência do período</p>
+          {/* Charts column - 3/5 */}
+          <div className="lg:col-span-3 space-y-5">
+            {/* Chart 1: Evolução Operacional */}
+            <div className="bg-card rounded-xl border border-border p-5">
+              <div className="mb-4">
+                <h3 className="font-semibold text-foreground text-sm">Evolução Operacional dos Principais Vetores</h3>
+                <p className="text-xs text-muted-foreground">Disciplina, absenteísmo e movimentações por competência</p>
+              </div>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 mb-3">
+                <div className="flex items-center gap-1.5"><div className="w-2.5 h-0.5 bg-green-500 rounded" /><span className="text-[10px] text-muted-foreground">Qualidade do Ponto (%)</span></div>
+                <div className="flex items-center gap-1.5"><div className="w-2.5 h-0.5 bg-red-500 rounded" /><span className="text-[10px] text-muted-foreground">Absenteísmo (%)</span></div>
+                <div className="flex items-center gap-1.5"><div className="w-2.5 h-0.5 bg-amber-500 rounded" /><span className="text-[10px] text-muted-foreground">Pressão Operacional</span></div>
+              </div>
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={evolucaoOp}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis dataKey="mes" fontSize={10} tick={{ fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+                  <YAxis yAxisId="pct" domain={[0, 100]} fontSize={10} tick={{ fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                  <YAxis yAxisId="abs" orientation="right" hide />
+                  <RechartsTooltip
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload?.length) return null;
+                      return (
+                        <div className="bg-card border border-border rounded-lg shadow-xl p-3 text-xs">
+                          <p className="font-bold text-foreground mb-1.5">{label}</p>
+                          {payload.map((p, i) => (
+                            <div key={i} className="flex justify-between gap-4 py-0.5">
+                              <span className="text-muted-foreground">{p.name}</span>
+                              <span className="font-medium text-foreground">{typeof p.value === 'number' ? (p.name?.toString().includes('Moviment') ? p.value.toLocaleString() : `${p.value}%`) : p.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }}
+                  />
+                  <Line yAxisId="pct" type="monotone" dataKey="qualidadePonto" stroke="#22c55e" strokeWidth={2} dot={{ r: 2 }} name="Qualidade do Ponto" />
+                  <Line yAxisId="pct" type="monotone" dataKey="absenteismo" stroke="#ef4444" strokeWidth={2} dot={{ r: 2 }} name="Absenteísmo" />
+                  <Line yAxisId="pct" type="monotone" dataKey="pressaoOperacional" stroke="#f59e0b" strokeWidth={2} dot={{ r: 2 }} name="Pressão Operacional" strokeDasharray="4 2" />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
-            {/* Legend */}
-            <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-4">
-              {driverKeys.map(id => (
-                <div key={id} className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: driverColors[id] }} />
-                  <span className="text-[10px] text-muted-foreground">{getDriverName(id)}</span>
-                </div>
-              ))}
-            </div>
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={evolucaoEmpilhada} barCategoryGap="15%">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis dataKey="mes" fontSize={11} tick={{ fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
-                <YAxis hide />
-                <RechartsTooltip
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload?.length) return null;
-                    const items = payload.filter(p => p.dataKey !== "total" && (p.value as number) > 0).reverse();
-                    const total = items.reduce((s, p) => s + ((p.value as number) ?? 0), 0);
-                    return (
-                      <div className="bg-card border border-border rounded-xl shadow-xl p-3.5 text-xs min-w-[200px]">
-                        <p className="font-bold text-foreground mb-2">{label}</p>
-                        <div className="space-y-1.5">
-                          {items.map((item, idx) => {
-                            const val = (item.value as number) ?? 0;
-                            const pct = total > 0 ? ((val / total) * 100).toFixed(1) : "0";
-                            const driver = driversV3.find(d => d.id === item.dataKey);
-                            return (
-                              <div key={idx} className="flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-1.5">
-                                  <div className="w-2 h-2 rounded-sm" style={{ backgroundColor: item.color as string }} />
-                                  <span className="text-muted-foreground">{getDriverName(item.dataKey as string)}</span>
-                                </div>
-                                <div className="text-right">
-                                  <span className="font-semibold text-foreground">{formatCurrencyV3(val)}</span>
-                                  <span className="text-muted-foreground ml-1">({pct}%)</span>
-                                </div>
-                              </div>
-                            );
-                          })}
-                          <div className="flex justify-between border-t border-border pt-1.5 mt-1 font-bold">
-                            <span className="text-foreground">Total</span>
-                            <span className="text-foreground">{formatCurrencyV3(total)}</span>
+
+            {/* Chart 2: Economia por competência */}
+            <div className="bg-card rounded-xl border border-border p-5">
+              <div className="mb-4">
+                <h3 className="font-semibold text-foreground text-sm">Economia Gerada por Competência</h3>
+                <p className="text-xs text-muted-foreground">Valor capturado mês a mês ao longo do período</p>
+              </div>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={evolucao} barCategoryGap="15%">
+                  <defs>
+                    <linearGradient id="barGradResumo" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis dataKey="mes" fontSize={10} tick={{ fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+                  <YAxis fontSize={10} tick={{ fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} tickFormatter={v => formatCurrencyV3(v)} />
+                  <RechartsTooltip
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload?.length) return null;
+                      const dataPoint = evolucao.find(e => e.mes === label);
+                      return (
+                        <div className="bg-card border border-border rounded-lg shadow-xl p-3 text-xs">
+                          <p className="font-bold text-foreground mb-1.5">{label}</p>
+                          <div className="space-y-1">
+                            <div className="flex justify-between gap-4"><span className="text-muted-foreground">Economia</span><span className="font-semibold text-foreground">{formatCurrencyV3(dataPoint?.economiaGerada ?? 0)}</span></div>
+                            <div className="flex justify-between gap-4"><span className="text-muted-foreground">Acumulado</span><span className="font-medium text-muted-foreground">{formatCurrencyV3(dataPoint?.acumulado ?? 0)}</span></div>
+                            <div className="flex justify-between gap-4"><span className="text-muted-foreground">% Comprovado</span><span className="font-medium text-green-600">{dataPoint?.pctComprovado ?? 0}%</span></div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  }}
-                />
-                <ReferenceLine
-                  y={mediaPeriodo}
-                  stroke="hsl(var(--muted-foreground))"
-                  strokeWidth={1.5}
-                  strokeDasharray="6 3"
-                  label={{ value: `Média: ${formatCurrencyV3(mediaPeriodo)}`, position: "right", fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
-                />
-                {driverKeys.map(id => (
-                  <Bar
-                    key={id}
-                    dataKey={id}
-                    stackId="economia"
-                    fill={driverColors[id]}
-                    radius={id === "benef" ? [3, 3, 0, 0] : [0, 0, 0, 0]}
+                      );
+                    }}
                   />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
+                  <ReferenceLine
+                    y={mediaEconomia}
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeWidth={1.5}
+                    strokeDasharray="6 3"
+                    label={{ value: `Média: ${formatCurrencyV3(mediaEconomia)}`, position: "right", fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                  />
+                  <Bar dataKey="economiaGerada" fill="url(#barGradResumo)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
-          {/* Insights - 2 colunas */}
+          {/* Insights - 2/5 */}
           <div className="lg:col-span-2 bg-card rounded-xl border border-border p-5 flex flex-col">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-primary/10">
