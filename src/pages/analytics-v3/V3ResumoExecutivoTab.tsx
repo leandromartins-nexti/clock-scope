@@ -10,15 +10,9 @@ export default function V3ResumoExecutivoTab() {
   const nivelConfianca = getNivelConfianca();
   const scoreOp = getScoreOperacional();
   const scoreFaixa = getScoreFaixa(scoreOp);
-  const topDriver = [...([] as any[])].length; // avoid unused
   const evolucao = getEvolucaoConsolidada();
   const evolucaoOp = getEvolucaoOperacional();
   const mediaEconomia = Math.round(evolucao.reduce((s, e) => s + e.economiaGerada, 0) / evolucao.length);
-
-  const topDriverData = (() => {
-    const { driversV3 } = require("@/lib/analyticsV3Data");
-    return driversV3.filter((d: any) => d.categoria === "monetario" && d.ativo).sort((a: any, b: any) => b.valorMonetizado - a.valorMonetizado)[0];
-  })();
 
   const insightIcons = [Zap, ArrowUpRight, AlertTriangle, CheckCircle2, Target, AlertTriangle, TrendingUp];
   const insightStyles = [
