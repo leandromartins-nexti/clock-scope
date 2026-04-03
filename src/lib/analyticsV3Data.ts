@@ -266,9 +266,7 @@ export const driversV3: V3Driver[] = [
     fonteAtual: "Data de fechamento atual no NextTime",
     janelaComparacao: "Média móvel de 3 competências",
     observacoes: "Dias reais, custo médio administrativo configurado. Híbrido.",
-    evolucaoMensal: mesesPeriodo.map((mes, i) => ({
-      mes, baseline: 12, atual: Math.max(4, 8 - Math.floor(i / 3)), delta: -(4 + Math.floor(i / 3)), valor: (4 + Math.floor(i / 3)) * 3500
-    })),
+    evolucaoMensal: gerarEvolucaoDriverComTotal(12, "melhora", 0.58, 504000),
     porOperacao: gerarOperacoes("Fechamento"),
     upgradePaths: [
       { de: "hibrido", para: "comprovado", acao: "Importar custo real da equipe de fechamento", impacto: "Melhora confiança" }
