@@ -144,7 +144,7 @@ function gerarOperacoes(driverNome: string): V3Driver["porOperacao"] {
 export const driversV3: V3Driver[] = [
   {
     id: "he",
-    nome: "Redução de Horas Extras",
+    nome: "Horas Extras",
     modulo: "NextTime",
     categoria: "monetario",
     competenciaAnterior: 42500,
@@ -174,7 +174,7 @@ export const driversV3: V3Driver[] = [
   },
   {
     id: "an",
-    nome: "Redução de Adicional Noturno",
+    nome: "Adicional Noturno",
     modulo: "NextTime",
     categoria: "monetario",
     competenciaAnterior: 18200,
@@ -198,7 +198,7 @@ export const driversV3: V3Driver[] = [
   },
   {
     id: "desc",
-    nome: "Recuperação de Descontos de Atrasos e Faltas",
+    nome: "Atrasos e Faltas",
     modulo: "NextTime",
     categoria: "monetario",
     competenciaAnterior: 12400,
@@ -222,7 +222,7 @@ export const driversV3: V3Driver[] = [
   },
   {
     id: "rhd",
-    nome: "Redução de Custo Operacional com RH Digital",
+    nome: "Digitalização Operacional",
     modulo: "RH Digital",
     categoria: "monetario",
     competenciaAnterior: 0,
@@ -248,7 +248,7 @@ export const driversV3: V3Driver[] = [
   },
   {
     id: "fech",
-    nome: "Redução do Tempo para Fechamento",
+    nome: "Tempo de Fechamento do Ponto",
     modulo: "NextTime",
     categoria: "monetario",
     competenciaAnterior: 12,
@@ -274,7 +274,7 @@ export const driversV3: V3Driver[] = [
   },
   {
     id: "disp",
-    nome: "Redução de Disputas Trabalhistas",
+    nome: "Passivo Trabalhista",
     modulo: "NextCompliance",
     categoria: "monetario",
     competenciaAnterior: 28,
@@ -300,7 +300,7 @@ export const driversV3: V3Driver[] = [
   },
   {
     id: "quad",
-    nome: "Otimização de Quadro de Lotação",
+    nome: "Dimensionamento Operacional",
     modulo: "NextOperacional",
     categoria: "monetario",
     competenciaAnterior: 340,
@@ -324,7 +324,7 @@ export const driversV3: V3Driver[] = [
   },
   {
     id: "hpnf",
-    nome: "Horas Produtivas Não Faturadas",
+    nome: "Horas Não Faturadas",
     modulo: "NextOperacional",
     categoria: "monetario",
     competenciaAnterior: 8600,
