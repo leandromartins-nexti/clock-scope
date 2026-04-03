@@ -1,5 +1,5 @@
 import { TrendingUp, ShieldAlert, Lightbulb, Info, Trophy, Target, AlertTriangle, CheckCircle2, Zap, ArrowUpRight } from "lucide-react";
-import { getV3KPIs, formatCurrencyV3, generateV3Insights, getNivelConfianca, getScoreOperacional, getScoreFaixa, absenteismoV3, getEvolucaoConsolidada, getEvolucaoOperacional } from "@/lib/analyticsV3Data";
+import { getV3KPIs, formatCurrencyV3, generateV3Insights, getNivelConfianca, getScoreOperacional, getScoreFaixa, absenteismoV3, getEvolucaoConsolidada, getEvolucaoOperacional, driversV3 } from "@/lib/analyticsV3Data";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import SpeedometerGauge from "./SpeedometerGauge";
