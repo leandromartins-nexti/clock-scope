@@ -14,22 +14,33 @@ export default function V3ResumoExecutivoTab() {
     <TooltipProvider>
       <div className="space-y-6">
         {/* Hero: Economia Gerada + Score Operacional */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
           {/* Economia Gerada - destaque máximo */}
-          <div className="md:col-span-2 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 text-white">
-            <p className="text-sm text-gray-300 mb-1">Economia Gerada</p>
-            <h1 className="text-5xl font-bold tracking-tight">{formatCurrencyV3(kpis.valorCapturado)}</h1>
-            <p className="text-sm text-gray-400 mt-2">abr/2025 – mar/2026 · Orsegups · 8.000 colaboradores</p>
-            <p className="text-xs text-gray-500 mt-1">Soma de todos os drivers monetizados ativos no período</p>
+          <div className="lg:col-span-3 relative overflow-hidden bg-gradient-to-br from-[#1a1f2e] via-[#1e2538] to-[#252d3f] rounded-2xl p-8 text-white shadow-lg">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-1.5 h-8 rounded-full bg-primary" />
+                <p className="text-sm font-medium text-gray-300 tracking-wide uppercase">Economia Gerada</p>
+              </div>
+              <h1 className="text-6xl font-extrabold tracking-tight leading-none">{formatCurrencyV3(kpis.valorCapturado)}</h1>
+              <div className="mt-4 flex items-center gap-3">
+                <span className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1 text-xs font-medium text-gray-300">abr/2025 – mar/2026</span>
+                <span className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1 text-xs font-medium text-gray-300">Orsegups</span>
+                <span className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1 text-xs font-medium text-gray-300">8.000 colaboradores</span>
+              </div>
+              <p className="text-xs text-gray-500 mt-3">Soma de todos os drivers monetizados ativos no período</p>
+            </div>
           </div>
 
           {/* Score Operacional - Velocímetro */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col items-center justify-center">
-            <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+          <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6 flex flex-col items-center justify-center shadow-sm">
+            <p className="text-sm font-medium text-muted-foreground mb-4 flex items-center gap-1.5 tracking-wide">
               Score Operacional
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="w-3.5 h-3.5 text-gray-400 cursor-help" />
+                  <Info className="w-3.5 h-3.5 text-muted-foreground/60 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs text-xs">
                   Indicador consolidado de saúde operacional (0-100) baseado em absenteísmo, eficiência de cobertura, postos descobertos, reserva técnica, dependência de HE e produtividade do time.
@@ -37,7 +48,8 @@ export default function V3ResumoExecutivoTab() {
               </Tooltip>
             </p>
             <SpeedometerGauge value={scoreOp} />
-            <p className="text-sm font-semibold mt-2" style={{ color: scoreFaixa.color }}>{scoreFaixa.label}</p>
+            <p className="text-base font-bold mt-3 tracking-wide" style={{ color: scoreFaixa.color }}>{scoreFaixa.label}</p>
+            <p className="text-xs text-muted-foreground mt-1">Saúde geral da operação</p>
           </div>
         </div>
 
@@ -150,14 +162,13 @@ export default function V3ResumoExecutivoTab() {
 // ====== Speedometer Gauge Component ======
 function SpeedometerGauge({ value }: { value: number }) {
   const clampedValue = Math.max(0, Math.min(100, value));
-  // Arc from -135deg to +135deg (270deg total)
   const startAngle = -135;
   const totalAngle = 270;
   const valueAngle = startAngle + (clampedValue / 100) * totalAngle;
 
-  const r = 54;
-  const cx = 64;
-  const cy = 64;
+  const r = 62;
+  const cx = 72;
+  const cy = 72;
 
   function polarToCartesian(angle: number) {
     const rad = (angle * Math.PI) / 180;
@@ -173,13 +184,13 @@ function SpeedometerGauge({ value }: { value: number }) {
   const color = clampedValue >= 90 ? "#16a34a" : clampedValue >= 75 ? "#22c55e" : clampedValue >= 60 ? "#eab308" : "#ef4444";
 
   return (
-    <svg width="128" height="90" viewBox="0 0 128 90">
+    <svg width="144" height="105" viewBox="0 0 144 105">
       {/* Background arc */}
       <path
         d={`M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArcBg} 1 ${bgEnd.x} ${bgEnd.y}`}
         fill="none"
-        stroke="#e5e7eb"
-        strokeWidth="10"
+        stroke="hsl(var(--muted))"
+        strokeWidth="12"
         strokeLinecap="round"
       />
       {/* Value arc */}
@@ -188,12 +199,12 @@ function SpeedometerGauge({ value }: { value: number }) {
           d={`M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArcVal} 1 ${valEnd.x} ${valEnd.y}`}
           fill="none"
           stroke={color}
-          strokeWidth="10"
+          strokeWidth="12"
           strokeLinecap="round"
         />
       )}
       {/* Value text */}
-      <text x={cx} y={cy + 4} textAnchor="middle" className="text-2xl font-bold" fill={color} fontSize="28" fontWeight="700">
+      <text x={cx} y={cy + 6} textAnchor="middle" fill={color} fontSize="34" fontWeight="800">
         {clampedValue}
       </text>
     </svg>
