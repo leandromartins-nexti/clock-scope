@@ -14,7 +14,7 @@ export default function V3ResumoExecutivoTab() {
     <TooltipProvider>
       <div className="space-y-6">
         {/* Hero: Economia + Score lado a lado */}
-        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden" data-section="hero">
           <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border">
             {/* Economia Gerada */}
             <div className="p-8">
