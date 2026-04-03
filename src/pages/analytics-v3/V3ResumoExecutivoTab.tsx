@@ -13,6 +13,7 @@ export default function V3ResumoExecutivoTab() {
   const evolucao = getEvolucaoConsolidada();
   const evolucaoOp = getEvolucaoOperacional();
   const mediaEconomia = Math.round(evolucao.reduce((s, e) => s + e.economiaGerada, 0) / evolucao.length);
+  const topDriverData = driversV3.filter(d => d.categoria === "monetario" && d.ativo).sort((a, b) => b.valorMonetizado - a.valorMonetizado)[0];
 
   const insightIcons = [Zap, ArrowUpRight, AlertTriangle, CheckCircle2, Target, AlertTriangle, TrendingUp];
   const insightStyles = [
