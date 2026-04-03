@@ -13,43 +13,41 @@ export default function V3ResumoExecutivoTab() {
   return (
     <TooltipProvider>
       <div className="space-y-6">
-        {/* Hero: Economia Gerada + Score Operacional */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-          {/* Economia Gerada - destaque máximo */}
-          <div className="lg:col-span-3 relative overflow-hidden bg-gradient-to-br from-[#1a1f2e] via-[#1e2538] to-[#252d3f] rounded-2xl p-8 text-white shadow-lg">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-1.5 h-8 rounded-full bg-primary" />
-                <p className="text-sm font-medium text-gray-300 tracking-wide uppercase">Economia Gerada</p>
+        {/* Hero: Economia + Score lado a lado */}
+        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border">
+            {/* Economia Gerada */}
+            <div className="p-8">
+              <div className="flex items-center gap-2 mb-5">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Economia Gerada</p>
               </div>
-              <h1 className="text-6xl font-extrabold tracking-tight leading-none">{formatCurrencyV3(kpis.valorCapturado)}</h1>
-              <div className="mt-4 flex items-center gap-3">
-                <span className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1 text-xs font-medium text-gray-300">abr/2025 – mar/2026</span>
-                <span className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1 text-xs font-medium text-gray-300">Orsegups</span>
-                <span className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1 text-xs font-medium text-gray-300">8.000 colaboradores</span>
+              <h1 className="text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight leading-none">{formatCurrencyV3(kpis.valorCapturado)}</h1>
+              <div className="mt-5 flex items-center gap-2 flex-wrap">
+                <span className="bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-1 text-xs font-medium">abr/2025 – mar/2026</span>
+                <span className="bg-muted text-muted-foreground rounded-full px-3 py-1 text-xs font-medium">Orsegups</span>
+                <span className="bg-muted text-muted-foreground rounded-full px-3 py-1 text-xs font-medium">8.000 colaboradores</span>
               </div>
-              <p className="text-xs text-gray-500 mt-3">Soma de todos os drivers monetizados ativos no período</p>
+              <p className="text-xs text-muted-foreground/60 mt-3">Soma de todos os drivers monetizados ativos no período</p>
             </div>
-          </div>
 
-          {/* Score Operacional - Velocímetro */}
-          <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-6 flex flex-col items-center justify-center shadow-sm">
-            <p className="text-sm font-medium text-muted-foreground mb-4 flex items-center gap-1.5 tracking-wide">
-              Score Operacional
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-3.5 h-3.5 text-muted-foreground/60 cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs text-xs">
-                  Indicador consolidado de saúde operacional (0-100) baseado em absenteísmo, eficiência de cobertura, postos descobertos, reserva técnica, dependência de HE e produtividade do time.
-                </TooltipContent>
-              </Tooltip>
-            </p>
-            <SpeedometerGauge value={scoreOp} />
-            <p className="text-base font-bold mt-3 tracking-wide" style={{ color: scoreFaixa.color }}>{scoreFaixa.label}</p>
-            <p className="text-xs text-muted-foreground mt-1">Saúde geral da operação</p>
+            {/* Score Operacional */}
+            <div className="p-8 flex flex-col items-center justify-center">
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-5 flex items-center gap-1.5">
+                Score Operacional
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="w-3.5 h-3.5 text-muted-foreground/50 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs text-xs">
+                    Indicador consolidado de saúde operacional (0-100) baseado em absenteísmo, eficiência de cobertura, postos descobertos, reserva técnica, dependência de HE e produtividade do time.
+                  </TooltipContent>
+                </Tooltip>
+              </p>
+              <SpeedometerGauge value={scoreOp} />
+              <p className="text-base font-bold mt-4" style={{ color: scoreFaixa.color }}>{scoreFaixa.label}</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Saúde geral da operação</p>
+            </div>
           </div>
         </div>
 
@@ -162,51 +160,49 @@ export default function V3ResumoExecutivoTab() {
 // ====== Speedometer Gauge Component ======
 function SpeedometerGauge({ value }: { value: number }) {
   const clampedValue = Math.max(0, Math.min(100, value));
-  const startAngle = -135;
-  const totalAngle = 270;
-  const valueAngle = startAngle + (clampedValue / 100) * totalAngle;
+  const size = 160;
+  const strokeWidth = 14;
+  const r = (size - strokeWidth) / 2;
+  const cx = size / 2;
+  const cy = size / 2;
+  const circumference = 2 * Math.PI * r;
+  const arcRatio = 0.75; // 270deg arc
+  const arcLength = circumference * arcRatio;
+  const valueLength = arcLength * (clampedValue / 100);
+  const gapLength = arcLength - valueLength;
+  const rotation = 135; // start at bottom-left
 
-  const r = 62;
-  const cx = 72;
-  const cy = 72;
-
-  function polarToCartesian(angle: number) {
-    const rad = (angle * Math.PI) / 180;
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-  }
-
-  const bgStart = polarToCartesian(startAngle);
-  const bgEnd = polarToCartesian(startAngle + totalAngle);
-  const valEnd = polarToCartesian(valueAngle);
-  const largeArcBg = totalAngle > 180 ? 1 : 0;
-  const largeArcVal = (clampedValue / 100) * totalAngle > 180 ? 1 : 0;
-
-  const color = clampedValue >= 90 ? "#16a34a" : clampedValue >= 75 ? "#22c55e" : clampedValue >= 60 ? "#eab308" : "#ef4444";
+  const color = clampedValue >= 90 ? "hsl(142, 71%, 45%)" : clampedValue >= 75 ? "hsl(142, 71%, 45%)" : clampedValue >= 60 ? "hsl(var(--primary))" : "hsl(0, 84%, 60%)";
 
   return (
-    <svg width="144" height="105" viewBox="0 0 144 105">
-      {/* Background arc */}
-      <path
-        d={`M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArcBg} 1 ${bgEnd.x} ${bgEnd.y}`}
-        fill="none"
-        stroke="hsl(var(--muted))"
-        strokeWidth="12"
-        strokeLinecap="round"
-      />
-      {/* Value arc */}
-      {clampedValue > 0 && (
-        <path
-          d={`M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArcVal} 1 ${valEnd.x} ${valEnd.y}`}
+    <div className="relative" style={{ width: size, height: size * 0.7 }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute top-0 left-0" style={{ transform: `rotate(${rotation}deg)` }}>
+        {/* Background track */}
+        <circle
+          cx={cx} cy={cy} r={r}
           fill="none"
-          stroke={color}
-          strokeWidth="12"
+          stroke="hsl(var(--muted))"
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
+          strokeDasharray={`${arcLength} ${circumference - arcLength}`}
         />
-      )}
-      {/* Value text */}
-      <text x={cx} y={cy + 6} textAnchor="middle" fill={color} fontSize="34" fontWeight="800">
-        {clampedValue}
-      </text>
-    </svg>
+        {/* Value arc */}
+        {clampedValue > 0 && (
+          <circle
+            cx={cx} cy={cy} r={r}
+            fill="none"
+            stroke={color}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeDasharray={`${valueLength} ${circumference - valueLength}`}
+            className="transition-all duration-700 ease-out"
+          />
+        )}
+      </svg>
+      {/* Center value */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ paddingTop: 8 }}>
+        <span className="text-4xl font-extrabold" style={{ color }}>{clampedValue}</span>
+      </div>
+    </div>
   );
 }
