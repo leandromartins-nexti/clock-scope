@@ -7,6 +7,7 @@ const sections = [
   { id: "empresa", label: "Empresa" },
   { id: "baseline", label: "Baseline" },
   { id: "drivers", label: "Drivers" },
+  { id: "pesos", label: "Pesos de Confiança" },
   { id: "rhdigital", label: "RH Digital" },
   { id: "beneficios", label: "Benefícios" },
   { id: "custos", label: "Custos Médios" },
