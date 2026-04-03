@@ -142,7 +142,7 @@ export default function V3DriversValorTab() {
       </div>
 
       {/* Main 2-column layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Stacked bar chart */}
         <div className="bg-card rounded-xl border border-border p-5">
           <h3 className="font-semibold text-foreground mb-1 text-sm">Composição da Economia por Competência</h3>
