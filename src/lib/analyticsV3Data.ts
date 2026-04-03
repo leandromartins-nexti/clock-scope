@@ -216,7 +216,7 @@ export const driversV3: V3Driver[] = [
     fonteAtual: "Dados reais do NextTime",
     janelaComparacao: "Competência vs competência anterior",
     observacoes: "Captura correta de desconto. Redução de perda por evento não tratado.",
-    evolucaoMensal: gerarEvolucaoDriver(12400, "melhora", 0.52),
+    evolucaoMensal: gerarEvolucaoDriverComTotal(12400, "melhora", 0.52, 780000),
     porOperacao: gerarOperacoes("Descontos"),
     upgradePaths: [],
   },
