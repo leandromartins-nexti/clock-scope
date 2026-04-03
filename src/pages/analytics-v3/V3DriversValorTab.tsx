@@ -10,15 +10,15 @@ import {
 import { TrendingUp, TrendingDown, Minus, X, Zap, AlertTriangle, Trophy } from "lucide-react";
 
 const DRIVER_COLORS: Record<string, string> = {
-  he: "#FF5722",
-  an: "#2196F3",
-  desc: "#4CAF50",
-  rhd: "#9C27B0",
-  fech: "#FF9800",
-  disp: "#E91E63",
-  quad: "#00BCD4",
-  hpnf: "#607D8B",
-  benef: "#795548",
+  he: "#E8825A",
+  an: "#6B9BD2",
+  desc: "#7BBF8A",
+  rhd: "#B07CC6",
+  fech: "#E4AD6A",
+  disp: "#D4708F",
+  quad: "#6BC5C5",
+  hpnf: "#8D9EAB",
+  benef: "#A39080",
 };
 
 export default function V3DriversValorTab() {

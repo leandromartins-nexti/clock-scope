@@ -112,12 +112,21 @@ export function confiancaBadgeV3(tipo: ConfiancaTipo): { label: string; color: s
 }
 
 // ====== DRIVERS ======
-function gerarEvolucaoDriver(baselineInicial: number, tendencia: "melhora" | "piora" | "estavel", variacao: number): V3Driver["evolucaoMensal"] {
+function gerarEvolucaoDriverComTotal(baselineInicial: number, tendencia: "melhora" | "piora" | "estavel", variacao: number, totalDesejado: number): V3Driver["evolucaoMensal"] {
+  // Generate raw weights with growth curve
+  const rawWeights = mesesPeriodo.map((_, i) => {
+    if (tendencia === "melhora") return 0.4 + (i * 0.6 / 11);
+    if (tendencia === "piora") return 1.0 - (i * 0.5 / 11);
+    return 1.0;
+  });
+  const sumWeights = rawWeights.reduce((s, w) => s + w, 0);
+  
   return mesesPeriodo.map((mes, i) => {
     const fator = tendencia === "melhora" ? 1 - (i * variacao / 12) : tendencia === "piora" ? 1 + (i * variacao / 12) : 1;
     const atual = Math.round(baselineInicial * fator);
     const baseline = baselineInicial;
-    return { mes, baseline, atual, delta: atual - baseline, valor: Math.abs(atual - baseline) * 45 };
+    const valor = Math.round((rawWeights[i] / sumWeights) * totalDesejado);
+    return { mes, baseline, atual, delta: atual - baseline, valor };
   });
 }
 
