@@ -176,6 +176,51 @@ function ConfigSection({ title, children }: { title: string; children: React.Rea
   );
 }
 
+function PesosConfiancaConfig() {
+  const monetarios = driversV3.filter(d => d.categoria === "monetario" && d.ativo);
+  return (
+    <ConfigSection title="Pesos de Confiança dos Drivers">
+      <p className="text-sm text-gray-500 mb-6">
+        Configure os pesos padrão por tipo de confiança e sobrescreva por driver quando necessário. O peso define quanto cada driver contribui para o Nível de Confiança exibido no Resumo Executivo.
+      </p>
+
+      <div className="mb-8">
+        <h3 className="text-sm font-semibold text-gray-800 mb-3">Pesos Padrão</h3>
+        <div className="grid grid-cols-3 gap-4">
+          <Field label="Comprovado" value={String(pesosConfiancaV3.comprovado)} />
+          <Field label="Híbrido" value={String(pesosConfiancaV3.hibrido)} />
+          <Field label="Referencial" value={String(pesosConfiancaV3.referencial)} />
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-gray-800 mb-3">Sobrescrita por Driver</h3>
+        <p className="text-xs text-gray-400 mb-3">Se preenchido, o peso específico prevalece sobre o peso padrão do tipo.</p>
+        <div className="space-y-3">
+          {monetarios.map(d => {
+            const sobrescrita = pesosConfiancaV3.sobrescritaPorDriver?.[d.id];
+            return (
+              <div key={d.id} className="border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-gray-800">{d.nome}</p>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${d.confianca === "comprovado" ? "bg-green-50 text-green-700" : d.confianca === "hibrido" ? "bg-yellow-50 text-yellow-700" : "bg-purple-50 text-purple-700"}`}>
+                    {d.confianca}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <Field label="Peso Comprovado" value={sobrescrita?.comprovado !== undefined ? String(sobrescrita.comprovado) : "—"} small />
+                  <Field label="Peso Híbrido" value={sobrescrita?.hibrido !== undefined ? String(sobrescrita.hibrido) : "—"} small />
+                  <Field label="Peso Referencial" value={sobrescrita?.referencial !== undefined ? String(sobrescrita.referencial) : "—"} small />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </ConfigSection>
+  );
+}
+
 function Field({ label, value, prefix, suffix, small }: { label: string; value: string; prefix?: string; suffix?: string; small?: boolean }) {
   return (
     <div>

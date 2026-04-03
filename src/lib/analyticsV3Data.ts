@@ -593,6 +593,62 @@ export function getPotencialAdicional(): number {
   return oportunidadesV3.reduce((s, o) => s + o.impactoEstimado, 0);
 }
 
+// ====== PESOS DE CONFIANÇA ======
+export interface PesosConfianca {
+  comprovado: number;
+  hibrido: number;
+  referencial: number;
+  sobrescritaPorDriver?: Record<string, Partial<Record<ConfiancaTipo, number>>>;
+}
+
+export const pesosConfiancaV3: PesosConfianca = {
+  comprovado: 1.0,
+  hibrido: 0.70,
+  referencial: 0.35,
+  sobrescritaPorDriver: {
+    he: { hibrido: 0.85 },
+    disp: { hibrido: 0.60 },
+    benef: { referencial: 0.25 },
+  },
+};
+
+export function getPesoDriver(driverId: string, confianca: ConfiancaTipo): number {
+  const sobrescrita = pesosConfiancaV3.sobrescritaPorDriver?.[driverId]?.[confianca];
+  if (sobrescrita !== undefined) return sobrescrita;
+  return pesosConfiancaV3[confianca];
+}
+
+// ====== NÍVEL DE CONFIANÇA ======
+export function getNivelConfianca(): number {
+  const monetarios = driversV3.filter(d => d.categoria === "monetario" && d.ativo);
+  const somaValorPonderado = monetarios.reduce((s, d) => s + d.valorMonetizado * getPesoDriver(d.id, d.confianca), 0);
+  const somaValor = monetarios.reduce((s, d) => s + d.valorMonetizado, 0);
+  if (somaValor === 0) return 0;
+  return Math.round((somaValorPonderado / somaValor) * 100);
+}
+
+// ====== SCORE OPERACIONAL ======
+export function getScoreOperacional(): number {
+  // Composição: absenteísmo (25%), cobertura (25%), postos descobertos (20%), reserva técnica (10%), dependência HE (10%), performance (10%)
+  const absScore = Math.max(0, 100 - (absenteismoV3.taxaGlobal - 3) * 15); // 3% ideal
+  const cobScore = coberturaRiscoV3.scoreEficiencia;
+  const descScore = Math.max(0, 100 - (coberturaRiscoV3.horasPostoDescoberto / 100));
+  const rtScore = Math.min(100, coberturaRiscoV3.pctReservaTecnica * 3);
+  const heDepScore = Math.max(0, 100 - coberturaRiscoV3.pctHoraExtra * 3);
+  const perfScore = performanceTimeV3.scoreEficiencia;
+
+  return Math.round(
+    absScore * 0.25 + cobScore * 0.25 + descScore * 0.20 + rtScore * 0.10 + heDepScore * 0.10 + perfScore * 0.10
+  );
+}
+
+export function getScoreFaixa(score: number): { label: string; color: string } {
+  if (score >= 90) return { label: "Excelência Operacional", color: "#16a34a" };
+  if (score >= 75) return { label: "Saudável", color: "#22c55e" };
+  if (score >= 60) return { label: "Atenção", color: "#eab308" };
+  return { label: "Crítico", color: "#ef4444" };
+}
+
 // ====== CONFIG DE ROI ======
 export const configV3 = {
   empresa: {
