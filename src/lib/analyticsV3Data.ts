@@ -527,25 +527,35 @@ export const ownershipV3 = {
 
 // ====== EVOLUÇÃO MENSAL CONSOLIDADA ======
 export function getEvolucaoConsolidada() {
+  // Realistic monthly values with seasonal variation
+  const valoresMensais = [
+    380000, 420000, 465000, 510000, 485000, 540000,
+    620000, 580000, 650000, 710000, 690000, 780000
+  ];
+  let acumulado = 0;
+
   return mesesPeriodo.map((mes, i) => {
-    const fator = 0.7 + (i * 0.03);
-    const valorCapturado = Math.round(420000 + i * 48000);
-    const custoEvitado = Math.round(valorCapturado * 0.58);
+    const valorCapturado = valoresMensais[i];
+    acumulado += valorCapturado;
+    const custoEvitado = Math.round(valorCapturado * (0.55 + Math.sin(i * 0.5) * 0.08));
     const perdaEvitada = valorCapturado - custoEvitado;
     const comprovado = Math.round(valorCapturado * (0.45 + i * 0.025));
     const hibrido = Math.round(valorCapturado * (0.38 - i * 0.01));
     const referencial = valorCapturado - comprovado - hibrido;
     const pctComprovado = Math.round((comprovado / valorCapturado) * 100);
+    const meta = Math.round(420000 + i * 35000);
 
     return {
       mes,
       valorCapturado,
+      acumulado,
       custoEvitado,
       perdaEvitada,
       comprovado,
       hibrido,
       referencial,
       pctComprovado,
+      meta,
     };
   });
 }

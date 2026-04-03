@@ -1,7 +1,7 @@
 import { TrendingUp, ShieldAlert, Lightbulb, Info, Trophy, Target, AlertTriangle, CheckCircle2, TrendingDown } from "lucide-react";
 import { getV3KPIs, formatCurrencyV3, generateV3Insights, driversV3, getNivelConfianca, getScoreOperacional, getScoreFaixa, coberturaRiscoV3, absenteismoV3, getEvolucaoConsolidada } from "@/lib/analyticsV3Data";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
+import { ComposedChart, Bar, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
 
 export default function V3ResumoExecutivoTab() {
   const kpis = getV3KPIs();
@@ -109,11 +109,11 @@ export default function V3ResumoExecutivoTab() {
               </div>
             </div>
             <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={evolucao}>
+              <ComposedChart data={evolucao} barCategoryGap="20%">
                 <defs>
-                  <linearGradient id="economiaGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.02} />
+                  <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.85} />
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.45} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
@@ -122,24 +122,53 @@ export default function V3ResumoExecutivoTab() {
                 <RechartsTooltip
                   content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
+                    const valor = payload.find(p => p.dataKey === "valorCapturado")?.value as number;
+                    const meta = payload.find(p => p.dataKey === "meta")?.value as number;
+                    const acum = payload.find(p => p.dataKey === "acumulado")?.value as number;
+                    const diff = valor && meta ? ((valor - meta) / meta * 100).toFixed(1) : null;
                     return (
-                      <div className="bg-card border border-border rounded-lg shadow-lg p-3 text-xs">
-                        <p className="font-semibold text-foreground mb-1">{label}</p>
-                        <p className="text-muted-foreground">Economia: <span className="font-bold text-foreground">{formatCurrencyV3(payload[0].value as number)}</span></p>
+                      <div className="bg-card border border-border rounded-xl shadow-xl p-3.5 text-xs min-w-[180px]">
+                        <p className="font-bold text-foreground mb-2">{label}</p>
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Economia</span>
+                            <span className="font-bold text-foreground">{formatCurrencyV3(valor)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Meta</span>
+                            <span className="font-medium text-muted-foreground">{formatCurrencyV3(meta)}</span>
+                          </div>
+                          {diff && (
+                            <div className="flex justify-between border-t border-border pt-1.5 mt-1">
+                              <span className="text-muted-foreground">vs Meta</span>
+                              <span className={`font-bold ${Number(diff) >= 0 ? "text-green-600" : "text-red-500"}`}>{Number(diff) >= 0 ? "+" : ""}{diff}%</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Acumulado</span>
+                            <span className="font-medium text-foreground">{formatCurrencyV3(acum)}</span>
+                          </div>
+                        </div>
                       </div>
                     );
                   }}
                 />
-                <Area
-                  type="monotone"
+                <Bar
                   dataKey="valorCapturado"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={2.5}
-                  fill="url(#economiaGrad)"
-                  dot={false}
-                  activeDot={{ r: 5, fill: "hsl(var(--primary))", strokeWidth: 2, stroke: "hsl(var(--card))" }}
+                  fill="url(#barGrad)"
+                  radius={[4, 4, 0, 0]}
+                  name="Economia"
                 />
-              </AreaChart>
+                <Line
+                  type="monotone"
+                  dataKey="meta"
+                  stroke="hsl(var(--muted-foreground))"
+                  strokeWidth={1.5}
+                  strokeDasharray="6 3"
+                  dot={false}
+                  name="Meta"
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
 
