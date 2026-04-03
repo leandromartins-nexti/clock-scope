@@ -292,9 +292,7 @@ export const driversV3: V3Driver[] = [
     fonteAtual: "Eventos de compliance e processos informados",
     janelaComparacao: "Acumulado 12 meses",
     observacoes: "Eventos reais de compliance, custo médio por processo configurado. Híbrido.",
-    evolucaoMensal: mesesPeriodo.map((mes, i) => ({
-      mes, baseline: Math.round(28 - i * 0.3), atual: Math.round(16 - i * 0.5), delta: -12, valor: 12 * 80000
-    })),
+    evolucaoMensal: gerarEvolucaoDriverComTotal(28, "melhora", 0.43, 960000),
     porOperacao: gerarOperacoes("Disputas"),
     upgradePaths: [
       { de: "hibrido", para: "comprovado", acao: "Importar base real de processos trabalhistas", impacto: "+R$ 320K em valor comprovado" }
