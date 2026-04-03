@@ -16,20 +16,17 @@ export interface V3Driver {
   tipoValor: "custo_evitado" | "perda_evitada";
   confianca: ConfiancaTipo;
   tendencia: TendenciaTipo;
-  participacao: number; // % do valor capturado
+  participacao: number;
   unidade: string;
+  direcao: "lower_is_better" | "higher_is_better";
   ativo: boolean;
-  // Detalhes para modal
   formulaResumo: string;
   fonteBaseline: string;
   fonteAtual: string;
   janelaComparacao: string;
   observacoes: string;
-  // Série temporal
   evolucaoMensal: { mes: string; baseline: number; atual: number; delta: number; valor: number }[];
-  // Drill-down por operação
   porOperacao: { nome: string; tipo: string; valor: number; delta: number; colaboradores: number }[];
-  // Upgrade paths
   upgradePaths?: { de: ConfiancaTipo; para: ConfiancaTipo; acao: string; impacto: string }[];
 }
 
@@ -37,12 +34,13 @@ export interface V3Operacao {
   nome: string;
   tipo: "regional" | "unidade" | "contrato" | "area" | "posto";
   valorCapturado: number;
-  custoEvitado: number;
-  perdaEvitada: number;
-  pctComprovado: number;
+  economiaGerada: number;
+  nivelConfianca: number;
   scoreOperacao: number;
   tendencia: TendenciaTipo;
   colaboradores: number;
+  principalAlavanca: string;
+  principalRisco: string;
   driversPrincipais: string[];
 }
 
@@ -55,14 +53,14 @@ export interface AbsenteismoData {
   tendencia: TendenciaTipo;
   distribuicaoTipo: { tipo: string; horas: number; pct: number; color: string }[];
   porEstrutura: { nome: string; tipo: string; taxa: number; horas: number; horasPor100: number; tendencia: TendenciaTipo }[];
-  evolucaoMensal: { mes: string; taxa: number; horas: number; planejadas: number; naoPlanejadas: number }[];
+  evolucaoMensal: { mes: string; taxa: number; horas: number; atestados: number; faltasNaoJustificadas: number }[];
 }
 
 export interface CoberturaRiscoData {
   taxaCoberturaEfetiva: number;
   pctReservaTecnica: number;
   pctHoraExtra: number;
-  tempoMedioReposicao: number; // horas
+  tempoMedioReposicao: number;
   horasPostoDescoberto: number;
   riscoPotencialGlosa: number;
   custoTotalCobertura: number;
@@ -84,6 +82,26 @@ export interface PerformanceTimeData {
   evolucaoMensal: { mes: string; acoes: number; usuarios: number; media: number }[];
 }
 
+// ====== DISCIPLINA OPERACIONAL ======
+export interface DisciplinaOperacionalData {
+  qualidadePonto: {
+    percentualGlobal: number;
+    registradas: number;
+    justificadas: number;
+    tendencia: TendenciaTipo;
+    evolucaoMensal: { mes: string; qualidade: number; registradas: number; justificadas: number }[];
+    porEstrutura: { nome: string; qualidade: number; registradas: number; justificadas: number; tendencia: TendenciaTipo }[];
+  };
+  movimentacoes: {
+    totalTrocasEscala: number;
+    totalTrocasPosto: number;
+    totalMovimentacoes: number;
+    tendencia: TendenciaTipo;
+    evolucaoMensal: { mes: string; trocasEscala: number; trocasPosto: number; total: number }[];
+    porEstrutura: { nome: string; trocasEscala: number; trocasPosto: number; total: number; por100: number; tendencia: TendenciaTipo }[];
+  };
+}
+
 // ====== MESES DO PERÍODO ======
 export const mesesPeriodo = [
   "abr/25", "mai/25", "jun/25", "jul/25", "ago/25", "set/25",
@@ -92,12 +110,14 @@ export const mesesPeriodo = [
 
 // ====== FORMAT HELPERS ======
 export function formatCurrencyV3(value: number): string {
+  if (value == null || isNaN(value)) return "R$ 0";
   if (Math.abs(value) >= 1_000_000) return `R$ ${(value / 1_000_000).toFixed(1)}M`;
   if (Math.abs(value) >= 1_000) return `R$ ${(value / 1_000).toFixed(0)}K`;
   return `R$ ${value.toFixed(0)}`;
 }
 
 export function formatNumberV3(value: number): string {
+  if (value == null || isNaN(value)) return "0";
   if (Math.abs(value) >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
   if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
   return value.toFixed(0);
@@ -113,7 +133,6 @@ export function confiancaBadgeV3(tipo: ConfiancaTipo): { label: string; color: s
 
 // ====== DRIVERS ======
 function gerarEvolucaoDriverComTotal(baselineInicial: number, tendencia: "melhora" | "piora" | "estavel", variacao: number, totalDesejado: number): V3Driver["evolucaoMensal"] {
-  // Generate raw weights with growth curve
   const rawWeights = mesesPeriodo.map((_, i) => {
     if (tendencia === "melhora") return 0.4 + (i * 0.6 / 11);
     if (tendencia === "piora") return 1.0 - (i * 0.5 / 11);
@@ -130,9 +149,9 @@ function gerarEvolucaoDriverComTotal(baselineInicial: number, tendencia: "melhor
   });
 }
 
-function gerarOperacoes(driverNome: string): V3Driver["porOperacao"] {
+function gerarOperacoes(_driverNome: string): V3Driver["porOperacao"] {
   const ops = ["Regional SP", "Regional RJ", "Regional MG", "Regional PR", "Regional BA"];
-  return ops.map((nome, i) => ({
+  return ops.map((nome) => ({
     nome,
     tipo: "regional",
     valor: Math.round(80000 + Math.random() * 200000),
@@ -156,6 +175,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "up",
     participacao: 22.1,
     unidade: "horas",
+    direcao: "lower_is_better",
     ativo: true,
     formulaResumo: "ganho_real = valor_HE_competência_anterior - valor_HE_competência_atual",
     fonteBaseline: "Histórico real do cliente no NextTime (abr/24 - mar/25)",
@@ -186,6 +206,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "up",
     participacao: 13.9,
     unidade: "horas",
+    direcao: "lower_is_better",
     ativo: true,
     formulaResumo: "ganho_real = valor_AN_competência_anterior - valor_AN_competência_atual",
     fonteBaseline: "Histórico real do cliente no NextTime",
@@ -210,6 +231,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "up",
     participacao: 12.2,
     unidade: "eventos",
+    direcao: "lower_is_better",
     ativo: true,
     formulaResumo: "ganho_real = valor_desconto_atual - valor_desconto_anterior",
     fonteBaseline: "Histórico real do cliente",
@@ -234,6 +256,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "up",
     participacao: 9.8,
     unidade: "convocações",
+    direcao: "higher_is_better",
     ativo: true,
     formulaResumo: "ganho = convocações_concluídas × custo_presencial_equivalente",
     fonteBaseline: "Processo presencial equivalente (custo configurado)",
@@ -260,6 +283,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "up",
     participacao: 7.9,
     unidade: "dias",
+    direcao: "lower_is_better",
     ativo: true,
     formulaResumo: "ganho = dias_reduzidos × custo_administrativo_hora × horas_dia × equipe_fechamento",
     fonteBaseline: "Histórico de fechamento no NextTime",
@@ -286,6 +310,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "up",
     participacao: 15.0,
     unidade: "processos",
+    direcao: "lower_is_better",
     ativo: true,
     formulaResumo: "ganho = processos_evitados × custo_médio_processo",
     fonteBaseline: "Contagem de processos parcial + compliance",
@@ -312,6 +337,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "up",
     participacao: 11.2,
     unidade: "postos",
+    direcao: "lower_is_better",
     ativo: true,
     formulaResumo: "ganho = redução_movimentação × custo_real_estrutura",
     fonteBaseline: "Histórico de movimentação/lotação real",
@@ -336,6 +362,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "up",
     participacao: 6.4,
     unidade: "horas",
+    direcao: "lower_is_better",
     ativo: true,
     formulaResumo: "ganho = horas_recuperadas × custo_real_hora",
     fonteBaseline: "Histórico real do cliente",
@@ -360,6 +387,7 @@ export const driversV3: V3Driver[] = [
     tendencia: "stable",
     participacao: 1.5,
     unidade: "R$",
+    direcao: "lower_is_better",
     ativo: true,
     formulaResumo: "ganho = benchmark × colaboradores_elegíveis × percentual_economia_estimado",
     fonteBaseline: "Benchmark de mercado",
@@ -376,12 +404,13 @@ export const driversV3: V3Driver[] = [
   },
 ];
 
+// ====== DRIVERS DA ABA ALAVANCAS (apenas 5) ======
+export const driversAlavancas = ["he", "an", "desc", "quad", "hpnf"];
+
 // ====== KPIs DERIVADOS ======
 export function getV3KPIs() {
   const monetarios = driversV3.filter(d => d.categoria === "monetario" && d.ativo);
   const valorCapturado = monetarios.reduce((s, d) => s + d.valorMonetizado, 0);
-  const custoEvitado = monetarios.filter(d => d.tipoValor === "custo_evitado").reduce((s, d) => s + d.valorMonetizado, 0);
-  const perdaEvitada = monetarios.filter(d => d.tipoValor === "perda_evitada").reduce((s, d) => s + d.valorMonetizado, 0);
   const comprovado = monetarios.filter(d => d.confianca === "comprovado").reduce((s, d) => s + d.valorMonetizado, 0);
   const hibrido = monetarios.filter(d => d.confianca === "hibrido").reduce((s, d) => s + d.valorMonetizado, 0);
   const referencial = monetarios.filter(d => d.confianca === "referencial").reduce((s, d) => s + d.valorMonetizado, 0);
@@ -389,8 +418,7 @@ export function getV3KPIs() {
 
   return {
     valorCapturado,
-    custoEvitado,
-    perdaEvitada,
+    economiaGerada: valorCapturado,
     comprovado,
     hibrido,
     referencial,
@@ -403,11 +431,11 @@ export function getV3KPIs() {
 
 // ====== OPERAÇÕES ======
 export const operacoesV3: V3Operacao[] = [
-  { nome: "Regional SP", tipo: "regional", valorCapturado: 2150000, custoEvitado: 1350000, perdaEvitada: 800000, pctComprovado: 78, scoreOperacao: 88, tendencia: "up", colaboradores: 2800, driversPrincipais: ["Horas Extras", "Quadro de Lotação"] },
-  { nome: "Regional RJ", tipo: "regional", valorCapturado: 1620000, custoEvitado: 980000, perdaEvitada: 640000, pctComprovado: 72, scoreOperacao: 82, tendencia: "up", colaboradores: 1900, driversPrincipais: ["Horas Extras", "Disputas"] },
-  { nome: "Regional MG", tipo: "regional", valorCapturado: 1180000, custoEvitado: 720000, perdaEvitada: 460000, pctComprovado: 69, scoreOperacao: 75, tendencia: "stable", colaboradores: 1400, driversPrincipais: ["Adicional Noturno", "HPNF"] },
-  { nome: "Regional PR", tipo: "regional", valorCapturado: 890000, custoEvitado: 560000, perdaEvitada: 330000, pctComprovado: 74, scoreOperacao: 79, tendencia: "up", colaboradores: 1100, driversPrincipais: ["Horas Extras", "Fechamento"] },
-  { nome: "Regional BA", tipo: "regional", valorCapturado: 562000, custoEvitado: 310000, perdaEvitada: 252000, pctComprovado: 58, scoreOperacao: 64, tendencia: "down", colaboradores: 800, driversPrincipais: ["Descontos", "RH Digital"] },
+  { nome: "Regional SP", tipo: "regional", valorCapturado: 2150000, economiaGerada: 2150000, nivelConfianca: 78, scoreOperacao: 88, tendencia: "up", colaboradores: 2800, principalAlavanca: "Horas Extras", principalRisco: "Movimentações", driversPrincipais: ["Horas Extras", "Dimensionamento Operacional"] },
+  { nome: "Regional RJ", tipo: "regional", valorCapturado: 1620000, economiaGerada: 1620000, nivelConfianca: 72, scoreOperacao: 82, tendencia: "up", colaboradores: 1900, principalAlavanca: "Horas Extras", principalRisco: "Absenteísmo", driversPrincipais: ["Horas Extras", "Passivo Trabalhista"] },
+  { nome: "Regional MG", tipo: "regional", valorCapturado: 1180000, economiaGerada: 1180000, nivelConfianca: 69, scoreOperacao: 75, tendencia: "stable", colaboradores: 1400, principalAlavanca: "Adicional Noturno", principalRisco: "Coberturas", driversPrincipais: ["Adicional Noturno", "Horas Não Faturadas"] },
+  { nome: "Regional PR", tipo: "regional", valorCapturado: 890000, economiaGerada: 890000, nivelConfianca: 74, scoreOperacao: 79, tendencia: "up", colaboradores: 1100, principalAlavanca: "Horas Extras", principalRisco: "Movimentações", driversPrincipais: ["Horas Extras", "Tempo de Fechamento"] },
+  { nome: "Regional BA", tipo: "regional", valorCapturado: 562000, economiaGerada: 562000, nivelConfianca: 58, scoreOperacao: 64, tendencia: "down", colaboradores: 800, principalAlavanca: "Atrasos e Faltas", principalRisco: "Absenteísmo", driversPrincipais: ["Atrasos e Faltas", "Digitalização Operacional"] },
 ];
 
 // ====== ABSENTEÍSMO ======
@@ -434,11 +462,53 @@ export const absenteismoV3: AbsenteismoData = {
   ],
   evolucaoMensal: mesesPeriodo.map((mes, i) => ({
     mes,
-    taxa: 5.2 - i * 0.04,
-    horas: 7200 - i * 50,
-    planejadas: 4200 - i * 30,
-    naoPlanejadas: 3000 - i * 20,
+    taxa: parseFloat((5.4 - i * 0.06 + Math.sin(i * 0.8) * 0.3).toFixed(1)),
+    horas: Math.round(7800 - i * 80 + Math.sin(i) * 400),
+    atestados: Math.round(1900 - i * 20 + Math.cos(i * 0.7) * 150),
+    faltasNaoJustificadas: Math.round(1100 - i * 15 + Math.sin(i * 1.2) * 120),
   })),
+};
+
+// ====== DISCIPLINA OPERACIONAL ======
+export const disciplinaOperacionalV3: DisciplinaOperacionalData = {
+  qualidadePonto: {
+    percentualGlobal: 87.3,
+    registradas: 892000,
+    justificadas: 130200,
+    tendencia: "up",
+    evolucaoMensal: mesesPeriodo.map((mes, i) => ({
+      mes,
+      qualidade: parseFloat((83.5 + i * 0.4 + Math.sin(i * 0.6) * 0.8).toFixed(1)),
+      registradas: Math.round(72000 + i * 800 + Math.sin(i) * 1500),
+      justificadas: Math.round(12500 - i * 180 + Math.cos(i * 0.9) * 600),
+    })),
+    porEstrutura: [
+      { nome: "Regional SP", qualidade: 89.2, registradas: 268000, justificadas: 32400, tendencia: "up" },
+      { nome: "Regional RJ", qualidade: 86.8, registradas: 189000, justificadas: 28800, tendencia: "stable" },
+      { nome: "Regional MG", qualidade: 88.1, registradas: 152000, justificadas: 20600, tendencia: "up" },
+      { nome: "Regional PR", qualidade: 87.5, registradas: 138000, justificadas: 19400, tendencia: "up" },
+      { nome: "Regional BA", qualidade: 82.4, registradas: 145000, justificadas: 29000, tendencia: "down" },
+    ],
+  },
+  movimentacoes: {
+    totalTrocasEscala: 14800,
+    totalTrocasPosto: 8200,
+    totalMovimentacoes: 23000,
+    tendencia: "up",
+    evolucaoMensal: mesesPeriodo.map((mes, i) => ({
+      mes,
+      trocasEscala: Math.round(1450 - i * 30 + Math.sin(i * 0.9) * 120),
+      trocasPosto: Math.round(820 - i * 20 + Math.cos(i * 0.7) * 80),
+      total: Math.round(2270 - i * 50 + Math.sin(i * 0.9) * 120 + Math.cos(i * 0.7) * 80),
+    })),
+    porEstrutura: [
+      { nome: "Regional SP", trocasEscala: 4800, trocasPosto: 2600, total: 7400, por100: 264, tendencia: "up" },
+      { nome: "Regional RJ", trocasEscala: 3400, trocasPosto: 1900, total: 5300, por100: 279, tendencia: "stable" },
+      { nome: "Regional MG", trocasEscala: 2600, trocasPosto: 1400, total: 4000, por100: 286, tendencia: "up" },
+      { nome: "Regional PR", trocasEscala: 2200, trocasPosto: 1200, total: 3400, por100: 309, tendencia: "down" },
+      { nome: "Regional BA", trocasEscala: 1800, trocasPosto: 1100, total: 2900, por100: 363, tendencia: "down" },
+    ],
+  },
 };
 
 // ====== COBERTURAS E RISCO ======
@@ -462,12 +532,12 @@ export const coberturaRiscoV3: CoberturaRiscoData = {
   ],
   evolucaoMensal: mesesPeriodo.map((mes, i) => ({
     mes,
-    planejada: 260 + i * 5,
-    emergencial: 150 - i * 3,
-    reservaTecnica: 230 + i * 3,
-    horaExtra: 110 - i * 2,
-    descoberto: 450 - i * 20,
-    score: 68 + i * 0.5,
+    planejada: Math.round(260 + i * 5 + Math.sin(i * 0.8) * 15),
+    emergencial: Math.round(150 - i * 3 + Math.cos(i) * 12),
+    reservaTecnica: Math.round(230 + i * 3 + Math.sin(i * 0.6) * 10),
+    horaExtra: Math.round(110 - i * 2 + Math.cos(i * 0.9) * 8),
+    descoberto: Math.round(450 - i * 20 + Math.sin(i * 1.1) * 30),
+    score: parseFloat((68 + i * 0.5 + Math.sin(i * 0.4) * 1.5).toFixed(1)),
   })),
   porEstrutura: [
     { nome: "Regional SP", tipo: "regional", score: 82, custoCobertura: 420000, horasDescoberto: 850, tendencia: "up" },
@@ -513,9 +583,9 @@ export const performanceTimeV3: PerformanceTimeData = {
   ],
   evolucaoMensal: mesesPeriodo.map((mes, i) => ({
     mes,
-    acoes: 3600 + i * 150,
-    usuarios: 130 + i,
-    media: 27 + i * 0.8,
+    acoes: Math.round(3600 + i * 150 + Math.sin(i) * 200),
+    usuarios: Math.round(130 + i + Math.cos(i * 0.5) * 3),
+    media: parseFloat((27 + i * 0.8 + Math.sin(i * 0.7) * 1.5).toFixed(1)),
   })),
 };
 
@@ -536,8 +606,6 @@ export function getEvolucaoConsolidada() {
   return mesesPeriodo.map((mes, i) => {
     const valorCapturado = valoresMensais[i];
     acumulado += valorCapturado;
-    const custoEvitado = Math.round(valorCapturado * (0.55 + Math.sin(i * 0.5) * 0.08));
-    const perdaEvitada = valorCapturado - custoEvitado;
     const comprovado = Math.round(valorCapturado * (0.45 + i * 0.025));
     const hibrido = Math.round(valorCapturado * (0.38 - i * 0.01));
     const referencial = valorCapturado - comprovado - hibrido;
@@ -546,9 +614,8 @@ export function getEvolucaoConsolidada() {
     return {
       mes,
       valorCapturado,
+      economiaGerada: valorCapturado,
       acumulado,
-      custoEvitado,
-      perdaEvitada,
       comprovado,
       hibrido,
       referencial,
@@ -580,6 +647,17 @@ export function getMediaPeriodo() {
   return Math.round(totais.reduce((s, v) => s + v, 0) / totais.length);
 }
 
+// ====== EVOLUÇÃO OPERACIONAL (para resumo executivo) ======
+export function getEvolucaoOperacional() {
+  return mesesPeriodo.map((mes, i) => ({
+    mes,
+    qualidadePonto: parseFloat((83.5 + i * 0.4 + Math.sin(i * 0.6) * 0.8).toFixed(1)),
+    absenteismo: parseFloat((5.4 - i * 0.06 + Math.sin(i * 0.8) * 0.3).toFixed(1)),
+    movimentacoes: Math.round(2270 - i * 50 + Math.sin(i * 0.9) * 120),
+    pressaoOperacional: parseFloat((72 + i * 0.8 - Math.sin(i * 0.5) * 2).toFixed(1)),
+  }));
+}
+
 // ====== DRIVER COLORS ======
 export const driverColors: Record<string, string> = {
   he: "#3b82f6",
@@ -606,35 +684,38 @@ export function generateV3Insights(): string[] {
   const nivelConfianca = getNivelConfianca();
   const insights: string[] = [];
   
-  insights.push(`A operação gerou ${formatCurrencyV3(kpis.valorCapturado)} no período, com maior contribuição vinda de ${topDriver.nome}.`);
-  insights.push(`A Regional SP apresentou a melhor evolução operacional no período, com melhor combinação entre qualidade do ponto, movimentações e estabilidade.`);
-  insights.push(`A Regional BA concentra o maior risco atual, com aumento de faltas não justificadas e maior pressão operacional.`);
-  insights.push(`A série temporal mostra crescimento consistente da economia gerada ao longo das competências analisadas.`);
-  insights.push(`O nível de confiança da economia gerada permanece em ${nivelConfianca}%, sustentado por maior participação de drivers com base robusta.`);
-  insights.push(`A combinação entre absenteísmo e movimentações indica maior necessidade de atuação da liderança em determinadas regionais.`);
-  insights.push(`O comportamento das competências recentes mostra maior estabilidade operacional em comparação ao início da série.`);
+  insights.push(`A operação gerou ${formatCurrencyV3(kpis.valorCapturado)} no período, puxada principalmente por ${topDriver.nome}.`);
+  insights.push(`A Regional SP apresentou a melhor combinação entre disciplina operacional e estabilidade no período.`);
+  insights.push(`A Regional BA concentra o maior risco atual, pressionada por absenteísmo e movimentações acima da média.`);
+  insights.push(`A qualidade do ponto evoluiu ao longo do período, indicando menor necessidade de intervenção corretiva.`);
+  insights.push(`O nível de confiança da economia gerada permanece em ${nivelConfianca}%, sustentado por drivers com base robusta.`);
+  insights.push(`O crescimento da economia gerada está associado à melhora operacional observada nas competências finais da série.`);
+  insights.push(`A combinação entre absenteísmo e movimentações indica necessidade de atuação da liderança em determinadas regionais.`);
   
   return insights;
 }
 
-// ====== OPORTUNIDADES ======
+// ====== OPORTUNIDADES / PLANO DE AÇÃO ======
 export interface V3Oportunidade {
   driver: string;
-  tipo: "quick_win" | "estrutural";
+  tipo: "acao_imediata" | "acao_estrutural";
   acao: string;
   impactoEstimado: number;
   esforco: "baixo" | "medio" | "alto";
   prazoEstimado: string;
   detalhe: string;
+  responsavel?: string;
 }
 
 export const oportunidadesV3: V3Oportunidade[] = [
-  { driver: "Disputas Trabalhistas", tipo: "estrutural", acao: "Importar base real de processos", impactoEstimado: 320000, esforco: "medio", prazoEstimado: "30-60 dias", detalhe: "Migrar de híbrido para comprovado importando dados de processos reais" },
-  { driver: "RH Digital", tipo: "quick_win", acao: "Validar custos presenciais com o cliente", impactoEstimado: 0, esforco: "baixo", prazoEstimado: "7-14 dias", detalhe: "Validação eleva confiança de híbrido para comprovado sem alterar valor" },
-  { driver: "Benefícios", tipo: "estrutural", acao: "Ativar módulo de Benefícios", impactoEstimado: 180000, esforco: "alto", prazoEstimado: "60-90 dias", detalhe: "Ativação do módulo permite captura real vs referencial atual" },
-  { driver: "Fechamento", tipo: "quick_win", acao: "Importar custo real da equipe de fechamento", impactoEstimado: 0, esforco: "baixo", prazoEstimado: "7 dias", detalhe: "Melhoria de confiança sem alteração de valor" },
-  { driver: "Coberturas", tipo: "estrutural", acao: "Reduzir coberturas emergenciais em 15%", impactoEstimado: 120000, esforco: "medio", prazoEstimado: "60-90 dias", detalhe: "Migração para coberturas planejadas e reserva técnica" },
-  { driver: "Absenteísmo BA", tipo: "quick_win", acao: "Plano de ação Regional BA (taxa 6.8%)", impactoEstimado: 95000, esforco: "medio", prazoEstimado: "30-60 dias", detalhe: "Reduzir absenteísmo da regional com maior taxa para a média (4.8%)" },
+  { driver: "Passivo Trabalhista", tipo: "acao_estrutural", acao: "Importar base real de processos", impactoEstimado: 320000, esforco: "medio", prazoEstimado: "30-60 dias", detalhe: "Migrar de híbrido para comprovado importando dados de processos reais", responsavel: "RH / Jurídico" },
+  { driver: "Digitalização Operacional", tipo: "acao_imediata", acao: "Validar custos presenciais com o cliente", impactoEstimado: 0, esforco: "baixo", prazoEstimado: "7-14 dias", detalhe: "Validação eleva confiança de híbrido para comprovado sem alterar valor", responsavel: "CS Nexti" },
+  { driver: "Benefícios", tipo: "acao_estrutural", acao: "Ativar módulo de Benefícios", impactoEstimado: 180000, esforco: "alto", prazoEstimado: "60-90 dias", detalhe: "Ativação do módulo permite captura real vs referencial atual", responsavel: "RH / Nexti" },
+  { driver: "Tempo de Fechamento", tipo: "acao_imediata", acao: "Importar custo real da equipe de fechamento", impactoEstimado: 0, esforco: "baixo", prazoEstimado: "7 dias", detalhe: "Melhoria de confiança sem alteração de valor", responsavel: "DP" },
+  { driver: "Coberturas", tipo: "acao_estrutural", acao: "Reduzir coberturas emergenciais em 15%", impactoEstimado: 120000, esforco: "medio", prazoEstimado: "60-90 dias", detalhe: "Migração para coberturas planejadas e reserva técnica", responsavel: "Operações" },
+  { driver: "Absenteísmo Regional BA", tipo: "acao_imediata", acao: "Plano de ação Regional BA (taxa 6.8%)", impactoEstimado: 95000, esforco: "medio", prazoEstimado: "30-60 dias", detalhe: "Reduzir absenteísmo da regional com maior taxa para a média (4.8%)", responsavel: "Liderança Regional" },
+  { driver: "Horas Extras", tipo: "acao_imediata", acao: "Reforçar controle de HE na Regional RJ", impactoEstimado: 85000, esforco: "baixo", prazoEstimado: "30 dias", detalhe: "Regional com maior volume de HE proporcionalmente", responsavel: "Liderança Regional" },
+  { driver: "Movimentações", tipo: "acao_estrutural", acao: "Estabilizar escala na Regional PR", impactoEstimado: 60000, esforco: "medio", prazoEstimado: "60-90 dias", detalhe: "Reduzir trocas de escala e posto para diminuir pressão operacional", responsavel: "Operações" },
 ];
 
 export function getPotencialAdicional(): number {
@@ -677,16 +758,15 @@ export function getNivelConfianca(): number {
 
 // ====== SCORE OPERACIONAL ======
 export function getScoreOperacional(): number {
-  // Composição: absenteísmo (25%), cobertura (25%), postos descobertos (20%), reserva técnica (10%), dependência HE (10%), performance (10%)
-  const absScore = Math.max(0, 100 - (absenteismoV3.taxaGlobal - 3) * 15); // 3% ideal
+  const absScore = Math.max(0, 100 - (absenteismoV3.taxaGlobal - 3) * 15);
   const cobScore = coberturaRiscoV3.scoreEficiencia;
   const descScore = Math.max(0, 100 - (coberturaRiscoV3.horasPostoDescoberto / 100));
   const rtScore = Math.min(100, coberturaRiscoV3.pctReservaTecnica * 3);
   const heDepScore = Math.max(0, 100 - coberturaRiscoV3.pctHoraExtra * 3);
-  const perfScore = performanceTimeV3.scoreEficiencia;
+  const qualPontoScore = disciplinaOperacionalV3.qualidadePonto.percentualGlobal;
 
   return Math.round(
-    absScore * 0.25 + cobScore * 0.25 + descScore * 0.20 + rtScore * 0.10 + heDepScore * 0.10 + perfScore * 0.10
+    absScore * 0.20 + cobScore * 0.20 + descScore * 0.15 + rtScore * 0.10 + heDepScore * 0.10 + qualPontoScore * 0.25
   );
 }
 
