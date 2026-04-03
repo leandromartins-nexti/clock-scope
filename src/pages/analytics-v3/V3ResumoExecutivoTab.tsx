@@ -160,51 +160,49 @@ export default function V3ResumoExecutivoTab() {
 // ====== Speedometer Gauge Component ======
 function SpeedometerGauge({ value }: { value: number }) {
   const clampedValue = Math.max(0, Math.min(100, value));
-  const startAngle = -135;
-  const totalAngle = 270;
-  const valueAngle = startAngle + (clampedValue / 100) * totalAngle;
+  const size = 160;
+  const strokeWidth = 14;
+  const r = (size - strokeWidth) / 2;
+  const cx = size / 2;
+  const cy = size / 2;
+  const circumference = 2 * Math.PI * r;
+  const arcRatio = 0.75; // 270deg arc
+  const arcLength = circumference * arcRatio;
+  const valueLength = arcLength * (clampedValue / 100);
+  const gapLength = arcLength - valueLength;
+  const rotation = 135; // start at bottom-left
 
-  const r = 62;
-  const cx = 72;
-  const cy = 72;
-
-  function polarToCartesian(angle: number) {
-    const rad = (angle * Math.PI) / 180;
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-  }
-
-  const bgStart = polarToCartesian(startAngle);
-  const bgEnd = polarToCartesian(startAngle + totalAngle);
-  const valEnd = polarToCartesian(valueAngle);
-  const largeArcBg = totalAngle > 180 ? 1 : 0;
-  const largeArcVal = (clampedValue / 100) * totalAngle > 180 ? 1 : 0;
-
-  const color = clampedValue >= 90 ? "#16a34a" : clampedValue >= 75 ? "#22c55e" : clampedValue >= 60 ? "#eab308" : "#ef4444";
+  const color = clampedValue >= 90 ? "hsl(142, 71%, 45%)" : clampedValue >= 75 ? "hsl(142, 71%, 45%)" : clampedValue >= 60 ? "hsl(var(--primary))" : "hsl(0, 84%, 60%)";
 
   return (
-    <svg width="144" height="105" viewBox="0 0 144 105">
-      {/* Background arc */}
-      <path
-        d={`M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArcBg} 1 ${bgEnd.x} ${bgEnd.y}`}
-        fill="none"
-        stroke="hsl(var(--muted))"
-        strokeWidth="12"
-        strokeLinecap="round"
-      />
-      {/* Value arc */}
-      {clampedValue > 0 && (
-        <path
-          d={`M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArcVal} 1 ${valEnd.x} ${valEnd.y}`}
+    <div className="relative" style={{ width: size, height: size * 0.7 }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute top-0 left-0" style={{ transform: `rotate(${rotation}deg)` }}>
+        {/* Background track */}
+        <circle
+          cx={cx} cy={cy} r={r}
           fill="none"
-          stroke={color}
-          strokeWidth="12"
+          stroke="hsl(var(--muted))"
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
+          strokeDasharray={`${arcLength} ${circumference - arcLength}`}
         />
-      )}
-      {/* Value text */}
-      <text x={cx} y={cy + 6} textAnchor="middle" fill={color} fontSize="34" fontWeight="800">
-        {clampedValue}
-      </text>
-    </svg>
+        {/* Value arc */}
+        {clampedValue > 0 && (
+          <circle
+            cx={cx} cy={cy} r={r}
+            fill="none"
+            stroke={color}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeDasharray={`${valueLength} ${circumference - valueLength}`}
+            className="transition-all duration-700 ease-out"
+          />
+        )}
+      </svg>
+      {/* Center value */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ paddingTop: 8 }}>
+        <span className="text-4xl font-extrabold" style={{ color }}>{clampedValue}</span>
+      </div>
+    </div>
   );
 }
