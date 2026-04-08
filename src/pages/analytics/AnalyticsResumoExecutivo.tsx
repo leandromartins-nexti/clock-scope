@@ -99,8 +99,8 @@ function SparklineTooltip({ active, payload, cardData }: any) {
           const color = d >= 0 ? 'text-green-600' : 'text-red-500';
           return (
             <div className="flex justify-between gap-4">
-              <span className="text-muted-foreground">vs {prev.competencia}:</span>
-              <span className={`font-medium ${color}`}>{sign}{d.toFixed(1)}</span>
+              <span className="text-muted-foreground">{prev.competencia}:</span>
+              <span className={`font-medium ${color}`}>{fmt(prev.valor)} ({sign}{d.toFixed(1)})</span>
             </div>
           );
         })()}
@@ -110,7 +110,7 @@ function SparklineTooltip({ active, payload, cardData }: any) {
           const color = d >= 0 ? 'text-green-600' : 'text-red-500';
           return (
             <div className="flex justify-between gap-4">
-              <span className="text-muted-foreground">→ {next.competencia}:</span>
+              <span className="text-muted-foreground">{next.competencia}:</span>
               <span className={`font-medium ${color}`}>{fmt(next.valor)} ({sign}{d.toFixed(1)})</span>
             </div>
           );
