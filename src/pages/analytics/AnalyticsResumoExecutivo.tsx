@@ -84,26 +84,37 @@ function SparklineTooltip({ active, payload, cardData }: any) {
     return d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
   };
   return (
-    <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2 text-xs min-w-[160px] z-[9999] relative">
-      <p className="font-semibold text-foreground mb-1.5">{comp}</p>
-      <div className="flex items-center gap-2 mb-1">
+    <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2.5 text-xs min-w-[180px] z-[9999] relative">
+      <p className="font-semibold text-foreground mb-2">{comp}</p>
+      <div className="flex items-center gap-2 mb-2">
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cardData.corLinha }} />
         <span className="text-muted-foreground">{cardData.label}:</span>
-        <span className="font-semibold">{fmt(valor)}</span>
+        <span className="font-bold text-foreground">{fmt(valor)}</span>
+        <span className={`font-semibold px-1.5 py-0.5 rounded text-[10px] ${getScoreColor(cardData.score)} ${getScoreBg(cardData.score)}`}>Score {cardData.score}</span>
       </div>
-      <div className="border-t border-border/50 mt-1.5 pt-1.5 space-y-0.5">
-        {prev && (
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">vs {prev.competencia}:</span>
-            <span className={Number(diff(valor, prev.valor)) >= 0 ? 'text-green-600 font-medium' : 'text-red-500 font-medium'}>{diff(valor, prev.valor)}</span>
-          </div>
-        )}
-        {next && (
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">→ {next.competencia}:</span>
-            <span className="text-muted-foreground">{fmt(next.valor)}</span>
-          </div>
-        )}
+      <div className="border-t border-border/50 pt-2 space-y-1">
+        {prev && (() => {
+          const d = valor - prev.valor;
+          const sign = d > 0 ? '+' : '';
+          const color = d >= 0 ? 'text-green-600' : 'text-red-500';
+          return (
+            <div className="flex justify-between gap-4">
+              <span className="text-muted-foreground">vs {prev.competencia}:</span>
+              <span className={`font-medium ${color}`}>{sign}{d.toFixed(1)}</span>
+            </div>
+          );
+        })()}
+        {next && (() => {
+          const d = next.valor - valor;
+          const sign = d > 0 ? '+' : '';
+          const color = d >= 0 ? 'text-green-600' : 'text-red-500';
+          return (
+            <div className="flex justify-between gap-4">
+              <span className="text-muted-foreground">→ {next.competencia}:</span>
+              <span className={`font-medium ${color}`}>{fmt(next.valor)} ({sign}{d.toFixed(1)})</span>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
