@@ -176,22 +176,26 @@ export default function AnalyticsResumoExecutivo() {
             </div>
 
             {/* ═══ Linha 2: Indicadores — lista vertical com sparklines inline ═══ */}
-            <div className="bg-card border border-border/50 rounded-xl divide-y divide-border/40">
+            <div className="bg-card border border-border/50 rounded-xl">
+              {/* Header */}
+              <div className="flex items-center gap-4 px-4 py-2 border-b border-border/40 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                <div className="w-2" />
+                <span className="min-w-[140px]">Indicador</span>
+                <span className="min-w-[70px]">Atual</span>
+                <span className="min-w-[65px] text-center">Variação</span>
+                <div className="flex-1 min-w-[120px] text-center">Evolução · abr/25 – mar/26</div>
+              </div>
+              <div className="divide-y divide-border/40">
               {sparklineCards.map((card) => {
                 const lastIdx = card.evolucao.length - 1;
                 return (
                   <div key={card.label} className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/30 transition-colors">
-                    {/* Indicator color dot */}
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: card.corLinha }} />
-                    {/* Name */}
                     <span className="text-sm font-medium text-foreground min-w-[140px]">{card.label}</span>
-                    {/* Value */}
                     <span className="text-sm font-semibold text-foreground min-w-[70px]">{card.valor}</span>
-                    {/* Variation badge */}
                     <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[65px] text-center ${card.corVariacao} ${
                       card.corVariacao.includes('green') ? 'bg-green-50' : card.corVariacao.includes('red') ? 'bg-red-50' : 'bg-gray-50'
                     }`}>{card.variacao}</span>
-                    {/* Sparkline */}
                     <div className="flex-1 h-[32px] min-w-[120px]">
                       <ResponsiveContainer width="100%" height={32}>
                         <LineChart data={card.evolucao}>
@@ -220,14 +224,10 @@ export default function AnalyticsResumoExecutivo() {
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
-                    {/* Period labels */}
-                    <div className="flex flex-col items-end shrink-0">
-                      <span className="text-[10px] text-muted-foreground leading-tight">abr/25</span>
-                      <span className="text-[10px] text-muted-foreground leading-tight">mar/26</span>
-                    </div>
                   </div>
                 );
               })}
+              </div>
             </div>
 
             {/* ═══ Linha 3: Ranking ═══ */}
