@@ -6,8 +6,7 @@ import {
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import {
-  resumo, resumoComparativo, rankingOperacoes,
-  insightsResumo, sparklineData,
+  resumo, resumoComparativo, rankingOperacoes, sparklineData,
 } from "@/lib/analytics-mock-data";
 import {
   ResponsiveContainer, LineChart, Line,
@@ -110,7 +109,7 @@ export default function AnalyticsResumoExecutivo() {
 
       {/* Content: main + sidebar */}
       <div className="px-6 py-4 flex-1">
-        <div className="flex gap-5">
+        <div>
           {/* Main content */}
           <div className="flex-1 space-y-3">
 
@@ -329,30 +328,6 @@ export default function AnalyticsResumoExecutivo() {
                   <span className="text-sm text-green-600">Obrigado pelo feedback!</span>
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* ═══ Sidebar: Insights ═══ */}
-          <div className="w-[280px] shrink-0">
-            <div className="bg-surface border border-border/50 rounded-xl p-5 sticky top-6">
-              <h3 className="text-sm font-semibold mb-1">Insights da Operação</h3>
-              <p className="text-xs text-muted-foreground mb-5">Análise executiva do período</p>
-              <div className="space-y-3">
-                {insightsResumo.map((insight, i) => (
-                  <div
-                    key={i}
-                    className={`pl-4 py-2 ${
-                      insight.tipo === "positivo" ? "border-l-green-500" :
-                      insight.tipo === "negativo" ? "border-l-red-500" :
-                      insight.tipo === "atencao" ? "border-l-orange-400" :
-                      "border-l-blue-400"
-                    }`}
-                    style={{ borderLeftWidth: "3px", borderLeftStyle: "solid" }}
-                  >
-                    <p className="text-[13px] leading-relaxed text-gray-700">{insight.texto}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
