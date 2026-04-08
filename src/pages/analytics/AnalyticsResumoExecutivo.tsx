@@ -6,27 +6,26 @@ import {
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import {
-  resumo, resumoComparativo, radarIndicadores, rankingOperacoes,
-  insightsResumo, sparklineData, disciplina,
+  resumo, resumoComparativo, rankingOperacoes,
+  insightsResumo, sparklineData,
 } from "@/lib/analytics-mock-data";
 import {
-  ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis,
-  PolarRadiusAxis, Legend, LineChart, Line,
+  ResponsiveContainer, LineChart, Line,
 } from "recharts";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-// ── Gauge semicircular ──────────────────────────────────────
+// ── Gauge semicircular (compact) ────────────────────────────
 function ScoreGauge({ score }: { score: number }) {
-  const radius = 80;
-  const stroke = 14;
-  const cx = 100;
-  const cy = 95;
+  const radius = 60;
+  const stroke = 10;
+  const cx = 75;
+  const cy = 70;
   const circumference = Math.PI * radius;
   const progress = (score / 100) * circumference;
   const color = score >= 85 ? "hsl(var(--success))" : score >= 70 ? "#FF5722" : "hsl(var(--destructive))";
 
   return (
-    <svg width="200" height="120" viewBox="0 0 200 120">
+    <svg width="150" height="85" viewBox="0 0 150 85">
       <path
         d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`}
         fill="none" stroke="#e5e7eb" strokeWidth={stroke} strokeLinecap="round"
@@ -47,19 +46,10 @@ function InfoTip({ text }: { text: string }) {
       <TooltipTrigger asChild>
         <Info size={14} className="text-muted-foreground cursor-help" />
       </TooltipTrigger>
-      <TooltipContent className="max-w-[240px] text-xs">{text}</TooltipContent>
+      <TooltipContent className="max-w-[280px] text-xs">{text}</TooltipContent>
     </UITooltip>
   );
 }
-
-// ── Hero indicators data ────────────────────────────────────
-const heroIndicators = [
-  { label: "Qualidade do Ponto", value: "87.3%", color: "text-green-600", icon: TrendingUp, iconColor: "text-green-500" },
-  { label: "Absenteísmo", value: "4.8%", color: "text-orange-500", icon: TrendingDown, iconColor: "text-green-500" },
-  { label: "Volume HE", value: "33.1K h", color: "", icon: TrendingDown, iconColor: "text-green-500" },
-  { label: "Movimentações", value: "23.0K", color: "", icon: TrendingDown, iconColor: "text-green-500" },
-  { label: "Cobertura Efetiva", value: "72%", color: "text-orange-500", icon: Minus, iconColor: "text-gray-400" },
-];
 
 // ── Sparkline cards config ──────────────────────────────────
 const sparklineCards = [
@@ -124,139 +114,101 @@ export default function AnalyticsResumoExecutivo() {
           {/* Main content */}
           <div className="flex-1 space-y-6">
 
-            {/* ═══ Bloco 1: Hero Score ═══ */}
-            <div className="bg-card border border-border/50 rounded-xl p-6">
-              <div className="flex items-center gap-8">
-                {/* LEFT: Gauge + Score */}
-                <div className="text-center min-w-[160px]">
-                  <ScoreGauge score={resumo.scoreOperacional} />
-                  <p className={`text-[3rem] font-bold leading-none ${scoreColor}`}>{resumo.scoreOperacional}</p>
-                  <p className={`text-sm font-semibold ${scoreColor} mt-1`}>{resumo.scoreFaixa}</p>
-                  <div className="flex items-center justify-center gap-1 mt-2">
-                    <TrendingUp size={14} className="text-green-500" />
-                    <span className="text-xs font-medium text-green-600">+{resumoComparativo.scoreDiferenca} vs anterior</span>
+            {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
+            <div className="flex gap-4">
+              {/* Score Operacional compacto (~25%) */}
+              <div className="bg-card border border-border/50 rounded-xl p-5 flex flex-col items-center justify-center min-w-[220px] w-[25%]">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <p className="text-xs font-semibold text-muted-foreground tracking-wide uppercase">Score Operacional</p>
+                  <InfoTip text="Índice de saúde da operação calculado a partir de 5 indicadores: qualidade do ponto, absenteísmo, volume de horas extras, movimentações e cobertura efetiva. Pesos configuráveis em Configuração." />
+                </div>
+                <ScoreGauge score={resumo.scoreOperacional} />
+                <p className={`text-4xl font-bold leading-none -mt-1 ${scoreColor}`}>{resumo.scoreOperacional}</p>
+                <p className={`text-sm font-semibold ${scoreColor} mt-1`}>{resumo.scoreFaixa}</p>
+                <div className="flex items-center justify-center gap-1 mt-2">
+                  <TrendingUp size={14} className="text-green-500" />
+                  <span className="text-xs font-medium text-green-600">+{resumoComparativo.scoreDiferenca} vs anterior</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 mt-3 justify-center">
+                  <span className="bg-orange-50 text-[#FF5722] border border-orange-200 text-[10px] font-medium px-2 py-0.5 rounded-full">{resumo.periodo}</span>
+                  <span className="bg-gray-100 text-gray-600 text-[10px] font-medium px-2 py-0.5 rounded-full">{resumo.cliente}</span>
+                  <span className="bg-gray-100 text-gray-600 text-[10px] font-medium px-2 py-0.5 rounded-full">{resumo.colaboradores.toLocaleString()} colab.</span>
+                </div>
+              </div>
+
+              {/* 4 KPI Cards (~75%) */}
+              <div className="flex-1 grid grid-cols-4 gap-4">
+                {/* Melhor Operação */}
+                <div className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                  <div className="flex justify-between items-start">
+                    <TrendingUp size={18} className="text-green-500" />
+                    <InfoTip text="Operação com maior score operacional no período" />
                   </div>
+                  <p className="text-xs font-medium text-muted-foreground mt-3">Melhor Operação</p>
+                  <p className="text-lg font-semibold mt-1">{resumo.melhorOperacao.nome}</p>
+                  <p className="text-xs text-muted-foreground mt-1.5">Score {resumo.melhorOperacao.score} · Tendência de alta</p>
                 </div>
 
-                {/* CENTER: Description + badges */}
-                <div className="flex-1">
-                  <p className="text-xs font-semibold text-muted-foreground tracking-wide uppercase mb-2">Score Operacional</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Índice de saúde da operação calculado a partir de 5 indicadores:
-                    qualidade do ponto, absenteísmo, volume de horas extras,
-                    movimentações e cobertura efetiva.
-                  </p>
-                  <div className="flex gap-2 mt-3">
-                    <span className="bg-orange-50 text-[#FF5722] border border-orange-200 text-[11px] font-medium px-3 py-1 rounded-full">{resumo.periodo}</span>
-                    <span className="bg-gray-100 text-gray-600 text-[11px] font-medium px-3 py-1 rounded-full">{resumo.cliente}</span>
-                    <span className="bg-gray-100 text-gray-600 text-[11px] font-medium px-3 py-1 rounded-full">{resumo.colaboradores.toLocaleString()} colaboradores</span>
+                {/* Maior Risco */}
+                <div className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                  <div className="flex justify-between items-start">
+                    <AlertTriangle size={18} className="text-red-500" />
+                    <InfoTip text="Operação com menor score e maior concentração de risco" />
                   </div>
+                  <p className="text-xs font-medium text-muted-foreground mt-3">Maior Risco</p>
+                  <p className="text-lg font-semibold mt-1 text-red-600">{resumo.maiorRisco.nome}</p>
+                  <p className="text-xs text-muted-foreground mt-1.5">Score {resumo.maiorRisco.score} · {resumo.maiorRisco.indicador}</p>
                 </div>
 
-                {/* RIGHT: 5 core indicators */}
-                <div className="min-w-[260px] space-y-2.5 border-l border-border pl-6">
-                  {heroIndicators.map((ind) => (
-                    <div key={ind.label} className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">{ind.label}</span>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-sm font-semibold ${ind.color}`}>{ind.value}</span>
-                        <ind.icon size={14} className={ind.iconColor} />
-                      </div>
-                    </div>
-                  ))}
+                {/* Principal Melhora */}
+                <div className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                  <div className="flex justify-between items-start">
+                    <ArrowDownRight size={18} className="text-green-500" />
+                    <InfoTip text="Indicador com maior evolução positiva no período" />
+                  </div>
+                  <p className="text-xs font-medium text-muted-foreground mt-3">Principal Melhora</p>
+                  <p className="text-lg font-semibold mt-1 text-green-600">Qualidade do Ponto</p>
+                  <p className="text-xs text-muted-foreground mt-1.5">+4.1 pp no período (83.2% → 87.3%)</p>
+                </div>
+
+                {/* Principal Piora */}
+                <div className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                  <div className="flex justify-between items-start">
+                    <ArrowUpRight size={18} className="text-red-500" />
+                    <InfoTip text="Indicador com maior deterioração no período" />
+                  </div>
+                  <p className="text-xs font-medium text-muted-foreground mt-3">Principal Piora</p>
+                  <p className="text-lg font-semibold mt-1 text-red-600">Atrasos e Faltas</p>
+                  <p className="text-xs text-muted-foreground mt-1.5">+52.4% de eventos no período</p>
                 </div>
               </div>
             </div>
 
-            {/* ═══ Bloco 2: 4 KPI Cards ═══ */}
-            <div className="grid grid-cols-4 gap-4">
-              {/* Melhor Operação */}
-              <div className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                <div className="flex justify-between items-start">
-                  <TrendingUp size={18} className="text-green-500" />
-                  <InfoTip text="Operação com maior score operacional no período" />
-                </div>
-                <p className="text-xs font-medium text-muted-foreground mt-3">Melhor Operação</p>
-                <p className="text-lg font-semibold mt-1">{resumo.melhorOperacao.nome}</p>
-                <p className="text-xs text-muted-foreground mt-1.5">Score {resumo.melhorOperacao.score} · Tendência de alta</p>
-              </div>
-
-              {/* Maior Risco */}
-              <div className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                <div className="flex justify-between items-start">
-                  <AlertTriangle size={18} className="text-red-500" />
-                  <InfoTip text="Operação com menor score e maior concentração de risco" />
-                </div>
-                <p className="text-xs font-medium text-muted-foreground mt-3">Maior Risco</p>
-                <p className="text-lg font-semibold mt-1 text-red-600">{resumo.maiorRisco.nome}</p>
-                <p className="text-xs text-muted-foreground mt-1.5">Score {resumo.maiorRisco.score} · {resumo.maiorRisco.indicador}</p>
-              </div>
-
-              {/* Principal Melhora */}
-              <div className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                <div className="flex justify-between items-start">
-                  <ArrowDownRight size={18} className="text-green-500" />
-                  <InfoTip text="Indicador com maior evolução positiva no período" />
-                </div>
-                <p className="text-xs font-medium text-muted-foreground mt-3">Principal Melhora</p>
-                <p className="text-lg font-semibold mt-1 text-green-600">Qualidade do Ponto</p>
-                <p className="text-xs text-muted-foreground mt-1.5">+4.1 pp no período (83.2% → 87.3%)</p>
-              </div>
-
-              {/* Principal Piora */}
-              <div className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                <div className="flex justify-between items-start">
-                  <ArrowUpRight size={18} className="text-red-500" />
-                  <InfoTip text="Indicador com maior deterioração no período" />
-                </div>
-                <p className="text-xs font-medium text-muted-foreground mt-3">Principal Piora</p>
-                <p className="text-lg font-semibold mt-1 text-red-600">Atrasos e Faltas</p>
-                <p className="text-xs text-muted-foreground mt-1.5">+52.4% de eventos no período</p>
-              </div>
-            </div>
-
-            {/* ═══ Bloco 3: Radar + Sparklines ═══ */}
-            <div className="grid grid-cols-2 gap-6">
-              {/* Radar */}
-              <div className="bg-card border border-border/50 rounded-xl p-6">
-                <h3 className="text-sm font-semibold mb-1">Perfil da Operação</h3>
-                <p className="text-xs text-muted-foreground mb-4">Atual vs período anterior</p>
-                <ResponsiveContainer width="100%" height={250}>
-                  <RadarChart data={radarIndicadores}>
-                    <PolarGrid stroke="#e5e7eb" />
-                    <PolarAngleAxis dataKey="indicador" fontSize={11} />
-                    <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-                    <Radar name="Anterior" dataKey="anterior" stroke="#9ca3af" strokeDasharray="4 4" fill="transparent" strokeWidth={1.5} />
-                    <Radar name="Atual" dataKey="atual" stroke="#FF5722" fill="#FF5722" fillOpacity={0.15} strokeWidth={2} />
-                    <Legend verticalAlign="bottom" height={30} />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* 5 Sparklines */}
-              <div className="space-y-3">
-                {sparklineCards.map((card) => (
-                  <div key={card.label} className="bg-card border border-border/50 rounded-xl p-4 flex items-center gap-4">
-                    <div className="min-w-[140px]">
-                      <p className="text-xs text-muted-foreground">{card.label}</p>
-                      <div className="flex items-baseline gap-2 mt-1">
-                        <span className="text-lg font-semibold">{card.valor}</span>
-                        <span className={`text-xs font-medium ${card.corVariacao}`}>{card.variacao}</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 h-[40px]">
-                      <ResponsiveContainer width="100%" height={40}>
-                        <LineChart data={card.evolucao}>
-                          <Line type="monotone" dataKey="valor" stroke={card.corLinha} strokeWidth={1.5} dot={false} />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
+            {/* ═══ Linha 2: 5 Sparkline Cards em grid horizontal ═══ */}
+            <div className="grid grid-cols-5 gap-4">
+              {sparklineCards.map((card) => (
+                <div key={card.label} className="bg-card border border-border/50 rounded-xl p-4">
+                  <p className="text-xs text-muted-foreground">{card.label}</p>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-lg font-semibold">{card.valor}</span>
+                    <span className={`text-xs font-medium ${card.corVariacao}`}>{card.variacao}</span>
                   </div>
-                ))}
-              </div>
+                  <div className="h-[50px] mt-2">
+                    <ResponsiveContainer width="100%" height={50}>
+                      <LineChart data={card.evolucao}>
+                        <Line type="monotone" dataKey="valor" stroke={card.corLinha} strokeWidth={1.5} dot={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex justify-between mt-1">
+                    <span className="text-[10px] text-gray-400">abr/25</span>
+                    <span className="text-[10px] text-gray-400">mar/26</span>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            {/* ═══ Bloco 4: Ranking ═══ */}
+            {/* ═══ Linha 3: Ranking ═══ */}
             <div className="bg-card border border-border/50 rounded-xl p-6">
               <h3 className="text-sm font-semibold mb-1">Ranking de Operações</h3>
               <p className="text-xs text-muted-foreground mb-4">Score operacional por regional</p>
@@ -289,7 +241,7 @@ export default function AnalyticsResumoExecutivo() {
               </div>
             </div>
 
-            {/* ═══ Bloco 5: CTA Financeiro ═══ */}
+            {/* ═══ Linha 4: CTA Financeiro ═══ */}
             <div className="bg-surface border border-border/50 rounded-xl p-5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
@@ -310,7 +262,7 @@ export default function AnalyticsResumoExecutivo() {
               </button>
             </div>
 
-            {/* ═══ Bloco 6: Feedback inline ═══ */}
+            {/* ═══ Linha 5: Feedback inline ═══ */}
             <div className="border-t border-border pt-6 mt-2">
               {!feedbackSubmitted ? (
                 <>
@@ -331,7 +283,10 @@ export default function AnalyticsResumoExecutivo() {
                         </button>
                       ))}
                     </div>
-                    <span className="text-[10px] text-muted-foreground">Ruim → Excelente</span>
+                  </div>
+                  <div className="flex justify-center gap-16 mt-1">
+                    <span className="text-[10px] text-muted-foreground">Ruim</span>
+                    <span className="text-[10px] text-muted-foreground">Excelente</span>
                   </div>
                   {rating && (
                     <div className="mt-4 max-w-lg mx-auto">
