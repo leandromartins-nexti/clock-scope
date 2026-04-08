@@ -293,7 +293,7 @@ export default function AnalyticsResumoExecutivo() {
                 <div className="flex-1 min-w-[120px]" />
               </div>
               <div className="divide-y divide-border/40">
-              {sparklineCards.map((card) => {
+              {filteredSparklines.map((card) => {
                 const lastIdx = card.evolucao.length - 1;
                 return (
                   <div key={card.label} className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/30 transition-colors">
