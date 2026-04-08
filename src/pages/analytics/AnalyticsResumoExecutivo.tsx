@@ -9,7 +9,7 @@ import {
   resumo, resumoComparativo, rankingOperacoes, sparklineData,
 } from "@/lib/analytics-mock-data";
 import {
-  ResponsiveContainer, LineChart, Line,
+  ResponsiveContainer, LineChart, Line, Tooltip as RechartsTooltip,
 } from "recharts";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -58,6 +58,13 @@ const sparklineCards = [
   sparklineData.movimentacoes,
   sparklineData.coberturaEfetiva,
 ];
+
+const scoreGeral = Math.round(
+  sparklineCards.reduce((sum, c) => sum + c.score * c.peso, 0)
+);
+
+const getScoreColor = (s: number) => s >= 85 ? "text-green-600" : s >= 70 ? "text-orange-500" : s < 60 ? "text-red-600" : "text-yellow-600";
+const getScoreBg = (s: number) => s >= 85 ? "bg-green-50" : s >= 70 ? "bg-orange-50" : s < 60 ? "bg-red-50" : "bg-yellow-50";
 
 // ── Main Page ───────────────────────────────────────────────
 export default function AnalyticsResumoExecutivo() {
@@ -181,6 +188,7 @@ export default function AnalyticsResumoExecutivo() {
               <div className="flex items-center gap-4 px-4 py-2 border-b border-border/40 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                 <div className="w-2" />
                 <span className="min-w-[140px]">Indicador</span>
+                <span className="min-w-[45px] text-center">Score</span>
                 <span className="min-w-[70px]">Atual</span>
                 <span className="min-w-[65px] text-center">Variação</span>
                 <div className="flex-1 min-w-[120px] text-center">Evolução · abr/25 – mar/26</div>
@@ -192,34 +200,38 @@ export default function AnalyticsResumoExecutivo() {
                   <div key={card.label} className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/30 transition-colors">
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: card.corLinha }} />
                     <span className="text-sm font-medium text-foreground min-w-[140px]">{card.label}</span>
+                    <span className={`text-xs font-bold min-w-[45px] text-center px-1.5 py-0.5 rounded ${getScoreColor(card.score)} ${getScoreBg(card.score)}`}>{card.score}</span>
                     <span className="text-sm font-semibold text-foreground min-w-[70px]">{card.valor}</span>
                     <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[65px] text-center ${card.corVariacao} ${
                       card.corVariacao.includes('green') ? 'bg-green-50' : card.corVariacao.includes('red') ? 'bg-red-50' : 'bg-gray-50'
                     }`}>{card.variacao}</span>
-                    <div className="flex-1 h-[32px] min-w-[120px]">
-                      <ResponsiveContainer width="100%" height={32}>
+                    <div className="flex-1 h-[36px] min-w-[120px]">
+                      <ResponsiveContainer width="100%" height={36}>
                         <LineChart data={card.evolucao}>
+                          <RechartsTooltip
+                            contentStyle={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, border: '1px solid hsl(var(--border))' }}
+                            labelStyle={{ fontWeight: 600, marginBottom: 2 }}
+                            formatter={(v: number) => [card.label.includes('%') || card.label.includes('Cobertura') || card.label.includes('Qualidade') || card.label.includes('Absenteísmo') ? `${v}%` : `${v}K`, '']}
+                            labelFormatter={(label: string) => label}
+                          />
                           <Line
                             type="monotone"
                             dataKey="valor"
                             stroke={card.corLinha}
                             strokeWidth={2}
-                            dot={(props: any) => {
-                              if (props.index === lastIdx) {
-                                return (
-                                  <circle
-                                    key={props.index}
-                                    cx={props.cx}
-                                    cy={props.cy}
-                                    r={3}
-                                    fill={card.corLinha}
-                                    stroke="white"
-                                    strokeWidth={1.5}
-                                  />
-                                );
-                              }
-                              return <circle key={props.index} cx={0} cy={0} r={0} fill="none" />;
-                            }}
+                            dot={(props: any) => (
+                              <circle
+                                key={props.index}
+                                cx={props.cx}
+                                cy={props.cy}
+                                r={props.index === lastIdx ? 3.5 : 2}
+                                fill={props.index === lastIdx ? card.corLinha : 'white'}
+                                stroke={card.corLinha}
+                                strokeWidth={props.index === lastIdx ? 1.5 : 1}
+                                className="cursor-pointer"
+                              />
+                            )}
+                            activeDot={{ r: 4, fill: card.corLinha, stroke: 'white', strokeWidth: 2 }}
                           />
                         </LineChart>
                       </ResponsiveContainer>
@@ -227,6 +239,17 @@ export default function AnalyticsResumoExecutivo() {
                   </div>
                 );
               })}
+              {/* Score geral row */}
+              <div className="flex items-center gap-4 px-4 py-2.5 bg-muted/20 font-semibold">
+                <div className="w-2" />
+                <span className="text-sm text-foreground min-w-[140px]">Score Geral</span>
+                <span className={`text-xs font-bold min-w-[45px] text-center px-1.5 py-0.5 rounded ${getScoreColor(scoreGeral)} ${getScoreBg(scoreGeral)}`}>{scoreGeral}</span>
+                <span className="text-sm text-muted-foreground min-w-[70px]">—</span>
+                <span className="text-[11px] text-muted-foreground min-w-[65px] text-center">—</span>
+                <div className="flex-1 min-w-[120px] text-[10px] text-muted-foreground text-center">
+                  Média ponderada dos 5 indicadores (pesos configuráveis)
+                </div>
+              </div>
               </div>
             </div>
 

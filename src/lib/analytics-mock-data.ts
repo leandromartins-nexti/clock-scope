@@ -505,6 +505,8 @@ export const sparklineData = {
     variacao: "+4.1 pp",
     corVariacao: "text-green-600",
     corLinha: "#22c55e",
+    score: 87,
+    peso: 0.25,
     evolucao: [
       { competencia: "abr/25", valor: 83.2 }, { competencia: "mai/25", valor: 83.0 },
       { competencia: "jun/25", valor: 83.8 }, { competencia: "jul/25", valor: 84.5 },
@@ -520,6 +522,8 @@ export const sparklineData = {
     variacao: "-0.6 pp",
     corVariacao: "text-green-600",
     corLinha: "#22c55e",
+    score: 76,
+    peso: 0.25,
     evolucao: [
       { competencia: "abr/25", valor: 5.4 }, { competencia: "mai/25", valor: 5.8 },
       { competencia: "jun/25", valor: 6.1 }, { competencia: "jul/25", valor: 5.5 },
@@ -535,6 +539,8 @@ export const sparklineData = {
     variacao: "-22.1%",
     corVariacao: "text-green-600",
     corLinha: "#3b82f6",
+    score: 62,
+    peso: 0.20,
     evolucao: [
       { competencia: "abr/25", valor: 42.5 }, { competencia: "mai/25", valor: 41.8 },
       { competencia: "jun/25", valor: 40.0 }, { competencia: "jul/25", valor: 38.2 },
@@ -550,6 +556,8 @@ export const sparklineData = {
     variacao: "-18.3%",
     corVariacao: "text-green-600",
     corLinha: "#a855f7",
+    score: 58,
+    peso: 0.15,
     evolucao: [
       { competencia: "abr/25", valor: 28.1 }, { competencia: "mai/25", valor: 26.0 },
       { competencia: "jun/25", valor: 27.8 }, { competencia: "jul/25", valor: 25.5 },
@@ -565,6 +573,8 @@ export const sparklineData = {
     variacao: "+2 pp",
     corVariacao: "text-green-600",
     corLinha: "#f97316",
+    score: 72,
+    peso: 0.15,
     evolucao: [
       { competencia: "abr/25", valor: 70 }, { competencia: "mai/25", valor: 69 },
       { competencia: "jun/25", valor: 70 }, { competencia: "jul/25", valor: 68 },
