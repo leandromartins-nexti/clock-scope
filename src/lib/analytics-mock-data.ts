@@ -490,6 +490,79 @@ export const rankingOperacoes = [
   { nome: "Regional BA", score: 64, tendencia: "piorando" as const },
 ];
 
+// Per-regional KPI overrides for cross-filtering
+export const dadosPorRegional: Record<string, {
+  scoreOperacional: number;
+  scoreFaixa: string;
+  scoreDiferenca: number;
+  melhorIndicador: string;
+  melhorIndicadorDetalhe: string;
+  piorIndicador: string;
+  piorIndicadorDetalhe: string;
+  sparklineMultipliers: Record<string, { valorMultiplier: number; scoreOverride: number; variacaoOverride: string; corVariacaoOverride: string }>;
+}> = {
+  "Regional SP": {
+    scoreOperacional: 88, scoreFaixa: "Saudável", scoreDiferenca: 5,
+    melhorIndicador: "Qualidade Ponto", melhorIndicadorDetalhe: "+5.2 pp (84.0% → 89.2%)",
+    piorIndicador: "Volume HE", piorIndicadorDetalhe: "+8.3% no período",
+    sparklineMultipliers: {
+      "Qualidade do Ponto": { valorMultiplier: 1.02, scoreOverride: 92, variacaoOverride: "+5.2 pp", corVariacaoOverride: "text-green-600" },
+      "Absenteísmo": { valorMultiplier: 0.75, scoreOverride: 88, variacaoOverride: "-1.1 pp", corVariacaoOverride: "text-green-600" },
+      "Volume HE": { valorMultiplier: 0.85, scoreOverride: 72, variacaoOverride: "-15.2%", corVariacaoOverride: "text-green-600" },
+      "Movimentações": { valorMultiplier: 0.80, scoreOverride: 82, variacaoOverride: "-22.5%", corVariacaoOverride: "text-green-600" },
+      "Cobertura Efetiva": { valorMultiplier: 1.08, scoreOverride: 85, variacaoOverride: "+5 pp", corVariacaoOverride: "text-green-600" },
+    },
+  },
+  "Regional RJ": {
+    scoreOperacional: 82, scoreFaixa: "Saudável", scoreDiferenca: 8,
+    melhorIndicador: "Absenteísmo", melhorIndicadorDetalhe: "-1.5 pp (5.8% → 4.3%)",
+    piorIndicador: "Cobertura Efetiva", piorIndicadorDetalhe: "-3 pp no período",
+    sparklineMultipliers: {
+      "Qualidade do Ponto": { valorMultiplier: 0.98, scoreOverride: 85, variacaoOverride: "+3.8 pp", corVariacaoOverride: "text-green-600" },
+      "Absenteísmo": { valorMultiplier: 0.90, scoreOverride: 82, variacaoOverride: "-1.5 pp", corVariacaoOverride: "text-green-600" },
+      "Volume HE": { valorMultiplier: 1.10, scoreOverride: 58, variacaoOverride: "-18.0%", corVariacaoOverride: "text-green-600" },
+      "Movimentações": { valorMultiplier: 0.95, scoreOverride: 68, variacaoOverride: "-12.1%", corVariacaoOverride: "text-green-600" },
+      "Cobertura Efetiva": { valorMultiplier: 0.95, scoreOverride: 68, variacaoOverride: "-3 pp", corVariacaoOverride: "text-red-500" },
+    },
+  },
+  "Regional PR": {
+    scoreOperacional: 79, scoreFaixa: "Atenção", scoreDiferenca: 12,
+    melhorIndicador: "Volume HE", melhorIndicadorDetalhe: "-28.4% no período",
+    piorIndicador: "Movimentações", piorIndicadorDetalhe: "+5.2% no período",
+    sparklineMultipliers: {
+      "Qualidade do Ponto": { valorMultiplier: 0.96, scoreOverride: 82, variacaoOverride: "+3.0 pp", corVariacaoOverride: "text-green-600" },
+      "Absenteísmo": { valorMultiplier: 1.05, scoreOverride: 72, variacaoOverride: "-0.2 pp", corVariacaoOverride: "text-green-600" },
+      "Volume HE": { valorMultiplier: 0.72, scoreOverride: 78, variacaoOverride: "-28.4%", corVariacaoOverride: "text-green-600" },
+      "Movimentações": { valorMultiplier: 1.15, scoreOverride: 52, variacaoOverride: "+5.2%", corVariacaoOverride: "text-red-500" },
+      "Cobertura Efetiva": { valorMultiplier: 1.02, scoreOverride: 74, variacaoOverride: "+3 pp", corVariacaoOverride: "text-green-600" },
+    },
+  },
+  "Regional MG": {
+    scoreOperacional: 75, scoreFaixa: "Atenção", scoreDiferenca: 6,
+    melhorIndicador: "Cobertura Efetiva", melhorIndicadorDetalhe: "+4 pp (68% → 72%)",
+    piorIndicador: "Absenteísmo", piorIndicadorDetalhe: "+0.8 pp no período",
+    sparklineMultipliers: {
+      "Qualidade do Ponto": { valorMultiplier: 0.95, scoreOverride: 80, variacaoOverride: "+2.8 pp", corVariacaoOverride: "text-green-600" },
+      "Absenteísmo": { valorMultiplier: 1.20, scoreOverride: 62, variacaoOverride: "+0.8 pp", corVariacaoOverride: "text-red-500" },
+      "Volume HE": { valorMultiplier: 1.05, scoreOverride: 58, variacaoOverride: "-19.5%", corVariacaoOverride: "text-green-600" },
+      "Movimentações": { valorMultiplier: 1.10, scoreOverride: 55, variacaoOverride: "-10.0%", corVariacaoOverride: "text-green-600" },
+      "Cobertura Efetiva": { valorMultiplier: 1.03, scoreOverride: 74, variacaoOverride: "+4 pp", corVariacaoOverride: "text-green-600" },
+    },
+  },
+  "Regional BA": {
+    scoreOperacional: 64, scoreFaixa: "Crítico", scoreDiferenca: 3,
+    melhorIndicador: "Volume HE", melhorIndicadorDetalhe: "-12.0% no período",
+    piorIndicador: "Absenteísmo", piorIndicadorDetalhe: "+1.8 pp no período",
+    sparklineMultipliers: {
+      "Qualidade do Ponto": { valorMultiplier: 0.90, scoreOverride: 72, variacaoOverride: "+1.5 pp", corVariacaoOverride: "text-green-600" },
+      "Absenteísmo": { valorMultiplier: 1.40, scoreOverride: 48, variacaoOverride: "+1.8 pp", corVariacaoOverride: "text-red-500" },
+      "Volume HE": { valorMultiplier: 1.25, scoreOverride: 45, variacaoOverride: "-12.0%", corVariacaoOverride: "text-green-600" },
+      "Movimentações": { valorMultiplier: 1.30, scoreOverride: 42, variacaoOverride: "-5.1%", corVariacaoOverride: "text-green-600" },
+      "Cobertura Efetiva": { valorMultiplier: 0.88, scoreOverride: 55, variacaoOverride: "-2 pp", corVariacaoOverride: "text-red-500" },
+    },
+  },
+};
+
 export const insightsResumo = [
   { tipo: "positivo" as const, texto: "A qualidade do ponto evoluiu de 83.2% para 87.3% no período, com 4 das 5 operações em tendência positiva." },
   { tipo: "negativo" as const, texto: "A Regional BA concentra o maior risco operacional: absenteísmo de 6.8% (40% acima da média) e 363 movimentações por 100 colaboradores." },
