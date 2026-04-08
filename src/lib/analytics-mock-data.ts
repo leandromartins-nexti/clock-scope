@@ -286,8 +286,8 @@ export const coberturas = {
     horaExtra: 22,
     tempoMedioReposicao: 3.2,
     horasPostoDescoberto: "4.8K",
-    riscoPotencialGlosa: "R$ 580K",
-    custoTotalCobertura: "R$ 1.2M",
+    horasCobertoComHE: "12.4K",
+    horasCobertosPlanejadas: "18.6K",
     scoreEficiencia: 74,
   },
 
@@ -317,11 +317,11 @@ export const coberturas = {
   ],
 
   regionais: [
-    { nome: "Regional SP", score: 82, custoCobertura: "R$ 420K", horasDescoberto: 850, tendencia: "melhorando" },
-    { nome: "Regional RJ", score: 76, custoCobertura: "R$ 310K", horasDescoberto: 1100, tendencia: "estavel" },
-    { nome: "Regional MG", score: 72, custoCobertura: "R$ 240K", horasDescoberto: 920, tendencia: "melhorando" },
-    { nome: "Regional PR", score: 69, custoCobertura: "R$ 130K", horasDescoberto: 980, tendencia: "piorando" },
-    { nome: "Regional BA", score: 61, custoCobertura: "R$ 100K", horasDescoberto: 950, tendencia: "piorando" },
+    { nome: "Regional SP", score: 82, horasCobertas: "18.2K", horasDescoberto: 850, percentHE: 18, tendencia: "melhorando" },
+    { nome: "Regional RJ", score: 76, horasCobertas: "14.8K", horasDescoberto: 1100, percentHE: 24, tendencia: "estavel" },
+    { nome: "Regional MG", score: 72, horasCobertas: "11.2K", horasDescoberto: 920, percentHE: 21, tendencia: "melhorando" },
+    { nome: "Regional PR", score: 69, horasCobertas: "8.5K", horasDescoberto: 980, percentHE: 26, tendencia: "piorando" },
+    { nome: "Regional BA", score: 61, horasCobertas: "6.9K", horasDescoberto: 950, percentHE: 28, tendencia: "piorando" },
   ] as RegionalRow[],
 
   insights: [
