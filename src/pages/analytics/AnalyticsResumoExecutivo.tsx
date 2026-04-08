@@ -227,12 +227,12 @@ export default function AnalyticsResumoExecutivo() {
                   <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Score Operacional</p>
                   <InfoTip text="Índice de saúde da operação calculado a partir de 5 indicadores: qualidade do ponto, absenteísmo, volume de horas extras, movimentações e cobertura efetiva. Pesos configuráveis em Configuração." />
                 </div>
-                <ScoreGauge score={resumo.scoreOperacional} />
-                <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{resumo.scoreOperacional}</p>
-                <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{resumo.scoreFaixa}</p>
+                <ScoreGauge score={activeScore} />
+                <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeScore}</p>
+                <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{activeFaixa}</p>
                 <div className="flex items-center justify-center gap-1 mt-1">
                   <TrendingUp size={12} className="text-green-500" />
-                  <span className="text-[11px] font-medium text-green-600">+{resumoComparativo.scoreDiferenca} vs anterior</span>
+                  <span className="text-[11px] font-medium text-green-600">+{activeDiff} vs anterior</span>
                 </div>
               </div>
 
