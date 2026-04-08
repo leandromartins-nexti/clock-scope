@@ -9,7 +9,7 @@ import {
   resumo, resumoComparativo, rankingOperacoes, sparklineData,
 } from "@/lib/analytics-mock-data";
 import {
-  ResponsiveContainer, LineChart, Line,
+  ResponsiveContainer, LineChart, Line, Tooltip as RechartsTooltip,
 } from "recharts";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
