@@ -301,17 +301,6 @@ export default function AnalyticsResumoExecutivo() {
                   </div>
                 );
               })}
-              {/* Score geral row */}
-              <div className="flex items-center gap-4 px-4 py-2.5 bg-muted/20 font-semibold">
-                <div className="w-2" />
-                <span className="text-sm text-foreground min-w-[140px]">Score Geral</span>
-                <span className={`text-xs font-bold min-w-[45px] text-center px-1.5 py-0.5 rounded ${getScoreColor(scoreGeral)} ${getScoreBg(scoreGeral)}`}>{scoreGeral}</span>
-                <span className="text-sm text-muted-foreground min-w-[70px]">—</span>
-                <span className="text-[11px] text-muted-foreground min-w-[65px] text-center">—</span>
-                <div className="flex-1 min-w-[120px] text-[10px] text-muted-foreground text-center">
-                  Média ponderada dos 5 indicadores (pesos configuráveis)
-                </div>
-              </div>
               </div>
               {/* Month legend footer */}
               <div className="flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
