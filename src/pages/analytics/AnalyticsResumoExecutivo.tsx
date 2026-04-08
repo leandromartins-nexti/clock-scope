@@ -70,8 +70,9 @@ const getScoreBg = (s: number) => s >= 85 ? "bg-green-50" : s >= 70 ? "bg-orange
 function SparklineTooltip({ active, payload, cardData }: any) {
   if (!active || !payload?.length) return null;
   const valor = payload[0].value as number;
-  const competencia = payload[0].payload.competencia as string;
-  const idx = evolucao.findIndex((e) => e.competencia === label);
+  const comp = payload[0].payload.competencia as string;
+  const evolucao = cardData.evolucao as { competencia: string; valor: number }[];
+  const idx = evolucao.findIndex((e) => e.competencia === comp);
   const prev = idx > 0 ? evolucao[idx - 1] : null;
   const next = idx < evolucao.length - 1 ? evolucao[idx + 1] : null;
   const fmt = (v: number) => {
@@ -84,7 +85,7 @@ function SparklineTooltip({ active, payload, cardData }: any) {
   };
   return (
     <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2 text-xs min-w-[160px]">
-      <p className="font-semibold text-foreground mb-1.5">{label}</p>
+      <p className="font-semibold text-foreground mb-1.5">{comp}</p>
       <div className="flex items-center gap-2 mb-1">
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cardData.corLinha }} />
         <span className="text-muted-foreground">{cardData.label}:</span>
