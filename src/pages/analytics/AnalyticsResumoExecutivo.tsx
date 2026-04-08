@@ -286,10 +286,10 @@ export default function AnalyticsResumoExecutivo() {
                                 key={props.index}
                                 cx={props.cx}
                                 cy={props.cy}
-                                r={props.index === lastIdx ? 3.5 : 2}
-                                fill={props.index === lastIdx ? getLineColor(card.score) : 'white'}
-                                stroke={getLineColor(card.score)}
-                                strokeWidth={props.index === lastIdx ? 1.5 : 1}
+                                r={props.index === lastIdx ? 5 : 3.5}
+                                fill={getLineColor(card.score)}
+                                stroke="white"
+                                strokeWidth={2}
                                 className="cursor-pointer"
                               />
                             )}
