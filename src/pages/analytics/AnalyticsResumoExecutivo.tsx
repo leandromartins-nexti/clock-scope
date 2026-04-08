@@ -84,7 +84,7 @@ function SparklineTooltip({ active, payload, cardData }: any) {
     return d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
   };
   return (
-    <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2 text-xs min-w-[160px]">
+    <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2 text-xs min-w-[160px] z-[9999] relative">
       <p className="font-semibold text-foreground mb-1.5">{comp}</p>
       <div className="flex items-center gap-2 mb-1">
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cardData.corLinha }} />
@@ -254,6 +254,7 @@ export default function AnalyticsResumoExecutivo() {
                           <RechartsTooltip
                             content={<SparklineTooltip cardData={card} />}
                             cursor={false}
+                            wrapperStyle={{ zIndex: 9999 }}
                           />
                           <Line
                             type="monotone"
