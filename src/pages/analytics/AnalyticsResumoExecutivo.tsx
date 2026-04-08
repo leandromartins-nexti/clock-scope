@@ -191,7 +191,7 @@ export default function AnalyticsResumoExecutivo() {
                 <span className="min-w-[45px] text-center">Score</span>
                 <span className="min-w-[70px]">Atual</span>
                 <span className="min-w-[65px] text-center">Variação</span>
-                <div className="flex-1 min-w-[120px] text-center">Evolução · abr/25 – mar/26</div>
+                <div className="flex-1 min-w-[120px]" />
               </div>
               <div className="divide-y divide-border/40">
               {sparklineCards.map((card) => {
@@ -250,6 +250,19 @@ export default function AnalyticsResumoExecutivo() {
                   Média ponderada dos 5 indicadores (pesos configuráveis)
                 </div>
               </div>
+              </div>
+              {/* Month legend footer */}
+              <div className="flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
+                <div className="w-2" />
+                <span className="min-w-[140px]" />
+                <span className="min-w-[45px]" />
+                <span className="min-w-[70px]" />
+                <span className="min-w-[65px]" />
+                <div className="flex-1 min-w-[120px] flex justify-between">
+                  {sparklineCards[0].evolucao.map((pt) => (
+                    <span key={pt.competencia} className="text-[9px] text-muted-foreground">{pt.competencia.replace('/20', '/')}</span>
+                  ))}
+                </div>
               </div>
             </div>
 
