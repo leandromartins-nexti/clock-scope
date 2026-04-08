@@ -11,66 +11,65 @@ Nexti Official Theme
 
 @layer base {
   :root {
-    /* Brand Colors - Dark Blue Primary */
-    --background: 0 0% 100%; /* #FFFFFF */
-    --foreground: 0 0% 13%; /* #222222 */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 13%;
 
-    --card: 0 0% 100%; /* #FFFFFF */
+    --card: 0 0% 100%;
     --card-foreground: 0 0% 13%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 13%;
 
-    --primary: 220 100% 30%; /* #003399 - Brand Primary Dark Blue */
+    /* Primária: Laranja Nexti */
+    --primary: 14 100% 55%;          /* #FF5722 */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 220 100% 45%; /* Lighter Blue for glow effects */
+    --primary-glow: 14 80% 65%;
 
-    --secondary: 220 80% 50%; /* #1A66CC - Brand Default Blue */
+    /* Secundária: Laranja escuro */
+    --secondary: 14 80% 45%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 9% 65%; /* #9CA3AF */
-    --muted-foreground: 0 0% 42%; /* #6B6B6B */
-
-    --accent: 0 0% 31%; /* #4E4E4E */
+    --muted: 220 9% 65%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 0 0% 31%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 162 100% 38%; /* #00C48C */
+    /* Status */
+    --success: 162 100% 38%;        /* Verde */
     --success-foreground: 0 0% 100%;
-
-    --warning: 44 98% 54%; /* #FDB813 */
+    --warning: 44 98% 54%;          /* Amarelo */
     --warning-foreground: 0 0% 13%;
-
-    --destructive: 355 78% 56%; /* #E63946 */
+    --destructive: 355 78% 56%;     /* Vermelho */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%; /* #E5E7EB */
+    --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 220 100% 30%;
+    --ring: 14 100% 55%;
 
     --radius: 0.75rem;
 
-    --surface: 220 100% 98%; /* Light blue surface */
+    --surface: 220 20% 97%;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 0 0% 13%;
-    --sidebar-primary: 220 100% 30%;
+    --sidebar-primary: 14 100% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 100% 95%;
-    --sidebar-accent-foreground: 220 100% 30%;
+    --sidebar-accent: 14 100% 95%;
+    --sidebar-accent-foreground: 14 100% 55%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 220 100% 30%;
+    --sidebar-ring: 14 100% 55%;
 
-    /* Chart colors - Brand Blue Palette */
-    --chart-1: 220 100% 30%; /* #003399 - Brand Primary */
-    --chart-2: 220 80% 50%; /* #1A66CC - Brand Default */
-    --chart-3: 220 70% 60%; /* #4D88E6 - Brand Light */
-    --chart-4: 220 60% 70%; /* #80AAFF - Lighter Blue */
-    --chart-5: 220 50% 80%; /* #B3CCFF - Very Light Blue */
-    --chart-6: 0 0% 31%; /* #4E4E4E - Neutral Gray */
+    /* Gráficos */
+    --chart-1: 14 100% 55%;         /* Laranja Nexti (principal) */
+    --chart-2: 220 80% 50%;         /* Azul */
+    --chart-3: 162 100% 38%;        /* Verde */
+    --chart-4: 44 98% 54%;          /* Amarelo */
+    --chart-5: 280 60% 55%;         /* Roxo */
+    --chart-6: 0 0% 60%;            /* Cinza */
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 100% 30%), hsl(220 80% 50%));
-    --gradient-card: linear-gradient(to bottom, hsl(0 0% 100%), hsl(220 100% 97%));
+    --gradient-primary: linear-gradient(135deg, hsl(14 100% 55%), hsl(14 80% 45%));
+    --gradient-card: linear-gradient(to bottom, hsl(0 0% 100%), hsl(220 20% 97%));
   }
 }
 
@@ -81,22 +80,23 @@ Nexti Official Theme
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Poppins', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
     font-weight: 600;
   }
-  
+
   /* Sidebar Dark Theme Override */
   [data-sidebar] {
-    --sidebar-background: 210 11% 21%; /* #343a40 */
-    --sidebar-foreground: 210 17% 92%; /* #e9ecef */
-    --sidebar-primary: 220 100% 30%; /* #003399 */
+    --sidebar-background: 210 11% 21%;
+    --sidebar-foreground: 210 17% 92%;
+    --sidebar-primary: 14 100% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 100% / 0.1; /* rgba(255, 255, 255, 0.1) */
+    --sidebar-accent: 0 0% 100% / 0.1;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 100% / 0.1; /* rgba(255, 255, 255, 0.1) */
-    --sidebar-ring: 220 100% 30%;
+    --sidebar-border: 0 0% 100% / 0.1;
+    --sidebar-ring: 14 100% 55%;
   }
 }
