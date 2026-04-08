@@ -254,6 +254,7 @@ export default function AnalyticsResumoExecutivo() {
                           <RechartsTooltip
                             content={<SparklineTooltip cardData={card} />}
                             cursor={false}
+                            wrapperStyle={{ zIndex: 9999 }}
                           />
                           <Line
                             type="monotone"
