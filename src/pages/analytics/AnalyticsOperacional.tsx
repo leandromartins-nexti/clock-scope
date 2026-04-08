@@ -6,12 +6,14 @@ import { resumo } from "@/lib/analytics-mock-data";
 import AnalyticsDisciplinaOperacional from "./AnalyticsDisciplinaOperacional";
 import AnalyticsCoberturasContinuidade from "./AnalyticsCoberturasContinuidade";
 import AnalyticsViolacoesTrabalhistas from "./AnalyticsViolacoesTrabalhistas";
+import AnalyticsBancoHoras from "./AnalyticsBancoHoras";
 import AnalyticsOperacoesEstruturas from "./AnalyticsOperacoesEstruturas";
 
 const tabs = [
   { id: "disciplina", label: "Disciplina Operacional" },
   { id: "coberturas", label: "Coberturas e Continuidade" },
   { id: "violacoes", label: "Violações Trabalhistas" },
+  { id: "bancoHoras", label: "Banco de Horas" },
   { id: "operacoes", label: "Operações e Estruturas" },
 ];
 
@@ -25,6 +27,7 @@ export default function AnalyticsOperacional() {
       case "disciplina": return <AnalyticsDisciplinaOperacional embedded />;
       case "coberturas": return <AnalyticsCoberturasContinuidade embedded />;
       case "violacoes": return <AnalyticsViolacoesTrabalhistas embedded />;
+      case "bancoHoras": return <AnalyticsBancoHoras embedded />;
       case "operacoes": return <AnalyticsOperacoesEstruturas embedded />;
       default: return <AnalyticsDisciplinaOperacional embedded />;
     }
@@ -42,7 +45,6 @@ export default function AnalyticsOperacional() {
         </div>
       </header>
 
-      {/* Filter bar */}
       <div className="bg-white px-6 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 text-sm">
@@ -62,7 +64,6 @@ export default function AnalyticsOperacional() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="bg-white border-b border-border px-6">
         <div className="flex gap-6">
           {tabs.map((tab) => (
@@ -81,7 +82,6 @@ export default function AnalyticsOperacional() {
         </div>
       </div>
 
-      {/* Tab content */}
       <div className="flex-1">
         {renderTab()}
       </div>
