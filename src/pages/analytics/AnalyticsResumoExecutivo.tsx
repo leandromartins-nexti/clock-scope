@@ -66,6 +66,48 @@ const scoreGeral = Math.round(
 const getScoreColor = (s: number) => s >= 85 ? "text-green-600" : s >= 70 ? "text-orange-500" : s < 60 ? "text-red-600" : "text-yellow-600";
 const getScoreBg = (s: number) => s >= 85 ? "bg-green-50" : s >= 70 ? "bg-orange-50" : s < 60 ? "bg-red-50" : "bg-yellow-50";
 
+// ── Custom sparkline tooltip ────────────────────────────────
+function SparklineTooltip({ active, payload, label, cardData }: any) {
+  if (!active || !payload?.length) return null;
+  const valor = payload[0].value as number;
+  const evolucao = cardData.evolucao as { competencia: string; valor: number }[];
+  const idx = evolucao.findIndex((e) => e.competencia === label);
+  const prev = idx > 0 ? evolucao[idx - 1] : null;
+  const next = idx < evolucao.length - 1 ? evolucao[idx + 1] : null;
+  const fmt = (v: number) => {
+    if (cardData.label === "Qualidade do Ponto" || cardData.label === "Absenteísmo" || cardData.label === "Cobertura Efetiva") return `${v}%`;
+    return `${v}K`;
+  };
+  const diff = (a: number, b: number) => {
+    const d = a - b;
+    return d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
+  };
+  return (
+    <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2 text-xs min-w-[160px]">
+      <p className="font-semibold text-foreground mb-1.5">{label}</p>
+      <div className="flex items-center gap-2 mb-1">
+        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cardData.corLinha }} />
+        <span className="text-muted-foreground">{cardData.label}:</span>
+        <span className="font-semibold">{fmt(valor)}</span>
+      </div>
+      <div className="border-t border-border/50 mt-1.5 pt-1.5 space-y-0.5">
+        {prev && (
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">vs {prev.competencia}:</span>
+            <span className={Number(diff(valor, prev.valor)) >= 0 ? 'text-green-600 font-medium' : 'text-red-500 font-medium'}>{diff(valor, prev.valor)}</span>
+          </div>
+        )}
+        {next && (
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">→ {next.competencia}:</span>
+            <span className="text-muted-foreground">{fmt(next.valor)}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Page ───────────────────────────────────────────────
 export default function AnalyticsResumoExecutivo() {
   const navigate = useNavigate();
