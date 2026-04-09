@@ -907,38 +907,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, groupBy, onGr
         </div>
       </div>
 
-      {/* Right sidebar */}
-      <div className="w-[220px] shrink-0">
-        <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-semibold text-foreground">Regionais</h3>
-            {selectedRegional && (
-              <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
-                <X size={10} /> Limpar
-              </button>
-            )}
-          </div>
-          <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · menor volume = melhor</p>
-          <div className="space-y-0.5 overflow-y-auto flex-1">
-            {sortedRegionais.map((op) => {
-              const isSelected = selectedRegional === op.nome;
-              const isDimmed = selectedRegional && !isSelected;
-              const sc = getMovScore(op.total);
-              const sColor = sc >= 60 ? "text-green-600" : sc >= 40 ? "text-orange-500" : "text-red-600";
-              return (
-                <div
-                  key={op.nome}
-                  onClick={() => onRegionalClick(op.nome)}
-                  className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
-                >
-                  <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
-                  <span className={`font-bold tabular-nums ${sColor}`}>{sc}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} groupBy={groupBy} onGroupByChange={onGroupByChange} />
     </div>
   );
 }
@@ -946,18 +915,21 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, groupBy, onGr
 // ── Exported standalone tab wrappers ──
 export function QualidadeTab() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
-  return <div className="px-6 py-4"><QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+  return <div className="px-6 py-4"><QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={setGroupBy} /></div>;
 }
 
 export function AbsenteismoTab() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
-  return <div className="px-6 py-4"><AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+  return <div className="px-6 py-4"><AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={setGroupBy} /></div>;
 }
 
 export function MovimentacoesTab() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
-  return <div className="px-6 py-4"><MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+  return <div className="px-6 py-4"><MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={setGroupBy} /></div>;
 }
