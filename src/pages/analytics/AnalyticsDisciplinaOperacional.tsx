@@ -346,7 +346,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
 
         <div className="bg-card border border-border/50 rounded-xl p-4">
           <div className="flex items-center gap-1.5 mb-0.5">
-            <h4 className="text-sm font-semibold">Volume vs Tempo de Tratativa</h4>
+            <h4 className="text-sm font-semibold">Tempo de Tratativa vs Volume</h4>
             <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária." />
           </div>
           <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
