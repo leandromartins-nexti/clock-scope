@@ -175,9 +175,9 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
         {/* Legend */}
         <div className="flex items-center gap-4 mb-3 text-[10px] text-muted-foreground">
           <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-green-500" /> Hora Regular</div>
-          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-red-500" /> Hora Extra</div>
-          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-orange-400" /> Falta</div>
           <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-yellow-400" /> Atrasos</div>
+          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-orange-400" /> Falta</div>
+          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-red-500" /> Hora Extra</div>
         </div>
 
         <div className="space-y-3">
