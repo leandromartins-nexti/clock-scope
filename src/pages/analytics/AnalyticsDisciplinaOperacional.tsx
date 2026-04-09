@@ -261,25 +261,128 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
         </div>
       </div>
 
-      {/* Evolução da Qualidade do Ponto */}
-      <div className="bg-card border border-border/50 rounded-xl p-4">
-        <h4 className="text-sm font-semibold mb-2">Evolução da Qualidade do Ponto</h4>
-        <ResponsiveContainer width="100%" height={250}>
-          <LineChart data={qualidadeEvolucao}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
-            <YAxis domain={[75, 95]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-            <RechartsTooltip formatter={(v: number) => [`${v}%`, "Qualidade"]} />
-            <ReferenceLine y={qualidadeMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${qualidadeMedia}%`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
-            <Line type="monotone" dataKey="value" stroke="#FF5722" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} name="Qualidade" />
-          </LineChart>
-        </ResponsiveContainer>
+      {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-card border border-border/50 rounded-xl p-4">
+          <h4 className="text-sm font-semibold mb-2">Evolução da Qualidade do Ponto</h4>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={qualidadeEvolucao}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+              <YAxis domain={[75, 95]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
+              <RechartsTooltip formatter={(v: number) => [`${v}%`, "Qualidade"]} />
+              <ReferenceLine y={qualidadeMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${qualidadeMedia}%`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
+              <Line type="monotone" dataKey="value" stroke="#FF5722" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} name="Qualidade" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-card border border-border/50 rounded-xl p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <h4 className="text-sm font-semibold">Tempo Médio de Tratativa por Competência</h4>
+            <InfoTip text="Média de dias entre o registro da marcação e o ajuste." />
+          </div>
+          <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal em dias</p>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={evolucaoTratativa}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+              <YAxis domain={[0, 12]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} />
+              <RechartsTooltip formatter={(v: number) => [`${v} dias`, "Tempo Médio"]} />
+              <ReferenceLine y={tratativaMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${tratativaMedia.toFixed(1)}d`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
+              <Line type="monotone" dataKey="dias" stroke="#f97316" strokeWidth={2} dot={(props: any) => {
+                const { cx, cy, index } = props;
+                const isLast = index === evolucaoTratativa.length - 1;
+                return <circle cx={cx} cy={cy} r={isLast ? 5 : 3} fill={isLast ? "#FF5722" : "#f97316"} stroke={isLast ? "#fff" : "none"} strokeWidth={isLast ? 2 : 0} />;
+              }} activeDot={{ r: 5 }} name="Dias" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
-      {/* Scatter Qualidade×Volume */}
-      <div className="bg-card border border-border/50 rounded-xl p-4">
-        <div className="flex items-center gap-1.5 mb-1">
-          <h4 className="text-sm font-semibold">Qualidade × Volume por Operação</h4>
+      {/* Row 2: Qualidade×Volume + Volume×Tempo Tratativa */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-card border border-border/50 rounded-xl p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <h4 className="text-sm font-semibold">Qualidade × Volume por Operação</h4>
+            <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
+          </div>
+          <p className="text-[10px] text-muted-foreground mb-2">Cada bolha representa uma operação. Tamanho = headcount</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" dataKey="volume" name="Volume" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
+              <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={[78, 92]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+              <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
+              <ReferenceLine y={85} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: "85% (Bom)", position: "right", fontSize: 9, fill: "#9ca3af" }} />
+              <ReferenceLine x={170000} stroke="#9ca3af" strokeDasharray="6 4" />
+              <RechartsTooltip content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload;
+                return (
+                  <div className="bg-white border rounded-lg p-2 shadow-md text-xs">
+                    <p className="font-semibold">{d.regional}</p>
+                    <p>Volume: {(d.volume / 1000).toFixed(0)}K marcações</p>
+                    <p>Qualidade: {d.qualidade}%</p>
+                    <p>Headcount: {d.headcount}</p>
+                  </div>
+                );
+              }} />
+              <Scatter data={scatterQualidade} shape={(props: any) => {
+                const { cx, cy, payload } = props;
+                const r = Math.sqrt(payload.headcount) / 4;
+                const fill = payload.qualidade >= 85 ? "#22c55e" : payload.qualidade >= 75 ? "#f97316" : "#ef4444";
+                return (
+                  <g>
+                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={0.7} stroke={fill} strokeWidth={1.5} />
+                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151">{payload.regional.replace("Regional ", "")}</text>
+                  </g>
+                );
+              }} />
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-card border border-border/50 rounded-xl p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <h4 className="text-sm font-semibold">Volume × Tempo de Tratativa por Operação</h4>
+            <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária." />
+          </div>
+          <p className="text-[10px] text-muted-foreground mb-2">Cada bolha representa uma operação. Tamanho = headcount</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" dataKey="volume" name="Volume" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
+              <YAxis type="number" dataKey="dias" name="Tempo" domain={[2, 10]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} label={{ value: "Tempo tratativa (dias)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+              <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
+              <ReferenceLine y={tratativaMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${tratativaMedia.toFixed(1)}d`, position: "right", fontSize: 9, fill: "#9ca3af" }} />
+              <RechartsTooltip content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload;
+                return (
+                  <div className="bg-white border rounded-lg p-2 shadow-md text-xs">
+                    <p className="font-semibold">{d.regional}</p>
+                    <p>Volume: {(d.volume / 1000).toFixed(0)}K marcações</p>
+                    <p>Tempo: {d.dias} dias</p>
+                    <p>Headcount: {d.headcount}</p>
+                  </div>
+                );
+              }} />
+              <Scatter data={scatterTratativa} shape={(props: any) => {
+                const { cx, cy, payload } = props;
+                const r = Math.sqrt(payload.headcount) / 4;
+                const fill = payload.dias <= 5 ? "#22c55e" : payload.dias <= 7 ? "#f97316" : "#ef4444";
+                return (
+                  <g>
+                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={0.7} stroke={fill} strokeWidth={1.5} />
+                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151">{payload.regional.replace("Regional ", "")}</text>
+                  </g>
+                );
+              }} />
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
           <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
         </div>
         <p className="text-[10px] text-muted-foreground mb-2">Cada bolha representa uma operação. Tamanho = headcount</p>
