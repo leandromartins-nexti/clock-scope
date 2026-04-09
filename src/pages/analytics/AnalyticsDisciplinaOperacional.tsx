@@ -602,7 +602,7 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
               <div
                 key={op.nome}
                 onClick={() => onRegionalClick(op.nome)}
-                className={`flex items-center gap-2 px-0.5 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
+                className={`flex items-center gap-2 px-0.5 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 border border-[#FF5722]/30" : "hover:bg-muted/40 border border-transparent"} ${isDimmed ? "opacity-35" : ""}`}
               >
                 <UITooltip>
                   <TooltipTrigger asChild>
