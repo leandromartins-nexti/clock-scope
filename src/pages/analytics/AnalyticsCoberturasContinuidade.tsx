@@ -195,22 +195,28 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
               >
                 <span className="text-sm font-medium min-w-[120px]">{op.nome}</span>
                 {/* Stacked bar by event type */}
-                <div className="flex-1 bg-gray-100 rounded-full h-4 relative overflow-hidden flex">
-                  {[
-                    { pct: op.regular, hours: op.regularH, label: "Hora Regular", bg: "bg-green-500" },
-                    { pct: op.atrasos, hours: op.atrasosH, label: "Atrasos", bg: "bg-yellow-400" },
-                    { pct: op.falta, hours: op.faltaH, label: "Falta", bg: "bg-orange-400" },
-                    { pct: op.he, hours: op.heH, label: "Hora Extra", bg: "bg-red-500" },
-                  ].map((seg, idx) => (
-                    <UITooltip key={idx}>
-                      <TooltipTrigger asChild>
-                        <div className={`h-4 ${seg.bg} transition-all cursor-default`} style={{ width: `${seg.pct}%` }} />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-xs">
-                        <span className="font-semibold">{seg.label}</span>: {seg.pct}% · {seg.hours}h
-                      </TooltipContent>
-                    </UITooltip>
+                <div className="flex-1 bg-gray-100 rounded-full h-4 relative overflow-hidden">
+                  {/* Grid lines at 25%, 50%, 75% */}
+                  {[25, 50, 75].map(p => (
+                    <div key={p} className="absolute top-0 bottom-0 w-px bg-black/10" style={{ left: `${p}%` }} />
                   ))}
+                  <div className="relative h-full flex">
+                    {[
+                      { pct: op.regular, hours: op.regularH, label: "Hora Regular", bg: "bg-green-500" },
+                      { pct: op.atrasos, hours: op.atrasosH, label: "Atrasos", bg: "bg-yellow-400" },
+                      { pct: op.falta, hours: op.faltaH, label: "Falta", bg: "bg-orange-400" },
+                      { pct: op.he, hours: op.heH, label: "Hora Extra", bg: "bg-red-500" },
+                    ].map((seg, idx) => (
+                      <UITooltip key={idx}>
+                        <TooltipTrigger asChild>
+                          <div className={`h-4 ${seg.bg} transition-all cursor-default`} style={{ width: `${seg.pct}%` }} />
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs">
+                          <span className="font-semibold">{seg.label}</span>: {seg.pct}% · {seg.hours}h
+                        </TooltipContent>
+                      </UITooltip>
+                    ))}
+                  </div>
                 </div>
                 <span className={`text-sm font-semibold min-w-[40px] text-right ${barScoreColor}`}>
                   {op.score}
