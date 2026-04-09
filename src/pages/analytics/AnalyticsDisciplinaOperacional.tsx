@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown } from "lucide-react";
+import IndicatorTable, { type TableColumn, getScoreColor, getScoreBg, getLineColor, TrendIcon } from "@/components/analytics/IndicatorTable";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -39,11 +40,6 @@ function InfoTip({ text }: { text: string }) {
   );
 }
 
-function TrendIcon({ t }: { t: string }) {
-  if (t === "melhorando") return <TrendingUp size={14} className="text-green-500" />;
-  if (t === "piorando") return <TrendingDown size={14} className="text-red-500" />;
-  return <Minus size={14} className="text-gray-400" />;
-}
 
 function abreviar(nome: string): string {
   const words = nome.replace(/[-–]/g, " ").split(/\s+/).filter(w => w.length > 1);
@@ -366,11 +362,15 @@ function generateClientes(regional: string) {
     const seed = regional.length * 7 + i * 13 + n.length;
     const r = Math.sin(seed) * 10000; const frac = r - Math.floor(r);
     const qualidade = +(72 + frac * 22).toFixed(1);
+    const score = Math.round(qualidade);
     const volume = `${Math.round(8 + frac * 55)}K`;
     const headcount = Math.round(30 + frac * 350);
     const tratativa = +(1.5 + frac * 9).toFixed(1);
+    const varNum = +(-5 + frac * 10).toFixed(1);
+    const variacao = `${varNum > 0 ? "+" : ""}${varNum} pp`;
+    const corVariacao = varNum >= 0 ? "text-green-600" : "text-red-500";
     const tendencia = qualidade >= 88 ? "melhorando" : qualidade >= 80 ? "estavel" : "piorando";
-    return { nome: n, qualidade, volume, headcount, tratativa, tendencia };
+    return { nome: n, qualidade, score, volume, headcount, tratativa, variacao, corVariacao, tendencia };
   });
 }
 
@@ -380,11 +380,13 @@ function generatePostos(regional: string) {
     const seed = regional.length * 7 + i * 13;
     const r = Math.sin(seed) * 10000; const frac = r - Math.floor(r);
     const qualidade = +(75 + frac * 20).toFixed(1);
+    const score = Math.round(qualidade);
     const volume = `${Math.round(5 + frac * 40)}K`;
     const headcount = Math.round(20 + frac * 200);
-    const tratativa = +(2 + frac * 8).toFixed(1);
-    const tendencia = qualidade >= 88 ? "melhorando" : qualidade >= 80 ? "estavel" : "piorando";
-    return { nome: `${p} - ${regional.slice(0, 3).toUpperCase()}${i + 1}`, qualidade, volume, headcount, tratativa, tendencia };
+    const varNum = +(-4 + frac * 8).toFixed(1);
+    const variacao = `${varNum > 0 ? "+" : ""}${varNum} pp`;
+    const corVariacao = varNum >= 0 ? "text-green-600" : "text-red-500";
+    return { nome: `${p} - ${regional.slice(0, 3).toUpperCase()}${i + 1}`, qualidade, score, volume, headcount, variacao, corVariacao };
   });
 }
 
@@ -394,11 +396,13 @@ function generateColaboradores(regional: string) {
     const seed = regional.length * 11 + i * 17;
     const r = Math.sin(seed) * 10000; const frac = r - Math.floor(r);
     const qualidade = +(70 + frac * 25).toFixed(1);
+    const score = Math.round(qualidade);
     const marcacoes = Math.round(100 + frac * 500);
     const inconsistencias = Math.round(frac * 15);
-    const tratativa = +(1 + frac * 10).toFixed(1);
-    const tendencia = qualidade >= 88 ? "melhorando" : qualidade >= 80 ? "estavel" : "piorando";
-    return { nome: n, qualidade, marcacoes, inconsistencias, tratativa, tendencia };
+    const varNum = +(-3 + frac * 9).toFixed(1);
+    const variacao = `${varNum > 0 ? "+" : ""}${varNum} pp`;
+    const corVariacao = varNum >= 0 ? "text-green-600" : "text-red-500";
+    return { nome: n, qualidade, score, marcacoes, inconsistencias, variacao, corVariacao };
   });
 }
 
@@ -416,113 +420,6 @@ function generateOperadores(regional: string) {
   });
 }
 
-// ── Sortable + filterable + paginated table inside modal ──
-type SortConfig = { key: string; dir: "asc" | "desc" };
-const MODAL_PAGE_SIZE = 10;
-
-function ModalTable<T extends Record<string, any>>({ data, columns, searchPlaceholder }: {
-  data: T[];
-  columns: { key: string; label: string; align?: "left" | "right" | "center"; width?: string; format?: (v: any, row: T) => React.ReactNode }[];
-  searchPlaceholder?: string;
-}) {
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SortConfig>({ key: columns[1]?.key || columns[0].key, dir: "desc" });
-  const [page, setPage] = useState(1);
-
-  useEffect(() => { setPage(1); }, [search]);
-
-  const toggleSort = (key: string) => {
-    setSort(prev => prev.key === key ? { key, dir: prev.dir === "desc" ? "asc" : "desc" } : { key, dir: "desc" });
-    setPage(1);
-  };
-
-  const filtered = useMemo(() => {
-    if (!search.trim()) return data;
-    const q = search.toLowerCase();
-    return data.filter(row => columns.some(c => String(row[c.key]).toLowerCase().includes(q)));
-  }, [data, search, columns]);
-
-  const sorted = useMemo(() => {
-    return [...filtered].sort((a, b) => {
-      const aVal = a[sort.key];
-      const bVal = b[sort.key];
-      const dir = sort.dir === "desc" ? -1 : 1;
-      if (typeof aVal === "string" && typeof bVal === "string") return dir * aVal.localeCompare(bVal);
-      return dir * ((aVal as number) - (bVal as number));
-    });
-  }, [filtered, sort]);
-
-  const totalPages = Math.ceil(sorted.length / MODAL_PAGE_SIZE);
-  const paged = useMemo(() => sorted.slice((page - 1) * MODAL_PAGE_SIZE, page * MODAL_PAGE_SIZE), [sorted, page]);
-
-  return (
-    <div className="flex flex-col h-full">
-      <div className="relative mb-2">
-        <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder={searchPlaceholder || "Filtrar..."}
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
-        />
-      </div>
-      <div className="rounded-lg border border-border overflow-hidden flex-1">
-        <table className="w-full text-sm" style={{ tableLayout: "fixed" }}>
-          <thead className="sticky top-0 bg-muted/50 backdrop-blur-sm z-10">
-            <tr className="border-b border-border">
-              {columns.map(col => (
-                <th
-                  key={col.key}
-                  onClick={() => toggleSort(col.key)}
-                  style={col.width ? { width: col.width } : undefined}
-                  className={`px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase cursor-pointer hover:text-foreground transition-colors whitespace-nowrap ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"}`}
-                >
-                  <span className="inline-flex items-center gap-0.5">
-                    {col.label}
-                    <ArrowUpDown size={9} className={sort.key === col.key ? "text-[#FF5722]" : "opacity-40"} />
-                  </span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {paged.length === 0 && (
-              <tr><td colSpan={columns.length} className="px-3 py-4 text-center text-xs text-muted-foreground">Nenhum resultado encontrado</td></tr>
-            )}
-            {paged.map((row, i) => (
-              <tr key={i} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                {columns.map(col => (
-                  <td key={col.key} style={col.width ? { width: col.width } : undefined} className={`px-3 py-2 ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"}`}>
-                    {col.format ? col.format(row[col.key], row) : row[col.key]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex items-center justify-between mt-2">
-        <p className="text-[10px] text-muted-foreground">{sorted.length} registro{sorted.length !== 1 ? "s" : ""} · Página {page} de {totalPages || 1}</p>
-        {totalPages > 1 && (
-          <div className="flex gap-1">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`w-6 h-6 rounded text-[10px] font-medium transition-colors ${page === p ? "bg-[#FF5722] text-white" : "text-muted-foreground border border-border hover:border-[#FF5722]/40"}`}
-              >
-                {p}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ── Regional Detail Modal ──
 function RegionalDetailModal({ regional, open, onClose }: { regional: string | null; open: boolean; onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<"clientes" | "postos" | "colaboradores" | "operadores">("clientes");
 
@@ -540,43 +437,46 @@ function RegionalDetailModal({ regional, open, onClose }: { regional: string | n
   const colaboradores = generateColaboradores(regional);
   const operadores = generateOperadores(regional);
 
-  const qualidadeFormat = (v: number) => <span className={`font-semibold ${v >= 85 ? "text-green-600" : v >= 75 ? "text-orange-500" : "text-red-600"}`}>{v}%</span>;
-  const tendenciaFormat = (v: string) => <TrendIcon t={v} />;
+  const scoreFormat = (v: number) => <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getScoreColor(v)} ${getScoreBg(v)}`}>{v}</span>;
+  const qualidadeFormat = (v: number) => <span className="text-sm font-semibold text-foreground">{v}%</span>;
+  const variacaoFormat = (v: string, row: any) => {
+    const isPositive = row.corVariacao?.includes("green");
+    return <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${row.corVariacao} ${isPositive ? "bg-green-50" : "bg-red-50"}`}>{v}</span>;
+  };
 
   const clienteCols = [
-    { key: "nome", label: "Cliente", align: "left" as const, format: (v: string) => <span className="font-medium text-foreground truncate block">{v}</span> },
-    { key: "qualidade", label: "Qualidade", align: "right" as const, width: "85px", format: qualidadeFormat },
-    { key: "volume", label: "Volume", align: "right" as const, width: "70px", format: (v: string) => <span className="text-muted-foreground">{v}</span> },
-    { key: "headcount", label: "HC", align: "right" as const, width: "60px", format: (v: number) => <span className="text-muted-foreground">{v}</span> },
-    { key: "tratativa", label: "Tratativa", align: "right" as const, width: "75px", format: (v: number) => <span className="text-muted-foreground">{v}d</span> },
-    { key: "tendencia", label: "Tend.", align: "center" as const, width: "50px", format: tendenciaFormat },
+    { key: "nome", label: "Cliente", align: "left" as const, format: (v: string) => <span className="text-sm font-medium text-foreground">{v}</span> },
+    { key: "score", label: "Score", align: "center" as const, width: "55px", format: scoreFormat },
+    { key: "qualidade", label: "Atual", align: "right" as const, width: "70px", format: qualidadeFormat },
+    { key: "variacao", label: "Variação", align: "center" as const, width: "75px", format: variacaoFormat },
+    { key: "volume", label: "Volume", align: "right" as const, width: "65px", format: (v: string) => <span className="text-muted-foreground">{v}</span> },
+    { key: "headcount", label: "HC", align: "right" as const, width: "50px", format: (v: number) => <span className="text-muted-foreground">{v}</span> },
   ];
 
   const postoCols = [
-    { key: "nome", label: "Posto", align: "left" as const, format: (v: string) => <span className="font-medium text-foreground truncate block">{v}</span> },
-    { key: "qualidade", label: "Qualidade", align: "right" as const, width: "85px", format: qualidadeFormat },
-    { key: "volume", label: "Volume", align: "right" as const, width: "70px", format: (v: string) => <span className="text-muted-foreground">{v}</span> },
-    { key: "headcount", label: "HC", align: "right" as const, width: "60px", format: (v: number) => <span className="text-muted-foreground">{v}</span> },
-    { key: "tratativa", label: "Tratativa", align: "right" as const, width: "75px", format: (v: number) => <span className="text-muted-foreground">{v}d</span> },
-    { key: "tendencia", label: "Tend.", align: "center" as const, width: "50px", format: tendenciaFormat },
+    { key: "nome", label: "Posto", align: "left" as const, format: (v: string) => <span className="text-sm font-medium text-foreground">{v}</span> },
+    { key: "score", label: "Score", align: "center" as const, width: "55px", format: scoreFormat },
+    { key: "qualidade", label: "Atual", align: "right" as const, width: "70px", format: qualidadeFormat },
+    { key: "variacao", label: "Variação", align: "center" as const, width: "75px", format: variacaoFormat },
+    { key: "volume", label: "Volume", align: "right" as const, width: "65px", format: (v: string) => <span className="text-muted-foreground">{v}</span> },
+    { key: "headcount", label: "HC", align: "right" as const, width: "50px", format: (v: number) => <span className="text-muted-foreground">{v}</span> },
   ];
 
   const colabCols = [
-    { key: "nome", label: "Colaborador", align: "left" as const, format: (v: string) => <span className="font-medium text-foreground truncate block">{v}</span> },
-    { key: "qualidade", label: "Qualidade", align: "right" as const, width: "85px", format: qualidadeFormat },
+    { key: "nome", label: "Colaborador", align: "left" as const, format: (v: string) => <span className="text-sm font-medium text-foreground">{v}</span> },
+    { key: "score", label: "Score", align: "center" as const, width: "55px", format: scoreFormat },
+    { key: "qualidade", label: "Atual", align: "right" as const, width: "70px", format: qualidadeFormat },
+    { key: "variacao", label: "Variação", align: "center" as const, width: "75px", format: variacaoFormat },
     { key: "marcacoes", label: "Marcações", align: "right" as const, width: "80px", format: (v: number) => <span className="text-muted-foreground">{v}</span> },
-    { key: "inconsistencias", label: "Inconsis.", align: "right" as const, width: "75px", format: (v: number) => <span className={`font-semibold ${v > 10 ? "text-red-600" : v > 5 ? "text-orange-500" : "text-muted-foreground"}`}>{v}</span> },
-    { key: "tratativa", label: "Tratativa", align: "right" as const, width: "75px", format: (v: number) => <span className="text-muted-foreground">{v}d</span> },
-    { key: "tendencia", label: "Tend.", align: "center" as const, width: "50px", format: tendenciaFormat },
+    { key: "inconsistencias", label: "Inconsis.", align: "right" as const, width: "65px", format: (v: number) => <span className={`font-semibold ${v > 10 ? "text-red-600" : v > 5 ? "text-orange-500" : "text-muted-foreground"}`}>{v}</span> },
   ];
 
   const operadorCols = [
-    { key: "nome", label: "Operador", align: "left" as const, format: (v: string) => <span className="font-medium text-foreground truncate block">{v}</span> },
-    { key: "ajustesRealizados", label: "Ajustes", align: "right" as const, width: "70px", format: (v: number) => <span className="text-muted-foreground">{v}</span> },
+    { key: "nome", label: "Operador", align: "left" as const, format: (v: string) => <span className="text-sm font-medium text-foreground">{v}</span> },
+    { key: "taxaAcerto", label: "Score", align: "center" as const, width: "55px", format: scoreFormat },
+    { key: "ajustesRealizados", label: "Ajustes", align: "right" as const, width: "65px", format: (v: number) => <span className="text-muted-foreground">{v}</span> },
     { key: "tempoMedioAjuste", label: "Tempo Méd.", align: "right" as const, width: "85px", format: (v: number) => <span className={`font-semibold ${v > 8 ? "text-red-600" : v > 4 ? "text-orange-500" : "text-green-600"}`}>{v}min</span> },
-    { key: "pendentes", label: "Pend.", align: "right" as const, width: "60px", format: (v: number) => <span className={`font-semibold ${v > 15 ? "text-red-600" : v > 8 ? "text-orange-500" : "text-muted-foreground"}`}>{v}</span> },
-    { key: "taxaAcerto", label: "Acerto", align: "right" as const, width: "70px", format: (v: number) => <span className={`font-semibold ${v >= 92 ? "text-green-600" : v >= 85 ? "text-orange-500" : "text-red-600"}`}>{v}%</span> },
-    { key: "tendencia", label: "Tend.", align: "center" as const, width: "50px", format: tendenciaFormat },
+    { key: "pendentes", label: "Pend.", align: "right" as const, width: "55px", format: (v: number) => <span className={`font-semibold ${v > 15 ? "text-red-600" : v > 8 ? "text-orange-500" : "text-muted-foreground"}`}>{v}</span> },
   ];
 
   const tabs = [
@@ -628,10 +528,10 @@ function RegionalDetailModal({ regional, open, onClose }: { regional: string | n
 
         {/* Tab content */}
         <div className="flex-1 min-h-0 overflow-y-auto">
-          {activeTab === "clientes" && <ModalTable data={clientes} columns={clienteCols} searchPlaceholder="Buscar cliente..." />}
-          {activeTab === "postos" && <ModalTable data={postos} columns={postoCols} searchPlaceholder="Buscar posto..." />}
-          {activeTab === "colaboradores" && <ModalTable data={colaboradores} columns={colabCols} searchPlaceholder="Buscar colaborador..." />}
-          {activeTab === "operadores" && <ModalTable data={operadores} columns={operadorCols} searchPlaceholder="Buscar operador..." />}
+          {activeTab === "clientes" && <IndicatorTable data={clientes} columns={clienteCols} searchPlaceholder="Buscar cliente..." />}
+          {activeTab === "postos" && <IndicatorTable data={postos} columns={postoCols} searchPlaceholder="Buscar posto..." />}
+          {activeTab === "colaboradores" && <IndicatorTable data={colaboradores} columns={colabCols} searchPlaceholder="Buscar colaborador..." />}
+          {activeTab === "operadores" && <IndicatorTable data={operadores} columns={operadorCols} searchPlaceholder="Buscar operador..." />}
         </div>
       </DialogContent>
     </Dialog>
