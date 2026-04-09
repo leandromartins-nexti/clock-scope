@@ -429,7 +429,8 @@ function RegionalDetailModal({ regional, open, onClose }: { regional: string | n
   const colaboradores = generateColaboradores(regional);
   const operadores = generateOperadores(regional);
 
-  const qualidadeFormat = (v: number) => <span className={`font-semibold ${v >= 85 ? "text-green-600" : v >= 75 ? "text-orange-500" : "text-red-600"}`}>{v}%</span>;
+  const scoreFormat = (v: number) => <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getScoreColor(v)} ${getScoreBg(v)}`}>{v}</span>;
+  const qualidadeFormat = (v: number) => <span className="text-sm font-semibold text-foreground">{v}%</span>;
   const tendenciaFormat = (v: string) => <TrendIcon t={v} />;
 
   const clienteCols = [
