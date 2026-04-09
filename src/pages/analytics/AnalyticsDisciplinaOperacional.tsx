@@ -737,7 +737,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     const quals = chartScatterQual.map(d => d.qualidade);
     const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
     const padY = (Math.max(...quals) - Math.min(...quals)) * 0.15 || 3;
-    const x = niceAxis(Math.max(0, Math.min(...vols) - padX), Math.max(...vols) + padX);
+    const x = niceVolAxis(Math.max(0, Math.min(...vols) - padX), Math.max(...vols) + padX);
     return {
       xMin: x.min, xMax: x.max,
       yMin: Math.floor(Math.min(...quals) - padY),
@@ -751,7 +751,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     const dias = chartScatterTrat.map(d => d.dias);
     const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
     const padY = (Math.max(...dias) - Math.min(...dias)) * 0.2 || 1;
-    const x = niceAxis(Math.max(0, Math.min(...vols) - padX), Math.max(...vols) + padX);
+    const x = niceVolAxis(Math.max(0, Math.min(...vols) - padX), Math.max(...vols) + padX);
     return {
       xMin: x.min, xMax: x.max,
       yMin: Math.max(0, +(Math.min(...dias) - padY).toFixed(1)),
