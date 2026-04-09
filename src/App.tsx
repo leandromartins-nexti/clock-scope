@@ -52,6 +52,7 @@ const App = () => (
             <Route path="/analytics/compliance" element={<AnalyticsCompliance />} />
             <Route path="/analytics/inteligencia" element={<AnalyticsInteligencia />} />
             <Route path="/analytics/configuracao" element={<AnalyticsConfiguracao />} />
+            <Route path="/analytics/gauge-showcase" element={<GaugeShowcase />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
