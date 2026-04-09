@@ -719,44 +719,67 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
   const avgTratVolume = useMemo(() => chartScatterTrat.length ? Math.round(chartScatterTrat.reduce((s, d) => s + d.volume, 0) / chartScatterTrat.length) : 170000, [chartScatterTrat]);
   const avgTratDias = useMemo(() => chartScatterTrat.length ? +(chartScatterTrat.reduce((s, d) => s + d.dias, 0) / chartScatterTrat.length).toFixed(1) : 4.5, [chartScatterTrat]);
 
-  // Dynamic axis domains with 10% padding
-  // Round volume axis to nearest 50K multiple, with minimal overshoot
-  const niceVolAxis = (rawMin: number, rawMax: number) => {
-    const pad = (rawMax - rawMin) * 0.08 || 10000;
-    const lo = rawMin - pad;
-    const hi = rawMax + pad;
-    // Choose step: 10K for small ranges, 25K for medium, 50K for large
-    const range = hi - lo;
-    const step = range <= 100000 ? 10000 : range <= 200000 ? 25000 : 50000;
-    return { min: Math.max(0, Math.floor(lo / step) * step), max: Math.ceil(hi / step) * step };
+  // Dynamic axes: always 6 equal intervals (7 ticks) based on min/max of visible data
+  const AXIS_SEGMENTS = 6;
+  const niceStep = (rawStep: number) => {
+    const magnitude = Math.pow(10, Math.floor(Math.log10(Math.abs(rawStep) || 1)));
+    const normalized = rawStep / magnitude;
+    const niceNormalized = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 5 ? 5 : 10;
+    return niceNormalized * magnitude;
+  };
+
+  const buildAxis = (values: number[], options?: { clampZero?: boolean; decimals?: number }) => {
+    const clampZero = options?.clampZero ?? false;
+    const decimals = options?.decimals ?? 0;
+    if (!values.length) {
+      const fallbackTicks = Array.from({ length: AXIS_SEGMENTS + 1 }, (_, i) => i);
+      return { min: 0, max: AXIS_SEGMENTS, step: 1, ticks: fallbackTicks };
+    }
+
+    const rawMin = Math.min(...values);
+    const rawMax = Math.max(...values);
+    const range = rawMax - rawMin || Math.max(Math.abs(rawMax), 1);
+    const step = niceStep(range / AXIS_SEGMENTS);
+
+    const minFromMin = Math.floor(rawMin / step) * step;
+    const maxFromMin = minFromMin + step * AXIS_SEGMENTS;
+
+    const maxFromMax = Math.ceil(rawMax / step) * step;
+    const minFromMax = maxFromMax - step * AXIS_SEGMENTS;
+
+    const candidates = [
+      { min: minFromMin, max: maxFromMin },
+      { min: minFromMax, max: maxFromMax },
+    ].filter(candidate => candidate.min <= rawMin && candidate.max >= rawMax);
+
+    const best = candidates.sort((a, b) => {
+      const overA = (rawMin - a.min) + (a.max - rawMax);
+      const overB = (rawMin - b.min) + (b.max - rawMax);
+      return overA - overB;
+    })[0] ?? { min: minFromMin, max: maxFromMin };
+
+    const safeMin = clampZero ? Math.max(0, best.min) : best.min;
+    const safeMax = safeMin + step * AXIS_SEGMENTS;
+    const ticks = Array.from({ length: AXIS_SEGMENTS + 1 }, (_, i) => {
+      const value = safeMin + step * i;
+      return decimals > 0 ? Number(value.toFixed(decimals)) : Math.round(value);
+    });
+
+    return { min: ticks[0], max: ticks[ticks.length - 1], step, ticks };
   };
 
   const qualDomain = useMemo(() => {
-    if (!chartScatterQual.length) return { xMin: 0, xMax: 280000, yMin: 70, yMax: 98 };
-    const vols = chartScatterQual.map(d => d.volume);
-    const quals = chartScatterQual.map(d => d.qualidade);
-    const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
-    const padY = (Math.max(...quals) - Math.min(...quals)) * 0.15 || 3;
-    const x = niceVolAxis(Math.max(0, Math.min(...vols) - padX), Math.max(...vols) + padX);
-    return {
-      xMin: x.min, xMax: x.max,
-      yMin: Math.floor(Math.min(...quals) - padY),
-      yMax: Math.ceil(Math.max(...quals) + padY),
-    };
+    if (!chartScatterQual.length) return { xMin: 0, xMax: 300000, yMin: 70, yMax: 100, xTicks: [0, 50000, 100000, 150000, 200000, 250000, 300000], yTicks: [70, 75, 80, 85, 90, 95, 100] };
+    const x = buildAxis(chartScatterQual.map(d => d.volume), { clampZero: true });
+    const y = buildAxis(chartScatterQual.map(d => d.qualidade));
+    return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max, xTicks: x.ticks, yTicks: y.ticks };
   }, [chartScatterQual]);
 
   const tratDomain = useMemo(() => {
-    if (!chartScatterTrat.length) return { xMin: 0, xMax: 280000, yMin: 1, yMax: 10 };
-    const vols = chartScatterTrat.map(d => d.volume);
-    const dias = chartScatterTrat.map(d => d.dias);
-    const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
-    const padY = (Math.max(...dias) - Math.min(...dias)) * 0.2 || 1;
-    const x = niceVolAxis(Math.max(0, Math.min(...vols) - padX), Math.max(...vols) + padX);
-    return {
-      xMin: x.min, xMax: x.max,
-      yMin: Math.max(0, +(Math.min(...dias) - padY).toFixed(1)),
-      yMax: +(Math.max(...dias) + padY).toFixed(1),
-    };
+    if (!chartScatterTrat.length) return { xMin: 0, xMax: 300000, yMin: 1, yMax: 7, xTicks: [0, 50000, 100000, 150000, 200000, 250000, 300000], yTicks: [1, 2, 3, 4, 5, 6, 7] };
+    const x = buildAxis(chartScatterTrat.map(d => d.volume), { clampZero: true });
+    const y = buildAxis(chartScatterTrat.map(d => d.dias), { decimals: 1 });
+    return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max, xTicks: x.ticks, yTicks: y.ticks };
   }, [chartScatterTrat]);
 
   return (
@@ -883,8 +906,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" dataKey="volume" name="Volume" domain={[qualDomain.xMin, qualDomain.xMax]} tickCount={7} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
-                <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={[qualDomain.yMin, qualDomain.yMax]} tickCount={7} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+                <XAxis type="number" dataKey="volume" name="Volume" domain={[qualDomain.xMin, qualDomain.xMax]} ticks={qualDomain.xTicks} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
+                <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={[qualDomain.yMin, qualDomain.yMax]} ticks={qualDomain.yTicks} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
                 <ReferenceLine y={avgQualQualidade} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
                 <ReferenceLine x={avgQualVolume} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
@@ -925,8 +948,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" dataKey="volume" name="Volume" domain={[tratDomain.xMin, tratDomain.xMax]} tickCount={7} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
-                <YAxis type="number" dataKey="dias" name="Tempo" domain={[tratDomain.yMin, tratDomain.yMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} label={{ value: "Tempo tratativa (dias)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+                <XAxis type="number" dataKey="volume" name="Volume" domain={[tratDomain.xMin, tratDomain.xMax]} ticks={tratDomain.xTicks} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
+                <YAxis type="number" dataKey="dias" name="Tempo" domain={[tratDomain.yMin, tratDomain.yMax]} ticks={tratDomain.yTicks} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} label={{ value: "Tempo tratativa (dias)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
                 <ReferenceLine y={avgTratDias} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
                 <ReferenceLine x={avgTratVolume} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
