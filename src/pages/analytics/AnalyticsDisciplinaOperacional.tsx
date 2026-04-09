@@ -363,7 +363,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
 
       {/* Row 2: Qualidade×Volume + Volume×Tempo Tratativa */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-card border border-border/50 rounded-xl p-4">
+        <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
           <div className="flex items-center gap-1.5 mb-0.5">
             <h4 className="text-sm font-semibold">Qualidade vs Volume</h4>
             <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
@@ -405,7 +405,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-card border border-border/50 rounded-xl p-4">
+        <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
           <div className="flex items-center gap-1.5 mb-0.5">
             <h4 className="text-sm font-semibold">Tempo de Tratativa vs Volume</h4>
             <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária." />
