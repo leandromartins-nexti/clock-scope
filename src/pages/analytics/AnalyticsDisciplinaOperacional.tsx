@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search } from "lucide-react";
+import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -463,35 +463,89 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
   onGroupByChange: (g: GroupBy) => void;
 }) {
   const [search, setSearch] = useState("");
-  const filteredItems = useMemo(() => {
-    if (!search.trim()) return items;
-    const q = search.toLowerCase();
-    return items.filter(i => i.nome.toLowerCase().includes(q));
-  }, [items, search]);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"score" | "nome">("score");
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 30;
+
+  // Debounce search with 500ms delay
+  const searchTimerRef = useState<ReturnType<typeof setTimeout> | null>(null);
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    if (searchTimerRef[0]) clearTimeout(searchTimerRef[0]);
+    searchTimerRef[0] = setTimeout(() => {
+      setDebouncedSearch(value);
+      setPage(1);
+    }, 500);
+  };
+
+  const handleGroupChange = (g: GroupBy) => {
+    onGroupByChange(g);
+    setSearch("");
+    setDebouncedSearch("");
+    setPage(1);
+  };
+
+  const filteredAndSorted = useMemo(() => {
+    let result = items;
+    if (debouncedSearch.trim()) {
+      const q = debouncedSearch.toLowerCase();
+      result = result.filter(i => i.nome.toLowerCase().includes(q));
+    }
+    if (sortBy === "nome") {
+      result = [...result].sort((a, b) => a.nome.localeCompare(b.nome));
+    }
+    return result;
+  }, [items, debouncedSearch, sortBy]);
+
+  const totalPages = Math.ceil(filteredAndSorted.length / PAGE_SIZE);
+  const showPagination = filteredAndSorted.length > PAGE_SIZE;
+  const pagedItems = filteredAndSorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="w-[220px] shrink-0">
       <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-[11px] font-semibold text-foreground">Empresa / Un. Negócio / Área</h3>
-          {selectedRegional && (
+          {selectedRegional ? (
             <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
               <X size={10} /> Limpar
             </button>
-          )}
+          ) : <span />}
+          <button
+            onClick={() => setSortBy(s => s === "score" ? "nome" : "score")}
+            className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-0.5"
+            title={sortBy === "score" ? "Ordenar por nome" : "Ordenar por score"}
+          >
+            <ArrowUpDown size={10} />
+            {sortBy === "score" ? "Score" : "A-Z"}
+          </button>
         </div>
         {/* Group by selector */}
-        <div className="flex gap-1 mb-2">
+        <div className="flex gap-1 mb-1">
           {groupByOptions.map(o => (
             <button
               key={o.id}
-              onClick={() => { onGroupByChange(o.id); setSearch(""); }}
+              onClick={() => handleGroupChange(o.id)}
               className={`px-2 py-0.5 rounded text-[10px] font-medium border transition-colors ${groupBy === o.id ? "bg-[#FF5722] text-white border-[#FF5722]" : "text-muted-foreground border-border hover:border-[#FF5722]/40"}`}
             >
               {o.short}
             </button>
           ))}
         </div>
+        {/* Pagination - only if > 30 items */}
+        {showPagination && (
+          <div className="flex gap-1 mb-1 flex-wrap">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`w-5 h-5 rounded text-[10px] font-medium transition-colors ${page === p ? "bg-[#FF5722] text-white" : "text-muted-foreground border border-border hover:border-[#FF5722]/40"}`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        )}
         {/* Search */}
         <div className="relative mb-2">
           <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -499,13 +553,13 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
             type="text"
             placeholder="Buscar..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => handleSearchChange(e.target.value)}
             className="w-full pl-6 pr-2 py-1 text-[11px] rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
           />
         </div>
         <div className="space-y-0.5 overflow-y-auto flex-1">
-          {filteredItems.length === 0 && <p className="text-[10px] text-muted-foreground text-center py-2">Nenhum resultado</p>}
-          {filteredItems.map((op) => {
+          {pagedItems.length === 0 && <p className="text-[10px] text-muted-foreground text-center py-2">Nenhum resultado</p>}
+          {pagedItems.map((op) => {
             const isSelected = selectedRegional === op.nome;
             const isDimmed = selectedRegional && !isSelected;
             const scoreColor = op.score >= 85 ? "text-green-600" : op.score >= 75 ? "text-orange-500" : "text-red-600";
