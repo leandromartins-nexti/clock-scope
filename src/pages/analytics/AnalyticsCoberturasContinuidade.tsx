@@ -197,9 +197,9 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
                 {/* Stacked bar by event type */}
                 <div className="flex-1 bg-gray-100 rounded-full h-3 relative overflow-hidden flex">
                   <div className="h-3 bg-green-500 transition-all" style={{ width: `${op.regular}%` }} />
-                  <div className="h-3 bg-red-500 transition-all" style={{ width: `${op.he}%` }} />
-                  <div className="h-3 bg-orange-400 transition-all" style={{ width: `${op.falta}%` }} />
                   <div className="h-3 bg-yellow-400 transition-all" style={{ width: `${op.atrasos}%` }} />
+                  <div className="h-3 bg-orange-400 transition-all" style={{ width: `${op.falta}%` }} />
+                  <div className="h-3 bg-red-500 transition-all" style={{ width: `${op.he}%` }} />
                 </div>
                 <span className={`text-sm font-semibold min-w-[40px] text-right ${barScoreColor}`}>
                   {op.score}
