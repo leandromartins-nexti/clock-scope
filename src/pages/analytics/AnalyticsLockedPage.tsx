@@ -1,11 +1,9 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { lockedTabs } from "@/lib/analytics-mock-data";
 import LockedTabOverlay from "@/components/analytics/LockedTabOverlay";
 
 export default function AnalyticsLockedPage() {
   const { tabId } = useParams<{ tabId: string }>();
-  const navigate = useNavigate();
   const tab = lockedTabs.find((t) => t.id === tabId);
 
   if (!tab) {
