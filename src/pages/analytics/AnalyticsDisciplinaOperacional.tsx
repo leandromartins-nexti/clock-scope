@@ -724,8 +724,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     if (!chartScatterQual.length) return { xMin: 0, xMax: 280000, yMin: 70, yMax: 98 };
     const vols = chartScatterQual.map(d => d.volume);
     const quals = chartScatterQual.map(d => d.qualidade);
-    const padX = (Math.max(...vols) - Math.min(...vols)) * 0.1 || 10000;
-    const padY = (Math.max(...quals) - Math.min(...quals)) * 0.1 || 2;
+    const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
+    const padY = (Math.max(...quals) - Math.min(...quals)) * 0.15 || 3;
     return { xMin: Math.max(0, Math.min(...vols) - padX), xMax: Math.max(...vols) + padX, yMin: Math.floor(Math.min(...quals) - padY), yMax: Math.ceil(Math.max(...quals) + padY) };
   }, [chartScatterQual]);
 
@@ -733,8 +733,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     if (!chartScatterTrat.length) return { xMin: 0, xMax: 280000, yMin: 1, yMax: 10 };
     const vols = chartScatterTrat.map(d => d.volume);
     const dias = chartScatterTrat.map(d => d.dias);
-    const padX = (Math.max(...vols) - Math.min(...vols)) * 0.1 || 10000;
-    const padY = (Math.max(...dias) - Math.min(...dias)) * 0.1 || 0.5;
+    const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
+    const padY = (Math.max(...dias) - Math.min(...dias)) * 0.2 || 1;
     return { xMin: Math.max(0, Math.min(...vols) - padX), xMax: Math.max(...vols) + padX, yMin: Math.max(0, +(Math.min(...dias) - padY).toFixed(1)), yMax: +(Math.max(...dias) + padY).toFixed(1) };
   }, [chartScatterTrat]);
 
@@ -865,7 +865,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
                 <XAxis type="number" dataKey="volume" name="Volume" domain={[qualDomain.xMin, qualDomain.xMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={[qualDomain.yMin, qualDomain.yMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={avgQualQualidade} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" label={{ value: `${avgQualQualidade}%`, position: "right", fontSize: 9, fill: "#C8860A", fontWeight: 600 }} />
+                <ReferenceLine y={avgQualQualidade} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
                 <ReferenceLine x={avgQualVolume} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
@@ -907,7 +907,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
                 <XAxis type="number" dataKey="volume" name="Volume" domain={[tratDomain.xMin, tratDomain.xMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="dias" name="Tempo" domain={[tratDomain.yMin, tratDomain.yMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} label={{ value: "Tempo tratativa (dias)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={avgTratDias} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" label={{ value: `Média ${avgTratDias}d`, position: "right", fontSize: 9, fill: "#C8860A", fontWeight: 600 }} />
+                <ReferenceLine y={avgTratDias} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
                 <ReferenceLine x={avgTratVolume} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
