@@ -55,6 +55,37 @@ function abreviar(nome: string): string {
 // Mock data
 // ══════════════════════════════════════════════════════════════
 
+// ── Grouping types ──
+type GroupBy = "unidade" | "empresa" | "area";
+const groupByOptions: { id: GroupBy; label: string }[] = [
+  { id: "unidade", label: "Unidade de Negócio" },
+  { id: "empresa", label: "Empresa" },
+  { id: "area", label: "Área" },
+];
+
+// ── Empresa mock data ──
+const empresaData = [
+  { nome: "Orsegups Vigilância", qualidade: 89.5, score: 90 },
+  { nome: "Orsegups Facilities", qualidade: 87.2, score: 87 },
+  { nome: "Orsegups Tecnologia", qualidade: 86.8, score: 87 },
+  { nome: "Orsegups Logística", qualidade: 85.4, score: 85 },
+  { nome: "Orsegups Serviços", qualidade: 84.1, score: 84 },
+].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
+
+// ── Área mock data ──
+const areaData = [
+  { nome: "Operações SP", qualidade: 90.2, score: 90 },
+  { nome: "Operações Sul", qualidade: 89.1, score: 89 },
+  { nome: "Operações Sudeste", qualidade: 88.4, score: 88 },
+  { nome: "Operações Centro-Oeste", qualidade: 87.6, score: 88 },
+  { nome: "Operações Nordeste", qualidade: 86.3, score: 86 },
+  { nome: "Administrativo", qualidade: 85.9, score: 86 },
+  { nome: "Comercial", qualidade: 85.1, score: 85 },
+  { nome: "RH / DP", qualidade: 84.5, score: 85 },
+  { nome: "Financeiro", qualidade: 83.8, score: 84 },
+  { nome: "TI / Inovação", qualidade: 82.9, score: 83 },
+].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
+
 // ── Scatter data (source of truth for all 30 regionals) ──
 const scatterQualidade = [
   { regional: "Novo Hamburgo", volume: 268000, qualidade: 89.2, headcount: 2800 },
@@ -337,8 +368,10 @@ function RegionalDetailModal({ regional, open, onClose }: { regional: string | n
 export default function AnalyticsDisciplinaOperacional({ embedded }: { embedded?: boolean }) {
   const [activeSubTab, setActiveSubTab] = useState("qualidade");
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
 
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
+  const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
   const content = (
     <div className="px-6 py-4 space-y-3">
@@ -359,9 +392,9 @@ export default function AnalyticsDisciplinaOperacional({ embedded }: { embedded?
         ))}
       </div>
 
-      {activeSubTab === "qualidade" && <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} />}
-      {activeSubTab === "absenteismo" && <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} />}
-      {activeSubTab === "movimentacoes" && <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} />}
+      {activeSubTab === "qualidade" && <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+      {activeSubTab === "absenteismo" && <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+      {activeSubTab === "movimentacoes" && <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
     </div>
   );
 
@@ -399,10 +432,67 @@ function RankingFooter() {
   );
 }
 
+// ── Shared sidebar with groupBy selector ──
+type ContentProps = { selectedRegional: string | null; onRegionalClick: (n: string) => void; groupBy: GroupBy; onGroupByChange: (g: GroupBy) => void };
+
+function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onGroupByChange }: {
+  items: { nome: string; score: number }[];
+  selectedRegional: string | null;
+  onRegionalClick: (n: string) => void;
+  groupBy: GroupBy;
+  onGroupByChange: (g: GroupBy) => void;
+}) {
+  const label = groupByOptions.find(o => o.id === groupBy)?.label ?? "";
+  return (
+    <div className="w-[220px] shrink-0">
+      <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="text-xs font-semibold text-foreground">{label}</h3>
+          {selectedRegional && (
+            <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
+              <X size={10} /> Limpar
+            </button>
+          )}
+        </div>
+        {/* Group by selector */}
+        <div className="flex gap-1 mb-2">
+          {groupByOptions.map(o => (
+            <button
+              key={o.id}
+              onClick={() => onGroupByChange(o.id)}
+              className={`px-2 py-0.5 rounded text-[10px] font-medium border transition-colors ${groupBy === o.id ? "bg-[#FF5722] text-white border-[#FF5722]" : "text-muted-foreground border-border hover:border-[#FF5722]/40"}`}
+            >
+              {o.id === "unidade" ? "UN" : o.id === "empresa" ? "Emp" : "Área"}
+            </button>
+          ))}
+        </div>
+        <p className="text-[10px] text-muted-foreground mb-2">Ordenado por score</p>
+        <div className="space-y-0.5 overflow-y-auto flex-1">
+          {items.map((op) => {
+            const isSelected = selectedRegional === op.nome;
+            const isDimmed = selectedRegional && !isSelected;
+            const scoreColor = op.score >= 85 ? "text-green-600" : op.score >= 75 ? "text-orange-500" : "text-red-600";
+            return (
+              <div
+                key={op.nome}
+                onClick={() => onRegionalClick(op.nome)}
+                className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
+              >
+                <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
+                <span className={`font-bold tabular-nums ${scoreColor}`}>{op.score}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ══════════════════════════════════════════════════════════════
 // Sub-aba 1: Qualidade do Ponto
 // ══════════════════════════════════════════════════════════════
-function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegional: string | null; onRegionalClick: (n: string) => void }) {
+function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupByChange }: ContentProps) {
   const activeData = useMemo(() => {
     if (!selectedRegional) return {
       score: 87, diff: "+4 pp", registradas: "892.0K", justificadas: "130.2K",
@@ -428,7 +518,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
   const scoreColor = activeData.score >= 85 ? "text-green-600" : activeData.score >= 75 ? "text-orange-500" : "text-red-600";
   const scoreFaixa = activeData.score >= 85 ? "Bom" : activeData.score >= 75 ? "Atenção" : "Crítico";
 
-  const sortedRegionais = [...qualidadeRegionais].sort((a, b) => b.qualidade - a.qualidade);
+  const sidebarItems = useMemo(() => {
+    if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+    if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+    return [...qualidadeRegionais].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+  }, [groupBy]);
 
   return (
     <div className="flex gap-3">
@@ -630,37 +724,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
         </div>
       </div>
 
-      {/* Right sidebar: compact ranking */}
-      <div className="w-[220px] shrink-0">
-        <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-semibold text-foreground">Regionais</h3>
-            {selectedRegional && (
-              <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
-                <X size={10} /> Limpar
-              </button>
-            )}
-          </div>
-          <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · ordenado por score</p>
-          <div className="space-y-0.5 overflow-y-auto flex-1">
-            {sortedRegionais.map((op) => {
-              const isSelected = selectedRegional === op.nome;
-              const isDimmed = selectedRegional && !isSelected;
-              const scoreColor = op.qualidade >= 85 ? "text-green-600" : op.qualidade >= 75 ? "text-orange-500" : "text-red-600";
-              return (
-                <div
-                  key={op.nome}
-                  onClick={() => onRegionalClick(op.nome)}
-                  className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
-                >
-                  <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
-                  <span className={`font-bold tabular-nums ${scoreColor}`}>{Math.round(op.qualidade)}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} groupBy={groupBy} onGroupByChange={onGroupByChange} />
 
       <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
     </div>
@@ -670,7 +734,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
 // ══════════════════════════════════════════════════════════════
 // Sub-aba 2: Absenteísmo
 // ══════════════════════════════════════════════════════════════
-function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedRegional: string | null; onRegionalClick: (n: string) => void }) {
+function AbsenteismoContent({ selectedRegional, onRegionalClick, groupBy, onGroupByChange }: ContentProps) {
   const activeData = useMemo(() => {
     if (!selectedRegional) return { taxa: 4.8, diff: "-0.6 pp", faltasNJ: "38%", turnover: "8.2%" };
     const r = absenteismoRegionais.find(x => x.nome === selectedRegional);
@@ -683,9 +747,12 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedReg
   const maxTaxa = Math.max(...absenteismoRegionais.map(r => r.taxa));
 
   // Sort by lowest taxa = best for absenteísmo
-  const sortedRegionais = [...absenteismoRegionais].sort((a, b) => a.taxa - b.taxa);
-  // Compute a "score" for absenteísmo (inverted: lower taxa = higher score)
   const getAbsScore = (taxa: number) => Math.round(Math.max(0, 100 - taxa * 10));
+  const sidebarItems = useMemo(() => {
+    if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(100 - (100 - e.qualidade) * 1.2) }));
+    if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(100 - (100 - e.qualidade) * 1.2) }));
+    return [...absenteismoRegionais].sort((a, b) => a.taxa - b.taxa).map(e => ({ nome: e.nome, score: getAbsScore(e.taxa) }));
+  }, [groupBy]);
 
   return (
     <div className="flex gap-3">
@@ -748,38 +815,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedReg
         </div>
       </div>
 
-      {/* Right sidebar */}
-      <div className="w-[220px] shrink-0">
-        <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-semibold text-foreground">Regionais</h3>
-            {selectedRegional && (
-              <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
-                <X size={10} /> Limpar
-              </button>
-            )}
-          </div>
-          <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · menor taxa = melhor</p>
-          <div className="space-y-0.5 overflow-y-auto flex-1">
-            {sortedRegionais.map((op) => {
-              const isSelected = selectedRegional === op.nome;
-              const isDimmed = selectedRegional && !isSelected;
-              const sc = getAbsScore(op.taxa);
-              const sColor = sc >= 60 ? "text-green-600" : sc >= 40 ? "text-orange-500" : "text-red-600";
-              return (
-                <div
-                  key={op.nome}
-                  onClick={() => onRegionalClick(op.nome)}
-                  className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
-                >
-                  <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
-                  <span className={`font-bold tabular-nums ${sColor}`}>{sc}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} groupBy={groupBy} onGroupByChange={onGroupByChange} />
     </div>
   );
 }
@@ -787,7 +823,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedReg
 // ══════════════════════════════════════════════════════════════
 // Sub-aba 3: Movimentações
 // ══════════════════════════════════════════════════════════════
-function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedRegional: string | null; onRegionalClick: (n: string) => void }) {
+function MovimentacoesContent({ selectedRegional, onRegionalClick, groupBy, onGroupByChange }: ContentProps) {
   const activeData = useMemo(() => {
     if (!selectedRegional) return { total: "23.0K", diff: "-18.3%", escala: "14.8K", posto: "8.2K" };
     const r = movimentacoesRegionais.find(x => x.nome === selectedRegional);
@@ -800,9 +836,12 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
   const scoreFaixa = totalNum <= 15000 ? "Bom" : totalNum <= 25000 ? "Atenção" : "Crítico";
   const maxTotal = Math.max(...movimentacoesRegionais.map(r => r.total));
 
-  // Sort by lowest total = best for movimentações
-  const sortedRegionais = [...movimentacoesRegionais].sort((a, b) => a.total - b.total);
   const getMovScore = (total: number) => Math.round(Math.max(0, 100 - (total / maxTotal) * 100));
+  const sidebarItems = useMemo(() => {
+    if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+    if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+    return [...movimentacoesRegionais].sort((a, b) => a.total - b.total).map(e => ({ nome: e.nome, score: getMovScore(e.total) }));
+  }, [groupBy, maxTotal]);
 
   return (
     <div className="flex gap-3">
@@ -868,38 +907,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
         </div>
       </div>
 
-      {/* Right sidebar */}
-      <div className="w-[220px] shrink-0">
-        <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-semibold text-foreground">Regionais</h3>
-            {selectedRegional && (
-              <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
-                <X size={10} /> Limpar
-              </button>
-            )}
-          </div>
-          <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · menor volume = melhor</p>
-          <div className="space-y-0.5 overflow-y-auto flex-1">
-            {sortedRegionais.map((op) => {
-              const isSelected = selectedRegional === op.nome;
-              const isDimmed = selectedRegional && !isSelected;
-              const sc = getMovScore(op.total);
-              const sColor = sc >= 60 ? "text-green-600" : sc >= 40 ? "text-orange-500" : "text-red-600";
-              return (
-                <div
-                  key={op.nome}
-                  onClick={() => onRegionalClick(op.nome)}
-                  className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
-                >
-                  <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
-                  <span className={`font-bold tabular-nums ${sColor}`}>{sc}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} groupBy={groupBy} onGroupByChange={onGroupByChange} />
     </div>
   );
 }
@@ -907,18 +915,21 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
 // ── Exported standalone tab wrappers ──
 export function QualidadeTab() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
-  return <div className="px-6 py-4"><QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+  return <div className="px-6 py-4"><QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={setGroupBy} /></div>;
 }
 
 export function AbsenteismoTab() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
-  return <div className="px-6 py-4"><AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+  return <div className="px-6 py-4"><AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={setGroupBy} /></div>;
 }
 
 export function MovimentacoesTab() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
-  return <div className="px-6 py-4"><MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+  return <div className="px-6 py-4"><MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={setGroupBy} /></div>;
 }
