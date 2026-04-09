@@ -468,7 +468,7 @@ function ModalTable<T extends Record<string, any>>({ data, columns, searchPlaceh
         />
       </div>
       <div className="rounded-lg border border-border overflow-hidden flex-1">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm" style={{ tableLayout: "fixed" }}>
           <thead className="sticky top-0 bg-muted/50 backdrop-blur-sm z-10">
             <tr className="border-b border-border">
               {columns.map(col => (
