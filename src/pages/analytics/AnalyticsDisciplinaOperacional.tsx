@@ -240,23 +240,31 @@ const turnoverEvolucao = [
 ];
 const turnoverMedia = 8.2;
 
-// Scatter: Absenteísmo vs Turnover
-const scatterAbsTurnover = [
-  { regional: "SP", absenteismo: 4.2, turnover: 7.1, headcount: 2800 },
-  { regional: "RJ", absenteismo: 5.1, turnover: 8.5, headcount: 1900 },
-  { regional: "MG", absenteismo: 4.6, turnover: 7.8, headcount: 1400 },
-  { regional: "PR", absenteismo: 4.3, turnover: 6.9, headcount: 1100 },
-  { regional: "BA", absenteismo: 6.8, turnover: 11.3, headcount: 800 },
-];
+// Generate absenteísmo scatter data from any entity list (seeded, deterministic)
+function toAbsScatterData(items: { nome: string; qualidade: number; score: number }[]) {
+  function seededRand(s: number) { const x = Math.sin(s * 9301 + 49297) * 49297; return x - Math.floor(x); }
+  return items.map((item, i) => {
+    const r1 = seededRand(i * 7 + item.qualidade * 13 + 100);
+    const r2 = seededRand(i * 11 + item.qualidade * 17 + 200);
+    const r3 = seededRand(i * 19 + item.qualidade * 23 + 300);
+    const headcount = Math.round(300 + r1 * 2700);
+    // Lower quality → higher absenteeism
+    const absenteismo = +(2.5 + (95 - item.qualidade) * 0.12 + r2 * 1.5).toFixed(1);
+    const turnover = +(4.5 + (95 - item.qualidade) * 0.15 + r3 * 2.5).toFixed(1);
+    const he = Math.round(250 + (95 - item.qualidade) * 8 + r1 * 120);
+    return { regional: item.nome, absenteismo, turnover, he, headcount };
+  });
+}
 
-// Scatter: Absenteísmo vs Hora Extra
-const scatterAbsHE = [
-  { regional: "SP", absenteismo: 4.2, he: 329, headcount: 2800 },
-  { regional: "RJ", absenteismo: 5.1, he: 374, headcount: 1900 },
-  { regional: "MG", absenteismo: 4.6, he: 386, headcount: 1400 },
-  { regional: "PR", absenteismo: 4.3, he: 382, headcount: 1100 },
-  { regional: "BA", absenteismo: 6.8, he: 475, headcount: 800 },
-];
+// Unidade scatter (from qualidadeRegionais)
+const unidadeAbsScatter = scatterQualidade.map(sq => {
+  const taxa = +(2 + (92 - sq.qualidade) * 0.55).toFixed(1);
+  const turnover = +(4 + (92 - sq.qualidade) * 0.8).toFixed(1);
+  const he = Math.round(250 + (92 - sq.qualidade) * 12 + sq.headcount * 0.02);
+  return { regional: sq.regional, absenteismo: taxa, turnover, he, headcount: sq.headcount };
+});
+const empresaAbsScatter = toAbsScatterData(empresaData);
+const areaAbsScatter = toAbsScatterData(areaData);
 
 // Derive 30 absenteísmo regionais from scatter data (seeded from qualidade)
 const absenteismoRegionais = scatterQualidade.map(sq => {
