@@ -422,7 +422,7 @@ const MODAL_PAGE_SIZE = 10;
 
 function ModalTable<T extends Record<string, any>>({ data, columns, searchPlaceholder }: {
   data: T[];
-  columns: { key: string; label: string; align?: "left" | "right" | "center"; format?: (v: any, row: T) => React.ReactNode }[];
+  columns: { key: string; label: string; align?: "left" | "right" | "center"; width?: string; format?: (v: any, row: T) => React.ReactNode }[];
   searchPlaceholder?: string;
 }) {
   const [search, setSearch] = useState("");
