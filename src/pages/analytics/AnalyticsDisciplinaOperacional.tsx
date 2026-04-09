@@ -250,10 +250,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
             <InfoTip text="Percentual de marcações registradas corretamente vs total de marcações que exigiram intervenção (justificativas manuais)." />
           </div>
           <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} />
-          <div className="flex items-center justify-center gap-1 -mt-1">
-            <TrendingUp size={12} className="text-green-500" />
-            <span className="text-[11px] font-medium text-green-600">{activeData.diff} vs anterior</span>
-          </div>
         </div>
 
         {/* Melhor Operação */}
@@ -496,10 +492,6 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedReg
           <ScoreGauge score={Math.max(0, 100 - activeData.taxa * 10)} />
           <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.taxa}%</p>
           <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
-          <div className="flex items-center justify-center gap-1 mt-1">
-            <TrendingUp size={12} className="text-green-500" />
-            <span className="text-[11px] font-medium text-green-600">{activeData.diff} vs anterior</span>
-          </div>
         </div>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
@@ -618,10 +610,6 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
           <ScoreGauge score={Math.max(0, 100 - (totalNum / 30000) * 100)} />
           <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.total}</p>
           <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
-          <div className="flex items-center justify-center gap-1 mt-1">
-            <TrendingUp size={12} className="text-green-500" />
-            <span className="text-[11px] font-medium text-green-600">{activeData.diff} vs anterior</span>
-          </div>
         </div>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
