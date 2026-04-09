@@ -288,9 +288,16 @@ export const coberturas = {
     tempoMedioReposicao: 3.2,
   },
 
-  distribuicaoTipo: [
+  distribuicaoPlanejamento: [
     { name: "Planejada", value: 48, cor: "#22c55e" },
     { name: "Emergencial", value: 40, cor: "#ef4444" },
+    { name: "Descoberta", value: 12, cor: "#9ca3af" },
+  ],
+
+  distribuicaoTipoEvento: [
+    { name: "Hora Regular", value: 42, cor: "#22c55e" },
+    { name: "Hora Extra", value: 34, cor: "#ef4444" },
+    { name: "Banco de Horas", value: 12, cor: "#3b82f6" },
     { name: "Descoberta", value: 12, cor: "#9ca3af" },
   ],
 
@@ -309,13 +316,21 @@ export const coberturas = {
     { competencia: "mar/26", planejada: 360, emergencial: 160, descoberta: 26 },
   ],
 
-  regionais: [
-    { nome: "Regional SP", coberturas: 2840, pctPlanejada: 55, pctEmergencial: 38, diasDescoberto: 42, ausenciasCobertas: 78, tendencia: "melhorando" },
-    { nome: "Regional RJ", coberturas: 2120, pctPlanejada: 46, pctEmergencial: 43, diasDescoberto: 68, ausenciasCobertas: 71, tendencia: "estavel" },
-    { nome: "Regional MG", coberturas: 1560, pctPlanejada: 50, pctEmergencial: 39, diasDescoberto: 52, ausenciasCobertas: 74, tendencia: "melhorando" },
-    { nome: "Regional PR", coberturas: 1180, pctPlanejada: 44, pctEmergencial: 42, diasDescoberto: 64, ausenciasCobertas: 69, tendencia: "piorando" },
-    { nome: "Regional BA", coberturas: 980, pctPlanejada: 38, pctEmergencial: 48, diasDescoberto: 60, ausenciasCobertas: 64, tendencia: "piorando" },
-  ] as RegionalRow[],
+  regionaisPlanejamento: [
+    { nome: "Regional SP", coberturas: 2840, planejadas: 55, emergenciais: 38, descobertas: 7, tendencia: "melhorando" },
+    { nome: "Regional RJ", coberturas: 2120, planejadas: 46, emergenciais: 43, descobertas: 11, tendencia: "estavel" },
+    { nome: "Regional MG", coberturas: 1560, planejadas: 50, emergenciais: 39, descobertas: 11, tendencia: "melhorando" },
+    { nome: "Regional PR", coberturas: 1180, planejadas: 44, emergenciais: 42, descobertas: 14, tendencia: "piorando" },
+    { nome: "Regional BA", coberturas: 980, planejadas: 38, emergenciais: 50, descobertas: 12, tendencia: "piorando" },
+  ] as any[],
+
+  regionaisTipoEvento: [
+    { nome: "Regional SP", coberturas: 2840, regular: 52, he: 28, bancoHoras: 13, descobertas: 7, tendencia: "melhorando" },
+    { nome: "Regional RJ", coberturas: 2120, regular: 40, he: 38, bancoHoras: 11, descobertas: 11, tendencia: "estavel" },
+    { nome: "Regional MG", coberturas: 1560, regular: 44, he: 34, bancoHoras: 11, descobertas: 11, tendencia: "melhorando" },
+    { nome: "Regional PR", coberturas: 1180, regular: 38, he: 40, bancoHoras: 8, descobertas: 14, tendencia: "piorando" },
+    { nome: "Regional BA", coberturas: 980, regular: 32, he: 48, bancoHoras: 8, descobertas: 12, tendencia: "piorando" },
+  ] as any[],
 
   insights: [
     { icone: "⚠️", texto: "40% das coberturas foram emergenciais (menos de 24h de antecedência), indicando oportunidade de melhora no planejamento de escala.", tipo: "atencao" as const },

@@ -11,7 +11,7 @@ import AnalyticsOperacoesEstruturas from "./AnalyticsOperacoesEstruturas";
 
 const tabs = [
   { id: "disciplina", label: "Disciplina Operacional" },
-  { id: "coberturas", label: "Coberturas e Continuidade" },
+  { id: "coberturas", label: "Coberturas" },
   { id: "violacoes", label: "Violações Trabalhistas" },
   { id: "bancoHoras", label: "Banco de Horas" },
   { id: "operacoes", label: "Operações e Estruturas" },
