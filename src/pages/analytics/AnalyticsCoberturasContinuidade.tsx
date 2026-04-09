@@ -180,51 +180,80 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
           <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-red-500" /> Hora Extra</div>
         </div>
 
-        <div className="space-y-3">
-          {regionais.map((op: any) => {
-            const isSelected = selectedRegional === op.nome;
-            const isDimmed = selectedRegional && !isSelected;
-            const barScoreColor = op.score >= 85 ? "text-green-600" : op.score >= 70 ? "text-orange-500" : "text-red-600";
-            return (
-              <div
-                key={op.nome}
-                className={`flex items-center gap-4 cursor-pointer rounded-lg px-2 py-1.5 -mx-2 transition-all ${
-                  isSelected ? 'bg-orange-50 ring-1 ring-[#FF5722]/30' : 'hover:bg-muted/30'
-                } ${isDimmed ? 'opacity-35' : ''}`}
-                onClick={() => handleRegionalClick(op.nome)}
-              >
-                <span className="text-sm font-medium min-w-[120px]">{op.nome}</span>
-                {/* Stacked bar by event type */}
-                <div className="flex-1 bg-gray-100 rounded-full h-4 relative overflow-hidden">
-                  {/* Grid lines at 25%, 50%, 75% */}
-                  {[25, 50, 75].map(p => (
-                    <div key={p} className="absolute top-0 bottom-0 w-px bg-black/20 z-10 pointer-events-none" style={{ left: `${p}%` }} />
-                  ))}
-                  <div className="relative h-full flex">
-                    {[
-                      { pct: op.regular, hours: op.regularH, label: "Hora Regular", bg: "bg-green-500" },
-                      { pct: op.atrasos, hours: op.atrasosH, label: "Atrasos", bg: "bg-yellow-400" },
-                      { pct: op.falta, hours: op.faltaH, label: "Falta", bg: "bg-orange-400" },
-                      { pct: op.he, hours: op.heH, label: "Hora Extra", bg: "bg-red-500" },
-                    ].map((seg, idx) => (
-                      <UITooltip key={idx}>
-                        <TooltipTrigger asChild>
-                          <div className={`h-4 ${seg.bg} transition-all cursor-default`} style={{ width: `${seg.pct}%` }} />
-                        </TooltipTrigger>
-                        <TooltipContent className="text-xs">
-                          <span className="font-semibold">{seg.label}</span>: {seg.pct}% · {seg.hours}h
-                        </TooltipContent>
-                      </UITooltip>
+        <div>
+          <div className="space-y-3">
+            {regionais.map((op: any) => {
+              const isSelected = selectedRegional === op.nome;
+              const isDimmed = selectedRegional && !isSelected;
+              const barScoreColor = op.score >= 85 ? "text-green-600" : op.score >= 70 ? "text-orange-500" : "text-red-600";
+              return (
+                <div
+                  key={op.nome}
+                  className={`flex items-center gap-4 cursor-pointer rounded-lg px-2 py-1.5 -mx-2 transition-all ${
+                    isSelected ? 'bg-orange-50 ring-1 ring-[#FF5722]/30' : 'hover:bg-muted/30'
+                  } ${isDimmed ? 'opacity-35' : ''}`}
+                  onClick={() => handleRegionalClick(op.nome)}
+                >
+                  <span className="text-sm font-medium min-w-[120px]">{op.nome}</span>
+                  <div className="flex-1 relative h-4">
+                    {/* Dashed grid lines on top */}
+                    {[20, 40, 60, 80].map(p => (
+                      <div
+                        key={p}
+                        className="absolute top-0 bottom-0 z-20 pointer-events-none"
+                        style={{
+                          left: `${p}%`,
+                          backgroundImage: 'repeating-linear-gradient(to bottom, rgba(0,0,0,0.25) 0px, rgba(0,0,0,0.25) 2px, transparent 2px, transparent 5px)',
+                          width: '1px',
+                        }}
+                      />
                     ))}
+                    <div className="absolute inset-0 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full flex">
+                        {[
+                          { pct: op.regular, hours: op.regularH, label: "Hora Regular", bg: "bg-green-500" },
+                          { pct: op.atrasos, hours: op.atrasosH, label: "Atrasos", bg: "bg-yellow-400" },
+                          { pct: op.falta, hours: op.faltaH, label: "Falta", bg: "bg-orange-400" },
+                          { pct: op.he, hours: op.heH, label: "Hora Extra", bg: "bg-red-500" },
+                        ].map((seg, idx) => (
+                          <UITooltip key={idx}>
+                            <TooltipTrigger asChild>
+                              <div className={`h-4 ${seg.bg} transition-all cursor-default`} style={{ width: `${seg.pct}%` }} />
+                            </TooltipTrigger>
+                            <TooltipContent className="text-xs">
+                              <span className="font-semibold">{seg.label}</span>: {seg.pct}% · {seg.hours}h
+                            </TooltipContent>
+                          </UITooltip>
+                        ))}
+                      </div>
+                    </div>
                   </div>
+                  <span className={`text-sm font-semibold min-w-[40px] text-right ${barScoreColor}`}>
+                    {op.score}
+                  </span>
+                  <TrendIcon t={op.tendencia} />
                 </div>
-                <span className={`text-sm font-semibold min-w-[40px] text-right ${barScoreColor}`}>
-                  {op.score}
+              );
+            })}
+          </div>
+
+          {/* Footer percentage labels */}
+          <div className="flex items-center gap-4 mt-1 -mx-2 px-2">
+            <span className="min-w-[120px]" />
+            <div className="flex-1 relative h-4">
+              {[0, 20, 40, 60, 80, 100].map(p => (
+                <span
+                  key={p}
+                  className="absolute text-[10px] text-muted-foreground -translate-x-1/2"
+                  style={{ left: `${p}%` }}
+                >
+                  {p}%
                 </span>
-                <TrendIcon t={op.tendencia} />
-              </div>
-            );
-          })}
+              ))}
+            </div>
+            <span className="min-w-[40px]" />
+            <span className="w-[14px]" />
+          </div>
         </div>
       </div>
     </div>
