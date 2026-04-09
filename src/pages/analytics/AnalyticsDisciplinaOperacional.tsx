@@ -812,43 +812,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       <div className="flex-1 min-w-0 space-y-3">
         {/* Linha 1: Score + 4 KPI Cards */}
         <div className="grid grid-cols-5 gap-3">
-          <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
-            <div className="flex items-center gap-1 mb-1">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Qualidade do Ponto</p>
-              <InfoTip text="Percentual de marcações registradas corretamente vs total de marcações que exigiram intervenção (justificativas manuais)." />
-            </div>
+          <ScoreBoard title="Qualidade do Ponto" tooltip="Percentual de marcações registradas corretamente vs total de marcações que exigiram intervenção (justificativas manuais).">
             <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} />
-          </div>
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-            <div className="flex items-center gap-1 mb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Melhor Operação</p>
-              <InfoTip text="Operação com maior score de qualidade no período" />
-            </div>
-            <p className="text-xl font-bold mt-0.5 truncate text-green-600">{activeData.melhorOperacao.nome}</p>
-            <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.melhorOperacao.score} · Alta</p>
-          </div>
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-            <div className="flex items-center gap-1 mb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maior Risco</p>
-              <InfoTip text="Operação com menor qualidade e maior concentração de risco" />
-            </div>
-            <p className="text-xl font-bold mt-0.5 text-red-600 truncate">{activeData.maiorRisco.nome}</p>
-            <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.maiorRisco.score} · {activeData.maiorRisco.indicador}</p>
-          </div>
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-            <div className="flex items-center gap-1 mb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Registradas</p>
-              <InfoTip text="Total de marcações registradas pelo colaborador sem necessidade de ajuste." />
-            </div>
-            <p className="text-xl font-bold text-green-600 mt-0.5">{activeData.registradas}</p>
-          </div>
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-            <div className="flex items-center gap-1 mb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Justificadas</p>
-              <InfoTip text="Total de marcações que foram justificadas manualmente pelo operador ou gestor." />
-            </div>
-            <p className="text-xl font-bold text-orange-500 mt-0.5">{activeData.justificadas}</p>
-          </div>
+          </ScoreBoard>
+          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · Alta`} />
+          <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
+          <KPIBoard title="Registradas" tooltip="Total de marcações registradas pelo colaborador sem necessidade de ajuste." value={activeData.registradas} valueColor="text-green-600" />
+          <KPIBoard title="Justificadas" tooltip="Total de marcações que foram justificadas manualmente pelo operador ou gestor." value={activeData.justificadas} valueColor="text-orange-500" />
         </div>
 
         {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
