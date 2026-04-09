@@ -118,9 +118,6 @@ const resumoGroupData: Record<string, { nome: string; score: number }[]> = {
   area: resumoAreaData,
 };
 
-  const sidebarItems = resumoGroupData[groupBy] || resumoUnidadeData;
-  const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
-  const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
 // ── Main Page ───────────────────────────────────────────────
 export default function AnalyticsResumoExecutivo() {
@@ -131,6 +128,10 @@ export default function AnalyticsResumoExecutivo() {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
+
+  const sidebarItems = resumoGroupData[groupBy] || resumoUnidadeData;
+  const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
+  const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
   const regionalData = selectedRegional ? dadosPorRegional[selectedRegional] : null;
 
