@@ -739,45 +739,64 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Ajustes por Faixa de Tempo</h4>
-              <InfoTip text="Distribuição dos ajustes de ponto por faixa de tempo entre o registro e o ajuste. Dados reais." />
+              <h4 className="text-sm font-semibold">Composição do Tempo de Tratativa</h4>
+              <InfoTip text="Evolução mensal da distribuição percentual por faixa de tempo. Quanto mais verde na base, melhor. Crescimento do vermelho indica piora." />
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Por competência · clique para filtrar</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal da distribuição por faixa</p>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={evolucaoTratativaFaixas} onClick={(e: any) => {
+              <AreaChart data={evolucaoTratativaFaixas.map(d => ({
+                mes: d.mes,
+                ate1d: (d.ate1d / d.total) * 100,
+                de1a3d: (d.de1a3d / d.total) * 100,
+                de3a7d: (d.de3a7d / d.total) * 100,
+                de7a15d: (d.de7a15d / d.total) * 100,
+                mais15d: (d.mais15d / d.total) * 100,
+                _raw: d,
+              }))} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-              }} barCategoryGap="15%">
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              }}>
                 <XAxis dataKey="mes" tick={(props: any) => {
                   const { x, y, payload } = props;
                   const isActive = selectedMes === payload.value;
                   return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
                 }} />
-                <YAxis tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`} />
+                <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${Math.round(v)}%`} domain={[0, 100]} />
                 <RechartsTooltip content={({ active, payload, label }) => {
                   if (!active || !payload?.length) return null;
-                  const total = payload.reduce((s: number, p: any) => s + (p.value || 0), 0);
+                  const raw = payload[0]?.payload?._raw;
+                  if (!raw) return null;
+                  const faixas = [
+                    { name: "Até 1 dia", key: "ate1d", color: "#22c55e" },
+                    { name: "1–3 dias", key: "de1a3d", color: "#84cc16" },
+                    { name: "3–7 dias", key: "de3a7d", color: "#eab308" },
+                    { name: "7–15 dias", key: "de7a15d", color: "#f97316" },
+                    { name: "+15 dias", key: "mais15d", color: "#ef4444" },
+                  ];
                   return (
                     <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                       <p className="font-semibold text-foreground">{label}</p>
-                      <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>
-                      {payload.map((p: any) => (
-                        <div key={p.dataKey} className="flex items-center gap-1.5">
-                          <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: p.fill }} />
-                          <span className="text-muted-foreground">{p.name}:</span>
-                          <span className="font-medium text-foreground">{p.value?.toLocaleString("pt-BR")} ({((p.value / total) * 100).toFixed(0)}%)</span>
-                        </div>
-                      ))}
+                      <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{raw.total.toLocaleString("pt-BR")}</span></p>
+                      {faixas.map(f => {
+                        const abs = raw[f.key as keyof typeof raw] as number;
+                        const pct = ((abs / raw.total) * 100).toFixed(0);
+                        return (
+                          <div key={f.key} className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: f.color }} />
+                            <span className="text-muted-foreground">{f.name}:</span>
+                            <span className="font-medium text-foreground">{pct}% ({abs.toLocaleString("pt-BR")})</span>
+                          </div>
+                        );
+                      })}
                     </div>
                   );
                 }} />
-                <ReferenceLine y={tratativaMediaTotal} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                <Bar dataKey="ate1d" stackId="faixa" fill="#22c55e" name="Até 1 dia" />
-                <Bar dataKey="de1a3d" stackId="faixa" fill="#84cc16" name="1–3 dias" />
-                <Bar dataKey="de3a7d" stackId="faixa" fill="#f59e0b" name="3–7 dias" />
-                <Bar dataKey="de7a15d" stackId="faixa" fill="#f97316" name="7–15 dias" />
-                <Bar dataKey="mais15d" stackId="faixa" fill="#ef4444" name="+15 dias" radius={[3, 3, 0, 0]} />
-              </BarChart>
+                <Area type="monotone" dataKey="ate1d" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.85} name="Até 1 dia" />
+                <Area type="monotone" dataKey="de1a3d" stackId="1" stroke="#84cc16" fill="#84cc16" fillOpacity={0.85} name="1–3 dias" />
+                <Area type="monotone" dataKey="de3a7d" stackId="1" stroke="#eab308" fill="#eab308" fillOpacity={0.85} name="3–7 dias" />
+                <Area type="monotone" dataKey="de7a15d" stackId="1" stroke="#f97316" fill="#f97316" fillOpacity={0.85} name="7–15 dias" />
+                <Area type="monotone" dataKey="mais15d" stackId="1" stroke="#ef4444" fill="#ef4444" fillOpacity={0.85} name="+15 dias" />
+                <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
