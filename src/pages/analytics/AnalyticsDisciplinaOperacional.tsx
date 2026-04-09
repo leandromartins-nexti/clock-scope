@@ -649,6 +649,8 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
 // Sub-aba 1: Qualidade do Ponto
 // ══════════════════════════════════════════════════════════════
 function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupByChange }: ContentProps) {
+  const [visibleNames, setVisibleNames] = useState<string[]>([]);
+
   const activeData = useMemo(() => {
     if (!selectedRegional) return {
       score: 87, diff: "+4 pp", registradas: "892.0K", justificadas: "130.2K",
@@ -679,6 +681,23 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
     return [...qualidadeRegionais].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
   }, [groupBy]);
+
+  // Scatter data filtered to visible page items
+  const allScatter = useMemo(() => {
+    if (groupBy === "empresa") return empresaScatter;
+    if (groupBy === "area") return areaScatter;
+    return scatterQualidade;
+  }, [groupBy]);
+
+  const allScatterTratativa = useMemo(() => {
+    if (groupBy === "empresa") return empresaScatter.map(e => ({ ...e, dias: +(2 + (95 - e.qualidade) * 0.12).toFixed(1) }));
+    if (groupBy === "area") return areaScatter.map(e => ({ ...e, dias: +(2 + (95 - e.qualidade) * 0.12).toFixed(1) }));
+    return scatterTratativa;
+  }, [groupBy]);
+
+  const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
+  const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
+  const chartScatterTrat = useMemo(() => allScatterTratativa.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatterTratativa, visibleSet]);
 
   return (
     <div className="flex gap-3">
