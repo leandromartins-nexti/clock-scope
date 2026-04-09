@@ -780,8 +780,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               </BarChart>
             </ResponsiveContainer>
           </div>
-            </ResponsiveContainer>
-          </div>
         </div>
 
         {/* Row 2: Scatter charts */}
