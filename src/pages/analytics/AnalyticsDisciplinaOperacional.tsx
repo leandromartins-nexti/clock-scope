@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink } from "lucide-react";
+import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -57,33 +57,53 @@ function abreviar(nome: string): string {
 
 // ── Grouping types ──
 type GroupBy = "unidade" | "empresa" | "area";
-const groupByOptions: { id: GroupBy; label: string }[] = [
-  { id: "unidade", label: "Unidade de Negócio" },
-  { id: "empresa", label: "Empresa" },
-  { id: "area", label: "Área" },
+const groupByOptions: { id: GroupBy; label: string; short: string }[] = [
+  { id: "empresa", label: "Empresa", short: "Empresa" },
+  { id: "unidade", label: "Un. Negócio", short: "Un. Negócio" },
+  { id: "area", label: "Área", short: "Área" },
 ];
 
 // ── Empresa mock data ──
 const empresaData = [
-  { nome: "Orsegups Vigilância", qualidade: 89.5, score: 90 },
-  { nome: "Orsegups Facilities", qualidade: 87.2, score: 87 },
-  { nome: "Orsegups Tecnologia", qualidade: 86.8, score: 87 },
-  { nome: "Orsegups Logística", qualidade: 85.4, score: 85 },
-  { nome: "Orsegups Serviços", qualidade: 84.1, score: 84 },
+  { nome: "G5 SOCIEDADE DE CREDITO DIRETO S.A", qualidade: 91.2, score: 91 },
+  { nome: "AGREGA SERVIÇOS", qualidade: 89.5, score: 90 },
+  { nome: "4B2G SISTEMAS", qualidade: 88.8, score: 89 },
+  { nome: "BRK", qualidade: 87.6, score: 88 },
+  { nome: "CONDOMINIO MORADA DO BOSQUE", qualidade: 86.9, score: 87 },
+  { nome: "RHO - TESTE", qualidade: 86.2, score: 86 },
+  { nome: "Edifício Vogue", qualidade: 85.5, score: 86 },
+  { nome: "ORSEGUPS COMERCIO", qualidade: 84.8, score: 85 },
+  { nome: "Victória da Paz", qualidade: 84.1, score: 84 },
+  { nome: "Rio Oregon", qualidade: 83.4, score: 83 },
 ].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
 
 // ── Área mock data ──
 const areaData = [
-  { nome: "Operações SP", qualidade: 90.2, score: 90 },
-  { nome: "Operações Sul", qualidade: 89.1, score: 89 },
-  { nome: "Operações Sudeste", qualidade: 88.4, score: 88 },
-  { nome: "Operações Centro-Oeste", qualidade: 87.6, score: 88 },
-  { nome: "Operações Nordeste", qualidade: 86.3, score: 86 },
-  { nome: "Administrativo", qualidade: 85.9, score: 86 },
-  { nome: "Comercial", qualidade: 85.1, score: 85 },
-  { nome: "RH / DP", qualidade: 84.5, score: 85 },
-  { nome: "Financeiro", qualidade: 83.8, score: 84 },
-  { nome: "TI / Inovação", qualidade: 82.9, score: 83 },
+  { nome: "ROTA - POA - DM52", qualidade: 91.5, score: 92 },
+  { nome: "MRH VEICULOS LTDA", qualidade: 90.8, score: 91 },
+  { nome: "A 365 - Renoá", qualidade: 90.1, score: 90 },
+  { nome: "ROTA - SOO - SEDE", qualidade: 89.4, score: 89 },
+  { nome: "Area Cliente Frimesa", qualidade: 88.7, score: 89 },
+  { nome: "ROTA - RSL - NM51", qualidade: 88.0, score: 88 },
+  { nome: "CCC - Sanepar", qualidade: 87.3, score: 87 },
+  { nome: "PROGRAMADA", qualidade: 86.6, score: 87 },
+  { nome: "GERENCIAL", qualidade: 86.0, score: 86 },
+  { nome: "G5 BANK", qualidade: 85.3, score: 85 },
+  { nome: "TESTE-TI", qualidade: 84.6, score: 85 },
+  { nome: "Gestão de Mão de Obra - RHO", qualidade: 84.0, score: 84 },
+  { nome: "ROTA - BNU - COORDENAÇÃO", qualidade: 83.3, score: 83 },
+  { nome: "ROTA - CTA - COORDENAÇÃO", qualidade: 82.6, score: 83 },
+  { nome: "ROTA - IAI - COORDENAÇÃO", qualidade: 82.0, score: 82 },
+  { nome: "ROTA - SOO - Coor. Asseio Continente", qualidade: 81.3, score: 81 },
+  { nome: "ROTA - SOO - Coor. Segurança Continente/ Ilha", qualidade: 80.6, score: 81 },
+  { nome: "ROTA - SOO - Coor. Asseio Ilha", qualidade: 80.0, score: 80 },
+  { nome: "ROTA - LGS - NM31", qualidade: 79.3, score: 79 },
+  { nome: "ROTA - JGS - NM48", qualidade: 78.6, score: 79 },
+  { nome: "ROTA - IAI - NM27", qualidade: 78.0, score: 78 },
+  { nome: "ROTA - BQE - NM06", qualidade: 77.3, score: 77 },
+  { nome: "CONTROLADORIA - KELLY", qualidade: 76.6, score: 77 },
+  { nome: "ADM FINANCEIRO - TIME TAISE SOARES", qualidade: 76.0, score: 76 },
+  { nome: "ALARME 365", qualidade: 75.3, score: 75 },
 ].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
 
 // ── Scatter data (source of truth for all 30 regionals) ──
@@ -442,12 +462,18 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
   groupBy: GroupBy;
   onGroupByChange: (g: GroupBy) => void;
 }) {
-  const label = groupByOptions.find(o => o.id === groupBy)?.label ?? "";
+  const [search, setSearch] = useState("");
+  const filteredItems = useMemo(() => {
+    if (!search.trim()) return items;
+    const q = search.toLowerCase();
+    return items.filter(i => i.nome.toLowerCase().includes(q));
+  }, [items, search]);
+
   return (
     <div className="w-[220px] shrink-0">
       <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-xs font-semibold text-foreground">{label}</h3>
+          <h3 className="text-[11px] font-semibold text-foreground">Empresa / Un. Negócio / Área</h3>
           {selectedRegional && (
             <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
               <X size={10} /> Limpar
@@ -459,16 +485,27 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
           {groupByOptions.map(o => (
             <button
               key={o.id}
-              onClick={() => onGroupByChange(o.id)}
+              onClick={() => { onGroupByChange(o.id); setSearch(""); }}
               className={`px-2 py-0.5 rounded text-[10px] font-medium border transition-colors ${groupBy === o.id ? "bg-[#FF5722] text-white border-[#FF5722]" : "text-muted-foreground border-border hover:border-[#FF5722]/40"}`}
             >
-              {o.id === "unidade" ? "UN" : o.id === "empresa" ? "Emp" : "Área"}
+              {o.short}
             </button>
           ))}
         </div>
-        <p className="text-[10px] text-muted-foreground mb-2">Ordenado por score</p>
+        {/* Search */}
+        <div className="relative mb-2">
+          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-6 pr-2 py-1 text-[11px] rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
+          />
+        </div>
         <div className="space-y-0.5 overflow-y-auto flex-1">
-          {items.map((op) => {
+          {filteredItems.length === 0 && <p className="text-[10px] text-muted-foreground text-center py-2">Nenhum resultado</p>}
+          {filteredItems.map((op) => {
             const isSelected = selectedRegional === op.nome;
             const isDimmed = selectedRegional && !isSelected;
             const scoreColor = op.score >= 85 ? "text-green-600" : op.score >= 75 ? "text-orange-500" : "text-red-600";
@@ -478,8 +515,13 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
                 onClick={() => onRegionalClick(op.nome)}
                 className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
               >
-                <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
-                <span className={`font-bold tabular-nums ${scoreColor}`}>{op.score}</span>
+                <UITooltip>
+                  <TooltipTrigger asChild>
+                    <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="text-xs">{op.nome} — Score: {op.score}</TooltipContent>
+                </UITooltip>
+                <span className={`font-bold tabular-nums shrink-0 ${scoreColor}`}>{op.score}</span>
               </div>
             );
           })}
