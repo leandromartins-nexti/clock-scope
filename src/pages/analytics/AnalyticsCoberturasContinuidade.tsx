@@ -198,7 +198,7 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
                 <div className="flex-1 bg-gray-100 rounded-full h-4 relative overflow-hidden">
                   {/* Grid lines at 25%, 50%, 75% */}
                   {[25, 50, 75].map(p => (
-                    <div key={p} className="absolute top-0 bottom-0 w-px bg-black/10" style={{ left: `${p}%` }} />
+                    <div key={p} className="absolute top-0 bottom-0 w-px bg-black/20 z-10 pointer-events-none" style={{ left: `${p}%` }} />
                   ))}
                   <div className="relative h-full flex">
                     {[
