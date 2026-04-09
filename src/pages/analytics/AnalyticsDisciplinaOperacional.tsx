@@ -605,6 +605,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
                 <span className={`text-sm font-semibold min-w-[50px] text-right ${barColor}`}>{op.qualidade}%</span>
                 <span className="text-[11px] text-muted-foreground min-w-[50px] text-right">{op.atrasos}%</span>
                 <TrendIcon t={op.tendencia} />
+                <button
+                  onClick={(e) => { e.stopPropagation(); setDetailRegional(op.nome); }}
+                  className="p-1 rounded hover:bg-muted/50 text-muted-foreground hover:text-[#FF5722] transition-colors"
+                  title="Ver detalhes"
+                >
+                  <ExternalLink size={13} />
+                </button>
               </div>
             );
           })}
