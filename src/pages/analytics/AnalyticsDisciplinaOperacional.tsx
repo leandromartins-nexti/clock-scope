@@ -579,3 +579,22 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
     </div>
   );
 }
+
+// ── Exported standalone tab wrappers ──
+export function QualidadeTab() {
+  const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
+  return <div className="px-6 py-4"><QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+}
+
+export function AbsenteismoTab() {
+  const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
+  return <div className="px-6 py-4"><AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+}
+
+export function MovimentacoesTab() {
+  const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+  const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
+  return <div className="px-6 py-4"><MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} /></div>;
+}
