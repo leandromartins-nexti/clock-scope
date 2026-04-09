@@ -731,17 +731,17 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
   };
 
   const qualDomain = useMemo(() => {
-    if (!chartScatterQual.length) return { xMin: 0, xMax: 300000, yMin: 70, yMax: 100, xTicks: [0, 50000, 100000, 150000, 200000, 250000, 300000], yTicks: [70, 75, 80, 85, 90, 95, 100] };
+    if (!chartScatterQual.length) return { xMin: 0, xMax: 300000, yMin: 70, yMax: 100 };
     const x = buildAxis(chartScatterQual.map(d => d.volume), { clampZero: true });
     const y = buildAxis(chartScatterQual.map(d => d.qualidade));
-    return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max, xTicks: x.ticks, yTicks: y.ticks };
+    return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max };
   }, [chartScatterQual]);
 
   const tratDomain = useMemo(() => {
-    if (!chartScatterTrat.length) return { xMin: 0, xMax: 300000, yMin: 1, yMax: 7, xTicks: [0, 50000, 100000, 150000, 200000, 250000, 300000], yTicks: [1, 2, 3, 4, 5, 6, 7] };
+    if (!chartScatterTrat.length) return { xMin: 0, xMax: 300000, yMin: 1, yMax: 7 };
     const x = buildAxis(chartScatterTrat.map(d => d.volume), { clampZero: true });
-    const y = buildAxis(chartScatterTrat.map(d => d.dias), { decimals: 1 });
-    return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max, xTicks: x.ticks, yTicks: y.ticks };
+    const y = buildAxis(chartScatterTrat.map(d => d.dias));
+    return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max };
   }, [chartScatterTrat]);
 
   return (
