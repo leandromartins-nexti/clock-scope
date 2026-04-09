@@ -660,7 +660,7 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, onItemDetail
 // ══════════════════════════════════════════════════════════════
 // Sub-aba 1: Qualidade do Ponto
 // ══════════════════════════════════════════════════════════════
-function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupByChange }: ContentProps) {
+function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
 
   const activeData = useMemo(() => {
