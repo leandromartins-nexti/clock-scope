@@ -76,14 +76,6 @@ const scatterQualidade = [
   { regional: "Regional BA", volume: 145000, qualidade: 82.4, headcount: 800 },
 ];
 
-// ── Qualidade: Distribuição Tempo de Tratativa ──
-const distribuicaoTratativa = [
-  { faixa: "< 1 dia", percentual: 35, cor: "#22c55e" },
-  { faixa: "1-3 dias", percentual: 28, cor: "#86efac" },
-  { faixa: "3-7 dias", percentual: 18, cor: "#facc15" },
-  { faixa: "7-15 dias", percentual: 12, cor: "#f97316" },
-  { faixa: "> 15 dias", percentual: 7, cor: "#ef4444" },
-];
 
 // ── Qualidade: Evolução Tempo Médio de Tratativa ──
 const evolucaoTratativa = [
@@ -94,23 +86,6 @@ const evolucaoTratativa = [
 ];
 const tratativaMedia = evolucaoTratativa.reduce((s, d) => s + d.dias, 0) / evolucaoTratativa.length;
 
-// ── Qualidade: Scatter Volume × Tempo por Operação ──
-const scatterTratativa = [
-  { regional: "Regional SP", volume: 1850, tempo: 3.2, headcount: 2800 },
-  { regional: "Regional RJ", volume: 1420, tempo: 5.1, headcount: 1900 },
-  { regional: "Regional MG", volume: 980, tempo: 4.2, headcount: 1400 },
-  { regional: "Regional PR", volume: 820, tempo: 6.8, headcount: 1100 },
-  { regional: "Regional BA", volume: 910, tempo: 8.5, headcount: 800 },
-];
-
-// ── Qualidade: Box Plot Tratativa ──
-const boxPlotTratativa = [
-  { regional: "Regional SP", min: 0.5, q25: 1.2, mediana: 2.1, q75: 4.0, max: 8.5 },
-  { regional: "Regional MG", min: 0.6, q25: 1.8, mediana: 3.5, q75: 5.8, max: 11.0 },
-  { regional: "Regional RJ", min: 0.8, q25: 2.5, mediana: 4.3, q75: 7.2, max: 14.0 },
-  { regional: "Regional PR", min: 1.2, q25: 3.5, mediana: 5.8, q75: 9.2, max: 18.0 },
-  { regional: "Regional BA", min: 2.0, q25: 5.0, mediana: 8.2, q75: 12.5, max: 22.0 },
-];
 
 // ── Absenteísmo ──
 const absenteismoEvolucao = [
@@ -288,7 +263,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
       </div>
 
       {/* Linha 2: LineChart + Donut */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         <div className="bg-card border border-border/50 rounded-xl p-4">
           <h4 className="text-sm font-semibold mb-2">Evolução da Qualidade do Ponto</h4>
           <ResponsiveContainer width="100%" height={250}>
@@ -303,24 +278,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-card border border-border/50 rounded-xl p-4">
-          <h4 className="text-sm font-semibold mb-2">Registradas vs Justificadas</h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={[{ name: "Registradas", value: 87 }, { name: "Justificadas", value: 13 }]} cx="50%" cy="45%" innerRadius={55} outerRadius={90} dataKey="value" label={({ value }) => `${value}%`}>
-                <Cell fill="#22c55e" />
-                <Cell fill="#f97316" />
-              </Pie>
-              <RechartsTooltip formatter={(v: number, n: string) => [`${v}%`, n]} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
       </div>
 
-      {/* Gráfico 2 + 3: Scatter Qualidade×Volume + Distribuição Tratativa */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-card border border-border/50 rounded-xl p-4">
+      {/* Scatter Qualidade×Volume */}
+      <div className="bg-card border border-border/50 rounded-xl p-4">
           <div className="flex items-center gap-1.5 mb-1">
             <h4 className="text-sm font-semibold">Qualidade × Volume por Operação</h4>
             <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
@@ -359,28 +320,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
               }} />
             </ScatterChart>
           </ResponsiveContainer>
-        </div>
-
-        <div className="bg-card border border-border/50 rounded-xl p-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <h4 className="text-sm font-semibold">Distribuição do Tempo de Tratativa</h4>
-            <InfoTip text="Mede o tempo em dias entre o registro da marcação no sistema e a data em que foi ajustada ou tratada pelo operador." />
-          </div>
-          <p className="text-[10px] text-muted-foreground mb-2">Tempo entre a marcação e o ajuste</p>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={distribuicaoTratativa} margin={{ top: 15, right: 10, bottom: 5, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="faixa" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-              <RechartsTooltip formatter={(v: number) => [`${v}%`, "Percentual"]} />
-              <Bar dataKey="percentual" name="% do total" radius={[4, 4, 0, 0]} label={{ position: "top", fontSize: 10, formatter: (v: number) => `${v}%` }}>
-                {distribuicaoTratativa.map((entry, index) => (
-                  <Cell key={index} fill={entry.cor} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
       </div>
 
       {/* Gráfico 4 + 5: Evolução Tempo Médio + Scatter Volume×Tempo */}
