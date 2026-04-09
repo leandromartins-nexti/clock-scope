@@ -478,6 +478,7 @@ function RankingFooter() {
 }
 
 // ── Shared sidebar with groupBy selector ──
+// Now also exposes paged items for charts
 type ContentProps = { selectedRegional: string | null; onRegionalClick: (n: string) => void; groupBy: GroupBy; onGroupByChange: (g: GroupBy) => void };
 
 function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onGroupByChange }: {
