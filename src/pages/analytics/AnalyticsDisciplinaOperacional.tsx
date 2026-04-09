@@ -75,6 +75,11 @@ const empresaData = [
   { nome: "ORSEGUPS COMERCIO", qualidade: 84.8, score: 85 },
   { nome: "Victória da Paz", qualidade: 84.1, score: 84 },
   { nome: "Rio Oregon", qualidade: 83.4, score: 83 },
+  { nome: "VERZANI & SANDRINI", qualidade: 72.3, score: 72 },
+  { nome: "JCC SEGURANÇA", qualidade: 68.5, score: 69 },
+  { nome: "SERVIS SEGURANÇA", qualidade: 61.2, score: 61 },
+  { nome: "GLOBAL SEGURANÇA", qualidade: 55.8, score: 56 },
+  { nome: "NEXTI DEMONSTRAÇÃO", qualidade: 48.3, score: 48 },
 ].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
 
 // ── Área mock data ──
