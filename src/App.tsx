@@ -22,6 +22,7 @@ import AnalyticsEstrategico from "./pages/analytics/AnalyticsEstrategico";
 import AnalyticsCompliance from "./pages/analytics/AnalyticsCompliance";
 import AnalyticsInteligencia from "./pages/analytics/AnalyticsInteligencia";
 import AnalyticsConfiguracao from "./pages/analytics/AnalyticsConfiguracao";
+import GaugeShowcase from "./pages/analytics/GaugeShowcase";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/analytics/compliance" element={<AnalyticsCompliance />} />
             <Route path="/analytics/inteligencia" element={<AnalyticsInteligencia />} />
             <Route path="/analytics/configuracao" element={<AnalyticsConfiguracao />} />
+            <Route path="/analytics/gauge-showcase" element={<GaugeShowcase />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
