@@ -254,44 +254,40 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
 
         {/* Melhor Operação */}
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <TrendingUp size={16} className="text-green-500" />
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Melhor Operação</p>
             <InfoTip text="Operação com maior score de qualidade no período" />
           </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Melhor Operação</p>
-          <p className="text-base font-semibold mt-0.5 truncate">{activeData.melhorOperacao.nome}</p>
+          <p className="text-xl font-bold mt-0.5 truncate text-green-600">{activeData.melhorOperacao.nome}</p>
           <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.melhorOperacao.score} · Alta</p>
         </div>
 
         {/* Maior Risco */}
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <AlertTriangle size={16} className="text-red-500" />
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maior Risco</p>
             <InfoTip text="Operação com menor qualidade e maior concentração de risco" />
           </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Maior Risco</p>
-          <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{activeData.maiorRisco.nome}</p>
+          <p className="text-xl font-bold mt-0.5 text-red-600 truncate">{activeData.maiorRisco.nome}</p>
           <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.maiorRisco.score} · {activeData.maiorRisco.indicador}</p>
         </div>
 
         {/* Registradas */}
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <ArrowUpRight size={16} className="text-green-500" />
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Registradas</p>
             <InfoTip text="Total de marcações registradas pelo colaborador sem necessidade de ajuste." />
           </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Registradas</p>
-          <p className="text-base font-semibold text-green-600 mt-0.5">{activeData.registradas}</p>
+          <p className="text-xl font-bold text-green-600 mt-0.5">{activeData.registradas}</p>
         </div>
 
         {/* Justificadas */}
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <ArrowDownRight size={16} className="text-orange-500" />
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Justificadas</p>
             <InfoTip text="Total de marcações que foram justificadas manualmente pelo operador ou gestor." />
           </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Justificadas</p>
-          <p className="text-base font-semibold text-orange-500 mt-0.5">{activeData.justificadas}</p>
+          <p className="text-xl font-bold text-orange-500 mt-0.5">{activeData.justificadas}</p>
         </div>
       </div>
 
@@ -495,20 +491,18 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedReg
         </div>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-          <div className="flex justify-between items-start">
-            <AlertTriangle size={16} className="text-red-500" />
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Faltas Não Justificadas</p>
             <InfoTip text="Percentual das ausências que não tiveram justificativa registrada." />
           </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Faltas Não Justificadas</p>
           <p className="text-2xl font-bold text-red-600 mt-0.5">{activeData.faltasNJ}</p>
         </div>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-          <div className="flex justify-between items-start">
-            <ArrowUpRight size={16} className="text-orange-500" />
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Turnover</p>
             <InfoTip text="Taxa de rotatividade: desligamentos no período sobre o efetivo médio." />
           </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Turnover</p>
           <p className="text-2xl font-bold text-orange-500 mt-0.5">{activeData.turnover}</p>
         </div>
       </div>
@@ -613,20 +607,18 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
         </div>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-          <div className="flex justify-between items-start">
-            <ArrowUpRight size={16} className="text-blue-500" />
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Trocas de Escala</p>
             <InfoTip text="Colaboradores que tiveram sua escala alterada no período." />
           </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Trocas de Escala</p>
           <p className="text-2xl font-bold text-blue-600 mt-0.5">{activeData.escala}</p>
         </div>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-          <div className="flex justify-between items-start">
-            <ArrowUpRight size={16} className="text-sky-400" />
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Trocas de Posto</p>
             <InfoTip text="Colaboradores que foram transferidos de posto no período." />
           </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Trocas de Posto</p>
           <p className="text-2xl font-bold text-sky-500 mt-0.5">{activeData.posto}</p>
         </div>
       </div>
