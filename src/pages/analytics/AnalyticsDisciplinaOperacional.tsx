@@ -680,100 +680,104 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedReg
   const scoreFaixa = activeData.taxa <= 4 ? "Bom" : activeData.taxa <= 6 ? "Atenção" : "Crítico";
   const maxTaxa = Math.max(...absenteismoRegionais.map(r => r.taxa));
 
+  // Sort by lowest taxa = best for absenteísmo
+  const sortedRegionais = [...absenteismoRegionais].sort((a, b) => a.taxa - b.taxa);
+  // Compute a "score" for absenteísmo (inverted: lower taxa = higher score)
+  const getAbsScore = (taxa: number) => Math.round(Math.max(0, 100 - taxa * 10));
+
   return (
-    <div className="space-y-3">
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
-          <div className="flex items-center gap-1 mb-1">
-            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Absenteísmo</p>
-            <InfoTip text="Taxa de ausências sobre o efetivo total no período. Inclui atestados, faltas justificadas e não justificadas." />
+    <div className="flex gap-3">
+      <div className="flex-1 min-w-0 space-y-3">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Absenteísmo</p>
+              <InfoTip text="Taxa de ausências sobre o efetivo total no período. Inclui atestados, faltas justificadas e não justificadas." />
+            </div>
+            <ScoreGauge score={Math.max(0, 100 - activeData.taxa * 10)} />
+            <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.taxa}%</p>
+            <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
           </div>
-          <ScoreGauge score={Math.max(0, 100 - activeData.taxa * 10)} />
-          <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.taxa}%</p>
-          <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Faltas Não Justificadas</p>
+              <InfoTip text="Percentual das ausências que não tiveram justificativa registrada." />
+            </div>
+            <p className="text-2xl font-bold text-red-600 mt-0.5">{activeData.faltasNJ}</p>
+          </div>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Turnover</p>
+              <InfoTip text="Taxa de rotatividade: desligamentos no período sobre o efetivo médio." />
+            </div>
+            <p className="text-2xl font-bold text-orange-500 mt-0.5">{activeData.turnover}</p>
+          </div>
         </div>
 
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-          <div className="flex items-center gap-1 mb-2">
-            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Faltas Não Justificadas</p>
-            <InfoTip text="Percentual das ausências que não tiveram justificativa registrada." />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-card border border-border/50 rounded-xl p-4">
+            <h4 className="text-sm font-semibold mb-2">Atestados e Faltas por Competência</h4>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={absenteismoBarras}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <RechartsTooltip />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <ReferenceLine y={absenteismoMediaBarras} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
+                <Bar dataKey="atestados" stackId="a" fill="hsl(var(--chart-2))" name="Atestados" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="faltas" stackId="a" fill="hsl(var(--destructive))" name="Faltas NJ" radius={[2, 2, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-          <p className="text-2xl font-bold text-red-600 mt-0.5">{activeData.faltasNJ}</p>
-        </div>
-
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-          <div className="flex items-center gap-1 mb-2">
-            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Turnover</p>
-            <InfoTip text="Taxa de rotatividade: desligamentos no período sobre o efetivo médio." />
+          <div className="bg-card border border-border/50 rounded-xl p-4">
+            <h4 className="text-sm font-semibold mb-2">Evolução da Taxa de Absenteísmo</h4>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={absenteismoEvolucao}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+                <YAxis domain={[3, 7]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
+                <RechartsTooltip formatter={(v: number) => [`${v}%`, "Absenteísmo"]} />
+                <ReferenceLine y={absenteismoMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${absenteismoMedia}%`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
+                <Line type="monotone" dataKey="value" stroke="hsl(var(--destructive))" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} name="Taxa" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
-          <p className="text-2xl font-bold text-orange-500 mt-0.5">{activeData.turnover}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-card border border-border/50 rounded-xl p-4">
-          <h4 className="text-sm font-semibold mb-2">Atestados e Faltas por Competência</h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={absenteismoBarras}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 10 }} />
-              <RechartsTooltip />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <ReferenceLine y={absenteismoMediaBarras} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
-              <Bar dataKey="atestados" stackId="a" fill="hsl(var(--chart-2))" name="Atestados" radius={[0, 0, 0, 0]} />
-              <Bar dataKey="faltas" stackId="a" fill="hsl(var(--destructive))" name="Faltas NJ" radius={[2, 2, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-card border border-border/50 rounded-xl p-4">
-          <h4 className="text-sm font-semibold mb-2">Evolução da Taxa de Absenteísmo</h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={absenteismoEvolucao}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
-              <YAxis domain={[3, 7]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-              <RechartsTooltip formatter={(v: number) => [`${v}%`, "Absenteísmo"]} />
-              <ReferenceLine y={absenteismoMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${absenteismoMedia}%`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
-              <Line type="monotone" dataKey="value" stroke="hsl(var(--destructive))" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} name="Taxa" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="bg-card border border-border/50 rounded-xl p-4">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="text-sm font-semibold">Ranking de Absenteísmo por Regional</h3>
-          {selectedRegional && (
-            <button onClick={() => onRegionalClick(selectedRegional)} className="text-[11px] text-[#FF5722] hover:underline flex items-center gap-1">
-              <Eraser size={12} /> Limpar seleção
-            </button>
-          )}
-        </div>
-        <p className="text-xs text-muted-foreground mb-4">Taxa de absenteísmo e turnover por regional · clique para filtrar</p>
-
-        <div className="space-y-3">
-          {absenteismoRegionais.map(op => {
-            const isSelected = selectedRegional === op.nome;
-            const isDimmed = selectedRegional && !isSelected;
-            const barColor = op.taxa <= 4 ? "bg-green-500" : op.taxa <= 6 ? "bg-orange-400" : "bg-red-500";
-            const textColor = op.taxa <= 4 ? "text-green-600" : op.taxa <= 6 ? "text-orange-500" : "text-red-600";
-            const barWidth = (op.taxa / maxTaxa) * 100;
-            return (
-              <div key={op.nome} className={`flex items-center gap-4 cursor-pointer rounded-lg px-2 py-1.5 -mx-2 transition-all ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/30"} ${isDimmed ? "opacity-35" : ""}`} onClick={() => onRegionalClick(op.nome)}>
-                <span className="text-sm font-medium min-w-[120px]">{op.nome}</span>
-                <div className="flex-1 relative h-4">
-                  <div className="absolute inset-0 bg-gray-100 rounded-full overflow-hidden">
-                    <div className={`h-full ${barColor} rounded-full transition-all`} style={{ width: `${barWidth}%` }} />
-                  </div>
+      {/* Right sidebar */}
+      <div className="w-[220px] shrink-0">
+        <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-semibold text-foreground">Regionais</h3>
+            {selectedRegional && (
+              <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
+                <X size={10} /> Limpar
+              </button>
+            )}
+          </div>
+          <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · menor taxa = melhor</p>
+          <div className="space-y-0.5">
+            {sortedRegionais.map((op, i) => {
+              const isSelected = selectedRegional === op.nome;
+              const isDimmed = selectedRegional && !isSelected;
+              const sc = getAbsScore(op.taxa);
+              const sColor = sc >= 60 ? "text-green-600" : sc >= 40 ? "text-orange-500" : "text-red-600";
+              return (
+                <div
+                  key={op.nome}
+                  onClick={() => onRegionalClick(op.nome)}
+                  className={`flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
+                >
+                  <span className="text-[10px] text-muted-foreground w-4 text-right">{i + 1}.</span>
+                  <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
+                  <span className={`font-bold tabular-nums ${sColor}`}>{sc}</span>
+                  <TrendIcon t={op.tendencia} />
                 </div>
-                <span className={`text-sm font-semibold min-w-[50px] text-right ${textColor}`}>{op.taxa}%</span>
-                <span className="text-[11px] text-muted-foreground min-w-[70px] text-right">Turnover {op.turnover}%</span>
-                <TrendIcon t={op.tendencia} />
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
