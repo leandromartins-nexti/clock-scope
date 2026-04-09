@@ -736,8 +736,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
       return { min: 0, max: AXIS_SEGMENTS, step: 1, ticks: fallbackTicks };
     }
 
-    const rawMin = Math.min(...values);
-    const rawMax = Math.max(...values);
+    const pad = (Math.max(...values) - Math.min(...values)) * 0.1 || 1;
+    const rawMin = Math.min(...values) - pad;
+    const rawMax = Math.max(...values) + pad;
     const range = rawMax - rawMin || Math.max(Math.abs(rawMax), 1);
     const step = niceStep(range / AXIS_SEGMENTS);
 
