@@ -800,113 +800,107 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
   const scoreFaixa = totalNum <= 15000 ? "Bom" : totalNum <= 25000 ? "Atenção" : "Crítico";
   const maxTotal = Math.max(...movimentacoesRegionais.map(r => r.total));
 
+  // Sort by lowest total = best for movimentações
+  const sortedRegionais = [...movimentacoesRegionais].sort((a, b) => a.total - b.total);
+  const getMovScore = (total: number) => Math.round(Math.max(0, 100 - (total / maxTotal) * 100));
+
   return (
-    <div className="space-y-3">
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
-          <div className="flex items-center gap-1 mb-1">
-            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Movimentações</p>
-            <InfoTip text="Total de trocas de escala e trocas de posto no período. Volume alto indica instabilidade operacional." />
+    <div className="flex gap-3">
+      <div className="flex-1 min-w-0 space-y-3">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Movimentações</p>
+              <InfoTip text="Total de trocas de escala e trocas de posto no período. Volume alto indica instabilidade operacional." />
+            </div>
+            <ScoreGauge score={Math.max(0, 100 - (totalNum / 30000) * 100)} />
+            <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.total}</p>
+            <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
           </div>
-          <ScoreGauge score={Math.max(0, 100 - (totalNum / 30000) * 100)} />
-          <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.total}</p>
-          <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Trocas de Escala</p>
+              <InfoTip text="Colaboradores que tiveram sua escala alterada no período." />
+            </div>
+            <p className="text-2xl font-bold text-blue-600 mt-0.5">{activeData.escala}</p>
+          </div>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Trocas de Posto</p>
+              <InfoTip text="Colaboradores que foram transferidos de posto no período." />
+            </div>
+            <p className="text-2xl font-bold text-sky-500 mt-0.5">{activeData.posto}</p>
+          </div>
         </div>
 
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-          <div className="flex items-center gap-1 mb-2">
-            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Trocas de Escala</p>
-            <InfoTip text="Colaboradores que tiveram sua escala alterada no período." />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-card border border-border/50 rounded-xl p-4">
+            <h4 className="text-sm font-semibold mb-2">Trocas por Competência</h4>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={movimentacoesBarras}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <RechartsTooltip />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <ReferenceLine y={movimentacoesMediaBarras} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: "Média", position: "right", fontSize: 10, fill: "#9ca3af" }} />
+                <Bar dataKey="escala" stackId="a" fill="hsl(var(--chart-2))" name="Trocas de Escala" />
+                <Bar dataKey="posto" stackId="a" fill="hsl(var(--chart-3))" name="Trocas de Posto" radius={[2, 2, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-          <p className="text-2xl font-bold text-blue-600 mt-0.5">{activeData.escala}</p>
-        </div>
-
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-          <div className="flex items-center gap-1 mb-2">
-            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Trocas de Posto</p>
-            <InfoTip text="Colaboradores que foram transferidos de posto no período." />
+          <div className="bg-card border border-border/50 rounded-xl p-4">
+            <div className="flex items-center gap-1.5 mb-2">
+              <h4 className="text-sm font-semibold">Evolução do Tempo de Fechamento</h4>
+              <InfoTip text="Tempo médio entre o fim da competência e o fechamento do ponto pelo DP/RH." />
+            </div>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={movimentacoesEvolucao}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+                <YAxis domain={[5, 10]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} />
+                <RechartsTooltip formatter={(v: number) => [`${v} dias`, "Tempo"]} />
+                <ReferenceLine y={movimentacoesMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${movimentacoesMedia}d`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
+                <Line type="monotone" dataKey="value" stroke="#f97316" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} name="Dias" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
-          <p className="text-2xl font-bold text-sky-500 mt-0.5">{activeData.posto}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-card border border-border/50 rounded-xl p-4">
-          <h4 className="text-sm font-semibold mb-2">Trocas por Competência</h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={movimentacoesBarras}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 10 }} />
-              <RechartsTooltip />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <ReferenceLine y={movimentacoesMediaBarras} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: "Média", position: "right", fontSize: 10, fill: "#9ca3af" }} />
-              <Bar dataKey="escala" stackId="a" fill="hsl(var(--chart-2))" name="Trocas de Escala" />
-              <Bar dataKey="posto" stackId="a" fill="hsl(var(--chart-3))" name="Trocas de Posto" radius={[2, 2, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-card border border-border/50 rounded-xl p-4">
-          <div className="flex items-center gap-1.5 mb-2">
-            <h4 className="text-sm font-semibold">Evolução do Tempo de Fechamento</h4>
-            <InfoTip text="Tempo médio entre o fim da competência e o fechamento do ponto pelo DP/RH." />
+      {/* Right sidebar */}
+      <div className="w-[220px] shrink-0">
+        <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-semibold text-foreground">Regionais</h3>
+            {selectedRegional && (
+              <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
+                <X size={10} /> Limpar
+              </button>
+            )}
           </div>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={movimentacoesEvolucao}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
-              <YAxis domain={[5, 10]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} />
-              <RechartsTooltip formatter={(v: number) => [`${v} dias`, "Tempo"]} />
-              <ReferenceLine y={movimentacoesMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${movimentacoesMedia}d`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
-              <Line type="monotone" dataKey="value" stroke="#f97316" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} name="Dias" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="bg-card border border-border/50 rounded-xl p-4">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="text-sm font-semibold">Ranking de Movimentações por Regional</h3>
-          {selectedRegional && (
-            <button onClick={() => onRegionalClick(selectedRegional)} className="text-[11px] text-[#FF5722] hover:underline flex items-center gap-1">
-              <Eraser size={12} /> Limpar seleção
-            </button>
-          )}
-        </div>
-        <p className="text-xs text-muted-foreground mb-4">Volume de trocas e tempo de fechamento por regional · clique para filtrar</p>
-
-        <div className="flex items-center gap-4 mb-3 text-[10px] text-muted-foreground">
-          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm" style={{ background: "hsl(var(--chart-2))" }} /> Trocas de Escala</div>
-          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm" style={{ background: "hsl(var(--chart-3))" }} /> Trocas de Posto</div>
-        </div>
-
-        <div className="space-y-3">
-          {movimentacoesRegionais.map(op => {
-            const isSelected = selectedRegional === op.nome;
-            const isDimmed = selectedRegional && !isSelected;
-            const escalaPct = (op.escala / maxTotal) * 100;
-            const postoPct = (op.posto / maxTotal) * 100;
-            return (
-              <div key={op.nome} className={`flex items-center gap-4 cursor-pointer rounded-lg px-2 py-1.5 -mx-2 transition-all ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/30"} ${isDimmed ? "opacity-35" : ""}`} onClick={() => onRegionalClick(op.nome)}>
-                <span className="text-sm font-medium min-w-[120px]">{op.nome}</span>
-                <div className="flex-1 relative h-4">
-                  <RankingDashedGrid />
-                  <div className="absolute inset-0 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full flex">
-                      <div className="h-4 transition-all" style={{ width: `${escalaPct}%`, background: "hsl(var(--chart-2))" }} />
-                      <div className="h-4 transition-all" style={{ width: `${postoPct}%`, background: "hsl(var(--chart-3))" }} />
-                    </div>
-                  </div>
+          <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · menor volume = melhor</p>
+          <div className="space-y-0.5">
+            {sortedRegionais.map((op, i) => {
+              const isSelected = selectedRegional === op.nome;
+              const isDimmed = selectedRegional && !isSelected;
+              const sc = getMovScore(op.total);
+              const sColor = sc >= 60 ? "text-green-600" : sc >= 40 ? "text-orange-500" : "text-red-600";
+              return (
+                <div
+                  key={op.nome}
+                  onClick={() => onRegionalClick(op.nome)}
+                  className={`flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
+                >
+                  <span className="text-[10px] text-muted-foreground w-4 text-right">{i + 1}.</span>
+                  <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
+                  <span className={`font-bold tabular-nums ${sColor}`}>{sc}</span>
+                  <TrendIcon t={op.tendencia} />
                 </div>
-                <span className="text-sm font-semibold min-w-[50px] text-right">{(op.total / 1000).toFixed(1)}K</span>
-                <span className="text-[11px] text-muted-foreground min-w-[70px] text-right">{op.tempoFechamento} dias</span>
-                <TrendIcon t={op.tendencia} />
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-        <RankingFooter />
       </div>
     </div>
   );
