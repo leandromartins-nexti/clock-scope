@@ -6,21 +6,9 @@ import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid,
   Tooltip as RechartsTooltip, Legend,
 } from "recharts";
+import InfoTip from "@/components/analytics/InfoTip";
+import { TrendIcon } from "@/components/analytics/IndicatorTable";
 
-function InfoTip({ text }: { text: string }) {
-  return (
-    <UITooltip>
-      <TooltipTrigger asChild><Info size={14} className="text-muted-foreground cursor-help" /></TooltipTrigger>
-      <TooltipContent className="max-w-[280px] text-xs">{text}</TooltipContent>
-    </UITooltip>
-  );
-}
-
-function TrendIcon({ t }: { t: string }) {
-  if (t === "melhorando") return <TrendingUp size={14} className="text-green-500" />;
-  if (t === "piorando") return <TrendingDown size={14} className="text-red-500" />;
-  return <Minus size={14} className="text-gray-400" />;
-}
 
 function KPI({ title, value, color, tip }: { title: string; value: string | number; color?: string; tip: string }) {
   return (
