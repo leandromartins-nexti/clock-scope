@@ -78,6 +78,14 @@ const evolucaoTratativa = [
 ];
 const tratativaMedia = evolucaoTratativa.reduce((s, d) => s + d.dias, 0) / evolucaoTratativa.length;
 
+const scatterTratativa = [
+  { regional: "Regional SP", volume: 268000, dias: 4.2, headcount: 2800 },
+  { regional: "Regional RJ", volume: 189000, dias: 6.8, headcount: 1900 },
+  { regional: "Regional MG", volume: 152000, dias: 5.5, headcount: 1400 },
+  { regional: "Regional PR", volume: 138000, dias: 7.1, headcount: 1100 },
+  { regional: "Regional BA", volume: 145000, dias: 8.3, headcount: 800 },
+];
+
 // ── Absenteísmo ──
 const absenteismoEvolucao = [
   { mes: "abr/25", value: 5.4 }, { mes: "mai/25", value: 5.1 }, { mes: "jun/25", value: 5.6 },
