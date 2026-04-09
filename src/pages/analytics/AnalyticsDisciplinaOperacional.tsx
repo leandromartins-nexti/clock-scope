@@ -643,7 +643,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
           </div>
           <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · ordenado por score</p>
           <div className="space-y-0.5 overflow-y-auto flex-1">
-            {sortedRegionais.map((op, i) => {
+            {sortedRegionais.map((op) => {
               const isSelected = selectedRegional === op.nome;
               const isDimmed = selectedRegional && !isSelected;
               const scoreColor = op.qualidade >= 85 ? "text-green-600" : op.qualidade >= 75 ? "text-orange-500" : "text-red-600";
@@ -651,19 +651,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
                 <div
                   key={op.nome}
                   onClick={() => onRegionalClick(op.nome)}
-                  className={`flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
+                  className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
                 >
-                  <span className="text-[10px] text-muted-foreground w-4 text-right">{i + 1}.</span>
                   <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
                   <span className={`font-bold tabular-nums ${scoreColor}`}>{Math.round(op.qualidade)}</span>
-                  <TrendIcon t={op.tendencia} />
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setDetailRegional(op.nome); }}
-                    className="p-0.5 rounded hover:bg-muted/50 text-muted-foreground hover:text-[#FF5722] transition-colors"
-                    title="Ver detalhes"
-                  >
-                    <ExternalLink size={11} />
-                  </button>
                 </div>
               );
             })}
@@ -770,7 +761,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedReg
           </div>
           <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · menor taxa = melhor</p>
           <div className="space-y-0.5 overflow-y-auto flex-1">
-            {sortedRegionais.map((op, i) => {
+            {sortedRegionais.map((op) => {
               const isSelected = selectedRegional === op.nome;
               const isDimmed = selectedRegional && !isSelected;
               const sc = getAbsScore(op.taxa);
@@ -779,12 +770,10 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick }: { selectedReg
                 <div
                   key={op.nome}
                   onClick={() => onRegionalClick(op.nome)}
-                  className={`flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
+                  className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
                 >
-                  <span className="text-[10px] text-muted-foreground w-4 text-right">{i + 1}.</span>
                   <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
                   <span className={`font-bold tabular-nums ${sColor}`}>{sc}</span>
-                  <TrendIcon t={op.tendencia} />
                 </div>
               );
             })}
@@ -892,7 +881,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
           </div>
           <p className="text-[10px] text-muted-foreground mb-3">Filtro rápido · menor volume = melhor</p>
           <div className="space-y-0.5 overflow-y-auto flex-1">
-            {sortedRegionais.map((op, i) => {
+            {sortedRegionais.map((op) => {
               const isSelected = selectedRegional === op.nome;
               const isDimmed = selectedRegional && !isSelected;
               const sc = getMovScore(op.total);
@@ -901,12 +890,10 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick }: { selectedR
                 <div
                   key={op.nome}
                   onClick={() => onRegionalClick(op.nome)}
-                  className={`flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
+                  className={`flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
                 >
-                  <span className="text-[10px] text-muted-foreground w-4 text-right">{i + 1}.</span>
                   <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
                   <span className={`font-bold tabular-nums ${sColor}`}>{sc}</span>
-                  <TrendIcon t={op.tendencia} />
                 </div>
               );
             })}
