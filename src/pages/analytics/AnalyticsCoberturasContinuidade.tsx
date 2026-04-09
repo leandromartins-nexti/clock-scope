@@ -195,33 +195,37 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
                   onClick={() => handleRegionalClick(op.nome)}
                 >
                   <span className="text-sm font-medium min-w-[120px]">{op.nome}</span>
-                  <div className="flex-1 rounded-full h-4 relative overflow-hidden"
-                    style={{
-                      background: `
-                        repeating-linear-gradient(to bottom, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 2px, transparent 2px, transparent 5px) 20% 0 / 1px 100% no-repeat,
-                        repeating-linear-gradient(to bottom, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 2px, transparent 2px, transparent 5px) 40% 0 / 1px 100% no-repeat,
-                        repeating-linear-gradient(to bottom, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 2px, transparent 2px, transparent 5px) 60% 0 / 1px 100% no-repeat,
-                        repeating-linear-gradient(to bottom, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 2px, transparent 2px, transparent 5px) 80% 0 / 1px 100% no-repeat,
-                        #f3f4f6
-                      `,
-                    }}
-                  >
-                    <div className="relative h-full flex">
-                      {[
-                        { pct: op.regular, hours: op.regularH, label: "Hora Regular", bg: "bg-green-500" },
-                        { pct: op.atrasos, hours: op.atrasosH, label: "Atrasos", bg: "bg-yellow-400" },
-                        { pct: op.falta, hours: op.faltaH, label: "Falta", bg: "bg-orange-400" },
-                        { pct: op.he, hours: op.heH, label: "Hora Extra", bg: "bg-red-500" },
-                      ].map((seg, idx) => (
-                        <UITooltip key={idx}>
-                          <TooltipTrigger asChild>
-                            <div className={`h-4 ${seg.bg} transition-all cursor-default`} style={{ width: `${seg.pct}%` }} />
-                          </TooltipTrigger>
-                          <TooltipContent className="text-xs">
-                            <span className="font-semibold">{seg.label}</span>: {seg.pct}% · {seg.hours}h
-                          </TooltipContent>
-                        </UITooltip>
-                      ))}
+                  <div className="flex-1 relative h-4">
+                    {/* Dashed grid lines on top */}
+                    {[20, 40, 60, 80].map(p => (
+                      <div
+                        key={p}
+                        className="absolute top-0 bottom-0 z-20 pointer-events-none"
+                        style={{
+                          left: `${p}%`,
+                          backgroundImage: 'repeating-linear-gradient(to bottom, rgba(0,0,0,0.25) 0px, rgba(0,0,0,0.25) 2px, transparent 2px, transparent 5px)',
+                          width: '1px',
+                        }}
+                      />
+                    ))}
+                    <div className="absolute inset-0 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full flex">
+                        {[
+                          { pct: op.regular, hours: op.regularH, label: "Hora Regular", bg: "bg-green-500" },
+                          { pct: op.atrasos, hours: op.atrasosH, label: "Atrasos", bg: "bg-yellow-400" },
+                          { pct: op.falta, hours: op.faltaH, label: "Falta", bg: "bg-orange-400" },
+                          { pct: op.he, hours: op.heH, label: "Hora Extra", bg: "bg-red-500" },
+                        ].map((seg, idx) => (
+                          <UITooltip key={idx}>
+                            <TooltipTrigger asChild>
+                              <div className={`h-4 ${seg.bg} transition-all cursor-default`} style={{ width: `${seg.pct}%` }} />
+                            </TooltipTrigger>
+                            <TooltipContent className="text-xs">
+                              <span className="font-semibold">{seg.label}</span>: {seg.pct}% · {seg.hours}h
+                            </TooltipContent>
+                          </UITooltip>
+                        ))}
+                      </div>
                     </div>
                   </div>
                   <span className={`text-sm font-semibold min-w-[40px] text-right ${barScoreColor}`}>
