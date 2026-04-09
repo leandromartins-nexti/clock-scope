@@ -22,6 +22,7 @@ import AnalyticsEstrategico from "./pages/analytics/AnalyticsEstrategico";
 import AnalyticsCompliance from "./pages/analytics/AnalyticsCompliance";
 import AnalyticsInteligencia from "./pages/analytics/AnalyticsInteligencia";
 import AnalyticsConfiguracao from "./pages/analytics/AnalyticsConfiguracao";
+import GaugeShowcase from "./pages/analytics/GaugeShowcase";
 
 const queryClient = new QueryClient();
 
