@@ -215,13 +215,18 @@ const qualidadeRegionais = scatterQualidade.map(sq => {
   return { nome: sq.regional, qualidade, atrasos, registradas, justificadas, tendencia, volume: sq.volume, headcount: sq.headcount, tratativa: st?.dias ?? 6 };
 });
 
-const evolucaoTratativa = [
-  { mes: "abr/25", dias: 8.5 }, { mes: "mai/25", dias: 7.8 }, { mes: "jun/25", dias: 8.2 },
-  { mes: "jul/25", dias: 7.1 }, { mes: "ago/25", dias: 6.5 }, { mes: "set/25", dias: 6.2 },
-  { mes: "out/25", dias: 5.8 }, { mes: "nov/25", dias: 5.5 }, { mes: "dez/25", dias: 7.2 },
-  { mes: "jan/26", dias: 5.1 }, { mes: "fev/26", dias: 4.8 }, { mes: "mar/26", dias: 4.5 },
+const evolucaoTratativaFaixas = [
+  { mes: "jul/25", ate1d: 611, de1a3d: 373, de3a7d: 270, de7a15d: 245, mais15d: 330, total: 1829 },
+  { mes: "ago/25", ate1d: 662, de1a3d: 380, de3a7d: 259, de7a15d: 202, mais15d: 211, total: 1714 },
+  { mes: "set/25", ate1d: 935, de1a3d: 954, de3a7d: 405, de7a15d: 196, mais15d: 17, total: 2507 },
+  { mes: "out/25", ate1d: 2437, de1a3d: 2091, de3a7d: 3559, de7a15d: 6304, mais15d: 774, total: 15165 },
+  { mes: "nov/25", ate1d: 2260, de1a3d: 1934, de3a7d: 1746, de7a15d: 2365, mais15d: 4767, total: 13072 },
+  { mes: "dez/25", ate1d: 3053, de1a3d: 2509, de3a7d: 2005, de7a15d: 794, mais15d: 455, total: 8816 },
+  { mes: "jan/26", ate1d: 1170, de1a3d: 1754, de3a7d: 2051, de7a15d: 534, mais15d: 230, total: 5739 },
+  { mes: "fev/26", ate1d: 1699, de1a3d: 2057, de3a7d: 1190, de7a15d: 743, mais15d: 557, total: 6246 },
+  { mes: "mar/26", ate1d: 746, de1a3d: 710, de3a7d: 870, de7a15d: 874, mais15d: 461, total: 3661 },
 ];
-const tratativaMedia = evolucaoTratativa.reduce((s, d) => s + d.dias, 0) / evolucaoTratativa.length;
+const tratativaMediaTotal = evolucaoTratativaFaixas.reduce((s, d) => s + d.total, 0) / evolucaoTratativaFaixas.length;
 
 // ── Absenteísmo ──
 const absenteismoEvolucao = [
@@ -734,35 +739,45 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Evolução do Tempo de Tratativa</h4>
-              <InfoTip text="Média de dias entre o registro da marcação e o ajuste." />
+              <h4 className="text-sm font-semibold">Ajustes por Faixa de Tempo</h4>
+              <InfoTip text="Distribuição dos ajustes de ponto por faixa de tempo entre o registro e o ajuste. Dados reais." />
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Média mensal em dias · clique para filtrar</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Por competência · clique para filtrar</p>
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={evolucaoTratativa} onClick={(e: any) => {
+              <BarChart data={evolucaoTratativaFaixas} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-              }}>
+              }} barCategoryGap="15%">
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="mes" tick={(props: any) => {
                   const { x, y, payload } = props;
                   const isActive = selectedMes === payload.value;
                   return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
                 }} />
-                <YAxis domain={[0, 12]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} />
-                <RechartsTooltip formatter={(v: number) => [`${v} dias`, "Tempo Médio"]} />
-                <ReferenceLine y={tratativaMedia} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                <Line type="monotone" dataKey="dias" stroke={selectedMes ? "#FF572244" : "#FF5722"} strokeWidth={2} dot={(props: any) => {
-                  const { cx, cy, payload } = props;
-                  const isSelected = selectedMes === payload.mes;
-                  const isActive = !selectedMes || isSelected;
+                <YAxis tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`} />
+                <RechartsTooltip content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+                  const total = payload.reduce((s: number, p: any) => s + (p.value || 0), 0);
                   return (
-                    <g key={payload.mes} className="cursor-pointer">
-                      {isSelected && <circle cx={cx} cy={cy} r={10} fill="#FF5722" fillOpacity={0.15} stroke="#FF5722" strokeWidth={1} strokeDasharray="3 2" />}
-                      <circle cx={cx} cy={cy} r={isSelected ? 6 : 4} fill={isSelected ? "#FF5722" : isActive ? "#FF5722" : "#FF572255"} stroke="#fff" strokeWidth={2} />
-                    </g>
+                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                      <p className="font-semibold text-foreground">{label}</p>
+                      <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>
+                      {payload.map((p: any) => (
+                        <div key={p.dataKey} className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: p.fill }} />
+                          <span className="text-muted-foreground">{p.name}:</span>
+                          <span className="font-medium text-foreground">{p.value?.toLocaleString("pt-BR")} ({((p.value / total) * 100).toFixed(0)}%)</span>
+                        </div>
+                      ))}
+                    </div>
                   );
-                }} activeDot={{ r: 6, stroke: "#FF5722", strokeWidth: 2, fill: "#fff" }} name="Dias" />
-              </LineChart>
+                }} />
+                <ReferenceLine y={tratativaMediaTotal} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <Bar dataKey="ate1d" stackId="faixa" fill="#22c55e" name="Até 1 dia" />
+                <Bar dataKey="de1a3d" stackId="faixa" fill="#84cc16" name="1–3 dias" />
+                <Bar dataKey="de3a7d" stackId="faixa" fill="#f59e0b" name="3–7 dias" />
+                <Bar dataKey="de7a15d" stackId="faixa" fill="#f97316" name="7–15 dias" />
+                <Bar dataKey="mais15d" stackId="faixa" fill="#ef4444" name="+15 dias" radius={[3, 3, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
