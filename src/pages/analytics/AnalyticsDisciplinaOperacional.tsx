@@ -266,14 +266,8 @@ const unidadeAbsScatter = scatterQualidade.map(sq => {
 const empresaAbsScatter = toAbsScatterData(empresaData);
 const areaAbsScatter = toAbsScatterData(areaData);
 
-// Derive 30 absenteísmo regionais from scatter data (seeded from qualidade)
-const absenteismoRegionais = scatterQualidade.map(sq => {
-  // Inverse correlation: higher quality → lower absenteeism
-  const taxa = +(2 + (92 - sq.qualidade) * 0.55).toFixed(1);
-  const turnover = +(4 + (92 - sq.qualidade) * 0.8).toFixed(1);
-  const tendencia = sq.qualidade >= 88 ? "melhorando" : sq.qualidade >= 85 ? "estavel" : "piorando";
-  return { nome: sq.regional, taxa, turnover, tendencia };
-});
+
+
 
 // ── Movimentações ──
 const movimentacoesEvolucao = [
