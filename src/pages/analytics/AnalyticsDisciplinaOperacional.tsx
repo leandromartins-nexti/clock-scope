@@ -623,6 +623,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
         </div>
         <RankingFooter />
       </div>
+      <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
     </div>
   );
 }
