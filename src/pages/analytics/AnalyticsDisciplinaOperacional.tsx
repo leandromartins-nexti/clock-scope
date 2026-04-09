@@ -353,8 +353,121 @@ const regionalDrillDown: Record<string, { clientes: { nome: string; qualidade: n
   ]},
 };
 
+// ── Mock data for Postos and Colaboradores per regional ──
+function generatePostos(regional: string) {
+  const prefixes = ["Posto Central", "Posto Norte", "Posto Sul", "Posto Leste", "Posto Oeste", "Posto Industrial", "Posto Comercial", "Posto Admin"];
+  return prefixes.map((p, i) => {
+    const seed = regional.length * 7 + i * 13;
+    const r = Math.sin(seed) * 10000; const frac = r - Math.floor(r);
+    const qualidade = +(75 + frac * 20).toFixed(1);
+    const volume = `${Math.round(5 + frac * 40)}K`;
+    const headcount = Math.round(20 + frac * 200);
+    const tratativa = +(2 + frac * 8).toFixed(1);
+    const tendencia = qualidade >= 88 ? "melhorando" : qualidade >= 80 ? "estavel" : "piorando";
+    return { nome: `${p} - ${regional.slice(0, 3).toUpperCase()}${i + 1}`, qualidade, volume, headcount, tratativa, tendencia };
+  });
+}
+
+function generateColaboradores(regional: string) {
+  const nomes = ["Ana Silva", "Carlos Santos", "Maria Oliveira", "João Pereira", "Fernanda Costa", "Ricardo Souza", "Juliana Lima", "Pedro Almeida", "Camila Rocha", "Lucas Ferreira", "Patrícia Martins", "Bruno Araújo"];
+  return nomes.map((n, i) => {
+    const seed = regional.length * 11 + i * 17;
+    const r = Math.sin(seed) * 10000; const frac = r - Math.floor(r);
+    const qualidade = +(70 + frac * 25).toFixed(1);
+    const marcacoes = Math.round(100 + frac * 500);
+    const inconsistencias = Math.round(frac * 15);
+    const tratativa = +(1 + frac * 10).toFixed(1);
+    const tendencia = qualidade >= 88 ? "melhorando" : qualidade >= 80 ? "estavel" : "piorando";
+    return { nome: n, qualidade, marcacoes, inconsistencias, tratativa, tendencia };
+  });
+}
+
+// ── Sortable + filterable table inside modal ──
+type SortConfig = { key: string; dir: "asc" | "desc" };
+
+function ModalTable<T extends Record<string, any>>({ data, columns, searchPlaceholder }: {
+  data: T[];
+  columns: { key: string; label: string; align?: "left" | "right" | "center"; format?: (v: any, row: T) => React.ReactNode }[];
+  searchPlaceholder?: string;
+}) {
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SortConfig>({ key: columns[1]?.key || columns[0].key, dir: "desc" });
+
+  const toggleSort = (key: string) => {
+    setSort(prev => prev.key === key ? { key, dir: prev.dir === "desc" ? "asc" : "desc" } : { key, dir: "desc" });
+  };
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return data;
+    const q = search.toLowerCase();
+    return data.filter(row => columns.some(c => String(row[c.key]).toLowerCase().includes(q)));
+  }, [data, search, columns]);
+
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      const aVal = a[sort.key];
+      const bVal = b[sort.key];
+      const dir = sort.dir === "desc" ? -1 : 1;
+      if (typeof aVal === "string" && typeof bVal === "string") return dir * aVal.localeCompare(bVal);
+      return dir * ((aVal as number) - (bVal as number));
+    });
+  }, [filtered, sort]);
+
+  return (
+    <div>
+      <div className="relative mb-2">
+        <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder={searchPlaceholder || "Filtrar..."}
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
+        />
+      </div>
+      <div className="rounded-lg border border-border overflow-hidden max-h-[50vh] overflow-y-auto">
+        <table className="w-full text-sm">
+          <thead className="sticky top-0 bg-muted/50 backdrop-blur-sm z-10">
+            <tr className="border-b border-border">
+              {columns.map(col => (
+                <th
+                  key={col.key}
+                  onClick={() => toggleSort(col.key)}
+                  className={`px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase cursor-pointer hover:text-foreground transition-colors ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"}`}
+                >
+                  <span className="inline-flex items-center gap-0.5">
+                    {col.label}
+                    <ArrowUpDown size={9} className={sort.key === col.key ? "text-[#FF5722]" : "opacity-40"} />
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.length === 0 && (
+              <tr><td colSpan={columns.length} className="px-3 py-4 text-center text-xs text-muted-foreground">Nenhum resultado encontrado</td></tr>
+            )}
+            {sorted.map((row, i) => (
+              <tr key={i} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                {columns.map(col => (
+                  <td key={col.key} className={`px-3 py-2 ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"}`}>
+                    {col.format ? col.format(row[col.key], row) : row[col.key]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="text-[10px] text-muted-foreground mt-1">{sorted.length} registro{sorted.length !== 1 ? "s" : ""}</p>
+    </div>
+  );
+}
+
 // ── Regional Detail Modal ──
 function RegionalDetailModal({ regional, open, onClose }: { regional: string | null; open: boolean; onClose: () => void }) {
+  const [activeTab, setActiveTab] = useState<"clientes" | "postos" | "colaboradores">("clientes");
+
   if (!regional) return null;
   const qualData = qualidadeRegionais.find(r => r.nome === regional);
   const scatterQ = scatterQualidade.find(r => r.regional === regional);
@@ -365,13 +478,54 @@ function RegionalDetailModal({ regional, open, onClose }: { regional: string | n
   const scoreColor = qualData.qualidade >= 85 ? "text-green-600" : qualData.qualidade >= 75 ? "text-orange-500" : "text-red-600";
   const scoreBg = qualData.qualidade >= 85 ? "bg-green-50 border-green-200" : qualData.qualidade >= 75 ? "bg-orange-50 border-orange-200" : "bg-red-50 border-red-200";
 
+  const postos = generatePostos(regional);
+  const colaboradores = generateColaboradores(regional);
+
+  const qualidadeFormat = (v: number) => <span className={`font-semibold ${v >= 85 ? "text-green-600" : v >= 75 ? "text-orange-500" : "text-red-600"}`}>{v}%</span>;
+  const tendenciaFormat = (v: string) => <TrendIcon t={v} />;
+
+  const clienteCols = [
+    { key: "nome", label: "Cliente", align: "left" as const, format: (v: string) => <span className="font-medium text-foreground">{v}</span> },
+    { key: "qualidade", label: "Qualidade", align: "right" as const, format: qualidadeFormat },
+    { key: "volume", label: "Volume", align: "right" as const, format: (v: string) => <span className="text-muted-foreground">{v}</span> },
+    { key: "headcount", label: "Headcount", align: "right" as const, format: (v: number) => <span className="text-muted-foreground">{v}</span> },
+    { key: "tratativa", label: "Tratativa", align: "right" as const, format: (v: number) => <span className="text-muted-foreground">{v}d</span> },
+    { key: "tendencia", label: "Tendência", align: "center" as const, format: tendenciaFormat },
+  ];
+
+  const postoCols = [
+    { key: "nome", label: "Posto", align: "left" as const, format: (v: string) => <span className="font-medium text-foreground">{v}</span> },
+    { key: "qualidade", label: "Qualidade", align: "right" as const, format: qualidadeFormat },
+    { key: "volume", label: "Volume", align: "right" as const, format: (v: string) => <span className="text-muted-foreground">{v}</span> },
+    { key: "headcount", label: "Headcount", align: "right" as const, format: (v: number) => <span className="text-muted-foreground">{v}</span> },
+    { key: "tratativa", label: "Tratativa", align: "right" as const, format: (v: number) => <span className="text-muted-foreground">{v}d</span> },
+    { key: "tendencia", label: "Tendência", align: "center" as const, format: tendenciaFormat },
+  ];
+
+  const colabCols = [
+    { key: "nome", label: "Colaborador", align: "left" as const, format: (v: string) => <span className="font-medium text-foreground">{v}</span> },
+    { key: "qualidade", label: "Qualidade", align: "right" as const, format: qualidadeFormat },
+    { key: "marcacoes", label: "Marcações", align: "right" as const, format: (v: number) => <span className="text-muted-foreground">{v}</span> },
+    { key: "inconsistencias", label: "Inconsistências", align: "right" as const, format: (v: number) => <span className={`font-semibold ${v > 10 ? "text-red-600" : v > 5 ? "text-orange-500" : "text-muted-foreground"}`}>{v}</span> },
+    { key: "tratativa", label: "Tratativa", align: "right" as const, format: (v: number) => <span className="text-muted-foreground">{v}d</span> },
+    { key: "tendencia", label: "Tendência", align: "center" as const, format: tendenciaFormat },
+  ];
+
+  const tabs = [
+    { id: "clientes" as const, label: "Clientes" },
+    { id: "postos" as const, label: "Postos" },
+    { id: "colaboradores" as const, label: "Colaboradores" },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold">{regional}</DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-4 gap-3 mt-2">
+
+        {/* 4 Big Numbers */}
+        <div className="grid grid-cols-4 gap-3 mt-1">
           <div className={`rounded-lg border p-3 ${scoreBg}`}>
             <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Qualidade</p>
             <p className={`text-2xl font-bold ${scoreColor}`}>{qualData.qualidade}%</p>
@@ -389,51 +543,25 @@ function RegionalDetailModal({ regional, open, onClose }: { regional: string | n
             <p className="text-2xl font-bold text-foreground">{scatterT.dias}d</p>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-3 mt-1">
-          <div className="rounded-lg border border-border p-3">
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Atrasos</p>
-            <p className="text-lg font-bold text-orange-500">{qualData.atrasos}%</p>
-          </div>
-          <div className="rounded-lg border border-border p-3">
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Registradas</p>
-            <p className="text-lg font-bold text-green-600">{qualData.registradas}%</p>
-          </div>
-          <div className="rounded-lg border border-border p-3">
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Tendência</p>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <TrendIcon t={qualData.tendencia} />
-              <span className="text-sm font-semibold capitalize">{qualData.tendencia}</span>
-            </div>
-          </div>
+
+        {/* Tabs */}
+        <div className="flex gap-4 border-b border-border mt-2">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`pb-2 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.id ? "border-[#FF5722] text-[#FF5722]" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
+
+        {/* Tab content */}
         <div className="mt-2">
-          <h4 className="text-sm font-semibold mb-2">Detalhamento por Cliente</h4>
-          <div className="rounded-lg border border-border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-muted/30 border-b border-border">
-                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Cliente</th>
-                  <th className="text-right px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Qualidade</th>
-                  <th className="text-right px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Volume</th>
-                  <th className="text-right px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Headcount</th>
-                  <th className="text-right px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Tratativa</th>
-                  <th className="text-center px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Tendência</th>
-                </tr>
-              </thead>
-              <tbody>
-                {drillDown.clientes.map(c => (
-                  <tr key={c.nome} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="px-3 py-2 font-medium text-foreground">{c.nome}</td>
-                    <td className={`px-3 py-2 text-right font-semibold ${c.qualidade >= 85 ? "text-green-600" : c.qualidade >= 75 ? "text-orange-500" : "text-red-600"}`}>{c.qualidade}%</td>
-                    <td className="px-3 py-2 text-right text-muted-foreground">{c.volume}</td>
-                    <td className="px-3 py-2 text-right text-muted-foreground">{c.headcount}</td>
-                    <td className="px-3 py-2 text-right text-muted-foreground">{c.tratativa}d</td>
-                    <td className="px-3 py-2 text-center"><TrendIcon t={c.tendencia} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {activeTab === "clientes" && <ModalTable data={drillDown.clientes} columns={clienteCols} searchPlaceholder="Buscar cliente..." />}
+          {activeTab === "postos" && <ModalTable data={postos} columns={postoCols} searchPlaceholder="Buscar posto..." />}
+          {activeTab === "colaboradores" && <ModalTable data={colaboradores} columns={colabCols} searchPlaceholder="Buscar colaborador..." />}
         </div>
       </DialogContent>
     </Dialog>
