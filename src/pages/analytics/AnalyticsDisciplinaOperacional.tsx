@@ -713,6 +713,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
   const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
   const chartScatterTrat = useMemo(() => allScatterTratativa.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatterTratativa, visibleSet]);
 
+  // Dynamic averages computed from visible scatter data
+  const avgQualVolume = useMemo(() => chartScatterQual.length ? Math.round(chartScatterQual.reduce((s, d) => s + d.volume, 0) / chartScatterQual.length) : 170000, [chartScatterQual]);
+  const avgQualQualidade = useMemo(() => chartScatterQual.length ? +(chartScatterQual.reduce((s, d) => s + d.qualidade, 0) / chartScatterQual.length).toFixed(1) : 85, [chartScatterQual]);
+  const avgTratVolume = useMemo(() => chartScatterTrat.length ? Math.round(chartScatterTrat.reduce((s, d) => s + d.volume, 0) / chartScatterTrat.length) : 170000, [chartScatterTrat]);
+  const avgTratDias = useMemo(() => chartScatterTrat.length ? +(chartScatterTrat.reduce((s, d) => s + d.dias, 0) / chartScatterTrat.length).toFixed(1) : 4.5, [chartScatterTrat]);
+
   return (
     <div className="flex gap-3">
       {/* Main content */}
@@ -840,8 +846,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
                 <XAxis type="number" dataKey="volume" name="Volume" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={['auto', 'auto']} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={85} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" label={{ value: "85%", position: "right", fontSize: 9, fill: "#C8860A", fontWeight: 600 }} />
-                <ReferenceLine x={170000} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
+                <ReferenceLine y={avgQualQualidade} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" label={{ value: `${avgQualQualidade}%`, position: "right", fontSize: 9, fill: "#C8860A", fontWeight: 600 }} />
+                <ReferenceLine x={avgQualVolume} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
@@ -882,7 +888,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
                 <XAxis type="number" dataKey="volume" name="Volume" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="dias" name="Tempo" domain={[2, 10]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} label={{ value: "Tempo tratativa (dias)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={tratativaMedia} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" label={{ value: `Média ${tratativaMedia.toFixed(1)}d`, position: "right", fontSize: 9, fill: "#C8860A", fontWeight: 600 }} />
+                <ReferenceLine y={avgTratDias} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" label={{ value: `Média ${avgTratDias}d`, position: "right", fontSize: 9, fill: "#C8860A", fontWeight: 600 }} />
+                <ReferenceLine x={avgTratVolume} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
