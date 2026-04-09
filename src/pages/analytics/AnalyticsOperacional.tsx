@@ -3,14 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight, Filter, Eraser } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo } from "@/lib/analytics-mock-data";
-import AnalyticsDisciplinaOperacional from "./AnalyticsDisciplinaOperacional";
+import { QualidadeTab, AbsenteismoTab, MovimentacoesTab } from "./AnalyticsDisciplinaOperacional";
 import AnalyticsCoberturasContinuidade from "./AnalyticsCoberturasContinuidade";
 import AnalyticsViolacoesTrabalhistas from "./AnalyticsViolacoesTrabalhistas";
 import AnalyticsBancoHoras from "./AnalyticsBancoHoras";
 import AnalyticsOperacoesEstruturas from "./AnalyticsOperacoesEstruturas";
 
 const tabs = [
-  { id: "disciplina", label: "Disciplina Operacional" },
+  { id: "qualidade", label: "Qualidade do Ponto" },
+  { id: "absenteismo", label: "Absenteísmo" },
+  { id: "movimentacoes", label: "Movimentações" },
   { id: "coberturas", label: "Coberturas" },
   { id: "violacoes", label: "Violações Trabalhistas" },
   { id: "bancoHoras", label: "Banco de Horas" },
@@ -20,16 +22,18 @@ const tabs = [
 export default function AnalyticsOperacional() {
   const navigate = useNavigate();
   const [filterOpen, setFilterOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("disciplina");
+  const [activeTab, setActiveTab] = useState("qualidade");
 
   const renderTab = () => {
     switch (activeTab) {
-      case "disciplina": return <AnalyticsDisciplinaOperacional embedded />;
+      case "qualidade": return <QualidadeTab />;
+      case "absenteismo": return <AbsenteismoTab />;
+      case "movimentacoes": return <MovimentacoesTab />;
       case "coberturas": return <AnalyticsCoberturasContinuidade embedded />;
       case "violacoes": return <AnalyticsViolacoesTrabalhistas embedded />;
       case "bancoHoras": return <AnalyticsBancoHoras embedded />;
       case "operacoes": return <AnalyticsOperacoesEstruturas embedded />;
-      default: return <AnalyticsDisciplinaOperacional embedded />;
+      default: return <QualidadeTab />;
     }
   };
 
