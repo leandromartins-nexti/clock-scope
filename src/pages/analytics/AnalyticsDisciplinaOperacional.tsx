@@ -747,9 +747,12 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, groupBy, onGrou
   const maxTaxa = Math.max(...absenteismoRegionais.map(r => r.taxa));
 
   // Sort by lowest taxa = best for absenteísmo
-  const sortedRegionais = [...absenteismoRegionais].sort((a, b) => a.taxa - b.taxa);
-  // Compute a "score" for absenteísmo (inverted: lower taxa = higher score)
   const getAbsScore = (taxa: number) => Math.round(Math.max(0, 100 - taxa * 10));
+  const sidebarItems = useMemo(() => {
+    if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(100 - (100 - e.qualidade) * 1.2) }));
+    if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(100 - (100 - e.qualidade) * 1.2) }));
+    return [...absenteismoRegionais].sort((a, b) => a.taxa - b.taxa).map(e => ({ nome: e.nome, score: getAbsScore(e.taxa) }));
+  }, [groupBy]);
 
   return (
     <div className="flex gap-3">
