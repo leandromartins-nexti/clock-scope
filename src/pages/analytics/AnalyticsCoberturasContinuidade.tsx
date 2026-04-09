@@ -198,15 +198,15 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
                   <div className="flex-1 relative h-4">
                     {/* Dashed grid lines on top */}
                     {[20, 40, 60, 80].map(p => (
-                      <div
+                      <svg
                         key={p}
-                        className="absolute top-0 bottom-0 z-20 pointer-events-none"
-                        style={{
-                          left: `${p}%`,
-                          backgroundImage: 'repeating-linear-gradient(to bottom, rgba(0,0,0,0.25) 0px, rgba(0,0,0,0.25) 2px, transparent 2px, transparent 5px)',
-                          width: '1px',
-                        }}
-                      />
+                        className="absolute top-0 z-20 pointer-events-none"
+                        width="2"
+                        height="16"
+                        style={{ left: `${p}%` }}
+                      >
+                        <line x1="1" y1="0" x2="1" y2="16" stroke="rgba(0,0,0,0.35)" strokeWidth="1" strokeDasharray="3 3" />
+                      </svg>
                     ))}
                     <div className="absolute inset-0 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full flex">
