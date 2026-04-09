@@ -241,63 +241,312 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
 
   return (
     <div className="space-y-3">
-      {/* Linha 1: Score + 4 KPI Cards (padrão 5 painéis) */}
+      {/* Linha 1: 15 variações de gauge para validação */}
       <div className="grid grid-cols-5 gap-3">
-        {/* Score */}
-        <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
-          <div className="flex items-center gap-1 mb-1">
-            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Qualidade do Ponto</p>
-            <InfoTip text="Percentual de marcações registradas corretamente vs total de marcações que exigiram intervenção (justificativas manuais)." />
+        {/* V1 — Atual (semi-arco) */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <div className="flex items-center gap-1 mb-0.5">
+            <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase">V1 Semi-arco</p>
+            <InfoTip text="Modelo atual" />
           </div>
           <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} />
-          <div className="flex items-center justify-center gap-1 -mt-1">
-            <TrendingUp size={12} className="text-green-500" />
-            <span className="text-[11px] font-medium text-green-600">{activeData.diff} vs anterior</span>
-          </div>
         </div>
 
-        {/* Melhor Operação */}
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <TrendingUp size={16} className="text-green-500" />
-            <InfoTip text="Operação com maior score de qualidade no período" />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Melhor Operação</p>
-          <p className="text-base font-semibold mt-0.5 truncate">{activeData.melhorOperacao.nome}</p>
-          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.melhorOperacao.score} · Alta</p>
+        {/* V2 — Donut completo */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V2 Donut</p>
+          {(() => {
+            const r = 32, sw = 7, cx = 42, cy = 42;
+            const circ = 2 * Math.PI * r;
+            const prog = (activeData.score / 100) * circ;
+            const c = activeData.score >= 85 ? "#16a34a" : activeData.score >= 70 ? "#FF5722" : "#ef4444";
+            return (
+              <svg width="84" height="84" viewBox="0 0 84 84">
+                <circle cx={cx} cy={cy} r={r} fill="none" stroke="#f1f5f9" strokeWidth={sw}/>
+                <circle cx={cx} cy={cy} r={r} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round"
+                  strokeDasharray={`${prog} ${circ}`} transform={`rotate(-90 ${cx} ${cy})`}/>
+                <text x={cx} y={cy} textAnchor="middle" fontSize="20" fontWeight="800" fill={c} dominantBaseline="central">{activeData.score}</text>
+                <text x={cx} y={cy+16} textAnchor="middle" fontSize="9" fontWeight="600" fill={c}>{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
         </div>
 
-        {/* Maior Risco */}
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <AlertTriangle size={16} className="text-red-500" />
-            <InfoTip text="Operação com menor qualidade e maior concentração de risco" />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Maior Risco</p>
-          <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{activeData.maiorRisco.nome}</p>
-          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.maiorRisco.score} · {activeData.maiorRisco.indicador}</p>
+        {/* V3 — Arco 270° */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V3 Arco 270°</p>
+          {(() => {
+            const cx = 45, cy = 45, r = 34, sw = 8;
+            const startA = 135, totalA = 270;
+            const pct = activeData.score / 100;
+            const c = activeData.score >= 85 ? "#16a34a" : activeData.score >= 70 ? "#FF5722" : "#ef4444";
+            const polar = (a: number) => { const rad = ((a-90)*Math.PI)/180; return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}; };
+            const arc = (s: number, e: number) => { const sp=polar(s),ep=polar(e); return `M ${sp.x} ${sp.y} A ${r} ${r} 0 ${e-s>180?1:0} 1 ${ep.x} ${ep.y}`; };
+            return (
+              <svg width="90" height="75" viewBox="0 0 90 75">
+                <path d={arc(startA, startA+totalA)} fill="none" stroke="#f1f5f9" strokeWidth={sw} strokeLinecap="round"/>
+                <path d={arc(startA, startA+totalA*pct)} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round"/>
+                <text x={cx} y={cy-2} textAnchor="middle" fontSize="20" fontWeight="800" fill={c}>{activeData.score}</text>
+                <text x={cx} y={cy+12} textAnchor="middle" fontSize="9" fontWeight="600" fill={c}>{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
         </div>
 
-        {/* Registradas */}
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <ArrowUpRight size={16} className="text-green-500" />
-            <InfoTip text="Total de marcações registradas pelo colaborador sem necessidade de ajuste." />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Registradas</p>
-          <p className="text-base font-semibold text-green-600 mt-0.5">{activeData.registradas}</p>
+        {/* V4 — Arco grosso + badge */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V4 Grosso+Badge</p>
+          {(() => {
+            const r = 34, sw = 12, cx = 45, cy = 40;
+            const circ = Math.PI * r;
+            const prog = (activeData.score / 100) * circ;
+            const c = activeData.score >= 85 ? "#16a34a" : activeData.score >= 70 ? "#FF5722" : "#ef4444";
+            return (
+              <svg width="90" height="55" viewBox="0 0 90 55">
+                <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke="#f1f5f9" strokeWidth={sw} strokeLinecap="round"/>
+                <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round" strokeDasharray={`${prog} ${circ}`}/>
+                <text x={cx} y={cy-6} textAnchor="middle" fontSize="18" fontWeight="800" fill={c}>{activeData.score}</text>
+                <rect x={cx-14} y={cy} width="28" height="12" rx="6" fill={c} fillOpacity="0.12"/>
+                <text x={cx} y={cy+9} textAnchor="middle" fontSize="8" fontWeight="700" fill={c}>{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
         </div>
 
-        {/* Justificadas */}
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <ArrowDownRight size={16} className="text-orange-500" />
-            <InfoTip text="Total de marcações que foram justificadas manualmente pelo operador ou gestor." />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Justificadas</p>
-          <p className="text-base font-semibold text-orange-500 mt-0.5">{activeData.justificadas}</p>
+        {/* V5 — Anel fino minimalista */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V5 Fino</p>
+          {(() => {
+            const r = 34, sw = 3, cx = 42, cy = 42;
+            const circ = 2 * Math.PI * r;
+            const prog = (activeData.score / 100) * circ;
+            const c = activeData.score >= 85 ? "#16a34a" : activeData.score >= 70 ? "#FF5722" : "#ef4444";
+            return (
+              <svg width="84" height="84" viewBox="0 0 84 84">
+                <circle cx={cx} cy={cy} r={r} fill="none" stroke="#f1f5f9" strokeWidth={sw}/>
+                <circle cx={cx} cy={cy} r={r} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round"
+                  strokeDasharray={`${prog} ${circ}`} transform={`rotate(-90 ${cx} ${cy})`}/>
+                <text x={cx} y={cy} textAnchor="middle" fontSize="24" fontWeight="300" fill="#1e293b" dominantBaseline="central">{activeData.score}</text>
+                <text x={cx} y={cy+16} textAnchor="middle" fontSize="9" fontWeight="500" fill="#94a3b8">{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
         </div>
       </div>
+
+      {/* Linha 2: V6-V10 */}
+      <div className="grid grid-cols-5 gap-3">
+        {/* V6 — Arco 270° + dot */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V6 270°+Dot</p>
+          {(() => {
+            const cx = 45, cy = 45, r = 34, sw = 7;
+            const startA = 135, totalA = 270;
+            const pct = activeData.score / 100;
+            const endA = startA + totalA * pct;
+            const c = activeData.score >= 85 ? "#16a34a" : activeData.score >= 70 ? "#FF5722" : "#ef4444";
+            const polar = (a: number) => { const rad = ((a-90)*Math.PI)/180; return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}; };
+            const arc = (s: number, e: number) => { const sp=polar(s),ep=polar(e); return `M ${sp.x} ${sp.y} A ${r} ${r} 0 ${e-s>180?1:0} 1 ${ep.x} ${ep.y}`; };
+            const dot = polar(endA);
+            return (
+              <svg width="90" height="75" viewBox="0 0 90 75">
+                <path d={arc(startA, startA+totalA)} fill="none" stroke="#f1f5f9" strokeWidth={sw} strokeLinecap="round"/>
+                <path d={arc(startA, endA)} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round"/>
+                <circle cx={dot.x} cy={dot.y} r="4.5" fill={c} stroke="white" strokeWidth="2"/>
+                <text x={cx} y={cy-1} textAnchor="middle" fontSize="20" fontWeight="800" fill="#1e293b">{activeData.score}</text>
+                <text x={cx} y={cy+12} textAnchor="middle" fontSize="9" fontWeight="600" fill={c}>{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
+        </div>
+
+        {/* V7 — Donut gradiente */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V7 Gradiente</p>
+          {(() => {
+            const r = 32, sw = 8, cx = 42, cy = 42;
+            const circ = 2 * Math.PI * r;
+            const prog = (activeData.score / 100) * circ;
+            return (
+              <svg width="84" height="84" viewBox="0 0 84 84">
+                <defs><linearGradient id="gv7" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#22c55e"/><stop offset="100%" stopColor="#16a34a"/></linearGradient></defs>
+                <circle cx={cx} cy={cy} r={r} fill="none" stroke="#f1f5f9" strokeWidth={sw}/>
+                <circle cx={cx} cy={cy} r={r} fill="none" stroke="url(#gv7)" strokeWidth={sw} strokeLinecap="round"
+                  strokeDasharray={`${prog} ${circ}`} transform={`rotate(-90 ${cx} ${cy})`}/>
+                <text x={cx} y={cy} textAnchor="middle" fontSize="22" fontWeight="700" fill="#1e293b" dominantBaseline="central">{activeData.score}</text>
+                <text x={cx} y={cy+16} textAnchor="middle" fontSize="9" fontWeight="600" fill="#16a34a">{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
+        </div>
+
+        {/* V8 — Velocímetro + ponteiro */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V8 Ponteiro</p>
+          {(() => {
+            const cx = 45, cy = 42, r = 34, sw = 7;
+            const c = activeData.score >= 85 ? "#16a34a" : activeData.score >= 70 ? "#FF5722" : "#ef4444";
+            const circ = Math.PI * r;
+            const prog = (activeData.score / 100) * circ;
+            const needleA = 180 + 180 * (activeData.score / 100);
+            const rad = ((needleA-90)*Math.PI)/180;
+            const np = {x: cx+(r-14)*Math.cos(rad), y: cy+(r-14)*Math.sin(rad)};
+            return (
+              <svg width="90" height="55" viewBox="0 0 90 55">
+                <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke="#f1f5f9" strokeWidth={sw} strokeLinecap="round"/>
+                <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round" strokeDasharray={`${prog} ${circ}`}/>
+                <line x1={cx} y1={cy} x2={np.x} y2={np.y} stroke="#374151" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx={cx} cy={cy} r="3.5" fill="#374151"/>
+                <text x={cx} y={cy-12} textAnchor="middle" fontSize="15" fontWeight="800" fill={c}>{activeData.score}</text>
+              </svg>
+            );
+          })()}
+        </div>
+
+        {/* V9 — Barra horizontal */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V9 Barra</p>
+          <span className="text-2xl font-bold" style={{ color: activeData.score >= 85 ? "#16a34a" : "#FF5722" }}>{activeData.score}</span>
+          <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden mt-1">
+            <div className="h-full rounded-full" style={{ width: `${activeData.score}%`, background: activeData.score >= 85 ? "#16a34a" : "#FF5722" }}/>
+          </div>
+          <span className="text-[9px] font-semibold mt-1" style={{ color: activeData.score >= 85 ? "#16a34a" : "#FF5722" }}>{scoreFaixa}</span>
+        </div>
+
+        {/* V10 — Semi-arco duplo */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V10 Duplo</p>
+          {(() => {
+            const cx = 45, cy = 40, r1 = 34, r2 = 26, sw = 5;
+            const circ1 = Math.PI * r1, circ2 = Math.PI * r2;
+            const c = activeData.score >= 85 ? "#16a34a" : "#FF5722";
+            return (
+              <svg width="90" height="52" viewBox="0 0 90 52">
+                <path d={`M ${cx-r1} ${cy} A ${r1} ${r1} 0 0 1 ${cx+r1} ${cy}`} fill="none" stroke="#f1f5f9" strokeWidth={sw} strokeLinecap="round"/>
+                <path d={`M ${cx-r1} ${cy} A ${r1} ${r1} 0 0 1 ${cx+r1} ${cy}`} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round" strokeDasharray={`${(activeData.score/100)*circ1} ${circ1}`}/>
+                <path d={`M ${cx-r2} ${cy} A ${r2} ${r2} 0 0 1 ${cx+r2} ${cy}`} fill="none" stroke="#f1f5f9" strokeWidth={sw} strokeLinecap="round"/>
+                <path d={`M ${cx-r2} ${cy} A ${r2} ${r2} 0 0 1 ${cx+r2} ${cy}`} fill="none" stroke="#86efac" strokeWidth={sw} strokeLinecap="round" strokeDasharray={`${(activeData.score/100)*circ2} ${circ2}`}/>
+                <text x={cx} y={cy-6} textAnchor="middle" fontSize="16" fontWeight="700" fill={c}>{activeData.score}</text>
+                <text x={cx} y={cy+6} textAnchor="middle" fontSize="9" fontWeight="600" fill={c}>{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
+        </div>
+      </div>
+
+      {/* Linha 3: V11-V15 */}
+      <div className="grid grid-cols-5 gap-3">
+        {/* V11 — Arco segmentado */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V11 Segmentado</p>
+          {(() => {
+            const cx = 45, cy = 45, r = 34, sw = 7;
+            const startA = 135, totalA = 270;
+            const segments = 20;
+            const filled = Math.round(segments * (activeData.score / 100));
+            const gap = totalA / segments;
+            const c = activeData.score >= 85 ? "#16a34a" : "#FF5722";
+            const polar = (a: number) => { const rad = ((a-90)*Math.PI)/180; return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}; };
+            const arc = (s: number, e: number) => { const sp=polar(s),ep=polar(e); return `M ${sp.x} ${sp.y} A ${r} ${r} 0 ${e-s>180?1:0} 1 ${ep.x} ${ep.y}`; };
+            return (
+              <svg width="90" height="75" viewBox="0 0 90 75">
+                {Array.from({length:segments}).map((_,i) => {
+                  const a1 = startA + i*gap + 1, a2 = startA + (i+1)*gap - 1;
+                  return <path key={i} d={arc(a1,a2)} fill="none" stroke={i<filled?c:"#e2e8f0"} strokeWidth={sw} strokeLinecap="round"/>;
+                })}
+                <text x={cx} y={cy-1} textAnchor="middle" fontSize="20" fontWeight="800" fill={c}>{activeData.score}</text>
+                <text x={cx} y={cy+12} textAnchor="middle" fontSize="9" fontWeight="600" fill={c}>{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
+        </div>
+
+        {/* V12 — Circle badge flat */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V12 Badge</p>
+          {(() => {
+            const c = activeData.score >= 85 ? "#16a34a" : "#FF5722";
+            return (
+              <div className="flex items-center gap-2.5">
+                <div className="w-14 h-14 rounded-full border-[4px] flex items-center justify-center" style={{ borderColor: c }}>
+                  <span className="text-xl font-bold" style={{ color: c }}>{activeData.score}</span>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold" style={{ color: c }}>{scoreFaixa}</p>
+                  <p className="text-[9px] text-gray-400">de 100</p>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
+        {/* V13 — Donut com glow */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V13 Glow</p>
+          {(() => {
+            const r = 32, sw = 7, cx = 42, cy = 42;
+            const circ = 2 * Math.PI * r;
+            const prog = (activeData.score / 100) * circ;
+            const c = activeData.score >= 85 ? "#16a34a" : "#FF5722";
+            return (
+              <svg width="84" height="84" viewBox="0 0 84 84">
+                <defs><filter id="glow13b"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                <circle cx={cx} cy={cy} r={r} fill="none" stroke="#f1f5f9" strokeWidth={sw}/>
+                <circle cx={cx} cy={cy} r={r} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round"
+                  strokeDasharray={`${prog} ${circ}`} transform={`rotate(-90 ${cx} ${cy})`} filter="url(#glow13b)"/>
+                <text x={cx} y={cy} textAnchor="middle" fontSize="22" fontWeight="800" fill={c} dominantBaseline="central">{activeData.score}</text>
+                <text x={cx} y={cy+16} textAnchor="middle" fontSize="9" fontWeight="600" fill="#64748b">{scoreFaixa}</text>
+              </svg>
+            );
+          })()}
+        </div>
+
+        {/* V14 — Semi-arco + fundo tinted */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V14 Tinted</p>
+          {(() => {
+            const r = 34, sw = 7, cx = 45, cy = 40;
+            const circ = Math.PI * r;
+            const prog = (activeData.score / 100) * circ;
+            const c = activeData.score >= 85 ? "#16a34a" : "#FF5722";
+            return (
+              <div className="rounded-lg px-3 py-1" style={{ background: `${c}08` }}>
+                <svg width="90" height="50" viewBox="0 0 90 50">
+                  <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke={`${c}20`} strokeWidth={sw} strokeLinecap="round"/>
+                  <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round" strokeDasharray={`${prog} ${circ}`}/>
+                  <text x={cx} y={cy-6} textAnchor="middle" fontSize="18" fontWeight="800" fill={c}>{activeData.score}</text>
+                  <text x={cx} y={cy+7} textAnchor="middle" fontSize="9" fontWeight="600" fill={c}>{scoreFaixa}</text>
+                </svg>
+              </div>
+            );
+          })()}
+        </div>
+
+        {/* V15 — Mini arco inline */}
+        <div className="bg-card border border-border/50 rounded-xl p-2 flex flex-col items-center justify-center">
+          <p className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase mb-0.5">V15 Inline</p>
+          {(() => {
+            const r = 20, sw = 5, cx = 26, cy = 26;
+            const circ = Math.PI * r;
+            const prog = (activeData.score / 100) * circ;
+            const c = activeData.score >= 85 ? "#16a34a" : "#FF5722";
+            return (
+              <div className="flex items-center gap-2">
+                <svg width="52" height="34" viewBox="0 0 52 34">
+                  <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke="#f1f5f9" strokeWidth={sw} strokeLinecap="round"/>
+                  <path d={`M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}`} fill="none" stroke={c} strokeWidth={sw} strokeLinecap="round" strokeDasharray={`${prog} ${circ}`}/>
+                  <text x={cx} y={cy-4} textAnchor="middle" fontSize="13" fontWeight="800" fill={c}>{activeData.score}</text>
+                </svg>
+                <div>
+                  <p className="text-sm font-bold" style={{ color: c }}>{scoreFaixa}</p>
+                  <p className="text-[8px] text-gray-400">Score</p>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+
 
       {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
       <div className="grid grid-cols-2 gap-3">
