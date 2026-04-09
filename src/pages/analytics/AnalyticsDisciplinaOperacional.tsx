@@ -297,13 +297,19 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
           <h4 className="text-sm font-semibold mb-0.5">Evolução da Qualidade</h4>
           <p className="text-[10px] text-muted-foreground mb-2">Por competência</p>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={qualidadeEvolucao}>
+            <LineChart data={qualidadeEvolucao} onClick={(e: any) => {
+              if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+            }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
               <YAxis domain={[75, 95]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
               <RechartsTooltip formatter={(v: number) => [`${v}%`, "Qualidade"]} />
               <ReferenceLine y={qualidadeMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${qualidadeMedia}%`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
-              <Line type="monotone" dataKey="value" stroke="#FF5722" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} name="Qualidade" />
+              <Line type="monotone" dataKey="value" stroke="#FF5722" strokeWidth={2} dot={(props: any) => {
+                const { cx, cy, payload } = props;
+                const isActive = !selectedMes || selectedMes === payload.mes;
+                return <circle key={payload.mes} cx={cx} cy={cy} r={4} fill="#FF5722" stroke="#fff" strokeWidth={2} opacity={isActive ? 1 : 0.3} className="cursor-pointer" />;
+              }} activeDot={{ r: 6, stroke: "#FF5722", strokeWidth: 2, fill: "#fff" }} name="Qualidade" />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -315,17 +321,19 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
           </div>
           <p className="text-[10px] text-muted-foreground mb-2">Média mensal em dias</p>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={evolucaoTratativa}>
+            <LineChart data={evolucaoTratativa} onClick={(e: any) => {
+              if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+            }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
               <YAxis domain={[0, 12]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} />
               <RechartsTooltip formatter={(v: number) => [`${v} dias`, "Tempo Médio"]} />
               <ReferenceLine y={tratativaMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${tratativaMedia.toFixed(1)}d`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
-              <Line type="monotone" dataKey="dias" stroke="#f97316" strokeWidth={2} dot={(props: any) => {
-                const { cx, cy, index } = props;
-                const isLast = index === evolucaoTratativa.length - 1;
-                return <circle cx={cx} cy={cy} r={isLast ? 5 : 3} fill={isLast ? "#FF5722" : "#f97316"} stroke={isLast ? "#fff" : "none"} strokeWidth={isLast ? 2 : 0} />;
-              }} activeDot={{ r: 5 }} name="Dias" />
+              <Line type="monotone" dataKey="dias" stroke="#FF5722" strokeWidth={2} dot={(props: any) => {
+                const { cx, cy, payload } = props;
+                const isActive = !selectedMes || selectedMes === payload.mes;
+                return <circle key={payload.mes} cx={cx} cy={cy} r={4} fill="#FF5722" stroke="#fff" strokeWidth={2} opacity={isActive ? 1 : 0.3} className="cursor-pointer" />;
+              }} activeDot={{ r: 6, stroke: "#FF5722", strokeWidth: 2, fill: "#fff" }} name="Dias" />
             </LineChart>
           </ResponsiveContainer>
         </div>
