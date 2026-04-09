@@ -241,50 +241,63 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
 
   return (
     <div className="space-y-3">
-      {/* Score Gauge — Speedometer com 3 cores */}
-      <div className="bg-card border border-border/50 rounded-xl p-4">
-        <div className="flex items-center gap-6">
-          {(() => {
-            const cx = 70, cy = 60, r = 50, sw = 10;
-            const startA = 180, totalA = 180;
-            const pct = activeData.score / 100;
-            const needleA = startA + totalA * pct;
-            const rad = ((needleA - 90) * Math.PI) / 180;
-            const np = { x: cx + (r - 16) * Math.cos(rad), y: cy + (r - 16) * Math.sin(rad) };
-            const polar = (a: number) => {
-              const rd = ((a - 90) * Math.PI) / 180;
-              return { x: cx + r * Math.cos(rd), y: cy + r * Math.sin(rd) };
-            };
-            const arcPath = (s: number, e: number) => {
-              const sp = polar(s), ep = polar(e);
-              const large = e - s > 180 ? 1 : 0;
-              return `M ${sp.x} ${sp.y} A ${r} ${r} 0 ${large} 1 ${ep.x} ${ep.y}`;
-            };
-            const a0 = startA;
-            const a55 = startA + totalA * 0.55;
-            const a75 = startA + totalA * 0.75;
-            const a100 = startA + totalA;
-            return (
-              <svg width="140" height="75" viewBox="0 0 140 75">
-                <path d={arcPath(a0, a100)} fill="none" stroke="#f1f5f9" strokeWidth={sw} strokeLinecap="round" />
-                <path d={arcPath(a0, a55)} fill="none" stroke="#ef4444" strokeWidth={sw} strokeLinecap="round" />
-                <path d={arcPath(a55, a75)} fill="none" stroke="#eab308" strokeWidth={sw} />
-                <path d={arcPath(a75, a100)} fill="none" stroke="#16a34a" strokeWidth={sw} strokeLinecap="round" />
-                <line x1={cx} y1={cy} x2={np.x} y2={np.y} stroke="#374151" strokeWidth="2.5" strokeLinecap="round" />
-                <circle cx={cx} cy={cy} r="4" fill="#374151" />
-                <text x={cx - r - 2} y={cy + 12} textAnchor="middle" fontSize="8" fill="#94a3b8">0</text>
-                <text x={cx + r + 2} y={cy + 12} textAnchor="middle" fontSize="8" fill="#94a3b8">100</text>
-              </svg>
-            );
-          })()}
-          <div className="flex flex-col">
-            <span className={`text-4xl font-extrabold ${scoreColor}`}>{activeData.score}</span>
-            <span className={`text-sm font-semibold ${scoreColor}`}>{scoreFaixa}</span>
-            <span className="text-[10px] text-muted-foreground mt-0.5">Qualidade do Ponto</span>
+      {/* Linha 1: Score + 4 KPI Cards (padrão 5 painéis) */}
+      <div className="grid grid-cols-5 gap-3">
+        {/* Score */}
+        <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
+          <div className="flex items-center gap-1 mb-1">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Qualidade do Ponto</p>
+            <InfoTip text="Percentual de marcações registradas corretamente vs total de marcações que exigiram intervenção (justificativas manuais)." />
+          </div>
+          <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} />
+          <div className="flex items-center justify-center gap-1 -mt-1">
+            <TrendingUp size={12} className="text-green-500" />
+            <span className="text-[11px] font-medium text-green-600">{activeData.diff} vs anterior</span>
           </div>
         </div>
-      </div>
 
+        {/* Melhor Operação */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <TrendingUp size={16} className="text-green-500" />
+            <InfoTip text="Operação com maior score de qualidade no período" />
+          </div>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Melhor Operação</p>
+          <p className="text-base font-semibold mt-0.5 truncate">{activeData.melhorOperacao.nome}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.melhorOperacao.score} · Alta</p>
+        </div>
+
+        {/* Maior Risco */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <AlertTriangle size={16} className="text-red-500" />
+            <InfoTip text="Operação com menor qualidade e maior concentração de risco" />
+          </div>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Maior Risco</p>
+          <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{activeData.maiorRisco.nome}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.maiorRisco.score} · {activeData.maiorRisco.indicador}</p>
+        </div>
+
+        {/* Registradas */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <ArrowUpRight size={16} className="text-green-500" />
+            <InfoTip text="Total de marcações registradas pelo colaborador sem necessidade de ajuste." />
+          </div>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Registradas</p>
+          <p className="text-base font-semibold text-green-600 mt-0.5">{activeData.registradas}</p>
+        </div>
+
+        {/* Justificadas */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <ArrowDownRight size={16} className="text-orange-500" />
+            <InfoTip text="Total de marcações que foram justificadas manualmente pelo operador ou gestor." />
+          </div>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Justificadas</p>
+          <p className="text-base font-semibold text-orange-500 mt-0.5">{activeData.justificadas}</p>
+        </div>
+      </div>
 
       {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
       <div className="grid grid-cols-2 gap-3">
