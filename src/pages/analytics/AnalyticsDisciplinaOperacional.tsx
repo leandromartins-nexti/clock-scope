@@ -145,6 +145,125 @@ const subTabs = [
   { id: "movimentacoes", label: "Movimentações" },
 ];
 
+// ── Drill-down data por regional ──
+const regionalDrillDown: Record<string, { clientes: { nome: string; qualidade: number; volume: string; headcount: number; tratativa: number; tendencia: string }[] }> = {
+  "Regional SP": { clientes: [
+    { nome: "Cliente Alfa", qualidade: 91.2, volume: "82K", headcount: 650, tratativa: 3.8, tendencia: "melhorando" },
+    { nome: "Cliente Beta", qualidade: 89.5, volume: "64K", headcount: 520, tratativa: 4.1, tendencia: "melhorando" },
+    { nome: "Cliente Gamma", qualidade: 88.1, volume: "48K", headcount: 410, tratativa: 4.5, tendencia: "estavel" },
+    { nome: "Cliente Delta", qualidade: 87.3, volume: "42K", headcount: 380, tratativa: 5.2, tendencia: "estavel" },
+    { nome: "Cliente Epsilon", qualidade: 90.4, volume: "32K", headcount: 340, tratativa: 3.5, tendencia: "melhorando" },
+  ]},
+  "Regional RJ": { clientes: [
+    { nome: "Cliente Zeta", qualidade: 88.2, volume: "56K", headcount: 480, tratativa: 6.2, tendencia: "piorando" },
+    { nome: "Cliente Eta", qualidade: 85.1, volume: "48K", headcount: 420, tratativa: 7.1, tendencia: "piorando" },
+    { nome: "Cliente Theta", qualidade: 87.5, volume: "42K", headcount: 350, tratativa: 6.8, tendencia: "estavel" },
+    { nome: "Cliente Iota", qualidade: 86.0, volume: "43K", headcount: 340, tratativa: 7.5, tendencia: "piorando" },
+  ]},
+  "Regional MG": { clientes: [
+    { nome: "Cliente Kappa", qualidade: 89.5, volume: "45K", headcount: 380, tratativa: 5.0, tendencia: "melhorando" },
+    { nome: "Cliente Lambda", qualidade: 87.8, volume: "52K", headcount: 420, tratativa: 5.8, tendencia: "estavel" },
+    { nome: "Cliente Mu", qualidade: 86.9, volume: "55K", headcount: 360, tratativa: 5.5, tendencia: "melhorando" },
+  ]},
+  "Regional PR": { clientes: [
+    { nome: "Cliente Nu", qualidade: 88.1, volume: "42K", headcount: 310, tratativa: 6.5, tendencia: "estavel" },
+    { nome: "Cliente Xi", qualidade: 87.0, volume: "48K", headcount: 380, tratativa: 7.0, tendencia: "estavel" },
+    { nome: "Cliente Omicron", qualidade: 86.2, volume: "48K", headcount: 290, tratativa: 7.8, tendencia: "piorando" },
+  ]},
+  "Regional BA": { clientes: [
+    { nome: "Cliente Pi", qualidade: 83.5, volume: "52K", headcount: 280, tratativa: 8.0, tendencia: "piorando" },
+    { nome: "Cliente Rho", qualidade: 81.2, volume: "48K", headcount: 260, tratativa: 8.8, tendencia: "piorando" },
+    { nome: "Cliente Sigma", qualidade: 82.0, volume: "45K", headcount: 260, tratativa: 7.9, tendencia: "estavel" },
+  ]},
+};
+
+// ── Regional Detail Modal ──
+function RegionalDetailModal({ regional, open, onClose }: { regional: string | null; open: boolean; onClose: () => void }) {
+  if (!regional) return null;
+  const qualData = qualidadeRegionais.find(r => r.nome === regional);
+  const scatterQ = scatterQualidade.find(r => r.regional === regional);
+  const scatterT = scatterTratativa.find(r => r.regional === regional);
+  const drillDown = regionalDrillDown[regional] || { clientes: [] };
+  if (!qualData || !scatterQ || !scatterT) return null;
+
+  const scoreColor = qualData.qualidade >= 85 ? "text-green-600" : qualData.qualidade >= 75 ? "text-orange-500" : "text-red-600";
+  const scoreBg = qualData.qualidade >= 85 ? "bg-green-50 border-green-200" : qualData.qualidade >= 75 ? "bg-orange-50 border-orange-200" : "bg-red-50 border-red-200";
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-bold">{regional}</DialogTitle>
+        </DialogHeader>
+        <div className="grid grid-cols-4 gap-3 mt-2">
+          <div className={`rounded-lg border p-3 ${scoreBg}`}>
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Qualidade</p>
+            <p className={`text-2xl font-bold ${scoreColor}`}>{qualData.qualidade}%</p>
+          </div>
+          <div className="rounded-lg border border-border p-3">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Volume</p>
+            <p className="text-2xl font-bold text-foreground">{(scatterQ.volume / 1000).toFixed(0)}K</p>
+          </div>
+          <div className="rounded-lg border border-border p-3">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Headcount</p>
+            <p className="text-2xl font-bold text-foreground">{scatterQ.headcount.toLocaleString()}</p>
+          </div>
+          <div className="rounded-lg border border-border p-3">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Tempo Tratativa</p>
+            <p className="text-2xl font-bold text-foreground">{scatterT.dias}d</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-3 mt-1">
+          <div className="rounded-lg border border-border p-3">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Atrasos</p>
+            <p className="text-lg font-bold text-orange-500">{qualData.atrasos}%</p>
+          </div>
+          <div className="rounded-lg border border-border p-3">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Registradas</p>
+            <p className="text-lg font-bold text-green-600">{qualData.registradas}%</p>
+          </div>
+          <div className="rounded-lg border border-border p-3">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Tendência</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <TrendIcon t={qualData.tendencia} />
+              <span className="text-sm font-semibold capitalize">{qualData.tendencia}</span>
+            </div>
+          </div>
+        </div>
+        <div className="mt-2">
+          <h4 className="text-sm font-semibold mb-2">Detalhamento por Cliente</h4>
+          <div className="rounded-lg border border-border overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/30 border-b border-border">
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Cliente</th>
+                  <th className="text-right px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Qualidade</th>
+                  <th className="text-right px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Volume</th>
+                  <th className="text-right px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Headcount</th>
+                  <th className="text-right px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Tratativa</th>
+                  <th className="text-center px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase">Tendência</th>
+                </tr>
+              </thead>
+              <tbody>
+                {drillDown.clientes.map(c => (
+                  <tr key={c.nome} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                    <td className="px-3 py-2 font-medium text-foreground">{c.nome}</td>
+                    <td className={`px-3 py-2 text-right font-semibold ${c.qualidade >= 85 ? "text-green-600" : c.qualidade >= 75 ? "text-orange-500" : "text-red-600"}`}>{c.qualidade}%</td>
+                    <td className="px-3 py-2 text-right text-muted-foreground">{c.volume}</td>
+                    <td className="px-3 py-2 text-right text-muted-foreground">{c.headcount}</td>
+                    <td className="px-3 py-2 text-right text-muted-foreground">{c.tratativa}d</td>
+                    <td className="px-3 py-2 text-center"><TrendIcon t={c.tendencia} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 // ══════════════════════════════════════════════════════════════
 // Component
 // ══════════════════════════════════════════════════════════════
