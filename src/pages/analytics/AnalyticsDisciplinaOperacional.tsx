@@ -363,10 +363,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
                 const { cx, cy, payload } = props;
                 const r = Math.sqrt(payload.headcount) / 4;
                 const fill = payload.qualidade >= 85 ? "#22c55e" : payload.qualidade >= 75 ? "#f97316" : "#ef4444";
+                const isSelected = !selectedRegional || selectedRegional === payload.regional;
                 return (
-                  <g>
-                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={0.7} stroke={fill} strokeWidth={1.5} />
-                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151">{payload.regional.replace("Regional ", "")}</text>
+                  <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
+                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.2} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
+                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151" opacity={isSelected ? 1 : 0.3}>{payload.regional.replace("Regional ", "")}</text>
                   </g>
                 );
               }} />
@@ -403,10 +404,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
                 const { cx, cy, payload } = props;
                 const r = Math.sqrt(payload.headcount) / 4;
                 const fill = payload.dias <= 5 ? "#22c55e" : payload.dias <= 7 ? "#f97316" : "#ef4444";
+                const isSelected = !selectedRegional || selectedRegional === payload.regional;
                 return (
-                  <g>
-                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={0.7} stroke={fill} strokeWidth={1.5} />
-                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151">{payload.regional.replace("Regional ", "")}</text>
+                  <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
+                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.2} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
+                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151" opacity={isSelected ? 1 : 0.3}>{payload.regional.replace("Regional ", "")}</text>
                   </g>
                 );
               }} />
