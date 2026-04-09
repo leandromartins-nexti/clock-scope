@@ -40,11 +40,6 @@ function InfoTip({ text }: { text: string }) {
   );
 }
 
-function TrendIcon({ t }: { t: string }) {
-  if (t === "melhorando") return <TrendingUp size={14} className="text-green-500" />;
-  if (t === "piorando") return <TrendingDown size={14} className="text-red-500" />;
-  return <Minus size={14} className="text-gray-400" />;
-}
 
 function abreviar(nome: string): string {
   const words = nome.replace(/[-–]/g, " ").split(/\s+/).filter(w => w.length > 1);
