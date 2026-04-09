@@ -579,13 +579,6 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, onItemDetail
   return (
     <div className="w-[220px] shrink-0">
       <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
-        <div className="flex items-center justify-end mb-1">
-          {selectedRegional && (
-            <button onClick={() => onRegionalClick(selectedRegional)} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
-              <X size={10} /> Limpar
-            </button>
-          )}
-        </div>
         {/* Group by selector */}
         <div className="flex gap-1 mb-1">
           {groupByOptions.map(o => (
