@@ -215,10 +215,23 @@ function RankingFooter() {
 // ══════════════════════════════════════════════════════════════
 function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegional: string | null; onRegionalClick: (n: string) => void }) {
   const activeData = useMemo(() => {
-    if (!selectedRegional) return { score: 87.3, diff: "+4.1 pp", registradas: "892.0K", justificadas: "130.2K" };
+    if (!selectedRegional) return {
+      score: 87.3, diff: "+4.1 pp", registradas: "892.0K", justificadas: "130.2K",
+      melhorOperacao: { nome: "Regional SP", score: 89.2 },
+      maiorRisco: { nome: "Regional BA", score: 82.4, indicador: "Baixa qualidade" },
+    };
     const r = qualidadeRegionais.find(x => x.nome === selectedRegional);
-    if (!r) return { score: 87.3, diff: "+4.1 pp", registradas: "892.0K", justificadas: "130.2K" };
-    return { score: r.qualidade, diff: `${(r.qualidade - 87.3).toFixed(1)} pp`, registradas: `${(r.registradas * 12.4).toFixed(0)}K`, justificadas: `${(r.justificadas * 3.26).toFixed(0)}K` };
+    if (!r) return {
+      score: 87.3, diff: "+4.1 pp", registradas: "892.0K", justificadas: "130.2K",
+      melhorOperacao: { nome: "Regional SP", score: 89.2 },
+      maiorRisco: { nome: "Regional BA", score: 82.4, indicador: "Baixa qualidade" },
+    };
+    return {
+      score: r.qualidade, diff: `${(r.qualidade - 87.3).toFixed(1)} pp`,
+      registradas: `${(r.registradas * 12.4).toFixed(0)}K`, justificadas: `${(r.justificadas * 3.26).toFixed(0)}K`,
+      melhorOperacao: { nome: selectedRegional, score: r.qualidade },
+      maiorRisco: { nome: selectedRegional, score: r.qualidade, indicador: `${r.atrasos}% atrasos` },
+    };
   }, [selectedRegional]);
 
   const scoreColor = activeData.score >= 85 ? "text-green-600" : activeData.score >= 75 ? "text-orange-500" : "text-red-600";
@@ -226,8 +239,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
 
   return (
     <div className="space-y-3">
-      {/* Linha 1: Score + 2 KPIs */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* Linha 1: Score + 4 KPI Cards (padrão 5 painéis) */}
+      <div className="grid grid-cols-5 gap-3">
+        {/* Score */}
         <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
           <div className="flex items-center gap-1 mb-1">
             <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Qualidade do Ponto</p>
@@ -242,22 +256,46 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
           </div>
         </div>
 
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
+        {/* Melhor Operação */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <TrendingUp size={16} className="text-green-500" />
+            <InfoTip text="Operação com maior score de qualidade no período" />
+          </div>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Melhor Operação</p>
+          <p className="text-base font-semibold mt-0.5 truncate">{activeData.melhorOperacao.nome}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.melhorOperacao.score} · Alta</p>
+        </div>
+
+        {/* Maior Risco */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <AlertTriangle size={16} className="text-red-500" />
+            <InfoTip text="Operação com menor qualidade e maior concentração de risco" />
+          </div>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Maior Risco</p>
+          <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{activeData.maiorRisco.nome}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.maiorRisco.score} · {activeData.maiorRisco.indicador}</p>
+        </div>
+
+        {/* Registradas */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
           <div className="flex justify-between items-start">
             <ArrowUpRight size={16} className="text-green-500" />
             <InfoTip text="Total de marcações registradas pelo colaborador sem necessidade de ajuste." />
           </div>
           <p className="text-[11px] font-medium text-muted-foreground mt-2">Registradas</p>
-          <p className="text-2xl font-bold text-green-600 mt-0.5">{activeData.registradas}</p>
+          <p className="text-base font-semibold text-green-600 mt-0.5">{activeData.registradas}</p>
         </div>
 
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
+        {/* Justificadas */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
           <div className="flex justify-between items-start">
             <ArrowDownRight size={16} className="text-orange-500" />
             <InfoTip text="Total de marcações que foram justificadas manualmente pelo operador ou gestor." />
           </div>
           <p className="text-[11px] font-medium text-muted-foreground mt-2">Justificadas</p>
-          <p className="text-2xl font-bold text-orange-500 mt-0.5">{activeData.justificadas}</p>
+          <p className="text-base font-semibold text-orange-500 mt-0.5">{activeData.justificadas}</p>
         </div>
       </div>
 
