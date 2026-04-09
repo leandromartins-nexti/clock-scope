@@ -264,7 +264,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
       {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-card border border-border/50 rounded-xl p-4">
-          <h4 className="text-sm font-semibold mb-2">Evolução da Qualidade do Ponto</h4>
+          <h4 className="text-sm font-semibold mb-0.5">Evolução da Qualidade</h4>
+          <p className="text-[10px] text-muted-foreground mb-2">Por competência</p>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={qualidadeEvolucao}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -278,11 +279,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
         </div>
 
         <div className="bg-card border border-border/50 rounded-xl p-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <h4 className="text-sm font-semibold">Tempo Médio de Tratativa por Competência</h4>
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <h4 className="text-sm font-semibold">Evolução do Tempo de Tratativa</h4>
             <InfoTip text="Média de dias entre o registro da marcação e o ajuste." />
           </div>
-          <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal em dias</p>
+          <p className="text-[10px] text-muted-foreground mb-2">Média mensal em dias</p>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={evolucaoTratativa}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -303,11 +304,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
       {/* Row 2: Qualidade×Volume + Volume×Tempo Tratativa */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-card border border-border/50 rounded-xl p-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <h4 className="text-sm font-semibold">Qualidade × Volume por Operação</h4>
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <h4 className="text-sm font-semibold">Qualidade vs Volume</h4>
             <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
           </div>
-          <p className="text-[10px] text-muted-foreground mb-2">Cada bolha representa uma operação. Tamanho = headcount</p>
+          <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
           <ResponsiveContainer width="100%" height={280}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -344,11 +345,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
         </div>
 
         <div className="bg-card border border-border/50 rounded-xl p-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <h4 className="text-sm font-semibold">Volume × Tempo de Tratativa por Operação</h4>
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <h4 className="text-sm font-semibold">Volume vs Tempo de Tratativa</h4>
             <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária." />
           </div>
-          <p className="text-[10px] text-muted-foreground mb-2">Cada bolha representa uma operação. Tamanho = headcount</p>
+          <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
           <ResponsiveContainer width="100%" height={280}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
