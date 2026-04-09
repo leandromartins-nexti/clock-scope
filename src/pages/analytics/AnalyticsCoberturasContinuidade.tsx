@@ -195,20 +195,21 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
               >
                 <span className="text-sm font-medium min-w-[120px]">{op.nome}</span>
                 {/* Stacked bar by event type */}
-                <div className="flex-1 bg-gray-100 rounded-full h-5 relative overflow-hidden flex">
+                <div className="flex-1 bg-gray-100 rounded-full h-4 relative overflow-hidden flex">
                   {[
-                    { pct: op.regular, hours: op.regularH, bg: "bg-green-500", text: "text-green-950" },
-                    { pct: op.atrasos, hours: op.atrasosH, bg: "bg-yellow-400", text: "text-yellow-900" },
-                    { pct: op.falta, hours: op.faltaH, bg: "bg-orange-400", text: "text-orange-950" },
-                    { pct: op.he, hours: op.heH, bg: "bg-red-500", text: "text-white" },
+                    { pct: op.regular, hours: op.regularH, label: "Hora Regular", bg: "bg-green-500" },
+                    { pct: op.atrasos, hours: op.atrasosH, label: "Atrasos", bg: "bg-yellow-400" },
+                    { pct: op.falta, hours: op.faltaH, label: "Falta", bg: "bg-orange-400" },
+                    { pct: op.he, hours: op.heH, label: "Hora Extra", bg: "bg-red-500" },
                   ].map((seg, idx) => (
-                    <div key={idx} className={`h-5 ${seg.bg} transition-all flex items-center justify-center overflow-hidden`} style={{ width: `${seg.pct}%` }}>
-                      {seg.pct >= 12 && (
-                        <span className={`text-[9px] font-semibold ${seg.text} whitespace-nowrap leading-none`}>
-                          {seg.pct}% · {seg.hours}h
-                        </span>
-                      )}
-                    </div>
+                    <UITooltip key={idx}>
+                      <TooltipTrigger asChild>
+                        <div className={`h-4 ${seg.bg} transition-all cursor-default`} style={{ width: `${seg.pct}%` }} />
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs">
+                        <span className="font-semibold">{seg.label}</span>: {seg.pct}% · {seg.hours}h
+                      </TooltipContent>
+                    </UITooltip>
                   ))}
                 </div>
                 <span className={`text-sm font-semibold min-w-[40px] text-right ${barScoreColor}`}>
