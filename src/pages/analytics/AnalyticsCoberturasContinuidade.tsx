@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Info, TrendingUp, TrendingDown, Minus, Eraser } from "lucide-react";
+import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { coberturas } from "@/lib/analytics-mock-data";
 import {
@@ -63,14 +63,18 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
         ausenciasCobertas: kpis.ausenciasCobertas,
         coberturasComHE: kpis.coberturasComHE,
         donut: distribuicaoTipoEvento,
+        melhorOperacao: { nome: "Regional SP", score: 88 },
+        maiorRisco: { nome: "Regional BA", score: 52, indicador: "Cobertura 41%" },
+        horaRegular: { valor: "68%", detalhe: "Estável vs anterior" },
+        horaExtra: { valor: "24%", detalhe: "+3.2 pp vs anterior" },
       };
     }
     const r = regionais.find((reg: any) => reg.nome === selectedRegional);
-    if (!r) return { score: coberturas.scoreEficiencia, scoreDiff: coberturas.scoreDiferenca, ausenciasCobertas: kpis.ausenciasCobertas, coberturasComHE: kpis.coberturasComHE, donut: distribuicaoTipoEvento };
+    if (!r) return { score: coberturas.scoreEficiencia, scoreDiff: coberturas.scoreDiferenca, ausenciasCobertas: kpis.ausenciasCobertas, coberturasComHE: kpis.coberturasComHE, donut: distribuicaoTipoEvento, melhorOperacao: { nome: "Regional SP", score: 88 }, maiorRisco: { nome: "Regional BA", score: 52, indicador: "Cobertura 41%" }, horaRegular: { valor: "68%", detalhe: "Estável vs anterior" }, horaExtra: { valor: "24%", detalhe: "+3.2 pp vs anterior" } };
     return {
       score: r.score,
       scoreDiff: Math.round((r.score - coberturas.scoreEficiencia) + coberturas.scoreDiferenca),
-      ausenciasCobertas: Math.round(r.regular * 1.24), // derived
+      ausenciasCobertas: Math.round(r.regular * 1.24),
       coberturasComHE: r.he,
       donut: [
         { name: "Hora Regular", value: r.regular, cor: "#22c55e" },
@@ -78,6 +82,10 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
         { name: "Falta", value: r.falta, cor: "#f97316" },
         { name: "Atrasos", value: r.atrasos, cor: "#eab308" },
       ],
+      melhorOperacao: { nome: r.nome, score: r.score },
+      maiorRisco: { nome: "Regional BA", score: 52, indicador: `HE ${r.he}%` },
+      horaRegular: { valor: `${r.regular}%`, detalhe: "Cobertura regular" },
+      horaExtra: { valor: `${r.he}%`, detalhe: "Cobertura com HE" },
     };
   }, [selectedRegional, regionais, kpis, distribuicaoTipoEvento]);
 
@@ -90,8 +98,9 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
 
   const content = (
     <div className="px-6 py-4 space-y-3">
-      {/* ═══ Linha 1: Score Compacto + 2 KPI Cards ═══ */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* ═══ Linha 1: Score + 4 KPI Cards (idêntico ao Resumo Executivo) ═══ */}
+      <div className="grid grid-cols-5 gap-3">
+        {/* Score Cobertura */}
         <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
           <div className="flex items-center gap-1 mb-1">
             <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Score Cobertura</p>
@@ -106,20 +115,48 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
           </div>
         </div>
 
+        {/* Melhor Operação */}
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
           <div className="flex justify-between items-start">
-            <p className="text-[11px] font-medium text-muted-foreground">Ausências Cobertas</p>
-            <InfoTip text="Percentual das ausências que foram cobertas por algum tipo de reposição." />
+            <TrendingUp size={16} className="text-green-500" />
+            <InfoTip text="Operação com maior score de cobertura no período" />
           </div>
-          <p className={`text-2xl font-bold mt-2 ${activeData.ausenciasCobertas >= 75 ? "text-green-600" : "text-yellow-600"}`}>{activeData.ausenciasCobertas}%</p>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Melhor Operação</p>
+          <p className="text-base font-semibold mt-0.5 truncate">{activeData.melhorOperacao.nome}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.melhorOperacao.score} · Alta</p>
         </div>
 
+        {/* Maior Risco */}
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
           <div className="flex justify-between items-start">
-            <p className="text-[11px] font-medium text-muted-foreground">Coberturas com HE</p>
-            <InfoTip text="Percentual das coberturas que geraram eventos de hora extra na apuração." />
+            <AlertTriangle size={16} className="text-red-500" />
+            <InfoTip text="Operação com menor cobertura e maior concentração de risco" />
           </div>
-          <p className="text-2xl font-bold mt-2 text-red-600">{activeData.coberturasComHE}%</p>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Maior Risco</p>
+          <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{activeData.maiorRisco.nome}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.maiorRisco.score} · {activeData.maiorRisco.indicador}</p>
+        </div>
+
+        {/* Hora Regular */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <ArrowDownRight size={16} className="text-green-500" />
+            <InfoTip text="Percentual das coberturas realizadas em hora regular" />
+          </div>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Hora Regular</p>
+          <p className="text-base font-semibold mt-0.5 text-green-600 truncate">{activeData.horaRegular.valor}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 truncate">{activeData.horaRegular.detalhe}</p>
+        </div>
+
+        {/* Hora Extra */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <ArrowUpRight size={16} className="text-red-500" />
+            <InfoTip text="Percentual das coberturas que geraram hora extra" />
+          </div>
+          <p className="text-[11px] font-medium text-muted-foreground mt-2">Hora Extra</p>
+          <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{activeData.horaExtra.valor}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 truncate">{activeData.horaExtra.detalhe}</p>
         </div>
       </div>
 
