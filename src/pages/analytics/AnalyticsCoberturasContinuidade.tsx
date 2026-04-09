@@ -1,4 +1,5 @@
-import { Info, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Info, TrendingUp, TrendingDown, Minus, Eraser } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { coberturas } from "@/lib/analytics-mock-data";
 import {
@@ -47,49 +48,78 @@ function TrendIcon({ t }: { t: string }) {
 }
 
 const getScoreColor = (s: number) => s >= 85 ? "text-green-600" : s >= 70 ? "text-orange-500" : s < 60 ? "text-red-600" : "text-yellow-600";
-const regularColor = (v: number) => v > 50 ? "text-green-600" : v >= 35 ? "text-orange-500" : "text-red-600";
-const heColor = (v: number) => v > 30 ? "text-red-600" : v >= 20 ? "text-orange-500" : "text-green-600";
 
 export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded?: boolean }) {
+  const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
+
   const { kpis, distribuicaoTipoEvento, evolucao, regionais } = coberturas;
-  const scoreColor = getScoreColor(coberturas.scoreEficiencia);
-  const scoreFaixa = coberturas.scoreEficiencia >= 80 ? "Bom" : coberturas.scoreEficiencia >= 70 ? "Atenção" : "Crítico";
+
+  // Cross-filter: compute active values based on selected regional
+  const activeData = useMemo(() => {
+    if (!selectedRegional) {
+      return {
+        score: coberturas.scoreEficiencia,
+        scoreDiff: coberturas.scoreDiferenca,
+        ausenciasCobertas: kpis.ausenciasCobertas,
+        coberturasComHE: kpis.coberturasComHE,
+        donut: distribuicaoTipoEvento,
+      };
+    }
+    const r = regionais.find((reg: any) => reg.nome === selectedRegional);
+    if (!r) return { score: coberturas.scoreEficiencia, scoreDiff: coberturas.scoreDiferenca, ausenciasCobertas: kpis.ausenciasCobertas, coberturasComHE: kpis.coberturasComHE, donut: distribuicaoTipoEvento };
+    return {
+      score: r.score,
+      scoreDiff: Math.round((r.score - coberturas.scoreEficiencia) + coberturas.scoreDiferenca),
+      ausenciasCobertas: Math.round(r.regular * 1.24), // derived
+      coberturasComHE: r.he,
+      donut: [
+        { name: "Hora Regular", value: r.regular, cor: "#22c55e" },
+        { name: "Hora Extra", value: r.he, cor: "#ef4444" },
+        { name: "Falta", value: r.falta, cor: "#f97316" },
+        { name: "Atrasos", value: r.atrasos, cor: "#eab308" },
+      ],
+    };
+  }, [selectedRegional, regionais, kpis, distribuicaoTipoEvento]);
+
+  const scoreColor = getScoreColor(activeData.score);
+  const scoreFaixa = activeData.score >= 80 ? "Bom" : activeData.score >= 70 ? "Atenção" : "Crítico";
+
+  const handleRegionalClick = (nome: string) => {
+    setSelectedRegional(prev => prev === nome ? null : nome);
+  };
 
   const content = (
     <div className="px-6 py-4 space-y-3">
-      {/* ═══ Linha 1: Score Compacto + 2 KPI Cards (mesmo layout do Resumo Executivo) ═══ */}
+      {/* ═══ Linha 1: Score Compacto + 2 KPI Cards ═══ */}
       <div className="grid grid-cols-3 gap-3">
-        {/* Score Cobertura — identical structure to Resumo Executivo */}
         <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
           <div className="flex items-center gap-1 mb-1">
             <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Score Cobertura</p>
             <InfoTip text="Índice de eficiência de cobertura calculado a partir de: taxa de ausências cobertas, tipo de evento gerado na apuração, tempo médio de reposição e dias de posto descoberto." />
           </div>
-          <ScoreGauge score={coberturas.scoreEficiencia} />
-          <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{coberturas.scoreEficiencia}</p>
+          <ScoreGauge score={activeData.score} />
+          <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.score}</p>
           <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
           <div className="flex items-center justify-center gap-1 mt-1">
             <TrendingUp size={12} className="text-green-500" />
-            <span className="text-[11px] font-medium text-green-600">+{coberturas.scoreDiferenca} vs anterior</span>
+            <span className="text-[11px] font-medium text-green-600">+{activeData.scoreDiff} vs anterior</span>
           </div>
         </div>
 
-        {/* Ausências Cobertas */}
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
           <div className="flex justify-between items-start">
             <p className="text-[11px] font-medium text-muted-foreground">Ausências Cobertas</p>
             <InfoTip text="Percentual das ausências que foram cobertas por algum tipo de reposição." />
           </div>
-          <p className={`text-2xl font-bold mt-2 ${kpis.ausenciasCobertas >= 75 ? "text-green-600" : "text-yellow-600"}`}>{kpis.ausenciasCobertas}%</p>
+          <p className={`text-2xl font-bold mt-2 ${activeData.ausenciasCobertas >= 75 ? "text-green-600" : "text-yellow-600"}`}>{activeData.ausenciasCobertas}%</p>
         </div>
 
-        {/* Coberturas com HE */}
         <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
           <div className="flex justify-between items-start">
             <p className="text-[11px] font-medium text-muted-foreground">Coberturas com HE</p>
             <InfoTip text="Percentual das coberturas que geraram eventos de hora extra na apuração." />
           </div>
-          <p className="text-2xl font-bold mt-2 text-red-600">{kpis.coberturasComHE}%</p>
+          <p className="text-2xl font-bold mt-2 text-red-600">{activeData.coberturasComHE}%</p>
         </div>
       </div>
 
@@ -102,8 +132,8 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
           </div>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
-              <Pie data={distribuicaoTipoEvento} cx="50%" cy="50%" innerRadius={55} outerRadius={90} dataKey="value" nameKey="name" label={({ value }) => `${value}%`}>
-                {distribuicaoTipoEvento.map((e, i) => <Cell key={i} fill={e.cor} />)}
+              <Pie data={activeData.donut} cx="50%" cy="50%" innerRadius={55} outerRadius={90} dataKey="value" nameKey="name" label={({ value }) => `${value}%`}>
+                {activeData.donut.map((e: any, i: number) => <Cell key={i} fill={e.cor} />)}
               </Pie>
               <RechartsTooltip formatter={(value: number, name: string) => [`${value}%`, name]} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
@@ -130,46 +160,55 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
         </div>
       </div>
 
-      {/* ═══ Linha 3: Tabela regional com horas ═══ */}
-      <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/30">
-            <tr>
-              <th className="text-left px-4 py-2 font-semibold">Regional</th>
-              <th className="text-right px-4 py-2 font-semibold">Coberturas</th>
-              <th className="text-center px-4 py-2 font-semibold">Hora Regular</th>
-              <th className="text-center px-4 py-2 font-semibold">Hora Extra</th>
-              <th className="text-center px-4 py-2 font-semibold">Falta</th>
-              <th className="text-center px-4 py-2 font-semibold">Atrasos</th>
-              <th className="text-center px-4 py-2 font-semibold">Tendência</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/40">
-            {regionais.map((r: any) => (
-              <tr key={r.nome} className="hover:bg-muted/20">
-                <td className="px-4 py-2 font-medium">{r.nome}</td>
-                <td className="text-right px-4 py-2">{r.coberturas?.toLocaleString("pt-BR")}</td>
-                <td className="text-center px-4 py-2">
-                  <span className={`font-semibold ${regularColor(r.regular)}`}>{r.regular}%</span>
-                  <span className="text-muted-foreground text-[11px] ml-1">· {r.regularH}h</span>
-                </td>
-                <td className="text-center px-4 py-2">
-                  <span className={`font-semibold ${heColor(r.he)}`}>{r.he}%</span>
-                  <span className="text-muted-foreground text-[11px] ml-1">· {r.heH}h</span>
-                </td>
-                <td className="text-center px-4 py-2">
-                  <span>{r.falta}%</span>
-                  <span className="text-muted-foreground text-[11px] ml-1">· {r.faltaH}h</span>
-                </td>
-                <td className="text-center px-4 py-2">
-                  <span>{r.atrasos}%</span>
-                  <span className="text-muted-foreground text-[11px] ml-1">· {r.atrasosH}h</span>
-                </td>
-                <td className="text-center px-4 py-2"><div className="flex justify-center"><TrendIcon t={r.tendencia} /></div></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* ═══ Linha 3: Ranking de Regionais (mesmo layout do Resumo Executivo) ═══ */}
+      <div className="bg-card border border-border/50 rounded-xl p-4">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="text-sm font-semibold">Ranking de Coberturas por Regional</h3>
+          {selectedRegional && (
+            <button onClick={() => setSelectedRegional(null)} className="text-[11px] text-[#FF5722] hover:underline flex items-center gap-1">
+              <Eraser size={12} /> Limpar seleção
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground mb-4">Score de cobertura e distribuição por tipo de evento · clique para filtrar</p>
+
+        {/* Legend */}
+        <div className="flex items-center gap-4 mb-3 text-[10px] text-muted-foreground">
+          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-green-500" /> Hora Regular</div>
+          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-red-500" /> Hora Extra</div>
+          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-orange-400" /> Falta</div>
+          <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-yellow-400" /> Atrasos</div>
+        </div>
+
+        <div className="space-y-3">
+          {regionais.map((op: any) => {
+            const isSelected = selectedRegional === op.nome;
+            const isDimmed = selectedRegional && !isSelected;
+            const barScoreColor = op.score >= 85 ? "text-green-600" : op.score >= 70 ? "text-orange-500" : "text-red-600";
+            return (
+              <div
+                key={op.nome}
+                className={`flex items-center gap-4 cursor-pointer rounded-lg px-2 py-1.5 -mx-2 transition-all ${
+                  isSelected ? 'bg-orange-50 ring-1 ring-[#FF5722]/30' : 'hover:bg-muted/30'
+                } ${isDimmed ? 'opacity-35' : ''}`}
+                onClick={() => handleRegionalClick(op.nome)}
+              >
+                <span className="text-sm font-medium min-w-[120px]">{op.nome}</span>
+                {/* Stacked bar by event type */}
+                <div className="flex-1 bg-gray-100 rounded-full h-3 relative overflow-hidden flex">
+                  <div className="h-3 bg-green-500 transition-all" style={{ width: `${op.regular}%` }} />
+                  <div className="h-3 bg-red-500 transition-all" style={{ width: `${op.he}%` }} />
+                  <div className="h-3 bg-orange-400 transition-all" style={{ width: `${op.falta}%` }} />
+                  <div className="h-3 bg-yellow-400 transition-all" style={{ width: `${op.atrasos}%` }} />
+                </div>
+                <span className={`text-sm font-semibold min-w-[40px] text-right ${barScoreColor}`}>
+                  {op.score}
+                </span>
+                <TrendIcon t={op.tendencia} />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

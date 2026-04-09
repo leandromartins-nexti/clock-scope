@@ -311,11 +311,11 @@ export const coberturas = {
   ],
 
   regionais: [
-    { nome: "Regional SP", coberturas: 2840, regular: 58, regularH: "4.2K", he: 20, heH: "1.4K", falta: 12, faltaH: "890", atrasos: 10, atrasosH: "720", tendencia: "melhorando" },
-    { nome: "Regional RJ", coberturas: 2120, regular: 52, regularH: "2.8K", he: 26, heH: "1.4K", falta: 14, faltaH: "750", atrasos: 8, atrasosH: "430", tendencia: "estavel" },
-    { nome: "Regional MG", coberturas: 1560, regular: 54, regularH: "2.1K", he: 22, heH: "870", falta: 13, faltaH: "510", atrasos: 11, atrasosH: "430", tendencia: "melhorando" },
-    { nome: "Regional PR", coberturas: 1180, regular: 48, regularH: "1.4K", he: 28, heH: "840", falta: 15, faltaH: "450", atrasos: 9, atrasosH: "270", tendencia: "piorando" },
-    { nome: "Regional BA", coberturas: 980, regular: 42, regularH: "1.0K", he: 32, heH: "800", falta: 16, faltaH: "400", atrasos: 10, atrasosH: "250", tendencia: "piorando" },
+    { nome: "Regional SP", coberturas: 2840, score: 82, regular: 58, regularH: "4.2K", he: 20, heH: "1.4K", falta: 12, faltaH: "890", atrasos: 10, atrasosH: "720", tendencia: "melhorando" },
+    { nome: "Regional RJ", coberturas: 2120, score: 71, regular: 52, regularH: "2.8K", he: 26, heH: "1.4K", falta: 14, faltaH: "750", atrasos: 8, atrasosH: "430", tendencia: "estavel" },
+    { nome: "Regional MG", coberturas: 1560, score: 76, regular: 54, regularH: "2.1K", he: 22, heH: "870", falta: 13, faltaH: "510", atrasos: 11, atrasosH: "430", tendencia: "melhorando" },
+    { nome: "Regional PR", coberturas: 1180, score: 65, regular: 48, regularH: "1.4K", he: 28, heH: "840", falta: 15, faltaH: "450", atrasos: 9, atrasosH: "270", tendencia: "piorando" },
+    { nome: "Regional BA", coberturas: 980, score: 58, regular: 42, regularH: "1.0K", he: 32, heH: "800", falta: 16, faltaH: "400", atrasos: 10, atrasosH: "250", tendencia: "piorando" },
   ] as any[],
 
   insights: [
