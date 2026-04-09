@@ -318,6 +318,181 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
         </div>
       </div>
 
+      {/* Gráfico 2 + 3: Scatter Qualidade×Volume + Distribuição Tratativa */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-card border border-border/50 rounded-xl p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <h4 className="text-sm font-semibold">Qualidade × Volume por Operação</h4>
+            <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
+          </div>
+          <p className="text-[10px] text-muted-foreground mb-2">Cada bolha representa uma operação. Tamanho = headcount</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" dataKey="volume" name="Volume" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
+              <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={[78, 92]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+              <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
+              <ReferenceLine y={85} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: "85% (Bom)", position: "right", fontSize: 9, fill: "#9ca3af" }} />
+              <ReferenceLine x={170000} stroke="#9ca3af" strokeDasharray="6 4" />
+              <RechartsTooltip content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload;
+                return (
+                  <div className="bg-white border rounded-lg p-2 shadow-md text-xs">
+                    <p className="font-semibold">{d.regional}</p>
+                    <p>Volume: {(d.volume / 1000).toFixed(0)}K marcações</p>
+                    <p>Qualidade: {d.qualidade}%</p>
+                    <p>Headcount: {d.headcount}</p>
+                  </div>
+                );
+              }} />
+              <Scatter data={scatterQualidade} shape={(props: any) => {
+                const { cx, cy, payload } = props;
+                const r = Math.sqrt(payload.headcount) / 4;
+                const fill = payload.qualidade >= 85 ? "#22c55e" : payload.qualidade >= 75 ? "#f97316" : "#ef4444";
+                return (
+                  <g>
+                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={0.7} stroke={fill} strokeWidth={1.5} />
+                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151">{payload.regional.replace("Regional ", "")}</text>
+                  </g>
+                );
+              }} />
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-card border border-border/50 rounded-xl p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <h4 className="text-sm font-semibold">Distribuição do Tempo de Tratativa</h4>
+            <InfoTip text="Mede o tempo em dias entre o registro da marcação no sistema e a data em que foi ajustada ou tratada pelo operador." />
+          </div>
+          <p className="text-[10px] text-muted-foreground mb-2">Tempo entre a marcação e o ajuste</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={distribuicaoTratativa} margin={{ top: 15, right: 10, bottom: 5, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="faixa" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
+              <RechartsTooltip formatter={(v: number) => [`${v}%`, "Percentual"]} />
+              <Bar dataKey="percentual" name="% do total" radius={[4, 4, 0, 0]} label={{ position: "top", fontSize: 10, formatter: (v: number) => `${v}%` }}>
+                {distribuicaoTratativa.map((entry, index) => (
+                  <Cell key={index} fill={entry.cor} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Gráfico 4 + 5: Evolução Tempo Médio + Scatter Volume×Tempo */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-card border border-border/50 rounded-xl p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <h4 className="text-sm font-semibold">Tempo Médio de Tratativa por Competência</h4>
+            <InfoTip text="Média de dias entre o registro da marcação e o ajuste. Tendência de queda indica melhora na eficiência do back-office." />
+          </div>
+          <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal em dias</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={evolucaoTratativa}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+              <YAxis domain={[0, 12]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} />
+              <RechartsTooltip formatter={(v: number) => [`${v} dias`, "Tempo Médio"]} />
+              <ReferenceLine y={tratativaMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${tratativaMedia.toFixed(1)}d`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
+              <Line type="monotone" dataKey="dias" stroke="#f97316" strokeWidth={2} dot={(props: any) => {
+                const { cx, cy, index } = props;
+                const isLast = index === evolucaoTratativa.length - 1;
+                return <circle cx={cx} cy={cy} r={isLast ? 5 : 3} fill={isLast ? "#FF5722" : "#f97316"} stroke={isLast ? "#fff" : "none"} strokeWidth={isLast ? 2 : 0} />;
+              }} activeDot={{ r: 5 }} name="Dias" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-card border border-border/50 rounded-xl p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <h4 className="text-sm font-semibold">Volume × Tempo de Tratativa por Operação</h4>
+            <InfoTip text="Operações no quadrante superior direito (muito volume, tempo alto) precisam de reforço no back-office." />
+          </div>
+          <p className="text-[10px] text-muted-foreground mb-2">Cada bolha representa uma operação. Tamanho = headcount</p>
+          <ResponsiveContainer width="100%" height={280}>
+            <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" dataKey="volume" name="Volume" tick={{ fontSize: 10 }} label={{ value: "Volume de ajustes", position: "insideBottom", offset: -5, fontSize: 10 }} />
+              <YAxis type="number" dataKey="tempo" name="Tempo" domain={[0, 10]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} label={{ value: "Tempo médio (dias)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+              <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
+              <ReferenceLine y={5} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: "5d (limiar)", position: "right", fontSize: 9, fill: "#9ca3af" }} />
+              <RechartsTooltip content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload;
+                return (
+                  <div className="bg-white border rounded-lg p-2 shadow-md text-xs">
+                    <p className="font-semibold">{d.regional}</p>
+                    <p>Volume: {d.volume} ajustes</p>
+                    <p>Tempo médio: {d.tempo} dias</p>
+                    <p>Headcount: {d.headcount}</p>
+                  </div>
+                );
+              }} />
+              <Scatter data={scatterTratativa} shape={(props: any) => {
+                const { cx, cy, payload } = props;
+                const r = Math.sqrt(payload.headcount) / 4;
+                const fill = payload.tempo < 4 ? "#22c55e" : payload.tempo <= 7 ? "#f97316" : "#ef4444";
+                return (
+                  <g>
+                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={0.7} stroke={fill} strokeWidth={1.5} />
+                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151">{payload.regional.replace("Regional ", "")}</text>
+                  </g>
+                );
+              }} />
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Gráfico 6: Box Plot Tempo de Tratativa */}
+      <div className="bg-card border border-border/50 rounded-xl p-4">
+        <div className="flex items-center gap-1.5 mb-1">
+          <h4 className="text-sm font-semibold">Tempo de Tratativa por Operação</h4>
+          <InfoTip text="O box mostra a mediana (linha central), os quartis 25% e 75% (bordas do box), e os extremos. Caixas mais largas indicam maior imprevisibilidade." />
+        </div>
+        <p className="text-[10px] text-muted-foreground mb-4">Mediana, dispersão e outliers em dias</p>
+        <div className="space-y-3">
+          {boxPlotTratativa.map(bp => {
+            const maxVal = 24;
+            const toPercent = (v: number) => (v / maxVal) * 100;
+            const boxColor = bp.mediana < 4 ? "#22c55e" : bp.mediana <= 7 ? "#f97316" : "#ef4444";
+            const textColor = bp.mediana < 4 ? "text-green-600" : bp.mediana <= 7 ? "text-orange-500" : "text-red-600";
+            return (
+              <div key={bp.regional} className="flex items-center gap-4">
+                <span className="text-sm font-medium min-w-[120px]">{bp.regional}</span>
+                <div className="flex-1 relative h-8">
+                  {/* Whisker line (min to max) */}
+                  <div className="absolute top-1/2 -translate-y-1/2 h-[2px] bg-gray-400" style={{ left: `${toPercent(bp.min)}%`, width: `${toPercent(bp.max - bp.min)}%` }} />
+                  {/* Min whisker cap */}
+                  <div className="absolute top-1/2 -translate-y-1/2 w-[1px] h-3 bg-gray-400" style={{ left: `${toPercent(bp.min)}%` }} />
+                  {/* Max whisker cap */}
+                  <div className="absolute top-1/2 -translate-y-1/2 w-[1px] h-3 bg-gray-400" style={{ left: `${toPercent(bp.max)}%` }} />
+                  {/* Box (Q25 to Q75) */}
+                  <div className="absolute top-1/2 -translate-y-1/2 h-5 rounded-sm border" style={{ left: `${toPercent(bp.q25)}%`, width: `${toPercent(bp.q75 - bp.q25)}%`, background: boxColor, opacity: 0.3, borderColor: boxColor }} />
+                  {/* Median line */}
+                  <div className="absolute top-1/2 -translate-y-1/2 w-[2px] h-5 rounded-full" style={{ left: `${toPercent(bp.mediana)}%`, background: boxColor }} />
+                </div>
+                <span className={`text-sm font-semibold min-w-[60px] text-right ${textColor}`}>{bp.mediana}d</span>
+              </div>
+            );
+          })}
+          {/* Scale */}
+          <div className="flex items-center gap-4 mt-1">
+            <span className="min-w-[120px]" />
+            <div className="flex-1 relative h-4">
+              {[0, 4, 8, 12, 16, 20, 24].map(v => (
+                <span key={v} className="absolute text-[10px] text-muted-foreground -translate-x-1/2" style={{ left: `${(v / 24) * 100}%` }}>{v}d</span>
+              ))}
+            </div>
+            <span className="min-w-[60px]" />
+          </div>
+        </div>
+      </div>
+
       {/* Linha 3: Ranking */}
       <div className="bg-card border border-border/50 rounded-xl p-4">
         <div className="flex items-center justify-between mb-1">
