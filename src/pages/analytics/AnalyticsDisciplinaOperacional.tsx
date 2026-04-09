@@ -801,7 +801,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const fill = payload.qualidade >= 85 ? "#22c55e" : payload.qualidade >= 75 ? "#f97316" : "#ef4444";
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                   return (
-                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
+                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
                       <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                     </g>
@@ -843,7 +843,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const fill = payload.dias <= 5 ? "#22c55e" : payload.dias <= 7 ? "#f97316" : "#ef4444";
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                   return (
-                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
+                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
                       <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                     </g>
@@ -1090,7 +1090,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                   const fill = getAbsTurnoverColor(payload.absenteismo, payload.turnover);
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                   return (
-                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
+                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
                       <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                     </g>
@@ -1132,7 +1132,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                   const fill = getAbsHEColor(payload.absenteismo, payload.he);
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                   return (
-                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
+                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
                       <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                     </g>
