@@ -231,15 +231,32 @@ const absenteismoEvolucao = [
   { mes: "jan/26", value: 4.5 }, { mes: "fev/26", value: 4.3 }, { mes: "mar/26", value: 4.8 },
 ];
 const absenteismoMedia = 4.97;
-const absenteismoBarras = [
-  { mes: "abr/25", atestados: 2100, faltas: 1200 }, { mes: "mai/25", atestados: 2000, faltas: 1100 },
-  { mes: "jun/25", atestados: 2300, faltas: 1300 }, { mes: "jul/25", atestados: 2150, faltas: 1150 },
-  { mes: "ago/25", atestados: 2050, faltas: 1050 }, { mes: "set/25", atestados: 1950, faltas: 1000 },
-  { mes: "out/25", atestados: 2100, faltas: 1100 }, { mes: "nov/25", atestados: 2200, faltas: 1050 },
-  { mes: "dez/25", atestados: 2400, faltas: 1250 }, { mes: "jan/26", atestados: 2050, faltas: 980 },
-  { mes: "fev/26", atestados: 1900, faltas: 920 }, { mes: "mar/26", atestados: 2000, faltas: 1000 },
+
+const turnoverEvolucao = [
+  { mes: "abr/25", value: 9.1 }, { mes: "mai/25", value: 8.8 }, { mes: "jun/25", value: 9.4 },
+  { mes: "jul/25", value: 8.5 }, { mes: "ago/25", value: 8.2 }, { mes: "set/25", value: 7.9 },
+  { mes: "out/25", value: 8.0 }, { mes: "nov/25", value: 7.6 }, { mes: "dez/25", value: 9.0 },
+  { mes: "jan/26", value: 7.4 }, { mes: "fev/26", value: 7.8 }, { mes: "mar/26", value: 8.2 },
 ];
-const absenteismoMediaBarras = absenteismoBarras.reduce((s, d) => s + d.atestados + d.faltas, 0) / absenteismoBarras.length;
+const turnoverMedia = 8.2;
+
+// Scatter: Absenteísmo vs Turnover
+const scatterAbsTurnover = [
+  { regional: "SP", absenteismo: 4.2, turnover: 7.1, headcount: 2800 },
+  { regional: "RJ", absenteismo: 5.1, turnover: 8.5, headcount: 1900 },
+  { regional: "MG", absenteismo: 4.6, turnover: 7.8, headcount: 1400 },
+  { regional: "PR", absenteismo: 4.3, turnover: 6.9, headcount: 1100 },
+  { regional: "BA", absenteismo: 6.8, turnover: 11.3, headcount: 800 },
+];
+
+// Scatter: Absenteísmo vs Hora Extra
+const scatterAbsHE = [
+  { regional: "SP", absenteismo: 4.2, he: 329, headcount: 2800 },
+  { regional: "RJ", absenteismo: 5.1, he: 374, headcount: 1900 },
+  { regional: "MG", absenteismo: 4.6, he: 386, headcount: 1400 },
+  { regional: "PR", absenteismo: 4.3, he: 382, headcount: 1100 },
+  { regional: "BA", absenteismo: 6.8, he: 475, headcount: 800 },
+];
 
 // Derive 30 absenteísmo regionais from scatter data (seeded from qualidade)
 const absenteismoRegionais = scatterQualidade.map(sq => {
@@ -846,18 +863,37 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 // Sub-aba 2: Absenteísmo
 // ══════════════════════════════════════════════════════════════
 function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
+  const [visibleNames, setVisibleNames] = useState<string[]>([]);
+
   const activeData = useMemo(() => {
-    if (!selectedRegional) return { taxa: 4.8, diff: "-0.6 pp", faltasNJ: "38%", turnover: "8.2%" };
+    if (!selectedRegional) return {
+      score: 52, taxa: 4.8, faixa: "Atenção" as const,
+      melhorOperacao: { nome: "Regional SP", score: 76 },
+      maiorRisco: { nome: "Regional BA", score: 42, indicador: "Baixa qualidade" },
+      faltasNJ: "38%", turnover: "8.2%",
+    };
     const r = absenteismoRegionais.find(x => x.nome === selectedRegional);
-    if (!r) return { taxa: 4.8, diff: "-0.6 pp", faltasNJ: "38%", turnover: "8.2%" };
-    return { taxa: r.taxa, diff: `${(r.taxa - 4.8).toFixed(1)} pp`, faltasNJ: `${Math.round(30 + r.taxa * 3)}%`, turnover: `${r.turnover}%` };
+    if (!r) return {
+      score: 52, taxa: 4.8, faixa: "Atenção" as const,
+      melhorOperacao: { nome: "Regional SP", score: 76 },
+      maiorRisco: { nome: "Regional BA", score: 42, indicador: "Baixa qualidade" },
+      faltasNJ: "38%", turnover: "8.2%",
+    };
+    const score = Math.round(Math.max(0, 100 - r.taxa * 10));
+    return {
+      score, taxa: r.taxa,
+      faixa: (r.taxa <= 4 ? "Bom" : r.taxa <= 6 ? "Atenção" : "Crítico") as string,
+      melhorOperacao: { nome: selectedRegional, score },
+      maiorRisco: { nome: selectedRegional, score, indicador: `${r.taxa}% taxa` },
+      faltasNJ: `${Math.round(30 + r.taxa * 3)}%`,
+      turnover: `${r.turnover}%`,
+    };
   }, [selectedRegional]);
 
-  const scoreColor = activeData.taxa <= 4 ? "text-green-600" : activeData.taxa <= 6 ? "text-orange-500" : "text-red-600";
-  const scoreFaixa = activeData.taxa <= 4 ? "Bom" : activeData.taxa <= 6 ? "Atenção" : "Crítico";
-  const maxTaxa = Math.max(...absenteismoRegionais.map(r => r.taxa));
+  const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
-  // Sort by lowest taxa = best for absenteísmo
+  const scoreColor = activeData.taxa <= 4 ? "text-green-600" : activeData.taxa <= 6 ? "text-orange-500" : "text-red-600";
+
   const getAbsScore = (taxa: number) => Math.round(Math.max(0, 100 - taxa * 10));
   const sidebarItems = useMemo(() => {
     if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(100 - (100 - e.qualidade) * 1.2) }));
@@ -865,68 +901,189 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     return [...absenteismoRegionais].sort((a, b) => a.taxa - b.taxa).map(e => ({ nome: e.nome, score: getAbsScore(e.taxa) }));
   }, [groupBy]);
 
+  // Scatter color helpers
+  const getAbsTurnoverColor = (abs: number, turn: number) => {
+    if (abs < 5 && turn < 8) return "#22c55e";
+    if (abs >= 5 && turn >= 8) return "#ef4444";
+    return "#f97316";
+  };
+  const getAbsHEColor = (abs: number, he: number) => {
+    if (abs < 5 && he < 380) return "#22c55e";
+    if (abs >= 5 && he >= 380) return "#ef4444";
+    return "#f97316";
+  };
+
   return (
     <div className="flex gap-3">
       <div className="flex-1 min-w-0 space-y-3">
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
-            <div className="flex items-center gap-1 mb-1">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Absenteísmo</p>
-              <InfoTip text="Taxa de ausências sobre o efetivo total no período. Inclui atestados, faltas justificadas e não justificadas." />
-            </div>
-            <ScoreGauge score={Math.max(0, 100 - activeData.taxa * 10)} />
-            <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.taxa}%</p>
-            <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
+        {/* Linha 1: Score + 4 KPI Cards */}
+        <div className="grid grid-cols-5 gap-3">
+          <ScoreBoard title="Absenteísmo" tooltip="Taxa de ausências sobre o efetivo total no período. Inclui atestados, faltas justificadas e não justificadas.">
+            <ScoreGauge score={activeData.score} label={`${activeData.taxa}%`} faixa={activeData.faixa} />
+          </ScoreBoard>
+          <KPIBoard title="Melhor Operação" tooltip="Operação com menor taxa de absenteísmo no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · Alta`} />
+          <KPIBoard title="Maior Risco" tooltip="Operação com maior taxa de absenteísmo e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
+          <KPIBoard title="Faltas Não Justificadas" tooltip="Percentual das ausências que não tiveram justificativa registrada." value={activeData.faltasNJ} valueColor="text-red-600" />
+          <KPIBoard title="Turnover" tooltip="Taxa de rotatividade: desligamentos no período sobre o efetivo médio." value={activeData.turnover} valueColor="text-orange-500" />
+        </div>
+
+        {/* Row 2: 2 Line charts */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
+            <h4 className="text-sm font-semibold mb-0.5">Evolução do Absenteísmo</h4>
+            <p className="text-[10px] text-muted-foreground mb-2">Taxa mensal (%) · clique para filtrar</p>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={absenteismoEvolucao} onClick={(e: any) => {
+                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+              }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={(props: any) => {
+                  const { x, y, payload } = props;
+                  const isActive = selectedMes === payload.value;
+                  return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                }} />
+                <YAxis domain={[3, 7]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
+                <RechartsTooltip formatter={(v: number) => [`${v}%`, "Absenteísmo"]} />
+                <ReferenceLine y={absenteismoMedia} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <Line type="monotone" dataKey="value" stroke="hsl(var(--destructive))" strokeWidth={2} dot={(props: any) => {
+                  const { cx, cy, payload } = props;
+                  const isSelected = selectedMes === payload.mes;
+                  const isActive = !selectedMes || isSelected;
+                  return (
+                    <g key={payload.mes} className="cursor-pointer">
+                      {isSelected && <circle cx={cx} cy={cy} r={10} fill="hsl(var(--destructive))" fillOpacity={0.15} stroke="hsl(var(--destructive))" strokeWidth={1} strokeDasharray="3 2" />}
+                      <circle cx={cx} cy={cy} r={isSelected ? 6 : 4} fill={isSelected ? "hsl(var(--destructive))" : isActive ? "hsl(var(--destructive))" : "hsl(var(--destructive) / 0.3)"} stroke="#fff" strokeWidth={2} />
+                    </g>
+                  );
+                }} activeDot={{ r: 6, stroke: "hsl(var(--destructive))", strokeWidth: 2, fill: "#fff" }} name="Taxa" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-            <div className="flex items-center gap-1 mb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Faltas Não Justificadas</p>
-              <InfoTip text="Percentual das ausências que não tiveram justificativa registrada." />
+
+          <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <h4 className="text-sm font-semibold">Evolução do Turnover</h4>
+              <InfoTip text="Taxa de rotatividade mensal: desligamentos sobre o efetivo médio." />
             </div>
-            <p className="text-2xl font-bold text-red-600 mt-0.5">{activeData.faltasNJ}</p>
-          </div>
-          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-center">
-            <div className="flex items-center gap-1 mb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Turnover</p>
-              <InfoTip text="Taxa de rotatividade: desligamentos no período sobre o efetivo médio." />
-            </div>
-            <p className="text-2xl font-bold text-orange-500 mt-0.5">{activeData.turnover}</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Taxa mensal (%) · clique para filtrar</p>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={turnoverEvolucao} onClick={(e: any) => {
+                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+              }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={(props: any) => {
+                  const { x, y, payload } = props;
+                  const isActive = selectedMes === payload.value;
+                  return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                }} />
+                <YAxis domain={[5, 12]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
+                <RechartsTooltip formatter={(v: number) => [`${v}%`, "Turnover"]} />
+                <ReferenceLine y={turnoverMedia} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <Line type="monotone" dataKey="value" stroke="#f97316" strokeWidth={2} dot={(props: any) => {
+                  const { cx, cy, payload } = props;
+                  const isSelected = selectedMes === payload.mes;
+                  const isActive = !selectedMes || isSelected;
+                  return (
+                    <g key={payload.mes} className="cursor-pointer">
+                      {isSelected && <circle cx={cx} cy={cy} r={10} fill="#f97316" fillOpacity={0.15} stroke="#f97316" strokeWidth={1} strokeDasharray="3 2" />}
+                      <circle cx={cx} cy={cy} r={isSelected ? 6 : 4} fill={isSelected ? "#f97316" : isActive ? "#f97316" : "#f9731655"} stroke="#fff" strokeWidth={2} />
+                    </g>
+                  );
+                }} activeDot={{ r: 6, stroke: "#f97316", strokeWidth: 2, fill: "#fff" }} name="Turnover" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-card border border-border/50 rounded-xl p-4">
-            <h4 className="text-sm font-semibold mb-2">Atestados e Faltas por Competência</h4>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={absenteismoBarras}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} />
-                <RechartsTooltip />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-                <ReferenceLine y={absenteismoMediaBarras} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
-                <Bar dataKey="atestados" stackId="a" fill="hsl(var(--chart-2))" name="Atestados" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="faltas" stackId="a" fill="hsl(var(--destructive))" name="Faltas NJ" radius={[2, 2, 0, 0]} />
-              </BarChart>
+        {/* Row 3: 2 Scatter charts */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <h4 className="text-sm font-semibold">Absenteísmo vs Turnover</h4>
+              <InfoTip text="Operações no quadrante superior direito indicam problema estrutural: alta rotatividade combinada com alto absenteísmo." />
+            </div>
+            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
+            <ResponsiveContainer width="100%" height={280}>
+              <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" dataKey="absenteismo" name="Absenteísmo" domain={[3, 8]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Absenteísmo (%)", position: "insideBottom", offset: -5, fontSize: 10 }} />
+                <YAxis type="number" dataKey="turnover" name="Turnover" domain={[5, 13]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Turnover (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+                <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
+                <ReferenceLine y={8} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine x={5} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <RechartsTooltip content={({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const d = payload[0].payload;
+                  return (
+                    <div className="bg-white border rounded-lg p-2 shadow-md text-xs">
+                      <p className="font-semibold">{d.regional}</p>
+                      <p>Absenteísmo: {d.absenteismo}%</p>
+                      <p>Turnover: {d.turnover}%</p>
+                      <p>Headcount: {d.headcount}</p>
+                    </div>
+                  );
+                }} />
+                <Scatter data={scatterAbsTurnover} shape={(props: any) => {
+                  const { cx, cy, payload } = props;
+                  const r = Math.sqrt(payload.headcount) / 4;
+                  const fill = getAbsTurnoverColor(payload.absenteismo, payload.turnover);
+                  const isSelected = !selectedRegional || selectedRegional === payload.regional;
+                  return (
+                    <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
+                      <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
+                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{payload.regional}</text>
+                    </g>
+                  );
+                }} />
+              </ScatterChart>
             </ResponsiveContainer>
           </div>
-          <div className="bg-card border border-border/50 rounded-xl p-4">
-            <h4 className="text-sm font-semibold mb-2">Evolução da Taxa de Absenteísmo</h4>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={absenteismoEvolucao}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
-                <YAxis domain={[3, 7]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-                <RechartsTooltip formatter={(v: number) => [`${v}%`, "Absenteísmo"]} />
-                <ReferenceLine y={absenteismoMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${absenteismoMedia}%`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
-                <Line type="monotone" dataKey="value" stroke="hsl(var(--destructive))" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} name="Taxa" />
-              </LineChart>
+
+          <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <h4 className="text-sm font-semibold">Absenteísmo vs Hora Extra</h4>
+              <InfoTip text="Operações no quadrante superior direito podem estar em ciclo vicioso: colaboradores faltam, quem fica faz hora extra, se cansa e falta mais." />
+            </div>
+            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
+            <ResponsiveContainer width="100%" height={280}>
+              <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" dataKey="absenteismo" name="Absenteísmo" domain={[3, 8]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Absenteísmo (%)", position: "insideBottom", offset: -5, fontSize: 10 }} />
+                <YAxis type="number" dataKey="he" name="HE/100 colab" domain={[280, 520]} tick={{ fontSize: 10 }} label={{ value: "HE por 100 colab. (horas)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+                <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
+                <ReferenceLine y={380} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine x={5} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <RechartsTooltip content={({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const d = payload[0].payload;
+                  return (
+                    <div className="bg-white border rounded-lg p-2 shadow-md text-xs">
+                      <p className="font-semibold">{d.regional}</p>
+                      <p>Absenteísmo: {d.absenteismo}%</p>
+                      <p>HE/100 colab: {d.he}h</p>
+                      <p>Headcount: {d.headcount}</p>
+                    </div>
+                  );
+                }} />
+                <Scatter data={scatterAbsHE} shape={(props: any) => {
+                  const { cx, cy, payload } = props;
+                  const r = Math.sqrt(payload.headcount) / 4;
+                  const fill = getAbsHEColor(payload.absenteismo, payload.he);
+                  const isSelected = !selectedRegional || selectedRegional === payload.regional;
+                  return (
+                    <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
+                      <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
+                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{payload.regional}</text>
+                    </g>
+                  );
+                }} />
+              </ScatterChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} />
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
     </div>
   );
 }
