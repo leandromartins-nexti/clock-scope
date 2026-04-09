@@ -518,7 +518,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
   const scoreColor = activeData.score >= 85 ? "text-green-600" : activeData.score >= 75 ? "text-orange-500" : "text-red-600";
   const scoreFaixa = activeData.score >= 85 ? "Bom" : activeData.score >= 75 ? "Atenção" : "Crítico";
 
-  const sortedRegionais = [...qualidadeRegionais].sort((a, b) => b.qualidade - a.qualidade);
+  const sidebarItems = useMemo(() => {
+    if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+    if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+    return [...qualidadeRegionais].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+  }, [groupBy]);
 
   return (
     <div className="flex gap-3">
