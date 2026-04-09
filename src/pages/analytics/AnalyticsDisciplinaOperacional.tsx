@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -130,6 +130,25 @@ const areaData = [
   { nome: "SUPERINTENDÊNCIA COMERCIAL", qualidade: 51.0, score: 51 },
   { nome: "ROTA - SOO - DS43", qualidade: 46.3, score: 46 },
 ].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
+
+// ── Generate scatter-compatible data from any entity list ──
+function toScatterData(items: { nome: string; qualidade: number; score: number }[]) {
+  return items.map((item, i) => {
+    const seed = item.qualidade * 1000 + i;
+    const volume = Math.round(50000 + (item.qualidade - 40) * 3500 + (seed % 80000));
+    const headcount = Math.round(volume / 100 + (seed % 500));
+    const dias = +(2 + (95 - item.qualidade) * 0.12 + ((seed % 30) / 10)).toFixed(1);
+    return {
+      regional: item.nome,
+      volume,
+      qualidade: item.qualidade,
+      headcount,
+      dias,
+    };
+  });
+}
+const empresaScatter = toScatterData(empresaData);
+const areaScatter = toScatterData(areaData);
 
 // ── Scatter data (source of truth for all 30 regionals) ──
 const scatterQualidade = [
@@ -478,14 +497,16 @@ function RankingFooter() {
 }
 
 // ── Shared sidebar with groupBy selector ──
+// Now also exposes paged items for charts
 type ContentProps = { selectedRegional: string | null; onRegionalClick: (n: string) => void; groupBy: GroupBy; onGroupByChange: (g: GroupBy) => void };
 
-function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onGroupByChange }: {
+function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onGroupByChange, onPagedItemsChange }: {
   items: { nome: string; score: number }[];
   selectedRegional: string | null;
   onRegionalClick: (n: string) => void;
   groupBy: GroupBy;
   onGroupByChange: (g: GroupBy) => void;
+  onPagedItemsChange?: (names: string[]) => void;
 }) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -534,7 +555,11 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
 
   const totalPages = Math.ceil(filteredAndSorted.length / PAGE_SIZE);
   const showPagination = filteredAndSorted.length > PAGE_SIZE;
-  const pagedItems = filteredAndSorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pagedItems = useMemo(() => filteredAndSorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [filteredAndSorted, page]);
+
+  useEffect(() => {
+    onPagedItemsChange?.(pagedItems.map(i => i.nome));
+  }, [pagedItems, onPagedItemsChange]);
 
   return (
     <div className="w-[220px] shrink-0">
@@ -602,7 +627,7 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
               <div
                 key={op.nome}
                 onClick={() => onRegionalClick(op.nome)}
-                className={`flex items-center gap-2 px-0.5 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 ring-1 ring-[#FF5722]/30" : "hover:bg-muted/40"} ${isDimmed ? "opacity-35" : ""}`}
+                className={`flex items-center gap-2 px-0.5 py-1 rounded-md cursor-pointer transition-all text-xs ${isSelected ? "bg-orange-50 border border-[#FF5722]/30" : "hover:bg-muted/40 border border-transparent"} ${isDimmed ? "opacity-35" : ""}`}
               >
                 <UITooltip>
                   <TooltipTrigger asChild>
@@ -624,6 +649,8 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
 // Sub-aba 1: Qualidade do Ponto
 // ══════════════════════════════════════════════════════════════
 function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupByChange }: ContentProps) {
+  const [visibleNames, setVisibleNames] = useState<string[]>([]);
+
   const activeData = useMemo(() => {
     if (!selectedRegional) return {
       score: 87, diff: "+4 pp", registradas: "892.0K", justificadas: "130.2K",
@@ -654,6 +681,23 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
     return [...qualidadeRegionais].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
   }, [groupBy]);
+
+  // Scatter data filtered to visible page items
+  const allScatter = useMemo(() => {
+    if (groupBy === "empresa") return empresaScatter;
+    if (groupBy === "area") return areaScatter;
+    return scatterQualidade;
+  }, [groupBy]);
+
+  const allScatterTratativa = useMemo(() => {
+    if (groupBy === "empresa") return empresaScatter.map(e => ({ ...e, dias: +(2 + (95 - e.qualidade) * 0.12).toFixed(1) }));
+    if (groupBy === "area") return areaScatter.map(e => ({ ...e, dias: +(2 + (95 - e.qualidade) * 0.12).toFixed(1) }));
+    return scatterTratativa;
+  }, [groupBy]);
+
+  const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
+  const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
+  const chartScatterTrat = useMemo(() => allScatterTratativa.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatterTratativa, visibleSet]);
 
   return (
     <div className="flex gap-3">
@@ -780,7 +824,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" dataKey="volume" name="Volume" tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
-                <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={[78, 92]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+                <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={['auto', 'auto']} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
                 <ReferenceLine y={85} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: "85% (Bom)", position: "right", fontSize: 9, fill: "#9ca3af" }} />
                 <ReferenceLine x={170000} stroke="#9ca3af" strokeDasharray="6 4" />
@@ -796,7 +840,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
                     </div>
                   );
                 }} />
-                <Scatter data={scatterQualidade} shape={(props: any) => {
+                <Scatter data={chartScatterQual} shape={(props: any) => {
                   const { cx, cy, payload } = props;
                   const r = Math.sqrt(payload.headcount) / 4;
                   const fill = payload.qualidade >= 85 ? "#22c55e" : payload.qualidade >= 75 ? "#f97316" : "#ef4444";
@@ -837,7 +881,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
                     </div>
                   );
                 }} />
-                <Scatter data={scatterTratativa} shape={(props: any) => {
+                <Scatter data={chartScatterTrat} shape={(props: any) => {
                   const { cx, cy, payload } = props;
                   const r = Math.sqrt(payload.headcount) / 4;
                   const fill = payload.dias <= 5 ? "#22c55e" : payload.dias <= 7 ? "#f97316" : "#ef4444";
@@ -855,7 +899,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
         </div>
       </div>
 
-      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} groupBy={groupBy} onGroupByChange={onGroupByChange} />
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
 
       <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
     </div>
