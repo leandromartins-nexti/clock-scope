@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Info, TrendingUp, TrendingDown, Minus, Eraser } from "lucide-react";
+import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { coberturas } from "@/lib/analytics-mock-data";
 import {
