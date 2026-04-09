@@ -865,7 +865,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
                 <XAxis type="number" dataKey="volume" name="Volume" domain={[qualDomain.xMin, qualDomain.xMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={[qualDomain.yMin, qualDomain.yMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={avgQualQualidade} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" label={{ value: `${avgQualQualidade}%`, position: "right", fontSize: 9, fill: "#C8860A", fontWeight: 600 }} />
+                <ReferenceLine y={avgQualQualidade} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
                 <ReferenceLine x={avgQualVolume} stroke="#C8860A" strokeWidth={1.2} strokeDasharray="8 4" />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
