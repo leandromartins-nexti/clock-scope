@@ -215,13 +215,18 @@ const qualidadeRegionais = scatterQualidade.map(sq => {
   return { nome: sq.regional, qualidade, atrasos, registradas, justificadas, tendencia, volume: sq.volume, headcount: sq.headcount, tratativa: st?.dias ?? 6 };
 });
 
-const evolucaoTratativa = [
-  { mes: "abr/25", dias: 8.5 }, { mes: "mai/25", dias: 7.8 }, { mes: "jun/25", dias: 8.2 },
-  { mes: "jul/25", dias: 7.1 }, { mes: "ago/25", dias: 6.5 }, { mes: "set/25", dias: 6.2 },
-  { mes: "out/25", dias: 5.8 }, { mes: "nov/25", dias: 5.5 }, { mes: "dez/25", dias: 7.2 },
-  { mes: "jan/26", dias: 5.1 }, { mes: "fev/26", dias: 4.8 }, { mes: "mar/26", dias: 4.5 },
+const evolucaoTratativaFaixas = [
+  { mes: "jul/25", ate1d: 611, de1a3d: 373, de3a7d: 270, de7a15d: 245, mais15d: 330, total: 1829 },
+  { mes: "ago/25", ate1d: 662, de1a3d: 380, de3a7d: 259, de7a15d: 202, mais15d: 211, total: 1714 },
+  { mes: "set/25", ate1d: 935, de1a3d: 954, de3a7d: 405, de7a15d: 196, mais15d: 17, total: 2507 },
+  { mes: "out/25", ate1d: 2437, de1a3d: 2091, de3a7d: 3559, de7a15d: 6304, mais15d: 774, total: 15165 },
+  { mes: "nov/25", ate1d: 2260, de1a3d: 1934, de3a7d: 1746, de7a15d: 2365, mais15d: 4767, total: 13072 },
+  { mes: "dez/25", ate1d: 3053, de1a3d: 2509, de3a7d: 2005, de7a15d: 794, mais15d: 455, total: 8816 },
+  { mes: "jan/26", ate1d: 1170, de1a3d: 1754, de3a7d: 2051, de7a15d: 534, mais15d: 230, total: 5739 },
+  { mes: "fev/26", ate1d: 1699, de1a3d: 2057, de3a7d: 1190, de7a15d: 743, mais15d: 557, total: 6246 },
+  { mes: "mar/26", ate1d: 746, de1a3d: 710, de3a7d: 870, de7a15d: 874, mais15d: 461, total: 3661 },
 ];
-const tratativaMedia = evolucaoTratativa.reduce((s, d) => s + d.dias, 0) / evolucaoTratativa.length;
+const tratativaMediaTotal = evolucaoTratativaFaixas.reduce((s, d) => s + d.total, 0) / evolucaoTratativaFaixas.length;
 
 // ── Absenteísmo ──
 const absenteismoEvolucao = [
