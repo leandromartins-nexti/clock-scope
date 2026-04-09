@@ -493,7 +493,7 @@ function ModalTable<T extends Record<string, any>>({ data, columns, searchPlaceh
             {paged.map((row, i) => (
               <tr key={i} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                 {columns.map(col => (
-                  <td key={col.key} className={`px-3 py-2 ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"}`}>
+                  <td key={col.key} style={col.width ? { width: col.width } : undefined} className={`px-3 py-2 ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"}`}>
                     {col.format ? col.format(row[col.key], row) : row[col.key]}
                   </td>
                 ))}
