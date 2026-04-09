@@ -584,7 +584,7 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
           </div>
         )}
         {/* Column headers with sort - aligned with list items */}
-        <div className="flex items-center gap-2 px-2 mb-1">
+        <div className="flex items-center gap-2 px-0.5 mb-1">
           <button onClick={() => toggleSort("nome")} className="flex-1 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground text-left">
             Nome <ArrowUpDown size={9} className={sortBy === "nome" ? "text-[#FF5722]" : ""} />
           </button>
