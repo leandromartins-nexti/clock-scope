@@ -720,18 +720,20 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
   const avgTratDias = useMemo(() => chartScatterTrat.length ? +(chartScatterTrat.reduce((s, d) => s + d.dias, 0) / chartScatterTrat.length).toFixed(1) : 4.5, [chartScatterTrat]);
 
   // Dynamic axis domains with 10% padding
-  // Build nice axis domain: ensures (max - min) is divisible by (tickCount-1) for even spacing
+  // Build nice axis domain with even tick spacing
   const TICK_COUNT = 7;
   const niceAxis = (rawMin: number, rawMax: number) => {
     const range = rawMax - rawMin || 1;
-    // Pick a step that's a nice round number
     const rawStep = range / (TICK_COUNT - 1);
     const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
-    const candidates = [1, 2, 2.5, 5, 10].map(m => m * magnitude);
+    // Prefer smaller steps to avoid overshooting
+    const candidates = [1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10].map(m => m * magnitude);
     const step = candidates.find(s => s >= rawStep) || candidates[candidates.length - 1];
     const nMin = Math.floor(rawMin / step) * step;
-    const nMax = nMin + step * (TICK_COUNT - 1);
-    return { min: Math.max(0, nMin), max: nMax >= rawMax ? nMax : nMin + step * TICK_COUNT };
+    // Find smallest tick count that covers the data (min 5 ticks)
+    let ticks = TICK_COUNT - 1;
+    while (nMin + step * ticks < rawMax && ticks < 10) ticks++;
+    return { min: Math.max(0, nMin), max: nMin + step * ticks };
   };
 
   const qualDomain = useMemo(() => {
