@@ -684,7 +684,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   }, [selectedRegional]);
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
-  const [detailRegional, setDetailRegional] = useState<string | null>(null);
+  const detailRegional = null; // managed at Tab level now
   const scoreColor = activeData.score >= 85 ? "text-green-600" : activeData.score >= 75 ? "text-orange-500" : "text-red-600";
   const scoreFaixa = activeData.score >= 85 ? "Bom" : activeData.score >= 75 ? "Atenção" : "Crítico";
 
