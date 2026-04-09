@@ -322,11 +322,28 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
           </ResponsiveContainer>
       </div>
 
-      {/* Gráfico 4 + 5: Evolução Tempo Médio + Scatter Volume×Tempo */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-card border border-border/50 rounded-xl p-4">
-          <div className="flex items-center gap-1.5 mb-1">
-            <h4 className="text-sm font-semibold">Tempo Médio de Tratativa por Competência</h4>
+      {/* Evolução Tempo Médio de Tratativa */}
+      <div className="bg-card border border-border/50 rounded-xl p-4">
+        <div className="flex items-center gap-1.5 mb-1">
+          <h4 className="text-sm font-semibold">Tempo Médio de Tratativa por Competência</h4>
+          <InfoTip text="Média de dias entre o registro da marcação e o ajuste. Tendência de queda indica melhora na eficiência do back-office." />
+        </div>
+        <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal em dias</p>
+        <ResponsiveContainer width="100%" height={280}>
+          <LineChart data={evolucaoTratativa}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+            <YAxis domain={[0, 12]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} />
+            <RechartsTooltip formatter={(v: number) => [`${v} dias`, "Tempo Médio"]} />
+            <ReferenceLine y={tratativaMedia} stroke="#9ca3af" strokeDasharray="6 4" label={{ value: `Média ${tratativaMedia.toFixed(1)}d`, position: "right", fontSize: 10, fill: "#9ca3af" }} />
+            <Line type="monotone" dataKey="dias" stroke="#f97316" strokeWidth={2} dot={(props: any) => {
+              const { cx, cy, index } = props;
+              const isLast = index === evolucaoTratativa.length - 1;
+              return <circle cx={cx} cy={cy} r={isLast ? 5 : 3} fill={isLast ? "#FF5722" : "#f97316"} stroke={isLast ? "#fff" : "none"} strokeWidth={isLast ? 2 : 0} />;
+            }} activeDot={{ r: 5 }} name="Dias" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
             <InfoTip text="Média de dias entre o registro da marcação e o ajuste. Tendência de queda indica melhora na eficiência do back-office." />
           </div>
           <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal em dias</p>
