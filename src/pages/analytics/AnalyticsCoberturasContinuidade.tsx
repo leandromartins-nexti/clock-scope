@@ -6,48 +6,9 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip as RechartsTooltip, Legend, PieChart, Pie, Cell,
 } from "recharts";
-
-// ── Gauge semicircular (identical to Resumo Executivo) ──────
-function ScoreGauge({ score }: { score: number }) {
-  const radius = 36;
-  const stroke = 7;
-  const cx = 45;
-  const cy = 42;
-  const circumference = Math.PI * radius;
-  const progress = (score / 100) * circumference;
-  const color = score >= 85 ? "hsl(var(--success))" : score >= 70 ? "#FF5722" : "hsl(var(--destructive))";
-
-  return (
-    <svg width="90" height="50" viewBox="0 0 90 50">
-      <path
-        d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`}
-        fill="none" stroke="#e5e7eb" strokeWidth={stroke} strokeLinecap="round"
-      />
-      <path
-        d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`}
-        fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round"
-        strokeDasharray={`${progress} ${circumference}`}
-      />
-    </svg>
-  );
-}
-
-function InfoTip({ text }: { text: string }) {
-  return (
-    <UITooltip>
-      <TooltipTrigger asChild><Info size={14} className="text-muted-foreground cursor-help" /></TooltipTrigger>
-      <TooltipContent className="max-w-[280px] text-xs">{text}</TooltipContent>
-    </UITooltip>
-  );
-}
-
-function TrendIcon({ t }: { t: string }) {
-  if (t === "melhorando") return <TrendingUp size={14} className="text-green-500" />;
-  if (t === "piorando") return <TrendingDown size={14} className="text-red-500" />;
-  return <Minus size={14} className="text-gray-400" />;
-}
-
-const getScoreColor = (s: number) => s >= 85 ? "text-green-600" : s >= 70 ? "text-orange-500" : s < 60 ? "text-red-600" : "text-yellow-600";
+import ScoreGauge from "@/components/analytics/ScoreGauge";
+import InfoTip from "@/components/analytics/InfoTip";
+import { TrendIcon, getScoreColor } from "@/components/analytics/IndicatorTable";
 
 export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded?: boolean }) {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
