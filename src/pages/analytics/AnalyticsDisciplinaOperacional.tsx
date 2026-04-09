@@ -574,7 +574,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
                 return (
                   <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
                     <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                    {isSelected && <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={8} fill="#374151">{payload.regional.length > 14 ? payload.regional.slice(0, 12) + "…" : payload.regional}</text>}
+                    <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                   </g>
                 );
               }} />
@@ -615,7 +615,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
                 return (
                   <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
                     <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                    {isSelected && <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={8} fill="#374151">{payload.regional.length > 14 ? payload.regional.slice(0, 12) + "…" : payload.regional}</text>}
+                    <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                   </g>
                 );
               }} />
