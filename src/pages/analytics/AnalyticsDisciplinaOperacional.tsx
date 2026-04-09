@@ -55,25 +55,7 @@ function abreviar(nome: string): string {
 // Mock data
 // ══════════════════════════════════════════════════════════════
 
-// ── Qualidade do Ponto ──
-const qualidadeEvolucao = [
-  { mes: "abr/25", value: 83.2 }, { mes: "mai/25", value: 84.1 }, { mes: "jun/25", value: 84.5 },
-  { mes: "jul/25", value: 85.0 }, { mes: "ago/25", value: 85.3 }, { mes: "set/25", value: 85.8 },
-  { mes: "out/25", value: 86.2 }, { mes: "nov/25", value: 86.5 }, { mes: "dez/25", value: 86.1 },
-  { mes: "jan/26", value: 87.0 }, { mes: "fev/26", value: 87.8 }, { mes: "mar/26", value: 87.3 },
-];
-const qualidadeMedia = 85.7;
-// Derive qualidadeRegionais from scatterQualidade + scatterTratativa for unified data
-const qualidadeRegionais = scatterQualidade.map(sq => {
-  const st = scatterTratativa.find(t => t.regional === sq.regional);
-  const qualidade = sq.qualidade;
-  const tendencia = qualidade >= 88 ? "melhorando" : qualidade >= 85 ? "estavel" : "piorando";
-  const registradas = Math.round(qualidade);
-  const justificadas = 100 - registradas;
-  const atrasos = +(100 - qualidade).toFixed(1);
-  return { nome: sq.regional, qualidade, atrasos, registradas, justificadas, tendencia, volume: sq.volume, headcount: sq.headcount, tratativa: st?.dias ?? 6 };
-});
-
+// ── Scatter data (source of truth for all 30 regionals) ──
 const scatterQualidade = [
   { regional: "Novo Hamburgo", volume: 268000, qualidade: 89.2, headcount: 2800 },
   { regional: "Ribeirão Preto", volume: 189000, qualidade: 86.8, headcount: 1900 },
@@ -106,14 +88,6 @@ const scatterQualidade = [
   { regional: "Administração - Sede", volume: 142000, qualidade: 86.2, headcount: 1200 },
   { regional: "Unidade de Negócios", volume: 110000, qualidade: 84.0, headcount: 850 },
 ];
-
-const evolucaoTratativa = [
-  { mes: "abr/25", dias: 8.5 }, { mes: "mai/25", dias: 7.8 }, { mes: "jun/25", dias: 8.2 },
-  { mes: "jul/25", dias: 7.1 }, { mes: "ago/25", dias: 6.5 }, { mes: "set/25", dias: 6.2 },
-  { mes: "out/25", dias: 5.8 }, { mes: "nov/25", dias: 5.5 }, { mes: "dez/25", dias: 7.2 },
-  { mes: "jan/26", dias: 5.1 }, { mes: "fev/26", dias: 4.8 }, { mes: "mar/26", dias: 4.5 },
-];
-const tratativaMedia = evolucaoTratativa.reduce((s, d) => s + d.dias, 0) / evolucaoTratativa.length;
 
 const scatterTratativa = [
   { regional: "Novo Hamburgo", volume: 268000, dias: 4.2, headcount: 2800 },
@@ -148,6 +122,34 @@ const scatterTratativa = [
   { regional: "Unidade de Negócios", volume: 110000, dias: 7.0, headcount: 850 },
 ];
 
+// ── Qualidade do Ponto ──
+const qualidadeEvolucao = [
+  { mes: "abr/25", value: 83.2 }, { mes: "mai/25", value: 84.1 }, { mes: "jun/25", value: 84.5 },
+  { mes: "jul/25", value: 85.0 }, { mes: "ago/25", value: 85.3 }, { mes: "set/25", value: 85.8 },
+  { mes: "out/25", value: 86.2 }, { mes: "nov/25", value: 86.5 }, { mes: "dez/25", value: 86.1 },
+  { mes: "jan/26", value: 87.0 }, { mes: "fev/26", value: 87.8 }, { mes: "mar/26", value: 87.3 },
+];
+const qualidadeMedia = 85.7;
+
+// Derive all 30 regionais from scatter data
+const qualidadeRegionais = scatterQualidade.map(sq => {
+  const st = scatterTratativa.find(t => t.regional === sq.regional);
+  const qualidade = sq.qualidade;
+  const tendencia = qualidade >= 88 ? "melhorando" : qualidade >= 85 ? "estavel" : "piorando";
+  const registradas = Math.round(qualidade);
+  const justificadas = 100 - registradas;
+  const atrasos = +(100 - qualidade).toFixed(1);
+  return { nome: sq.regional, qualidade, atrasos, registradas, justificadas, tendencia, volume: sq.volume, headcount: sq.headcount, tratativa: st?.dias ?? 6 };
+});
+
+const evolucaoTratativa = [
+  { mes: "abr/25", dias: 8.5 }, { mes: "mai/25", dias: 7.8 }, { mes: "jun/25", dias: 8.2 },
+  { mes: "jul/25", dias: 7.1 }, { mes: "ago/25", dias: 6.5 }, { mes: "set/25", dias: 6.2 },
+  { mes: "out/25", dias: 5.8 }, { mes: "nov/25", dias: 5.5 }, { mes: "dez/25", dias: 7.2 },
+  { mes: "jan/26", dias: 5.1 }, { mes: "fev/26", dias: 4.8 }, { mes: "mar/26", dias: 4.5 },
+];
+const tratativaMedia = evolucaoTratativa.reduce((s, d) => s + d.dias, 0) / evolucaoTratativa.length;
+
 // ── Absenteísmo ──
 const absenteismoEvolucao = [
   { mes: "abr/25", value: 5.4 }, { mes: "mai/25", value: 5.1 }, { mes: "jun/25", value: 5.6 },
@@ -165,13 +167,15 @@ const absenteismoBarras = [
   { mes: "fev/26", atestados: 1900, faltas: 920 }, { mes: "mar/26", atestados: 2000, faltas: 1000 },
 ];
 const absenteismoMediaBarras = absenteismoBarras.reduce((s, d) => s + d.atestados + d.faltas, 0) / absenteismoBarras.length;
-const absenteismoRegionais = [
-  { nome: "Regional SP", taxa: 4.2, turnover: 7.1, tendencia: "melhorando" },
-  { nome: "Regional PR", taxa: 4.3, turnover: 6.9, tendencia: "melhorando" },
-  { nome: "Regional MG", taxa: 4.6, turnover: 7.8, tendencia: "estavel" },
-  { nome: "Regional RJ", taxa: 5.1, turnover: 8.5, tendencia: "piorando" },
-  { nome: "Regional BA", taxa: 6.8, turnover: 11.3, tendencia: "piorando" },
-];
+
+// Derive 30 absenteísmo regionais from scatter data (seeded from qualidade)
+const absenteismoRegionais = scatterQualidade.map(sq => {
+  // Inverse correlation: higher quality → lower absenteeism
+  const taxa = +(2 + (92 - sq.qualidade) * 0.55).toFixed(1);
+  const turnover = +(4 + (92 - sq.qualidade) * 0.8).toFixed(1);
+  const tendencia = sq.qualidade >= 88 ? "melhorando" : sq.qualidade >= 85 ? "estavel" : "piorando";
+  return { nome: sq.regional, taxa, turnover, tendencia };
+});
 
 // ── Movimentações ──
 const movimentacoesEvolucao = [
@@ -190,13 +194,17 @@ const movimentacoesBarras = [
   { mes: "fev/26", escala: 1050, posto: 590 }, { mes: "mar/26", escala: 1020, posto: 580 },
 ];
 const movimentacoesMediaBarras = movimentacoesBarras.reduce((s, d) => s + d.escala + d.posto, 0) / movimentacoesBarras.length;
-const movimentacoesRegionais = [
-  { nome: "Regional SP", total: 7400, escala: 4800, posto: 2600, tempoFechamento: 6.1, tendencia: "melhorando" },
-  { nome: "Regional RJ", total: 5300, escala: 3400, posto: 1900, tempoFechamento: 7.5, tendencia: "estavel" },
-  { nome: "Regional MG", total: 4000, escala: 2600, posto: 1400, tempoFechamento: 7.0, tendencia: "melhorando" },
-  { nome: "Regional PR", total: 3400, escala: 2200, posto: 1200, tempoFechamento: 8.2, tendencia: "piorando" },
-  { nome: "Regional BA", total: 2900, escala: 1800, posto: 1100, tempoFechamento: 9.1, tendencia: "piorando" },
-];
+
+// Derive 30 movimentações regionais from scatter data
+const movimentacoesRegionais = scatterQualidade.map(sq => {
+  const st = scatterTratativa.find(t => t.regional === sq.regional);
+  const total = Math.round(sq.headcount * (1 + (st?.dias ?? 6) / 10));
+  const escala = Math.round(total * 0.62);
+  const posto = total - escala;
+  const tempoFechamento = +(3 + (st?.dias ?? 6) * 0.8).toFixed(1);
+  const tendencia = sq.qualidade >= 88 ? "melhorando" : sq.qualidade >= 85 ? "estavel" : "piorando";
+  return { nome: sq.regional, total, escala, posto, tempoFechamento, tendencia };
+});
 
 const subTabs = [
   { id: "qualidade", label: "Qualidade do Ponto" },
