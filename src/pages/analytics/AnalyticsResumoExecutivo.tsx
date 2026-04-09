@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { getScoreColor, getScoreBg, getLineColor } from "@/components/analytics/IndicatorTable";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronRight, Filter, Eraser, TrendingUp, TrendingDown, Minus,
