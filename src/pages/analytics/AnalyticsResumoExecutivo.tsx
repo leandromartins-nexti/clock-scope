@@ -181,64 +181,17 @@ export default function AnalyticsResumoExecutivo() {
 
             {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
             <div className="grid grid-cols-5 gap-3">
-              {/* Score Operacional compacto */}
-              <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
-                <div className="flex items-center gap-1 mb-1">
-                  <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Score Operacional</p>
-                  <InfoTip text="Índice de saúde da operação calculado a partir de 5 indicadores: qualidade do ponto, absenteísmo, volume de horas extras, movimentações e cobertura efetiva. Pesos configuráveis em Configuração." />
-                </div>
-                <ScoreGauge score={activeScore} />
-                <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeScore}</p>
-                <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{activeFaixa}</p>
+              <ScoreBoard title="Score Operacional" tooltip="Índice de saúde da operação calculado a partir de 5 indicadores: qualidade do ponto, absenteísmo, volume de horas extras, movimentações e cobertura efetiva. Pesos configuráveis em Configuração.">
+                <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={activeFaixa} />
                 <div className="flex items-center justify-center gap-1 mt-1">
                   <TrendingUp size={12} className="text-green-500" />
                   <span className="text-[11px] font-medium text-green-600">+{activeDiff} vs anterior</span>
                 </div>
-              </div>
-
-              {/* Melhor Operação */}
-              <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-                <div className="flex justify-between items-start">
-                  <TrendingUp size={16} className="text-green-500" />
-                  <InfoTip text="Operação com maior score operacional no período" />
-                </div>
-                <p className="text-[11px] font-medium text-muted-foreground mt-2">Melhor Operação</p>
-                <p className="text-base font-semibold mt-0.5 truncate">{resumo.melhorOperacao.nome}</p>
-                <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {resumo.melhorOperacao.score} · Alta</p>
-              </div>
-
-              {/* Maior Risco */}
-              <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-                <div className="flex justify-between items-start">
-                  <AlertTriangle size={16} className="text-red-500" />
-                  <InfoTip text="Operação com menor score e maior concentração de risco" />
-                </div>
-                <p className="text-[11px] font-medium text-muted-foreground mt-2">Maior Risco</p>
-                <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{resumo.maiorRisco.nome}</p>
-                <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {resumo.maiorRisco.score} · {resumo.maiorRisco.indicador}</p>
-              </div>
-
-              {/* Principal Melhora */}
-              <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-                <div className="flex justify-between items-start">
-                  <ArrowDownRight size={16} className="text-green-500" />
-                  <InfoTip text="Indicador com maior evolução positiva no período" />
-                </div>
-                <p className="text-[11px] font-medium text-muted-foreground mt-2">Principal Melhora</p>
-                <p className="text-base font-semibold mt-0.5 text-green-600 truncate">{regionalData?.melhorIndicador ?? "Qualidade Ponto"}</p>
-                <p className="text-[11px] text-muted-foreground mt-1 truncate">{regionalData?.melhorIndicadorDetalhe ?? "+4.1 pp (83.2% → 87.3%)"}</p>
-              </div>
-
-              {/* Principal Piora */}
-              <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-                <div className="flex justify-between items-start">
-                  <ArrowUpRight size={16} className="text-red-500" />
-                  <InfoTip text="Indicador com maior deterioração no período" />
-                </div>
-                <p className="text-[11px] font-medium text-muted-foreground mt-2">Principal Piora</p>
-                <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{regionalData?.piorIndicador ?? "Atrasos e Faltas"}</p>
-                <p className="text-[11px] text-muted-foreground mt-1 truncate">{regionalData?.piorIndicadorDetalhe ?? "+52.4% no período"}</p>
-              </div>
+              </ScoreBoard>
+              <KPIBoard title="Melhor Operação" tooltip="Operação com maior score operacional no período" value={resumo.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${resumo.melhorOperacao.score} · Alta`} />
+              <KPIBoard title="Maior Risco" tooltip="Operação com menor score e maior concentração de risco" value={resumo.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${resumo.maiorRisco.score} · ${resumo.maiorRisco.indicador}`} />
+              <KPIBoard title="Principal Melhora" tooltip="Indicador com maior evolução positiva no período" value={regionalData?.melhorIndicador ?? "Qualidade Ponto"} valueColor="text-green-600" subtitle={regionalData?.melhorIndicadorDetalhe ?? "+4.1 pp (83.2% → 87.3%)"} />
+              <KPIBoard title="Principal Piora" tooltip="Indicador com maior deterioração no período" value={regionalData?.piorIndicador ?? "Atrasos e Faltas"} valueColor="text-red-600" subtitle={regionalData?.piorIndicadorDetalhe ?? "+52.4% no período"} />
             </div>
 
             {/* ═══ Linha 2: Indicadores — lista vertical com sparklines inline ═══ */}
