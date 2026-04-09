@@ -292,13 +292,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
         </div>
       </div>
 
-      {/* Filtro de competência ativo */}
-      {selectedMes && (
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#FF5722]/10 border border-[#FF5722]/30 rounded-lg w-fit">
-          <span className="text-xs font-medium text-[#FF5722]">Competência: {selectedMes}</span>
-          <button onClick={() => setSelectedMes(null)} className="text-[#FF5722] hover:text-[#FF5722]/70 text-xs font-bold">✕</button>
-        </div>
-      )}
 
       {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
       <div className="grid grid-cols-2 gap-3">
