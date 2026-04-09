@@ -240,32 +240,34 @@ const turnoverEvolucao = [
 ];
 const turnoverMedia = 8.2;
 
-// Scatter: Absenteísmo vs Turnover
-const scatterAbsTurnover = [
-  { regional: "SP", absenteismo: 4.2, turnover: 7.1, headcount: 2800 },
-  { regional: "RJ", absenteismo: 5.1, turnover: 8.5, headcount: 1900 },
-  { regional: "MG", absenteismo: 4.6, turnover: 7.8, headcount: 1400 },
-  { regional: "PR", absenteismo: 4.3, turnover: 6.9, headcount: 1100 },
-  { regional: "BA", absenteismo: 6.8, turnover: 11.3, headcount: 800 },
-];
+// Generate absenteísmo scatter data from any entity list (seeded, deterministic)
+function toAbsScatterData(items: { nome: string; qualidade: number; score: number }[]) {
+  function seededRand(s: number) { const x = Math.sin(s * 9301 + 49297) * 49297; return x - Math.floor(x); }
+  return items.map((item, i) => {
+    const r1 = seededRand(i * 7 + item.qualidade * 13 + 100);
+    const r2 = seededRand(i * 11 + item.qualidade * 17 + 200);
+    const r3 = seededRand(i * 19 + item.qualidade * 23 + 300);
+    const headcount = Math.round(300 + r1 * 2700);
+    // Lower quality → higher absenteeism
+    const absenteismo = +(2.5 + (95 - item.qualidade) * 0.12 + r2 * 1.5).toFixed(1);
+    const turnover = +(4.5 + (95 - item.qualidade) * 0.15 + r3 * 2.5).toFixed(1);
+    const he = Math.round(250 + (95 - item.qualidade) * 8 + r1 * 120);
+    return { regional: item.nome, absenteismo, turnover, he, headcount };
+  });
+}
 
-// Scatter: Absenteísmo vs Hora Extra
-const scatterAbsHE = [
-  { regional: "SP", absenteismo: 4.2, he: 329, headcount: 2800 },
-  { regional: "RJ", absenteismo: 5.1, he: 374, headcount: 1900 },
-  { regional: "MG", absenteismo: 4.6, he: 386, headcount: 1400 },
-  { regional: "PR", absenteismo: 4.3, he: 382, headcount: 1100 },
-  { regional: "BA", absenteismo: 6.8, he: 475, headcount: 800 },
-];
-
-// Derive 30 absenteísmo regionais from scatter data (seeded from qualidade)
-const absenteismoRegionais = scatterQualidade.map(sq => {
-  // Inverse correlation: higher quality → lower absenteeism
+// Unidade scatter (from qualidadeRegionais)
+const unidadeAbsScatter = scatterQualidade.map(sq => {
   const taxa = +(2 + (92 - sq.qualidade) * 0.55).toFixed(1);
   const turnover = +(4 + (92 - sq.qualidade) * 0.8).toFixed(1);
-  const tendencia = sq.qualidade >= 88 ? "melhorando" : sq.qualidade >= 85 ? "estavel" : "piorando";
-  return { nome: sq.regional, taxa, turnover, tendencia };
+  const he = Math.round(250 + (92 - sq.qualidade) * 12 + sq.headcount * 0.02);
+  return { regional: sq.regional, absenteismo: taxa, turnover, he, headcount: sq.headcount };
 });
+const empresaAbsScatter = toAbsScatterData(empresaData);
+const areaAbsScatter = toAbsScatterData(areaData);
+
+
+
 
 // ── Movimentações ──
 const movimentacoesEvolucao = [
@@ -864,41 +866,73 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 // ══════════════════════════════════════════════════════════════
 function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
-
-  const activeData = useMemo(() => {
-    if (!selectedRegional) return {
-      score: 52, taxa: 4.8, faixa: "Atenção" as const,
-      melhorOperacao: { nome: "Regional SP", score: 76 },
-      maiorRisco: { nome: "Regional BA", score: 42, indicador: "Baixa qualidade" },
-      faltasNJ: "38%", turnover: "8.2%",
-    };
-    const r = absenteismoRegionais.find(x => x.nome === selectedRegional);
-    if (!r) return {
-      score: 52, taxa: 4.8, faixa: "Atenção" as const,
-      melhorOperacao: { nome: "Regional SP", score: 76 },
-      maiorRisco: { nome: "Regional BA", score: 42, indicador: "Baixa qualidade" },
-      faltasNJ: "38%", turnover: "8.2%",
-    };
-    const score = Math.round(Math.max(0, 100 - r.taxa * 10));
-    return {
-      score, taxa: r.taxa,
-      faixa: (r.taxa <= 4 ? "Bom" : r.taxa <= 6 ? "Atenção" : "Crítico") as string,
-      melhorOperacao: { nome: selectedRegional, score },
-      maiorRisco: { nome: selectedRegional, score, indicador: `${r.taxa}% taxa` },
-      faltasNJ: `${Math.round(30 + r.taxa * 3)}%`,
-      turnover: `${r.turnover}%`,
-    };
-  }, [selectedRegional]);
-
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
-  const scoreColor = activeData.taxa <= 4 ? "text-green-600" : activeData.taxa <= 6 ? "text-orange-500" : "text-red-600";
+  // Scatter data per groupBy
+  const allScatterData = useMemo(() => {
+    if (groupBy === "empresa") return empresaAbsScatter;
+    if (groupBy === "area") return areaAbsScatter;
+    return unidadeAbsScatter;
+  }, [groupBy]);
 
-  const getAbsScore = (taxa: number) => Math.round(Math.max(0, 100 - taxa * 10));
+  // Filter scatter by visible sidebar names
+  const chartScatter = useMemo(() => {
+    if (visibleNames.length === 0) return allScatterData;
+    return allScatterData.filter(d => visibleNames.includes(d.regional));
+  }, [allScatterData, visibleNames]);
+
+  // Evolution data filtered by selectedRegional (simulate variation)
+  const filteredAbsEvolucao = useMemo(() => {
+    if (!selectedRegional) return absenteismoEvolucao;
+    const item = allScatterData.find(d => d.regional === selectedRegional);
+    if (!item) return absenteismoEvolucao;
+    const ratio = item.absenteismo / absenteismoMedia;
+    return absenteismoEvolucao.map(d => ({ ...d, value: +(d.value * ratio).toFixed(1) }));
+  }, [selectedRegional, allScatterData]);
+
+  const filteredTurnoverEvolucao = useMemo(() => {
+    if (!selectedRegional) return turnoverEvolucao;
+    const item = allScatterData.find(d => d.regional === selectedRegional);
+    if (!item) return turnoverEvolucao;
+    const ratio = item.turnover / turnoverMedia;
+    return turnoverEvolucao.map(d => ({ ...d, value: +(d.value * ratio).toFixed(1) }));
+  }, [selectedRegional, allScatterData]);
+
+  const activeData = useMemo(() => {
+    if (!selectedRegional) {
+      const sorted = [...allScatterData].sort((a, b) => a.absenteismo - b.absenteismo);
+      const best = sorted[0];
+      const worst = sorted[sorted.length - 1];
+      return {
+        score: 52, taxa: 4.8, faixa: "Atenção" as string,
+        melhorOperacao: { nome: best?.regional ?? "—", score: Math.round(Math.max(0, 100 - (best?.absenteismo ?? 5) * 10)) },
+        maiorRisco: { nome: worst?.regional ?? "—", score: Math.round(Math.max(0, 100 - (worst?.absenteismo ?? 5) * 10)), indicador: "Baixa qualidade" },
+        faltasNJ: "38%", turnover: "8.2%",
+      };
+    }
+    const r = allScatterData.find(x => x.regional === selectedRegional);
+    if (!r) return {
+      score: 52, taxa: 4.8, faixa: "Atenção" as string,
+      melhorOperacao: { nome: "—", score: 0 },
+      maiorRisco: { nome: "—", score: 0, indicador: "—" },
+      faltasNJ: "38%", turnover: "8.2%",
+    };
+    const score = Math.round(Math.max(0, 100 - r.absenteismo * 10));
+    return {
+      score, taxa: r.absenteismo,
+      faixa: (r.absenteismo <= 4 ? "Bom" : r.absenteismo <= 6 ? "Atenção" : "Crítico") as string,
+      melhorOperacao: { nome: selectedRegional, score },
+      maiorRisco: { nome: selectedRegional, score, indicador: `${r.absenteismo}% taxa` },
+      faltasNJ: `${Math.round(30 + r.absenteismo * 3)}%`,
+      turnover: `${r.turnover}%`,
+    };
+  }, [selectedRegional, allScatterData]);
+
+  const getAbsScore = (abs: number) => Math.round(Math.max(0, 100 - abs * 10));
   const sidebarItems = useMemo(() => {
-    if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(100 - (100 - e.qualidade) * 1.2) }));
-    if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(100 - (100 - e.qualidade) * 1.2) }));
-    return [...absenteismoRegionais].sort((a, b) => a.taxa - b.taxa).map(e => ({ nome: e.nome, score: getAbsScore(e.taxa) }));
+    if (groupBy === "empresa") return [...empresaAbsScatter].sort((a, b) => a.absenteismo - b.absenteismo).map(e => ({ nome: e.regional, score: getAbsScore(e.absenteismo) }));
+    if (groupBy === "area") return [...areaAbsScatter].sort((a, b) => a.absenteismo - b.absenteismo).map(e => ({ nome: e.regional, score: getAbsScore(e.absenteismo) }));
+    return [...unidadeAbsScatter].sort((a, b) => a.absenteismo - b.absenteismo).map(e => ({ nome: e.regional, score: getAbsScore(e.absenteismo) }));
   }, [groupBy]);
 
   // Scatter color helpers
@@ -912,6 +946,33 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     if (abs >= 5 && he >= 380) return "#ef4444";
     return "#f97316";
   };
+
+  // Dynamic scatter domains
+  const absTurnoverDomain = useMemo(() => {
+    const xVals = chartScatter.map(d => d.absenteismo);
+    const yVals = chartScatter.map(d => d.turnover);
+    return {
+      xMin: Math.floor(Math.min(...xVals) - 0.5),
+      xMax: Math.ceil(Math.max(...xVals) + 0.5),
+      yMin: Math.floor(Math.min(...yVals) - 1),
+      yMax: Math.ceil(Math.max(...yVals) + 1),
+    };
+  }, [chartScatter]);
+
+  const absHEDomain = useMemo(() => {
+    const xVals = chartScatter.map(d => d.absenteismo);
+    const yVals = chartScatter.map(d => d.he);
+    return {
+      xMin: Math.floor(Math.min(...xVals) - 0.5),
+      xMax: Math.ceil(Math.max(...xVals) + 0.5),
+      yMin: Math.floor(Math.min(...yVals) / 10) * 10 - 20,
+      yMax: Math.ceil(Math.max(...yVals) / 10) * 10 + 20,
+    };
+  }, [chartScatter]);
+
+  const avgAbs = chartScatter.reduce((s, d) => s + d.absenteismo, 0) / (chartScatter.length || 1);
+  const avgTurnover = chartScatter.reduce((s, d) => s + d.turnover, 0) / (chartScatter.length || 1);
+  const avgHE = chartScatter.reduce((s, d) => s + d.he, 0) / (chartScatter.length || 1);
 
   return (
     <div className="flex gap-3">
@@ -933,7 +994,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
             <h4 className="text-sm font-semibold mb-0.5">Evolução do Absenteísmo</h4>
             <p className="text-[10px] text-muted-foreground mb-2">Taxa mensal (%) · clique para filtrar</p>
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={absenteismoEvolucao} onClick={(e: any) => {
+              <LineChart data={filteredAbsEvolucao} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -942,9 +1003,9 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                   const isActive = selectedMes === payload.value;
                   return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
                 }} />
-                <YAxis domain={[3, 7]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
+                <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
                 <RechartsTooltip formatter={(v: number) => [`${v}%`, "Absenteísmo"]} />
-                <ReferenceLine y={absenteismoMedia} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine y={filteredAbsEvolucao.reduce((s, d) => s + d.value, 0) / filteredAbsEvolucao.length} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
                 <Line type="monotone" dataKey="value" stroke="hsl(var(--destructive))" strokeWidth={2} dot={(props: any) => {
                   const { cx, cy, payload } = props;
                   const isSelected = selectedMes === payload.mes;
@@ -967,7 +1028,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Taxa mensal (%) · clique para filtrar</p>
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={turnoverEvolucao} onClick={(e: any) => {
+              <LineChart data={filteredTurnoverEvolucao} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -976,9 +1037,9 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                   const isActive = selectedMes === payload.value;
                   return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
                 }} />
-                <YAxis domain={[5, 12]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
+                <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
                 <RechartsTooltip formatter={(v: number) => [`${v}%`, "Turnover"]} />
-                <ReferenceLine y={turnoverMedia} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine y={filteredTurnoverEvolucao.reduce((s, d) => s + d.value, 0) / filteredTurnoverEvolucao.length} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
                 <Line type="monotone" dataKey="value" stroke="#f97316" strokeWidth={2} dot={(props: any) => {
                   const { cx, cy, payload } = props;
                   const isSelected = selectedMes === payload.mes;
@@ -1006,11 +1067,11 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" dataKey="absenteismo" name="Absenteísmo" domain={[3, 8]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Absenteísmo (%)", position: "insideBottom", offset: -5, fontSize: 10 }} />
-                <YAxis type="number" dataKey="turnover" name="Turnover" domain={[5, 13]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Turnover (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+                <XAxis type="number" dataKey="absenteismo" name="Absenteísmo" domain={[absTurnoverDomain.xMin, absTurnoverDomain.xMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Absenteísmo (%)", position: "insideBottom", offset: -5, fontSize: 10 }} />
+                <YAxis type="number" dataKey="turnover" name="Turnover" domain={[absTurnoverDomain.yMin, absTurnoverDomain.yMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Turnover (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={8} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                <ReferenceLine x={5} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine y={avgTurnover} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine x={avgAbs} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
@@ -1023,7 +1084,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                     </div>
                   );
                 }} />
-                <Scatter data={scatterAbsTurnover} shape={(props: any) => {
+                <Scatter data={chartScatter} shape={(props: any) => {
                   const { cx, cy, payload } = props;
                   const r = Math.sqrt(payload.headcount) / 4;
                   const fill = getAbsTurnoverColor(payload.absenteismo, payload.turnover);
@@ -1031,7 +1092,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                   return (
                     <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{payload.regional}</text>
+                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                     </g>
                   );
                 }} />
@@ -1048,11 +1109,11 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" dataKey="absenteismo" name="Absenteísmo" domain={[3, 8]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Absenteísmo (%)", position: "insideBottom", offset: -5, fontSize: 10 }} />
-                <YAxis type="number" dataKey="he" name="HE/100 colab" domain={[280, 520]} tick={{ fontSize: 10 }} label={{ value: "HE por 100 colab. (horas)", angle: -90, position: "insideLeft", fontSize: 10 }} />
+                <XAxis type="number" dataKey="absenteismo" name="Absenteísmo" domain={[absHEDomain.xMin, absHEDomain.xMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Absenteísmo (%)", position: "insideBottom", offset: -5, fontSize: 10 }} />
+                <YAxis type="number" dataKey="he" name="HE/100 colab" domain={[absHEDomain.yMin, absHEDomain.yMax]} tick={{ fontSize: 10 }} label={{ value: "HE por 100 colab. (horas)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={380} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                <ReferenceLine x={5} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine y={avgHE} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine x={avgAbs} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
@@ -1065,7 +1126,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                     </div>
                   );
                 }} />
-                <Scatter data={scatterAbsHE} shape={(props: any) => {
+                <Scatter data={chartScatter} shape={(props: any) => {
                   const { cx, cy, payload } = props;
                   const r = Math.sqrt(payload.headcount) / 4;
                   const fill = getAbsHEColor(payload.absenteismo, payload.he);
@@ -1073,7 +1134,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                   return (
                     <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{payload.regional}</text>
+                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                     </g>
                   );
                 }} />
