@@ -720,13 +720,25 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
   const avgTratDias = useMemo(() => chartScatterTrat.length ? +(chartScatterTrat.reduce((s, d) => s + d.dias, 0) / chartScatterTrat.length).toFixed(1) : 4.5, [chartScatterTrat]);
 
   // Dynamic axis domains with 10% padding
+  // Round to nice numbers for even tick spacing
+  const niceNum = (v: number, ceil: boolean) => {
+    const mag = Math.pow(10, Math.floor(Math.log10(Math.abs(v) || 1)));
+    const step = mag >= 10000 ? 10000 : mag >= 1000 ? 1000 : mag >= 100 ? 100 : 10;
+    return ceil ? Math.ceil(v / step) * step : Math.floor(v / step) * step;
+  };
+
   const qualDomain = useMemo(() => {
     if (!chartScatterQual.length) return { xMin: 0, xMax: 280000, yMin: 70, yMax: 98 };
     const vols = chartScatterQual.map(d => d.volume);
     const quals = chartScatterQual.map(d => d.qualidade);
     const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
     const padY = (Math.max(...quals) - Math.min(...quals)) * 0.15 || 3;
-    return { xMin: Math.max(0, Math.min(...vols) - padX), xMax: Math.max(...vols) + padX, yMin: Math.floor(Math.min(...quals) - padY), yMax: Math.ceil(Math.max(...quals) + padY) };
+    return {
+      xMin: niceNum(Math.max(0, Math.min(...vols) - padX), false),
+      xMax: niceNum(Math.max(...vols) + padX, true),
+      yMin: Math.floor(Math.min(...quals) - padY),
+      yMax: Math.ceil(Math.max(...quals) + padY),
+    };
   }, [chartScatterQual]);
 
   const tratDomain = useMemo(() => {
@@ -735,7 +747,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     const dias = chartScatterTrat.map(d => d.dias);
     const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
     const padY = (Math.max(...dias) - Math.min(...dias)) * 0.2 || 1;
-    return { xMin: Math.max(0, Math.min(...vols) - padX), xMax: Math.max(...vols) + padX, yMin: Math.max(0, +(Math.min(...dias) - padY).toFixed(1)), yMax: +(Math.max(...dias) + padY).toFixed(1) };
+    return {
+      xMin: niceNum(Math.max(0, Math.min(...vols) - padX), false),
+      xMax: niceNum(Math.max(...vols) + padX, true),
+      yMin: Math.max(0, +(Math.min(...dias) - padY).toFixed(1)),
+      yMax: +(Math.max(...dias) + padY).toFixed(1),
+    };
   }, [chartScatterTrat]);
 
   return (
