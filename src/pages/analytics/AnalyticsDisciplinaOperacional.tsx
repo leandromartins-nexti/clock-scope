@@ -558,6 +558,17 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
             </button>
           ))}
         </div>
+        {/* Search */}
+        <div className="relative mb-1">
+          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={search}
+            onChange={e => handleSearchChange(e.target.value)}
+            className="w-full pl-6 pr-2 py-1 text-[11px] rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
+          />
+        </div>
         {/* Pagination - only if > 30 items */}
         {showPagination && (
           <div className="flex gap-1 mb-1 flex-wrap">
@@ -572,23 +583,12 @@ function GroupBySidebar({ items, selectedRegional, onRegionalClick, groupBy, onG
             ))}
           </div>
         )}
-        {/* Search */}
-        <div className="relative mb-2">
-          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Buscar..."
-            value={search}
-            onChange={e => handleSearchChange(e.target.value)}
-            className="w-full pl-6 pr-2 py-1 text-[11px] rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
-          />
-        </div>
-        {/* Column headers with sort */}
+        {/* Column headers with sort - aligned with list items */}
         <div className="flex items-center gap-2 px-2 mb-1">
-          <button onClick={() => toggleSort("nome")} className="flex-1 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground">
+          <button onClick={() => toggleSort("nome")} className="flex-1 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground text-left">
             Nome <ArrowUpDown size={9} className={sortBy === "nome" ? "text-[#FF5722]" : ""} />
           </button>
-          <button onClick={() => toggleSort("score")} className="flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground">
+          <button onClick={() => toggleSort("score")} className="shrink-0 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground">
             Score <ArrowUpDown size={9} className={sortBy === "score" ? "text-[#FF5722]" : ""} />
           </button>
         </div>
