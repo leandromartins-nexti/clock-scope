@@ -9,22 +9,73 @@ import {
 
 // ── Shared helpers (same as Coberturas) ──
 function ScoreGauge({ score, max = 100, label, faixa }: { score: number; max?: number; label?: string; faixa?: string }) {
-  const radius = 36;
-  const stroke = 7;
-  const cx = 50;
-  const cy = 44;
-  const circumference = Math.PI * radius;
+  const size = 110;
+  const strokeW = 10;
+  const radius = (size - strokeW) / 2;
+  const cx = size / 2;
+  const cy = size / 2;
+  const startAngle = 135;
+  const totalAngle = 270;
   const pct = Math.min(score / max, 1);
-  const progress = pct * circumference;
-  const color = max === 100
-    ? (score >= 85 ? "hsl(var(--success))" : score >= 70 ? "#FF5722" : "hsl(var(--destructive))")
-    : "#FF5722";
+  const endAngle = startAngle + totalAngle * pct;
+
+  const polarToCartesian = (a: number) => {
+    const rad = ((a - 90) * Math.PI) / 180;
+    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+  };
+  const describeArc = (start: number, end: number) => {
+    const s = polarToCartesian(start);
+    const e = polarToCartesian(end);
+    const largeArc = end - start > 180 ? 1 : 0;
+    return `M ${s.x} ${s.y} A ${radius} ${radius} 0 ${largeArc} 1 ${e.x} ${e.y}`;
+  };
+
+  const gradientId = `gauge-grad-${Math.random().toString(36).slice(2, 6)}`;
+  const isGood = score >= 85;
+  const isWarn = score >= 70 && score < 85;
+  const color1 = isGood ? "#22c55e" : isWarn ? "#f97316" : "#ef4444";
+  const color2 = isGood ? "#16a34a" : isWarn ? "#FF5722" : "#dc2626";
+  const textColor = isGood ? "#16a34a" : isWarn ? "#FF5722" : "#dc2626";
+
+  // Tick marks
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map(p => {
+    const angle = startAngle + totalAngle * p;
+    const inner = polarToCartesian(angle);
+    const outerR = radius + strokeW / 2 + 3;
+    const rad = ((angle - 90) * Math.PI) / 180;
+    return { x1: inner.x, y1: inner.y, x2: cx + outerR * Math.cos(rad), y2: cy + outerR * Math.sin(rad) };
+  });
+
   return (
-    <svg width="100" height="58" viewBox="0 0 100 58">
-      <path d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`} fill="none" stroke="#e5e7eb" strokeWidth={stroke} strokeLinecap="round" />
-      <path d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={`${progress} ${circumference}`} />
-      {label && <text x={cx} y={cy - 6} textAnchor="middle" fontSize="18" fontWeight="700" fill={color}>{label}</text>}
-      {faixa && <text x={cx} y={cy + 8} textAnchor="middle" fontSize="10" fontWeight="600" fill={color}>{faixa}</text>}
+    <svg width={size} height={size * 0.72} viewBox={`0 0 ${size} ${size * 0.82}`}>
+      <defs>
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={color1} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={color2} />
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      {/* Background track */}
+      <path d={describeArc(startAngle, startAngle + totalAngle)} fill="none" stroke="#f1f5f9" strokeWidth={strokeW} strokeLinecap="round" />
+      {/* Active arc */}
+      {pct > 0.01 && (
+        <path d={describeArc(startAngle, endAngle)} fill="none" stroke={`url(#${gradientId})`} strokeWidth={strokeW} strokeLinecap="round" filter="url(#glow)" />
+      )}
+      {/* Ticks */}
+      {ticks.map((t, i) => (
+        <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke="#cbd5e1" strokeWidth="1" />
+      ))}
+      {/* Center text */}
+      {label && <text x={cx} y={cy - 2} textAnchor="middle" fontSize="22" fontWeight="800" fill={textColor} fontFamily="system-ui">{label}</text>}
+      {faixa && (
+        <g>
+          <rect x={cx - 18} y={cy + 6} width="36" height="14" rx="7" fill={textColor} fillOpacity="0.1" />
+          <text x={cx} y={cy + 16} textAnchor="middle" fontSize="8" fontWeight="700" fill={textColor} fontFamily="system-ui">{faixa}</text>
+        </g>
+      )}
     </svg>
   );
 }
