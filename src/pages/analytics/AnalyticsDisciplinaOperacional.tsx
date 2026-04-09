@@ -517,10 +517,10 @@ function RegionalDetailModal({ regional, open, onClose }: { regional: string | n
 
         {/* Tab content */}
         <div className="flex-1 min-h-0 overflow-y-auto">
-          {activeTab === "clientes" && <ModalTable data={clientes} columns={clienteCols} searchPlaceholder="Buscar cliente..." />}
-          {activeTab === "postos" && <ModalTable data={postos} columns={postoCols} searchPlaceholder="Buscar posto..." />}
-          {activeTab === "colaboradores" && <ModalTable data={colaboradores} columns={colabCols} searchPlaceholder="Buscar colaborador..." />}
-          {activeTab === "operadores" && <ModalTable data={operadores} columns={operadorCols} searchPlaceholder="Buscar operador..." />}
+          {activeTab === "clientes" && <IndicatorTable data={clientes} columns={clienteCols} searchPlaceholder="Buscar cliente..." />}
+          {activeTab === "postos" && <IndicatorTable data={postos} columns={postoCols} searchPlaceholder="Buscar posto..." />}
+          {activeTab === "colaboradores" && <IndicatorTable data={colaboradores} columns={colabCols} searchPlaceholder="Buscar colaborador..." />}
+          {activeTab === "operadores" && <IndicatorTable data={operadores} columns={operadorCols} searchPlaceholder="Buscar operador..." />}
         </div>
       </DialogContent>
     </Dialog>
