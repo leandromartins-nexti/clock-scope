@@ -1,10 +1,35 @@
-import { Info, TrendingUp, TrendingDown, Minus, ArrowUp } from "lucide-react";
+import { Info, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { coberturas } from "@/lib/analytics-mock-data";
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip as RechartsTooltip, Legend, PieChart, Pie, Cell,
 } from "recharts";
+
+// ── Gauge semicircular (identical to Resumo Executivo) ──────
+function ScoreGauge({ score }: { score: number }) {
+  const radius = 36;
+  const stroke = 7;
+  const cx = 45;
+  const cy = 42;
+  const circumference = Math.PI * radius;
+  const progress = (score / 100) * circumference;
+  const color = score >= 85 ? "hsl(var(--success))" : score >= 70 ? "#FF5722" : "hsl(var(--destructive))";
+
+  return (
+    <svg width="90" height="50" viewBox="0 0 90 50">
+      <path
+        d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`}
+        fill="none" stroke="#e5e7eb" strokeWidth={stroke} strokeLinecap="round"
+      />
+      <path
+        d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`}
+        fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round"
+        strokeDasharray={`${progress} ${circumference}`}
+      />
+    </svg>
+  );
+}
 
 function InfoTip({ text }: { text: string }) {
   return (
@@ -21,49 +46,54 @@ function TrendIcon({ t }: { t: string }) {
   return <Minus size={14} className="text-gray-400" />;
 }
 
-function KPI({ title, value, color, tip }: { title: string; value: string | number; color?: string; tip: string }) {
-  return (
-    <div className="bg-card border border-border/50 rounded-xl p-4">
-      <div className="flex justify-between items-start">
-        <p className="text-[11px] font-medium text-muted-foreground">{title}</p>
-        <InfoTip text={tip} />
-      </div>
-      <p className={`text-2xl font-bold mt-1 ${color || "text-foreground"}`}>{value}</p>
-    </div>
-  );
-}
-
-const scoreColor = (s: number) => s >= 80 ? "text-green-600" : s >= 70 ? "text-orange-500" : "text-red-600";
-const scoreBg = (s: number) => s >= 80 ? "bg-green-50" : s >= 70 ? "bg-orange-50" : "bg-red-50";
-const scoreLabel = (s: number) => s >= 80 ? "Bom" : s >= 70 ? "Atenção" : "Crítico";
-
+const getScoreColor = (s: number) => s >= 85 ? "text-green-600" : s >= 70 ? "text-orange-500" : s < 60 ? "text-red-600" : "text-yellow-600";
 const regularColor = (v: number) => v > 50 ? "text-green-600" : v >= 35 ? "text-orange-500" : "text-red-600";
 const heColor = (v: number) => v > 30 ? "text-red-600" : v >= 20 ? "text-orange-500" : "text-green-600";
 
 export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded?: boolean }) {
   const { kpis, distribuicaoTipoEvento, evolucao, regionais } = coberturas;
+  const scoreColor = getScoreColor(coberturas.scoreEficiencia);
+  const scoreFaixa = coberturas.scoreEficiencia >= 80 ? "Bom" : coberturas.scoreEficiencia >= 70 ? "Atenção" : "Crítico";
 
   const content = (
-    <div className="px-6 py-4 space-y-4">
-      {/* Linha 1 — Score + 2 KPIs */}
-      <div className="flex items-stretch gap-3">
-        <div className={`flex items-center gap-3 rounded-xl border border-border/50 px-5 py-3 ${scoreBg(coberturas.scoreEficiencia)}`}>
-          <span className={`text-4xl font-bold ${scoreColor(coberturas.scoreEficiencia)}`}>{coberturas.scoreEficiencia}</span>
-          <div className="flex flex-col">
-            <span className="text-xs font-semibold text-muted-foreground">Score Cobertura</span>
-            <span className={`text-xs font-bold ${scoreColor(coberturas.scoreEficiencia)}`}>{scoreLabel(coberturas.scoreEficiencia)}</span>
-            <span className="text-[10px] text-green-600 flex items-center gap-0.5 mt-0.5">
-              <ArrowUp size={10} /> +{coberturas.scoreDiferenca} vs anterior
-            </span>
+    <div className="px-6 py-4 space-y-3">
+      {/* ═══ Linha 1: Score Compacto + 2 KPI Cards (mesmo layout do Resumo Executivo) ═══ */}
+      <div className="grid grid-cols-3 gap-3">
+        {/* Score Cobertura — identical structure to Resumo Executivo */}
+        <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
+          <div className="flex items-center gap-1 mb-1">
+            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Score Cobertura</p>
+            <InfoTip text="Índice de eficiência de cobertura calculado a partir de: taxa de ausências cobertas, tipo de evento gerado na apuração, tempo médio de reposição e dias de posto descoberto." />
+          </div>
+          <ScoreGauge score={coberturas.scoreEficiencia} />
+          <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{coberturas.scoreEficiencia}</p>
+          <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
+          <div className="flex items-center justify-center gap-1 mt-1">
+            <TrendingUp size={12} className="text-green-500" />
+            <span className="text-[11px] font-medium text-green-600">+{coberturas.scoreDiferenca} vs anterior</span>
           </div>
         </div>
-        <div className="flex-1 grid grid-cols-2 gap-3">
-          <KPI title="Ausências Cobertas" value={`${kpis.ausenciasCobertas}%`} color={kpis.ausenciasCobertas >= 75 ? "text-green-600" : "text-yellow-600"} tip="Percentual das ausências que foram cobertas por algum tipo de reposição." />
-          <KPI title="Coberturas com HE" value={`${kpis.coberturasComHE}%`} color="text-red-600" tip="Percentual das coberturas que geraram eventos de hora extra na apuração." />
+
+        {/* Ausências Cobertas */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <p className="text-[11px] font-medium text-muted-foreground">Ausências Cobertas</p>
+            <InfoTip text="Percentual das ausências que foram cobertas por algum tipo de reposição." />
+          </div>
+          <p className={`text-2xl font-bold mt-2 ${kpis.ausenciasCobertas >= 75 ? "text-green-600" : "text-yellow-600"}`}>{kpis.ausenciasCobertas}%</p>
+        </div>
+
+        {/* Coberturas com HE */}
+        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+          <div className="flex justify-between items-start">
+            <p className="text-[11px] font-medium text-muted-foreground">Coberturas com HE</p>
+            <InfoTip text="Percentual das coberturas que geraram eventos de hora extra na apuração." />
+          </div>
+          <p className="text-2xl font-bold mt-2 text-red-600">{kpis.coberturasComHE}%</p>
         </div>
       </div>
 
-      {/* Linha 2 — Donut + AreaChart lado a lado */}
+      {/* ═══ Linha 2: Donut + AreaChart lado a lado ═══ */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-card border border-border/50 rounded-xl p-4">
           <div className="flex items-center gap-1.5 mb-2">
@@ -100,7 +130,7 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
         </div>
       </div>
 
-      {/* Linha 3 — Tabela regional com horas */}
+      {/* ═══ Linha 3: Tabela regional com horas ═══ */}
       <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-muted/30">
