@@ -249,10 +249,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
             <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Qualidade do Ponto</p>
             <InfoTip text="Percentual de marcações registradas corretamente vs total de marcações que exigiram intervenção (justificativas manuais)." />
           </div>
-          <ScoreGauge score={activeData.score} />
-          <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.score}%</p>
-          <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
-          <div className="flex items-center justify-center gap-1 mt-1">
+          <ScoreGauge score={activeData.score} label={`${activeData.score}%`} faixa={scoreFaixa} />
+          <div className="flex items-center justify-center gap-1 -mt-1">
             <TrendingUp size={12} className="text-green-500" />
             <span className="text-[11px] font-medium text-green-600">{activeData.diff} vs anterior</span>
           </div>
