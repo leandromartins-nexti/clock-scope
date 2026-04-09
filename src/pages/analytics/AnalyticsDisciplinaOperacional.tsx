@@ -66,11 +66,36 @@ const qualidadeRegionais = [
 ];
 
 const scatterQualidade = [
-  { regional: "Regional SP", volume: 268000, qualidade: 89.2, headcount: 2800 },
-  { regional: "Regional RJ", volume: 189000, qualidade: 86.8, headcount: 1900 },
-  { regional: "Regional MG", volume: 152000, qualidade: 88.1, headcount: 1400 },
-  { regional: "Regional PR", volume: 138000, qualidade: 87.5, headcount: 1100 },
-  { regional: "Regional BA", volume: 145000, qualidade: 82.4, headcount: 800 },
+  { regional: "Novo Hamburgo", volume: 268000, qualidade: 89.2, headcount: 2800 },
+  { regional: "Ribeirão Preto", volume: 189000, qualidade: 86.8, headcount: 1900 },
+  { regional: "Administração - Sede 2", volume: 152000, qualidade: 88.1, headcount: 1400 },
+  { regional: "RHO", volume: 138000, qualidade: 87.5, headcount: 1100 },
+  { regional: "Xangri-La", volume: 145000, qualidade: 82.4, headcount: 800 },
+  { regional: "São José do Rio Preto", volume: 220000, qualidade: 90.1, headcount: 2200 },
+  { regional: "Palmas", volume: 95000, qualidade: 84.5, headcount: 650 },
+  { regional: "Goiânia", volume: 175000, qualidade: 87.9, headcount: 1600 },
+  { regional: "Campinas", volume: 210000, qualidade: 88.5, headcount: 2100 },
+  { regional: "Novo Hamburgo 2", volume: 112000, qualidade: 85.3, headcount: 900 },
+  { regional: "Tramandaí", volume: 88000, qualidade: 83.8, headcount: 580 },
+  { regional: "Sem Região", volume: 65000, qualidade: 81.2, headcount: 420 },
+  { regional: "Tubarão", volume: 78000, qualidade: 84.1, headcount: 520 },
+  { regional: "Curitiba Sul", volume: 185000, qualidade: 88.3, headcount: 1750 },
+  { regional: "Cascavel", volume: 130000, qualidade: 86.5, headcount: 1050 },
+  { regional: "Curitiba Norte", volume: 195000, qualidade: 89.0, headcount: 1850 },
+  { regional: "Jaraguá do Sul", volume: 105000, qualidade: 85.8, headcount: 780 },
+  { regional: "Rio do Sul", volume: 72000, qualidade: 83.2, headcount: 480 },
+  { regional: "Chapecó", volume: 118000, qualidade: 86.9, headcount: 920 },
+  { regional: "Capital ACL", volume: 245000, qualidade: 89.8, headcount: 2500 },
+  { regional: "Gaspar", volume: 82000, qualidade: 84.7, headcount: 560 },
+  { regional: "Criciúma", volume: 98000, qualidade: 85.1, headcount: 710 },
+  { regional: "Lages", volume: 68000, qualidade: 82.8, headcount: 450 },
+  { regional: "Joinville", volume: 205000, qualidade: 88.7, headcount: 2050 },
+  { regional: "Blumenau", volume: 178000, qualidade: 87.6, headcount: 1650 },
+  { regional: "Brusque", volume: 92000, qualidade: 85.5, headcount: 630 },
+  { regional: "Itajaí", volume: 155000, qualidade: 87.2, headcount: 1350 },
+  { regional: "Capital SEG", volume: 235000, qualidade: 89.5, headcount: 2400 },
+  { regional: "Administração - Sede", volume: 142000, qualidade: 86.2, headcount: 1200 },
+  { regional: "Unidade de Negócios", volume: 110000, qualidade: 84.0, headcount: 850 },
 ];
 
 const evolucaoTratativa = [
@@ -82,11 +107,36 @@ const evolucaoTratativa = [
 const tratativaMedia = evolucaoTratativa.reduce((s, d) => s + d.dias, 0) / evolucaoTratativa.length;
 
 const scatterTratativa = [
-  { regional: "Regional SP", volume: 268000, dias: 4.2, headcount: 2800 },
-  { regional: "Regional RJ", volume: 189000, dias: 6.8, headcount: 1900 },
-  { regional: "Regional MG", volume: 152000, dias: 5.5, headcount: 1400 },
-  { regional: "Regional PR", volume: 138000, dias: 7.1, headcount: 1100 },
-  { regional: "Regional BA", volume: 145000, dias: 8.3, headcount: 800 },
+  { regional: "Novo Hamburgo", volume: 268000, dias: 4.2, headcount: 2800 },
+  { regional: "Ribeirão Preto", volume: 189000, dias: 6.8, headcount: 1900 },
+  { regional: "Administração - Sede 2", volume: 152000, dias: 5.5, headcount: 1400 },
+  { regional: "RHO", volume: 138000, dias: 7.1, headcount: 1100 },
+  { regional: "Xangri-La", volume: 145000, dias: 8.3, headcount: 800 },
+  { regional: "São José do Rio Preto", volume: 220000, dias: 3.8, headcount: 2200 },
+  { regional: "Palmas", volume: 95000, dias: 7.8, headcount: 650 },
+  { regional: "Goiânia", volume: 175000, dias: 5.9, headcount: 1600 },
+  { regional: "Campinas", volume: 210000, dias: 4.5, headcount: 2100 },
+  { regional: "Novo Hamburgo 2", volume: 112000, dias: 6.5, headcount: 900 },
+  { regional: "Tramandaí", volume: 88000, dias: 7.5, headcount: 580 },
+  { regional: "Sem Região", volume: 65000, dias: 9.1, headcount: 420 },
+  { regional: "Tubarão", volume: 78000, dias: 7.2, headcount: 520 },
+  { regional: "Curitiba Sul", volume: 185000, dias: 5.1, headcount: 1750 },
+  { regional: "Cascavel", volume: 130000, dias: 6.2, headcount: 1050 },
+  { regional: "Curitiba Norte", volume: 195000, dias: 4.8, headcount: 1850 },
+  { regional: "Jaraguá do Sul", volume: 105000, dias: 6.8, headcount: 780 },
+  { regional: "Rio do Sul", volume: 72000, dias: 8.0, headcount: 480 },
+  { regional: "Chapecó", volume: 118000, dias: 6.0, headcount: 920 },
+  { regional: "Capital ACL", volume: 245000, dias: 3.5, headcount: 2500 },
+  { regional: "Gaspar", volume: 82000, dias: 7.3, headcount: 560 },
+  { regional: "Criciúma", volume: 98000, dias: 6.9, headcount: 710 },
+  { regional: "Lages", volume: 68000, dias: 8.5, headcount: 450 },
+  { regional: "Joinville", volume: 205000, dias: 4.3, headcount: 2050 },
+  { regional: "Blumenau", volume: 178000, dias: 5.6, headcount: 1650 },
+  { regional: "Brusque", volume: 92000, dias: 6.7, headcount: 630 },
+  { regional: "Itajaí", volume: 155000, dias: 5.8, headcount: 1350 },
+  { regional: "Capital SEG", volume: 235000, dias: 3.9, headcount: 2400 },
+  { regional: "Administração - Sede", volume: 142000, dias: 6.3, headcount: 1200 },
+  { regional: "Unidade de Negócios", volume: 110000, dias: 7.0, headcount: 850 },
 ];
 
 // ── Absenteísmo ──
@@ -517,8 +567,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
                 const isSelected = !selectedRegional || selectedRegional === payload.regional;
                 return (
                   <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
-                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.2} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151" opacity={isSelected ? 1 : 0.3}>{payload.regional.replace("Regional ", "")}</text>
+                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
+                    {isSelected && <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={8} fill="#374151">{payload.regional.length > 14 ? payload.regional.slice(0, 12) + "…" : payload.regional}</text>}
                   </g>
                 );
               }} />
@@ -558,8 +608,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick }: { selectedRegio
                 const isSelected = !selectedRegional || selectedRegional === payload.regional;
                 return (
                   <g onClick={() => onRegionalClick(payload.regional)} className="cursor-pointer">
-                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.2} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                    <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fill="#374151" opacity={isSelected ? 1 : 0.3}>{payload.regional.replace("Regional ", "")}</text>
+                    <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
+                    {isSelected && <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={8} fill="#374151">{payload.regional.length > 14 ? payload.regional.slice(0, 12) + "…" : payload.regional}</text>}
                   </g>
                 );
               }} />
