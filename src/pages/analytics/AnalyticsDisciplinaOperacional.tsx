@@ -720,11 +720,18 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
   const avgTratDias = useMemo(() => chartScatterTrat.length ? +(chartScatterTrat.reduce((s, d) => s + d.dias, 0) / chartScatterTrat.length).toFixed(1) : 4.5, [chartScatterTrat]);
 
   // Dynamic axis domains with 10% padding
-  // Round to nice numbers for even tick spacing
-  const niceNum = (v: number, ceil: boolean) => {
-    const mag = Math.pow(10, Math.floor(Math.log10(Math.abs(v) || 1)));
-    const step = mag >= 10000 ? 10000 : mag >= 1000 ? 1000 : mag >= 100 ? 100 : 10;
-    return ceil ? Math.ceil(v / step) * step : Math.floor(v / step) * step;
+  // Build nice axis domain: ensures (max - min) is divisible by (tickCount-1) for even spacing
+  const TICK_COUNT = 7;
+  const niceAxis = (rawMin: number, rawMax: number) => {
+    const range = rawMax - rawMin || 1;
+    // Pick a step that's a nice round number
+    const rawStep = range / (TICK_COUNT - 1);
+    const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const candidates = [1, 2, 2.5, 5, 10].map(m => m * magnitude);
+    const step = candidates.find(s => s >= rawStep) || candidates[candidates.length - 1];
+    const nMin = Math.floor(rawMin / step) * step;
+    const nMax = nMin + step * (TICK_COUNT - 1);
+    return { min: Math.max(0, nMin), max: nMax >= rawMax ? nMax : nMin + step * TICK_COUNT };
   };
 
   const qualDomain = useMemo(() => {
@@ -733,9 +740,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     const quals = chartScatterQual.map(d => d.qualidade);
     const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
     const padY = (Math.max(...quals) - Math.min(...quals)) * 0.15 || 3;
+    const x = niceAxis(Math.max(0, Math.min(...vols) - padX), Math.max(...vols) + padX);
     return {
-      xMin: niceNum(Math.max(0, Math.min(...vols) - padX), false),
-      xMax: niceNum(Math.max(...vols) + padX, true),
+      xMin: x.min, xMax: x.max,
       yMin: Math.floor(Math.min(...quals) - padY),
       yMax: Math.ceil(Math.max(...quals) + padY),
     };
@@ -747,9 +754,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, groupBy, onGroupB
     const dias = chartScatterTrat.map(d => d.dias);
     const padX = (Math.max(...vols) - Math.min(...vols)) * 0.15 || 15000;
     const padY = (Math.max(...dias) - Math.min(...dias)) * 0.2 || 1;
+    const x = niceAxis(Math.max(0, Math.min(...vols) - padX), Math.max(...vols) + padX);
     return {
-      xMin: niceNum(Math.max(0, Math.min(...vols) - padX), false),
-      xMax: niceNum(Math.max(...vols) + padX, true),
+      xMin: x.min, xMax: x.max,
       yMin: Math.max(0, +(Math.min(...dias) - padY).toFixed(1)),
       yMax: +(Math.max(...dias) + padY).toFixed(1),
     };
