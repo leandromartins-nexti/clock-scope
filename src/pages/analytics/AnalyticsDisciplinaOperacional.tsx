@@ -641,9 +641,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   const padDomain = (min: number, max: number, clampZero = false) => {
     const range = max - min || 1;
-    const padded = { min: min - range * 0.1, max: max + range * 0.1 };
-    if (clampZero && padded.min < 0) padded.min = 0;
-    return padded;
+    const paddedMin = clampZero ? Math.max(0, Math.floor(min - range * 0.1)) : Math.floor(min - range * 0.1);
+    const paddedMax = Math.ceil(max + range * 0.1);
+    return { min: paddedMin, max: paddedMax };
   };
 
   const qualDomain = useMemo(() => {
