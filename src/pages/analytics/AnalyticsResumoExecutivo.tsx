@@ -98,6 +98,7 @@ const resumoGroupData: Record<string, { nome: string; score: number }[]> = {
 // ── Main Page ───────────────────────────────────────────────
 export default function AnalyticsResumoExecutivo() {
   const navigate = useNavigate();
+  const { config: scoreConfig } = useScoreConfig();
   const [filterOpen, setFilterOpen] = useState(false);
   const [rating, setRating] = useState<number | null>(null);
   const [feedbackComment, setFeedbackComment] = useState("");
@@ -111,6 +112,32 @@ export default function AnalyticsResumoExecutivo() {
 
   const regionalData = selectedRegional ? dadosPorRegional[selectedRegional] : null;
 
+  // Build real Qualidade do Ponto sparkline card from JSON data
+  const qualidadeCard = useMemo(() => {
+    const kpi = getQualidadeKpiSummary(selectedRegional, groupBy as any, scoreConfig);
+    const evolucao = aggregateQualidadeEvolucao(selectedRegional, groupBy as any);
+    const evolucaoFormatted = evolucao.map(e => ({ competencia: e.mes, valor: +e.value.toFixed(1) }));
+    const first = evolucaoFormatted[0]?.valor ?? 0;
+    const last = evolucaoFormatted[evolucaoFormatted.length - 1]?.valor ?? 0;
+    const diff = +(last - first).toFixed(1);
+    const variacao = diff >= 0 ? `+${diff} pp` : `${diff} pp`;
+    const corVariacao = diff >= 0 ? "text-green-600" : "text-red-600";
+    const scoreClassif = getScoreClassification(kpi.score, scoreConfig);
+    return {
+      label: "Qualidade do Ponto",
+      valor: `${kpi.qualidadePct}%`,
+      variacao,
+      corVariacao,
+      corLinha: getLineColor(kpi.score),
+      score: kpi.score,
+      peso: 0.25,
+      evolucao: evolucaoFormatted,
+    };
+  }, [selectedRegional, groupBy, scoreConfig]);
+
+  // Combine real qualidade + mock others
+  const sparklineCards = useMemo(() => [qualidadeCard, ...mockSparklineCards], [qualidadeCard]);
+
   const activeScore = regionalData?.scoreOperacional ?? resumo.scoreOperacional;
   const activeFaixa = regionalData?.scoreFaixa ?? resumo.scoreFaixa;
   const activeDiff = regionalData?.scoreDiferenca ?? resumoComparativo.scoreDiferenca;
@@ -122,6 +149,8 @@ export default function AnalyticsResumoExecutivo() {
     return sparklineCards.map((card) => {
       const mult = regionalData.sparklineMultipliers[card.label];
       if (!mult) return card;
+      // For qualidade, the card is already filtered by selectedRegional, skip multiplier
+      if (card.label === "Qualidade do Ponto") return card;
       return {
         ...card,
         score: mult.scoreOverride,
@@ -133,7 +162,7 @@ export default function AnalyticsResumoExecutivo() {
         })),
       };
     });
-  }, [selectedRegional]);
+  }, [selectedRegional, sparklineCards]);
 
   const handleFeedbackSubmit = () => {
     console.log({ page: "resumo_executivo", rating, comment: feedbackComment, timestamp: Date.now() });
