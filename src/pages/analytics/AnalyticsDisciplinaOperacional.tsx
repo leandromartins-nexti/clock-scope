@@ -549,11 +549,17 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const [tratChartMode, setTratChartMode] = useState<ChartMode>("area");
   const [tratDataMode, setTratDataMode] = useState<DataMode>("percent");
 
-  const activeData = useMemo(() => {
-    return getQualidadeKpiSummary(selectedRegional, groupBy as any, scoreConfig);
-  }, [selectedRegional, groupBy, scoreConfig]);
-
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
+
+  const mesLabelToReferenceMonth = useMemo(() => new Map(ajustesMeses.map((month) => [formatMesLabel(month), month])), []);
+  const selectedReferenceMonth = useMemo(
+    () => (selectedMes ? mesLabelToReferenceMonth.get(selectedMes) ?? null : null),
+    [mesLabelToReferenceMonth, selectedMes]
+  );
+
+  const activeData = useMemo(() => {
+    return getQualidadeKpiSummary(selectedRegional, groupBy as any, scoreConfig, selectedReferenceMonth);
+  }, [selectedRegional, groupBy, scoreConfig, selectedReferenceMonth]);
 
   const qualidadeEvolucaoReal = useMemo(
     () => aggregateQualidadeEvolucao(selectedRegional, groupBy as any),
@@ -578,11 +584,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   );
   const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
-  const mesLabelToReferenceMonth = useMemo(() => new Map(ajustesMeses.map((month) => [formatMesLabel(month), month])), []);
-  const selectedReferenceMonth = useMemo(
-    () => (selectedMes ? mesLabelToReferenceMonth.get(selectedMes) ?? null : null),
-    [mesLabelToReferenceMonth, selectedMes]
-  );
+
+
   
   const scoreClassif = getScoreClassification(activeData.score, scoreConfig);
   const scoreColor = scoreClassif.text;

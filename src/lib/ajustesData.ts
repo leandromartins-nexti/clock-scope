@@ -805,7 +805,8 @@ function formatKpiValue(n: number): string {
 export function getQualidadeKpiSummary(
   selectedName: string | null,
   groupBy: "empresa" | "unidade" | "area" = "empresa",
-  scoreConfig?: { weight_quality: number; weight_treatment: number; grade_under_1d: number; grade_1_3d: number; grade_3_7d: number; grade_7_15d: number; grade_over_15d: number }
+  scoreConfig?: { weight_quality: number; weight_treatment: number; grade_under_1d: number; grade_1_3d: number; grade_3_7d: number; grade_7_15d: number; grade_over_15d: number },
+  selectedMonth?: string | null
 ): {
   score: number;
   diff: string;
@@ -832,22 +833,27 @@ export function getQualidadeKpiSummary(
   }
 
   // Composicao data for treatment score per entity
-  type CRow = { name: string; f1: number; f2: number; f3: number; f4: number; f5: number };
+  type CRow = { name: string; reference_month: string; f1: number; f2: number; f3: number; f4: number; f5: number };
   let cRows: CRow[];
   if (groupBy === "unidade") {
-    cRows = composicaoUnidadeData.map(r => ({ name: r.company_name, f1: r.faixa_ate_1_dia, f2: r.faixa_1_3_dias, f3: r.faixa_3_7_dias, f4: r.faixa_7_15_dias, f5: r.faixa_mais_15_dias }));
+    cRows = composicaoUnidadeData.map(r => ({ name: r.company_name, reference_month: r.reference_month, f1: r.faixa_ate_1_dia, f2: r.faixa_1_3_dias, f3: r.faixa_3_7_dias, f4: r.faixa_7_15_dias, f5: r.faixa_mais_15_dias }));
   } else if (groupBy === "area") {
-    cRows = composicaoAreaData.map(r => ({ name: r.company_name, f1: r.faixa_ate_1_dia, f2: r.faixa_1_3_dias, f3: r.faixa_3_7_dias, f4: r.faixa_7_15_dias, f5: r.faixa_mais_15_dias }));
+    cRows = composicaoAreaData.map(r => ({ name: r.company_name, reference_month: r.reference_month, f1: r.faixa_ate_1_dia, f2: r.faixa_1_3_dias, f3: r.faixa_3_7_dias, f4: r.faixa_7_15_dias, f5: r.faixa_mais_15_dias }));
   } else {
-    cRows = composicaoEmpresaData.map(r => ({ name: r.company_name, f1: r.faixa_ate_1_dia, f2: r.faixa_1_3_dias, f3: r.faixa_3_7_dias, f4: r.faixa_7_15_dias, f5: r.faixa_mais_15_dias }));
+    cRows = composicaoEmpresaData.map(r => ({ name: r.company_name, reference_month: r.reference_month, f1: r.faixa_ate_1_dia, f2: r.faixa_1_3_dias, f3: r.faixa_3_7_dias, f4: r.faixa_7_15_dias, f5: r.faixa_mais_15_dias }));
   }
 
   // Ajustes data for tempo medio
   const ajustesSource = groupBy === "unidade" ? ajustesUnidadeData : groupBy === "area" ? ajustesAreaData : ajustesEmpresaData;
-  const filteredAjustes = selectedName ? ajustesSource.filter(r => r.business_unit_name === selectedName) : ajustesSource;
 
-  const filtered = selectedName ? rows.filter(r => r.name === selectedName) : rows;
-  const filteredC = selectedName ? cRows.filter(r => r.name === selectedName) : cRows;
+  // Apply month filter
+  const monthFilterRows = selectedMonth ? rows.filter(r => r.reference_month === selectedMonth) : rows;
+  const monthFilterCRows = selectedMonth ? cRows.filter(r => r.reference_month === selectedMonth) : cRows;
+  const monthFilterAjustes = selectedMonth ? ajustesSource.filter(r => r.reference_month === selectedMonth) : ajustesSource;
+
+  const filteredAjustes = selectedName ? monthFilterAjustes.filter(r => r.business_unit_name === selectedName) : monthFilterAjustes;
+  const filtered = selectedName ? monthFilterRows.filter(r => r.name === selectedName) : monthFilterRows;
+  const filteredC = selectedName ? monthFilterCRows.filter(r => r.name === selectedName) : monthFilterCRows;
 
   // Totals
   let totalReg = 0, totalJust = 0, totalMarcacoes = 0, qualWeighted = 0;
