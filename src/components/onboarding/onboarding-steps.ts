@@ -19,6 +19,8 @@ export interface OnboardingStep {
   nextLabel?: string;
   /** If true, show a visual arrow pointing left (for iframe context where sidebar is external) */
   showLeftArrow?: boolean;
+  /** Route to navigate to before showing this step */
+  route?: string;
 }
 
 export const onboardingSteps: OnboardingStep[] = [
@@ -78,6 +80,7 @@ export const onboardingSteps: OnboardingStep[] = [
       "Clique com o botão esquerdo em qualquer ponto, barra ou área de um gráfico para filtrar a página inteira por aquele recorte. Por exemplo, clique num mês para ver apenas aquele período.",
     target: "[data-onboarding='chart-evolucao']",
     tooltipPosition: "right",
+    route: "/analytics/operacional",
   },
   {
     id: "right-click",
@@ -87,6 +90,7 @@ export const onboardingSteps: OnboardingStep[] = [
       "Clique com o botão direito em qualquer elemento do gráfico para abrir um modal com análise detalhada, drill-down por operação e ações disponíveis.",
     target: "[data-onboarding='chart-evolucao']",
     tooltipPosition: "right",
+    route: "/analytics/operacional",
   },
   {
     id: "toggle-percent",
@@ -96,6 +100,7 @@ export const onboardingSteps: OnboardingStep[] = [
       "Alterne entre percentual (%) e valores absolutos (#) conforme a pergunta que você quer responder. Perfeito para comparar composição vs volume.",
     target: "[data-onboarding='chart-toggle']",
     tooltipPosition: "bottom",
+    route: "/analytics/operacional",
   },
   {
     id: "chart-type",
@@ -105,6 +110,7 @@ export const onboardingSteps: OnboardingStep[] = [
       "O mesmo dado pode ser visto como linha (para tendências), barra (para comparações) ou área (para composição acumulada). Experimente para encontrar o melhor para cada análise.",
     target: "[data-onboarding='chart-mode']",
     tooltipPosition: "bottom",
+    route: "/analytics/operacional",
   },
   {
     id: "feedback",
