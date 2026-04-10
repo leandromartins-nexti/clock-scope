@@ -849,14 +849,20 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     <RechartsTooltip content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
                       const val = payload[0]?.value as number ?? 0;
+                      const detRow = qualidadeDetalhado.find(d => d.mes === label);
+                      const total = detRow ? detRow.registradas + detRow.justificadas : 0;
                       return (
                         <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                           <p className="font-semibold text-foreground">{label}</p>
-                          {[{ name: "Registradas", value: val, color: "#22c55e" }, { name: "Justificadas", value: +(100 - val).toFixed(1), color: "#ef4444" }].map(f => (
+                          {total > 0 && <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>}
+                          {[
+                            { name: "Registradas", pct: val, count: detRow?.registradas ?? 0, color: "#22c55e" },
+                            { name: "Justificadas", pct: +(100 - val).toFixed(2), count: detRow?.justificadas ?? 0, color: "#ef4444" },
+                          ].map(f => (
                             <div key={f.name} className="flex items-center gap-1.5">
                               <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
                               <span className="text-muted-foreground">{f.name}:</span>
-                              <span className="font-medium text-foreground">{f.value}%</span>
+                              <span className="font-medium text-foreground">{total > 0 ? `${f.pct}% (${f.count.toLocaleString("pt-BR")})` : `${f.pct}%`}</span>
                             </div>
                           ))}
                         </div>
