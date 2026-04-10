@@ -34,7 +34,7 @@ export default function ChartModeToggle({
   return (
     <div className="flex items-center gap-1.5">
       {showDataToggle && (
-        <div className="flex gap-0.5 bg-muted/50 rounded-lg p-0.5">
+        <div data-onboarding="chart-toggle" className="flex gap-0.5 bg-muted/50 rounded-lg p-0.5">
           {dataModes.map(({ mode, icon: Icon, tip }) => (
             <button
               key={mode}
@@ -52,7 +52,7 @@ export default function ChartModeToggle({
         </div>
       )}
       {showChartToggle && (
-        <div className="flex gap-0.5 bg-muted/50 rounded-lg p-0.5">
+        <div data-onboarding="chart-mode" className="flex gap-0.5 bg-muted/50 rounded-lg p-0.5">
           {chartModes.map(({ mode, icon: Icon, tip }) => (
             <button
               key={mode}
