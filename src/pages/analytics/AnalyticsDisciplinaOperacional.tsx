@@ -8,7 +8,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine,
   ScatterChart, Scatter, ZAxis,
 } from "recharts";
-import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas } from "@/lib/ajustesData";
+import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas } from "@/lib/ajustesData";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
@@ -28,24 +28,12 @@ function abreviar(nome: string): string {
 // ── Re-export GroupBy from shared component ──
 import GroupBySidebar, { type GroupBy, groupByOptions } from "@/components/analytics/GroupBySidebar";
 
-// ── Empresa mock data ──
-const empresaData = [
-  { nome: "G5 SOCIEDADE DE CREDITO DIRETO S.A", qualidade: 91.2, score: 91 },
-  { nome: "AGREGA SERVIÇOS", qualidade: 89.5, score: 90 },
-  { nome: "4B2G SISTEMAS", qualidade: 88.8, score: 89 },
-  { nome: "BRK", qualidade: 87.6, score: 88 },
-  { nome: "CONDOMINIO MORADA DO BOSQUE", qualidade: 86.9, score: 87 },
-  { nome: "RHO - TESTE", qualidade: 86.2, score: 86 },
-  { nome: "Edifício Vogue", qualidade: 85.5, score: 86 },
-  { nome: "ORSEGUPS COMERCIO", qualidade: 84.8, score: 85 },
-  { nome: "Victória da Paz", qualidade: 84.1, score: 84 },
-  { nome: "Rio Oregon", qualidade: 83.4, score: 83 },
-  { nome: "VERZANI & SANDRINI", qualidade: 72.3, score: 72 },
-  { nome: "JCC SEGURANÇA", qualidade: 68.5, score: 69 },
-  { nome: "SERVIS SEGURANÇA", qualidade: 61.2, score: 61 },
-  { nome: "GLOBAL SEGURANÇA", qualidade: 55.8, score: 56 },
-  { nome: "NEXTI DEMONSTRAÇÃO", qualidade: 48.3, score: 48 },
-].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
+// ── Empresa data from real JSON entities ──
+const empresaData = ajustesEmpresas.map((e, i) => {
+  const quals = [89.0, 82.1, 77.3];
+  const q = quals[i % quals.length];
+  return { nome: e.name, qualidade: q, score: Math.round(q), tendencia: q >= 88 ? "melhorando" : q >= 85 ? "estavel" : "piorando" };
+});
 
 // ── Área data from real JSON entities ──
 const areaData = ajustesAreas.map((a, i) => {
