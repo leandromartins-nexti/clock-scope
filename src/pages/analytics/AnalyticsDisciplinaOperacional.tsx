@@ -1080,7 +1080,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               </ScatterChart>
             </ResponsiveContainer>
           </div>
-          </div>
         </div>
         </div>
 
