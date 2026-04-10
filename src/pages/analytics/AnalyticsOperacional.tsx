@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronRight, Filter, Eraser } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo } from "@/lib/analytics-mock-data";
@@ -21,8 +21,17 @@ const tabs = [
 
 export default function AnalyticsOperacional() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("qualidade");
+
+  // Sync tab from URL query param
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam && tabs.some(t => t.id === tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const renderTab = () => {
     switch (activeTab) {

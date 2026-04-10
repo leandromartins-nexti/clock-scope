@@ -229,8 +229,21 @@ export default function AnalyticsResumoExecutivo() {
               <div className="divide-y divide-border/40">
               {filteredSparklines.map((card) => {
                 const lastIdx = card.evolucao.length - 1;
+                const indicadorRouteMap: Record<string, string> = {
+                  "Qualidade do Ponto": "/analytics/operacional",
+                  "Absenteísmo": "/analytics/operacional?tab=absenteismo",
+                  "Volume HE": "/analytics/operacional?tab=bancoHoras",
+                  "Movimentações": "/analytics/operacional?tab=movimentacoes",
+                  "Cobertura Efetiva": "/analytics/operacional?tab=coberturas",
+                };
+                const targetRoute = indicadorRouteMap[card.label];
                 return (
-                  <div key={card.label} className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/30 transition-colors">
+                  <div
+                    key={card.label}
+                    className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
+                    onClick={() => targetRoute && navigate(targetRoute)}
+                    title={`Ver detalhes de ${card.label}`}
+                  >
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: getLineColor(card.score) }} />
                     <span className="text-sm font-medium text-foreground min-w-[140px]">{card.label}</span>
                     <span className={`text-xs font-bold min-w-[45px] text-center px-1.5 py-0.5 rounded ${getScoreColor(card.score)} ${getScoreBg(card.score)}`}>{card.score}</span>
