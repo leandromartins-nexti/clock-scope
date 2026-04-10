@@ -643,45 +643,32 @@ export interface QualidadeVolumeScatterPoint {
 }
 
 /**
- * Aggregate qualidade vs volume scatter data from qualidadeEmpresaData
- * (same source as Evolução da Qualidade chart) to ensure consistency.
- * Groups by company_name, sums total_marcacoes (volume),
- * computes weighted average qualidade_percentual, and takes max headcount from qualidadeVolumeEmpresaData.
+ * Aggregate qualidade vs volume scatter data.
+ * quality_percentage = % de marcações registradas (qualidade boa).
+ * Groups by company_name, sums clocking_count (volume),
+ * computes weighted average quality_percentage, and takes max headcount.
  */
 export function aggregateQualidadeVolume(
   selectedMonth: string | null = null
 ): QualidadeVolumeScatterPoint[] {
-  // Use qualidadeEmpresaData for quality (same as Evolução da Qualidade)
-  const filteredQual = selectedMonth
-    ? qualidadeEmpresaData.filter(r => r.reference_month === selectedMonth)
-    : qualidadeEmpresaData;
-
-  // Use qualidadeVolumeEmpresaData for headcount only
-  const filteredHC = selectedMonth
+  const filtered = selectedMonth
     ? qualidadeVolumeEmpresaData.filter(r => r.reference_month === selectedMonth)
     : qualidadeVolumeEmpresaData;
 
   const map = new Map<string, { volume: number; qualWeighted: number; headcount: number }>();
 
-  for (const r of filteredQual) {
+  for (const r of filtered) {
     const existing = map.get(r.company_name);
     if (existing) {
-      existing.qualWeighted += r.qualidade_percentual * r.total_marcacoes;
-      existing.volume += r.total_marcacoes;
+      existing.qualWeighted += r.quality_percentage * r.clocking_count;
+      existing.volume += r.clocking_count;
+      existing.headcount = Math.max(existing.headcount, r.headcount);
     } else {
       map.set(r.company_name, {
-        volume: r.total_marcacoes,
-        qualWeighted: r.qualidade_percentual * r.total_marcacoes,
-        headcount: 0,
+        volume: r.clocking_count,
+        qualWeighted: r.quality_percentage * r.clocking_count,
+        headcount: r.headcount,
       });
-    }
-  }
-
-  // Fill headcount from the clocking dataset
-  for (const r of filteredHC) {
-    const existing = map.get(r.company_name);
-    if (existing) {
-      existing.headcount = Math.max(existing.headcount, r.headcount);
     }
   }
 
