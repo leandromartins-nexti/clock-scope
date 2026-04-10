@@ -671,10 +671,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         <KPIBoard title="Até 1 Dia" tooltip="Percentual dos ajustes de ponto tratados em menos de 24 horas." value={`${activeData.ate1DiaPct}%`} valueColor={ate1dColor} />
         <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · ${activeData.melhorOperacao.score >= 85 ? "Alta" : activeData.melhorOperacao.score >= 70 ? "Média" : "Baixa"}`} />
         <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
-        </div>
+      </div>
 
-        {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
-        <div className="grid grid-cols-2 gap-3">
+      {/* Linha 2: Painel GroupBy horizontal */}
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} horizontal />
+
+      {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
+      <div className="grid grid-cols-2 gap-3">
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-0.5">
               <div>
