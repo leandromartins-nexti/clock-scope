@@ -9,7 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import {
   ajustesEmpresaData, ajustesUnidadeData, ajustesAreaData,
   composicaoEmpresaData, composicaoUnidadeData, composicaoAreaData,
-  qualidadeEmpresaData, qualidadeUnidadeData,
+  qualidadeEmpresaData, qualidadeUnidadeData, qualidadeAreaData,
 } from "@/lib/ajustesData";
 import {
   resumo, evolucaoVetores, evolucaoEconomia,

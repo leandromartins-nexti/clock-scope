@@ -471,17 +471,61 @@ export const qualidadeUnidadeData: QualidadeUnidadeRecord[] = [
   { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2026-03-01", total_marcacoes: 37, registradas: 5, justificadas: 10, qualidade_percentual: 33.33 },
 ];
 
+export interface QualidadeAreaRecord {
+  area_id: number;
+  area_name: string;
+  reference_month: string;
+  total_marcacoes: number;
+  registradas: number;
+  justificadas: number;
+  qualidade_percentual: number;
+}
+
+export const qualidadeAreaData: QualidadeAreaRecord[] = [
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2025-04-01", total_marcacoes: 7727, registradas: 5255, justificadas: 1685, qualidade_percentual: 75.72 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2025-04-01", total_marcacoes: 252, registradas: 244, justificadas: 4, qualidade_percentual: 98.39 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2025-04-01", total_marcacoes: 962, registradas: 913, justificadas: 41, qualidade_percentual: 95.70 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2025-05-01", total_marcacoes: 108, registradas: 92, justificadas: 10, qualidade_percentual: 90.20 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2025-05-01", total_marcacoes: 317, registradas: 298, justificadas: 7, qualidade_percentual: 97.70 },
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2025-06-01", total_marcacoes: 2688, registradas: 1745, justificadas: 580, qualidade_percentual: 75.05 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2025-06-01", total_marcacoes: 161, registradas: 140, justificadas: 12, qualidade_percentual: 92.11 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2025-06-01", total_marcacoes: 467, registradas: 318, justificadas: 32, qualidade_percentual: 90.86 },
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2025-07-01", total_marcacoes: 2766, registradas: 1785, justificadas: 581, qualidade_percentual: 75.44 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2025-07-01", total_marcacoes: 168, registradas: 157, justificadas: 5, qualidade_percentual: 96.91 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2025-07-01", total_marcacoes: 504, registradas: 420, justificadas: 24, qualidade_percentual: 94.59 },
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2025-08-01", total_marcacoes: 5061, registradas: 3577, justificadas: 873, qualidade_percentual: 80.38 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2025-08-01", total_marcacoes: 300, registradas: 172, justificadas: 33, qualidade_percentual: 83.90 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2025-08-01", total_marcacoes: 478, registradas: 402, justificadas: 33, qualidade_percentual: 92.41 },
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2025-09-01", total_marcacoes: 3118, registradas: 1494, justificadas: 690, qualidade_percentual: 68.41 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2025-09-01", total_marcacoes: 1216, registradas: 420, justificadas: 390, qualidade_percentual: 51.85 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2025-09-01", total_marcacoes: 987, registradas: 674, justificadas: 61, qualidade_percentual: 91.70 },
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2025-10-01", total_marcacoes: 2914, registradas: 1759, justificadas: 627, qualidade_percentual: 73.72 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2025-10-01", total_marcacoes: 1813, registradas: 648, justificadas: 384, qualidade_percentual: 62.79 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2025-11-01", total_marcacoes: 518, registradas: 394, justificadas: 60, qualidade_percentual: 86.78 },
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2025-12-01", total_marcacoes: 5439, registradas: 3574, justificadas: 1067, qualidade_percentual: 77.01 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2025-12-01", total_marcacoes: 859, registradas: 615, justificadas: 34, qualidade_percentual: 94.76 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2025-12-01", total_marcacoes: 551, registradas: 457, justificadas: 32, qualidade_percentual: 93.46 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2026-01-01", total_marcacoes: 737, registradas: 616, justificadas: 26, qualidade_percentual: 95.95 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2026-01-01", total_marcacoes: 439, registradas: 367, justificadas: 31, qualidade_percentual: 92.21 },
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2026-02-01", total_marcacoes: 3265, registradas: 1899, justificadas: 540, qualidade_percentual: 77.86 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2026-02-01", total_marcacoes: 851, registradas: 827, justificadas: 3, qualidade_percentual: 99.64 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2026-02-01", total_marcacoes: 501, registradas: 387, justificadas: 24, qualidade_percentual: 94.16 },
+  { area_id: 11043, area_name: "SAO PAULO", reference_month: "2026-03-01", total_marcacoes: 44, registradas: 19, justificadas: 9, qualidade_percentual: 67.86 },
+  { area_id: 11045, area_name: "SOROCABA", reference_month: "2026-03-01", total_marcacoes: 16, registradas: 1, justificadas: 1, qualidade_percentual: 50.00 },
+  { area_id: 11046, area_name: "PIRACICABA", reference_month: "2026-03-01", total_marcacoes: 10, registradas: 5, justificadas: 1, qualidade_percentual: 83.33 },
+];
+
 /** Aggregate quality evolution by month, optionally filtering by entity name.
  *  Returns weighted average quality per month using registradas/(registradas+justificadas). */
 export function aggregateQualidadeEvolucao(selectedName: string | null, groupBy: "empresa" | "unidade" | "area" = "empresa"): { mes: string; value: number }[] {
-  // Use the appropriate source based on groupBy; normalize to common shape
   type QRow = { name: string; reference_month: string; registradas: number; justificadas: number };
   let rows: QRow[];
 
   if (groupBy === "unidade") {
     rows = qualidadeUnidadeData.map(r => ({ name: r.business_unit_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas }));
+  } else if (groupBy === "area") {
+    rows = qualidadeAreaData.map(r => ({ name: r.area_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas }));
   } else {
-    // empresa (and area falls back to empresa for now)
     rows = qualidadeEmpresaData.map(r => ({ name: r.company_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas }));
   }
 
