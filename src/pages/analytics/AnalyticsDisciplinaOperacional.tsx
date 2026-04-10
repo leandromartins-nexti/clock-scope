@@ -885,7 +885,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   </BarChart>
                 ) : tratChartMode === "area" ? (
                   <AreaChart data={tratData} onClick={tratClick}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="mes" tick={tratXTick} />
                     <YAxis tick={{ fontSize: 10 }} tickFormatter={tratYFmt} domain={tratYDomain as any} />
                     <RechartsTooltip content={tratTooltip} />
@@ -897,7 +897,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   </AreaChart>
                 ) : (
                   <LineChart data={tratData} onClick={tratClick}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="mes" tick={tratXTick} />
                     <YAxis tick={{ fontSize: 10 }} tickFormatter={tratYFmt} domain={tratYDomain as any} />
                     <RechartsTooltip content={tratTooltip} />
