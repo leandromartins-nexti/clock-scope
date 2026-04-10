@@ -478,27 +478,29 @@ export default function AnalyticsDisciplinaOperacional({ embedded }: { embedded?
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
   const content = (
-    <div className="px-6 py-4 space-y-3">
-      {/* Sub-tab toggle */}
-      <div className="flex gap-2">
-        {subTabs.map(t => (
-          <button
-            key={t.id}
-            onClick={() => { setActiveSubTab(t.id); setSelectedRegional(null); }}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-              activeSubTab === t.id
-                ? "bg-[#FF5722] text-white border-[#FF5722]"
-                : "bg-white text-muted-foreground border-border hover:border-[#FF5722]/40"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+    <div className="flex flex-1 min-h-0">
+      <div className="flex-1 min-w-0 px-6 py-4 space-y-3">
+        {/* Sub-tab toggle */}
+        <div className="flex gap-2">
+          {subTabs.map(t => (
+            <button
+              key={t.id}
+              onClick={() => { setActiveSubTab(t.id); setSelectedRegional(null); }}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                activeSubTab === t.id
+                  ? "bg-[#FF5722] text-white border-[#FF5722]"
+                  : "bg-white text-muted-foreground border-border hover:border-[#FF5722]/40"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-      {activeSubTab === "qualidade" && <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
-      {activeSubTab === "absenteismo" && <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
-      {activeSubTab === "movimentacoes" && <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+        {activeSubTab === "qualidade" && <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+        {activeSubTab === "absenteismo" && <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+        {activeSubTab === "movimentacoes" && <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+      </div>
     </div>
   );
 
