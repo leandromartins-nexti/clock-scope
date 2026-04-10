@@ -1208,7 +1208,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   const avgHE = chartScatter.reduce((s, d) => s + d.he, 0) / (chartScatter.length || 1);
 
   return (
-    <div className="flex gap-3">
+    <div className="flex">
       <div className="flex-1 min-w-0 space-y-3">
         {/* Linha 1: Score + 4 KPI Cards */}
         <div className="grid grid-cols-5 gap-3">
@@ -1406,7 +1406,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
   }, [groupBy, maxTotal]);
 
   return (
-    <div className="flex gap-3">
+    <div className="flex">
       <div className="flex-1 min-w-0 space-y-3">
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
