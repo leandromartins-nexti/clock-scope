@@ -804,70 +804,115 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             </ResponsiveContainer>
           </div>
 
-          <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Composição do Tempo de Tratativa</h4>
-              <InfoTip text="Evolução mensal da distribuição percentual por faixa de tempo. Quanto mais verde na base, melhor. Crescimento do vermelho indica piora." />
+          {(() => {
+            const showTratDetalhado = tratDataMode === "valor";
+            const FAIXAS = [
+              { key: "ate1d", name: "Até 1 dia", color: "#22c55e", rgba: "34,197,94" },
+              { key: "de1a3d", name: "1–3 dias", color: "#84cc16", rgba: "132,204,22" },
+              { key: "de3a7d", name: "3–7 dias", color: "#eab308", rgba: "234,179,8" },
+              { key: "de7a15d", name: "7–15 dias", color: "#f97316", rgba: "249,115,22" },
+              { key: "mais15d", name: "+15 dias", color: "#ef4444", rgba: "239,68,68" },
+            ];
+            const tratData = tratativaFaixasFiltrada.map(d => ({
+              mes: d.mes,
+              ate1d: showTratDetalhado ? d.ate1d : (d.ate1d / d.total) * 100,
+              de1a3d: showTratDetalhado ? d.de1a3d : (d.de1a3d / d.total) * 100,
+              de3a7d: showTratDetalhado ? d.de3a7d : (d.de3a7d / d.total) * 100,
+              de7a15d: showTratDetalhado ? d.de7a15d : (d.de7a15d / d.total) * 100,
+              mais15d: showTratDetalhado ? d.mais15d : (d.mais15d / d.total) * 100,
+              _raw: d,
+            }));
+            const tratClick = (e: any) => {
+              if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+            };
+            const tratXTick = (props: any) => {
+              const { x, y, payload } = props;
+              const isActive = selectedMes === payload.value;
+              return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+            };
+            const tratYDomain = showTratDetalhado ? undefined : [0, 100];
+            const tratYFmt = (v: number) => showTratDetalhado ? (v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`) : `${Math.round(v)}%`;
+            const tratTooltip = ({ active, payload, label }: any) => {
+              if (!active || !payload?.length) return null;
+              const raw = payload[0]?.payload?._raw;
+              if (!raw) return null;
+              return (
+                <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                  <p className="font-semibold text-foreground">{label}</p>
+                  <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{raw.total.toLocaleString("pt-BR")}</span></p>
+                  {FAIXAS.map(f => {
+                    const abs = raw[f.key as keyof typeof raw] as number;
+                    const pct = ((abs / raw.total) * 100).toFixed(0);
+                    return (
+                      <div key={f.key} className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: f.color }} />
+                        <span className="text-muted-foreground">{f.name}:</span>
+                        <span className="font-medium text-foreground">{pct}% ({abs.toLocaleString("pt-BR")})</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            };
+            return (
+            <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
+              <div className="flex items-center justify-between mb-0.5">
+                <div className="flex items-center gap-1.5">
+                  <h4 className="text-sm font-semibold">Composição do Tempo de Tratativa</h4>
+                  <InfoTip text="Evolução mensal da distribuição percentual por faixa de tempo. Quanto mais verde na base, melhor. Crescimento do vermelho indica piora." />
+                </div>
+                <ChartModeToggle
+                  dataMode={tratDataMode} onDataModeChange={setTratDataMode}
+                  chartMode={tratChartMode} onChartModeChange={setTratChartMode}
+                />
+              </div>
+              <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal da distribuição por faixa</p>
+              <ResponsiveContainer width="100%" height={250}>
+                {tratChartMode === "bar" ? (
+                  <BarChart data={tratData} onClick={tratClick} barCategoryGap="15%">
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
+                    <XAxis dataKey="mes" tick={tratXTick} />
+                    <YAxis tick={{ fontSize: 10 }} domain={tratYDomain as any} tickFormatter={tratYFmt} />
+                    <RechartsTooltip content={tratTooltip} />
+                    {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                    {FAIXAS.map((f, i) => (
+                      <Bar key={f.key} dataKey={f.key} stackId="trat" stroke={`rgba(${f.rgba},0.5)`} strokeWidth={1} radius={i === FAIXAS.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]} name={f.name}>
+                        {tratData.map((entry, idx) => (
+                          <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? `rgba(${f.rgba},0.25)` : `rgba(${f.rgba},0.65)`} />
+                        ))}
+                      </Bar>
+                    ))}
+                    <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={FAIXAS.map(f => ({ value: f.name, type: "square" as const, color: f.color }))} />
+                  </BarChart>
+                ) : tratChartMode === "area" ? (
+                  <AreaChart data={tratData} onClick={tratClick}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
+                    <XAxis dataKey="mes" tick={tratXTick} />
+                    <YAxis tick={{ fontSize: 10 }} tickFormatter={tratYFmt} domain={tratYDomain as any} />
+                    <RechartsTooltip content={tratTooltip} />
+                    {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                    {FAIXAS.map(f => (
+                      <Area key={f.key} type="monotone" dataKey={f.key} stackId="1" stroke={f.color} fill={`rgba(${f.rgba},${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name={f.name} />
+                    ))}
+                    <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
+                  </AreaChart>
+                ) : (
+                  <LineChart data={tratData} onClick={tratClick}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
+                    <XAxis dataKey="mes" tick={tratXTick} />
+                    <YAxis tick={{ fontSize: 10 }} tickFormatter={tratYFmt} domain={tratYDomain as any} />
+                    <RechartsTooltip content={tratTooltip} />
+                    {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                    {FAIXAS.map(f => (
+                      <Line key={f.key} type="monotone" dataKey={f.key} stroke={f.color} strokeWidth={2} dot={{ r: 3, fill: f.color }} name={f.name} />
+                    ))}
+                    <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
+                  </LineChart>
+                )}
+              </ResponsiveContainer>
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal da distribuição por faixa</p>
-            <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={tratativaFaixasFiltrada.map(d => ({
-                mes: d.mes,
-                ate1d: (d.ate1d / d.total) * 100,
-                de1a3d: (d.de1a3d / d.total) * 100,
-                de3a7d: (d.de3a7d / d.total) * 100,
-                de7a15d: (d.de7a15d / d.total) * 100,
-                mais15d: (d.mais15d / d.total) * 100,
-                _raw: d,
-              }))} onClick={(e: any) => {
-                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-              }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
-                <XAxis dataKey="mes" tick={(props: any) => {
-                  const { x, y, payload } = props;
-                  const isActive = selectedMes === payload.value;
-                  return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                }} />
-                <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${Math.round(v)}%`} domain={[0, 100]} />
-                <RechartsTooltip content={({ active, payload, label }) => {
-                  if (!active || !payload?.length) return null;
-                  const raw = payload[0]?.payload?._raw;
-                  if (!raw) return null;
-                  const faixas = [
-                    { name: "Até 1 dia", key: "ate1d", color: "#22c55e" },
-                    { name: "1–3 dias", key: "de1a3d", color: "#84cc16" },
-                    { name: "3–7 dias", key: "de3a7d", color: "#eab308" },
-                    { name: "7–15 dias", key: "de7a15d", color: "#f97316" },
-                    { name: "+15 dias", key: "mais15d", color: "#ef4444" },
-                  ];
-                  return (
-                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
-                      <p className="font-semibold text-foreground">{label}</p>
-                      <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{raw.total.toLocaleString("pt-BR")}</span></p>
-                      {faixas.map(f => {
-                        const abs = raw[f.key as keyof typeof raw] as number;
-                        const pct = ((abs / raw.total) * 100).toFixed(0);
-                        return (
-                          <div key={f.key} className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: f.color }} />
-                            <span className="text-muted-foreground">{f.name}:</span>
-                            <span className="font-medium text-foreground">{pct}% ({abs.toLocaleString("pt-BR")})</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                }} />
-                {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
-                <Area type="monotone" dataKey="ate1d" stackId="1" stroke="#22c55e" fill={`rgba(34,197,94,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="Até 1 dia" />
-                <Area type="monotone" dataKey="de1a3d" stackId="1" stroke="#84cc16" fill={`rgba(132,204,22,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="1–3 dias" />
-                <Area type="monotone" dataKey="de3a7d" stackId="1" stroke="#eab308" fill={`rgba(234,179,8,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="3–7 dias" />
-                <Area type="monotone" dataKey="de7a15d" stackId="1" stroke="#f97316" fill={`rgba(249,115,22,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="7–15 dias" />
-                <Area type="monotone" dataKey="mais15d" stackId="1" stroke="#ef4444" fill={`rgba(239,68,68,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="+15 dias" />
-                <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+            );
+          })()}
         </div>
 
         {/* Row 2: Scatter charts */}
