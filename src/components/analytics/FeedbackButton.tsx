@@ -34,6 +34,7 @@ export function FeedbackButton() {
   return (
     <>
       <button
+        data-onboarding="feedback-button"
         onClick={() => setOpen(true)}
         className="fixed bottom-6 right-6 z-50 bg-[#FF5722] text-white pl-4 pr-5 py-2.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-2 text-sm font-medium"
       >

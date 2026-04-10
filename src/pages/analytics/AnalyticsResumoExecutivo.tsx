@@ -206,9 +206,9 @@ export default function AnalyticsResumoExecutivo() {
 
             {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
             <div className="grid grid-cols-5 gap-3">
-              <ScoreBoard title="Score Operacional" tooltip="Índice de saúde da operação calculado a partir de 5 indicadores: qualidade do ponto, absenteísmo, volume de horas extras, movimentações e cobertura efetiva. Pesos configuráveis em Configuração.">
+              <div data-onboarding="score-operacional"><ScoreBoard title="Score Operacional" tooltip="Índice de saúde da operação calculado a partir de 5 indicadores: qualidade do ponto, absenteísmo, volume de horas extras, movimentações e cobertura efetiva. Pesos configuráveis em Configuração.">
                 <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={activeFaixa} />
-              </ScoreBoard>
+              </ScoreBoard></div>
               <KPIBoard title="Melhor Operação" tooltip="Operação com maior score operacional no período" value={resumo.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${resumo.melhorOperacao.score} · Alta`} />
               <KPIBoard title="Maior Risco" tooltip="Operação com menor score e maior concentração de risco" value={resumo.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${resumo.maiorRisco.score} · ${resumo.maiorRisco.indicador}`} />
               <KPIBoard title="Principal Melhora" tooltip="Indicador com maior evolução positiva no período" value={regionalData?.melhorIndicador ?? "Qualidade Ponto"} valueColor="text-green-600" subtitle={regionalData?.melhorIndicadorDetalhe ?? "+4.1 pp (83.2% → 87.3%)"} />
@@ -216,7 +216,7 @@ export default function AnalyticsResumoExecutivo() {
             </div>
 
             {/* ═══ Linha 2: Indicadores — lista vertical com sparklines inline ═══ */}
-            <div className="bg-card border border-border/50 rounded-xl">
+            <div className="bg-card border border-border/50 rounded-xl" data-onboarding="sparkline-table">
               {/* Header */}
               <div className="flex items-center gap-4 px-4 py-2 border-b border-border/40 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                 <div className="w-2" />

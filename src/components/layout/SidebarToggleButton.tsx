@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-export function SidebarToggleButton({ className }: { className?: string }) {
+export function SidebarToggleButton({ className, ...rest }: { className?: string } & React.HTMLAttributes<HTMLButtonElement>) {
   const { toggleSidebar, open } = useSidebar();
 
   return (
@@ -16,6 +16,7 @@ export function SidebarToggleButton({ className }: { className?: string }) {
         "h-8 w-8 rounded-full border border-orange-500 bg-white hover:!bg-white focus:!bg-white active:!bg-white",
         className
       )}
+      {...rest}
     >
       {open ? (
         <ChevronLeft className="h-4 w-4 text-orange-500" />

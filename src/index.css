@@ -100,3 +100,32 @@ Nexti Official Theme
     --sidebar-ring: 14 100% 55%;
   }
 }
+
+/* ── Onboarding Tour ── */
+@keyframes spotlight-pulse {
+  0%, 100% {
+    outline-color: rgba(255, 87, 34, 1);
+    box-shadow: 0 0 20px rgba(255, 87, 34, 0.3);
+  }
+  50% {
+    outline-color: rgba(255, 87, 34, 0.6);
+    box-shadow: 0 0 32px rgba(255, 87, 34, 0.6);
+  }
+}
+
+.spotlight-pulse {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 4px;
+  border-radius: 12px;
+  animation: spotlight-pulse 2s ease-in-out infinite;
+  transition: all var(--onboarding-duration, 350ms) ease-in-out;
+}
+
+.onboarding-backdrop-in {
+  animation: onboarding-fade-in var(--onboarding-duration, 300ms) ease-out;
+}
+
+@keyframes onboarding-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

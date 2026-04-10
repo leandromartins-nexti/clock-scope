@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { PrimeFilterProvider } from "@/contexts/PrimeFilterContext";
 import { FeedbackButton } from "@/components/analytics/FeedbackButton";
+import OnboardingTour from "@/components/onboarding/OnboardingTour";
 
 const DashboardLayout = () => {
   return (
@@ -21,6 +22,7 @@ const DashboardLayout = () => {
             </div>
           </div>
           <FeedbackButton />
+          <OnboardingTour />
         </SidebarProvider>
       </PrimeFilterProvider>
     </FilterProvider>
