@@ -3,7 +3,7 @@ import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { PrimeFilterProvider } from "@/contexts/PrimeFilterContext";
-import { FeedbackButton } from "@/components/analytics/FeedbackButton";
+import { FloatingActionMenu } from "@/components/layout/FloatingActionMenu";
 import OnboardingTour from "@/components/onboarding/OnboardingTour";
 
 const DashboardLayout = () => {
@@ -21,7 +21,7 @@ const DashboardLayout = () => {
               </main>
             </div>
           </div>
-          <FeedbackButton />
+          <FloatingActionMenu />
           <OnboardingTour />
         </SidebarProvider>
       </PrimeFilterProvider>
