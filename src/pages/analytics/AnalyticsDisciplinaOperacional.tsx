@@ -729,7 +729,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.25)" : "rgba(34,197,94,0.65)"} />
                         ))}
                       </Bar>
-                      <Bar dataKey="justificadas" stackId="qual" stroke="#ef4444" strokeWidth={1} radius={[4, 4, 0, 0]}>
+                      <Bar dataKey="justificadas" stackId="qual" stroke="rgba(239,68,68,0.5)" strokeWidth={1} radius={[4, 4, 0, 0]}>
                         {barData.map((entry, idx) => (
                           <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.25)" : "rgba(239,68,68,0.65)"} />
                         ))}
