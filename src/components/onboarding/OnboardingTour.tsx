@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { onboardingSteps } from "./onboarding-steps";
-import { Sparkles, CheckCircle2, ChevronLeft, ChevronRight, X, List } from "lucide-react";
+import { Sparkles, CheckCircle2, ChevronLeft, ChevronRight, X, List, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -523,7 +523,20 @@ export default function OnboardingTour() {
 
       {phase === "touring" && (
         <>
-          <SpotlightOverlay targetRect={step?.isModal ? null : targetRect} />
+          <SpotlightOverlay targetRect={step?.isModal || step?.showLeftArrow ? null : targetRect} />
+
+          {/* Left arrow indicator for sidebar hint */}
+          {step?.showLeftArrow && (
+            <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[10002] flex items-center animate-fade-in">
+              <div className="flex items-center gap-1 pl-4 pr-3 py-3">
+                <div className="flex items-center animate-bounce-horizontal">
+                  <ArrowLeft size={36} className="text-[#FF5722]" strokeWidth={2.5} />
+                  <ArrowLeft size={28} className="text-[#FF5722]/60 -ml-4" strokeWidth={2} />
+                  <ArrowLeft size={20} className="text-[#FF5722]/30 -ml-3" strokeWidth={1.5} />
+                </div>
+              </div>
+            </div>
+          )}
 
           {isMobile ? (
             // Mobile: bottom sheet
@@ -561,8 +574,8 @@ export default function OnboardingTour() {
               title={step.title}
               description={step.description}
               icon={step.icon}
-              position={tooltipPos}
-              arrowDir={tooltipPos.arrowDir}
+              position={step?.showLeftArrow ? { top: window.innerHeight / 2 - 140, left: 80 } : tooltipPos}
+              arrowDir={step?.showLeftArrow ? "left" : tooltipPos.arrowDir}
               onNext={handleNext}
               onPrev={handlePrev}
               onSkip={handleSkip}
