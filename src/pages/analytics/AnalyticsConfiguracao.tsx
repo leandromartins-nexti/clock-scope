@@ -9,7 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import {
   ajustesEmpresaData, ajustesUnidadeData, ajustesAreaData,
   composicaoEmpresaData, composicaoUnidadeData, composicaoAreaData,
-  qualidadeEmpresaData,
+  qualidadeEmpresaData, qualidadeUnidadeData,
 } from "@/lib/ajustesData";
 import {
   resumo, evolucaoVetores, evolucaoEconomia,
@@ -106,6 +106,7 @@ const dataRegistry: MenuEntry[] = [
           buildSource("op-qp-composicao-unidade", "Composição Tempo Tratativa — Un. Negócio", "composicaoUnidadeData", composicaoUnidadeData),
           buildSource("op-qp-composicao-area", "Composição Tempo Tratativa — Área", "composicaoAreaData", composicaoAreaData),
           buildSource("op-qp-qualidade-empresa", "Evolução Qualidade — Empresa", "qualidadeEmpresaData", qualidadeEmpresaData),
+          buildSource("op-qp-qualidade-unidade", "Evolução Qualidade — Un. Negócio", "qualidadeUnidadeData", qualidadeUnidadeData),
           buildSource("op-qp-kpis", "KPIs Qualidade", "disciplina.qualidade", [disciplina.qualidade]),
           buildSource("op-qp-evolucao", "Evolução Qualidade", "disciplina.qualidade.evolucao", disciplina.qualidade.evolucao),
           buildSource("op-qp-distribuicao", "Distribuição Marcações", "disciplina.qualidade.distribuicao", disciplina.qualidade.distribuicao),

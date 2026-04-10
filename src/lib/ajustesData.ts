@@ -428,14 +428,64 @@ export const qualidadeEmpresaData: QualidadeEmpresaRecord[] = [
   { company_id: 9381, company_name: "VIG EYES SEGURANCA PATRIMONIAL LTDA", reference_month: "2026-03-01", total_marcacoes: 8, registradas: 3, justificadas: 4, qualidade_percentual: 42.86 },
 ];
 
+export interface QualidadeUnidadeRecord {
+  business_unit_id: number;
+  business_unit_name: string;
+  reference_month: string;
+  total_marcacoes: number;
+  registradas: number;
+  justificadas: number;
+  qualidade_percentual: number;
+}
+
+export const qualidadeUnidadeData: QualidadeUnidadeRecord[] = [
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2025-04-01", total_marcacoes: 3520, registradas: 1894, justificadas: 1208, qualidade_percentual: 61.06 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2025-04-01", total_marcacoes: 14934, registradas: 12540, justificadas: 1202, qualidade_percentual: 91.25 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2025-04-01", total_marcacoes: 4441, registradas: 3658, justificadas: 321, qualidade_percentual: 91.93 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2025-05-01", total_marcacoes: 7665, registradas: 6308, justificadas: 810, qualidade_percentual: 88.62 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2025-06-01", total_marcacoes: 1117, registradas: 679, justificadas: 391, qualidade_percentual: 63.46 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2025-06-01", total_marcacoes: 8016, registradas: 6525, justificadas: 782, qualidade_percentual: 89.30 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2025-07-01", total_marcacoes: 1275, registradas: 669, justificadas: 529, qualidade_percentual: 55.84 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2025-07-01", total_marcacoes: 7872, registradas: 6575, justificadas: 549, qualidade_percentual: 92.29 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2025-07-01", total_marcacoes: 1337, registradas: 967, justificadas: 129, qualidade_percentual: 88.23 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2025-08-01", total_marcacoes: 1072, registradas: 699, justificadas: 262, qualidade_percentual: 72.74 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2025-08-01", total_marcacoes: 42314, registradas: 20581, justificadas: 11455, qualidade_percentual: 64.24 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2025-08-01", total_marcacoes: 1329, registradas: 935, justificadas: 153, qualidade_percentual: 85.94 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2025-09-01", total_marcacoes: 1192, registradas: 670, justificadas: 420, qualidade_percentual: 61.47 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2025-09-01", total_marcacoes: 52101, registradas: 30337, justificadas: 7634, qualidade_percentual: 79.90 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2025-09-01", total_marcacoes: 2627, registradas: 1661, justificadas: 324, qualidade_percentual: 83.68 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2025-10-01", total_marcacoes: 1397, registradas: 541, justificadas: 680, qualidade_percentual: 44.31 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2025-11-01", total_marcacoes: 1987, registradas: 671, justificadas: 967, qualidade_percentual: 40.96 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2025-11-01", total_marcacoes: 22457, registradas: 16419, justificadas: 1389, qualidade_percentual: 92.20 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2025-11-01", total_marcacoes: 1343, registradas: 881, justificadas: 195, qualidade_percentual: 81.88 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2025-12-01", total_marcacoes: 1603, registradas: 661, justificadas: 785, qualidade_percentual: 45.71 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2025-12-01", total_marcacoes: 22323, registradas: 15714, justificadas: 1913, qualidade_percentual: 89.15 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2025-12-01", total_marcacoes: 1331, registradas: 1020, justificadas: 89, qualidade_percentual: 91.97 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2026-01-01", total_marcacoes: 1395, registradas: 616, justificadas: 567, qualidade_percentual: 52.07 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2026-01-01", total_marcacoes: 25252, registradas: 20486, justificadas: 1477, qualidade_percentual: 93.28 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2026-01-01", total_marcacoes: 1156, registradas: 857, justificadas: 112, qualidade_percentual: 88.44 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2026-02-01", total_marcacoes: 1717, registradas: 714, justificadas: 445, qualidade_percentual: 61.60 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2026-02-01", total_marcacoes: 1384, registradas: 946, justificadas: 147, qualidade_percentual: 86.55 },
+  { business_unit_id: 17517, business_unit_name: "VIG EYES TERCEIRIZACAO", reference_month: "2026-03-01", total_marcacoes: 15, registradas: 9, justificadas: 0, qualidade_percentual: 100.00 },
+  { business_unit_id: 17518, business_unit_name: "VIG EYES PORTARIA E LIMPEZA", reference_month: "2026-03-01", total_marcacoes: 239, registradas: 42, justificadas: 95, qualidade_percentual: 30.66 },
+  { business_unit_id: 17519, business_unit_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2026-03-01", total_marcacoes: 37, registradas: 5, justificadas: 10, qualidade_percentual: 33.33 },
+];
+
 /** Aggregate quality evolution by month, optionally filtering by entity name.
  *  Returns weighted average quality per month using registradas/(registradas+justificadas). */
 export function aggregateQualidadeEvolucao(selectedName: string | null, groupBy: "empresa" | "unidade" | "area" = "empresa"): { mes: string; value: number }[] {
-  // For now only empresa data is available
-  const source = qualidadeEmpresaData;
-  const filtered = selectedName
-    ? source.filter(r => r.company_name === selectedName)
-    : source;
+  // Use the appropriate source based on groupBy; normalize to common shape
+  type QRow = { name: string; reference_month: string; registradas: number; justificadas: number };
+  let rows: QRow[];
+
+  if (groupBy === "unidade") {
+    rows = qualidadeUnidadeData.map(r => ({ name: r.business_unit_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas }));
+  } else {
+    // empresa (and area falls back to empresa for now)
+    rows = qualidadeEmpresaData.map(r => ({ name: r.company_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas }));
+  }
+
+  const filtered = selectedName ? rows.filter(r => r.name === selectedName) : rows;
 
   const byMonth = new Map<string, { reg: number; just: number }>();
 
