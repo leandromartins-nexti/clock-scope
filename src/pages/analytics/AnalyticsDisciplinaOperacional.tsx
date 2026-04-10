@@ -790,11 +790,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                   );
                 }} />
-                <Area type="monotone" dataKey="ate1d" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.85} name="Até 1 dia" />
-                <Area type="monotone" dataKey="de1a3d" stackId="1" stroke="#84cc16" fill="#84cc16" fillOpacity={0.85} name="1–3 dias" />
-                <Area type="monotone" dataKey="de3a7d" stackId="1" stroke="#eab308" fill="#eab308" fillOpacity={0.85} name="3–7 dias" />
-                <Area type="monotone" dataKey="de7a15d" stackId="1" stroke="#f97316" fill="#f97316" fillOpacity={0.85} name="7–15 dias" />
-                <Area type="monotone" dataKey="mais15d" stackId="1" stroke="#ef4444" fill="#ef4444" fillOpacity={0.85} name="+15 dias" />
+                <Area type="monotone" dataKey="ate1d" stackId="1" stroke="#22c55e" fill="rgba(34,197,94,0.55)" fillOpacity={1} name="Até 1 dia" />
+                <Area type="monotone" dataKey="de1a3d" stackId="1" stroke="#84cc16" fill="rgba(132,204,22,0.55)" fillOpacity={1} name="1–3 dias" />
+                <Area type="monotone" dataKey="de3a7d" stackId="1" stroke="#eab308" fill="rgba(234,179,8,0.55)" fillOpacity={1} name="3–7 dias" />
+                <Area type="monotone" dataKey="de7a15d" stackId="1" stroke="#f97316" fill="rgba(249,115,22,0.55)" fillOpacity={1} name="7–15 dias" />
+                <Area type="monotone" dataKey="mais15d" stackId="1" stroke="#ef4444" fill="rgba(239,68,68,0.55)" fillOpacity={1} name="+15 dias" />
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
               </AreaChart>
             </ResponsiveContainer>
