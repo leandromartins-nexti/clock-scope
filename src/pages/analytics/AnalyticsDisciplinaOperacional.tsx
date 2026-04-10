@@ -1176,7 +1176,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
   const sidebarItems = useMemo(() => {
     if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
     if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
-    return [...movimentacoesRegionais].sort((a, b) => a.total - b.total).map(e => ({ nome: e.nome, score: getMovScore(e.total) }));
+    return [...unidadeData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
   }, [groupBy, maxTotal]);
 
   return (
