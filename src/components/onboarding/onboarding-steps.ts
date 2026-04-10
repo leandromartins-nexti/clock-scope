@@ -77,9 +77,9 @@ export const onboardingSteps: OnboardingStep[] = [
     icon: MousePointerClick,
     title: "Clique para filtrar",
     description:
-      "Clique com o botão esquerdo em qualquer ponto, barra ou área de um gráfico para filtrar a página inteira por aquele recorte. Por exemplo, clique num mês para ver apenas aquele período.",
-    target: "[data-onboarding='chart-evolucao']",
-    tooltipPosition: "right",
+      "Clique com o botão esquerdo em qualquer ponto, barra ou área de um gráfico para filtrar a página inteira por aquele recorte. Por exemplo, clique numa bolinha para filtrar por aquela operação.",
+    target: "[data-onboarding='scatter-qualidade']",
+    tooltipPosition: "top",
     route: "/analytics/operacional",
   },
   {
@@ -88,8 +88,8 @@ export const onboardingSteps: OnboardingStep[] = [
     title: "Botão direito abre detalhes",
     description:
       "Clique com o botão direito em qualquer elemento do gráfico para abrir um modal com análise detalhada, drill-down por operação e ações disponíveis.",
-    target: "[data-onboarding='chart-evolucao']",
-    tooltipPosition: "right",
+    target: "[data-onboarding='scatter-qualidade']",
+    tooltipPosition: "top",
     route: "/analytics/operacional",
   },
   {

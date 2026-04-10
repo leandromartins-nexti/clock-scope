@@ -1001,7 +1001,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
         {/* Row 2: Scatter charts */}
         <div className="grid grid-cols-2 gap-3">
-          <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
+          <div data-onboarding="scatter-qualidade" className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center gap-1.5 mb-0.5">
               <h4 className="text-sm font-semibold">Qualidade vs Volume</h4>
               <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
