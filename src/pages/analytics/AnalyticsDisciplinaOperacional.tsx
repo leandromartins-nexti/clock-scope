@@ -1015,7 +1015,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   return (
                     <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
+                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{payload.regional.replace("VIG EYES ", "").split(/\s+/)[0]?.slice(0, 4) || abreviar(payload.regional)}</text>
                     </g>
                   );
                 }} />
