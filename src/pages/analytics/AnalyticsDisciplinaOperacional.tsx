@@ -619,10 +619,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
   const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
   const chartScatterTrat = useMemo(() => {
-    if (selectedRegional) return allScatterTratativa.filter(s => s.regional === selectedRegional);
     if (visibleSet.size > 0) return allScatterTratativa.filter(s => visibleSet.has(s.regional));
     return allScatterTratativa;
-  }, [allScatterTratativa, selectedRegional, visibleSet]);
+  }, [allScatterTratativa, visibleSet]);
 
   const avgQualVolume = useMemo(() => chartScatterQual.length ? Math.round(chartScatterQual.reduce((s, d) => s + d.volume, 0) / chartScatterQual.length) : 170000, [chartScatterQual]);
   const avgQualQualidade = useMemo(() => chartScatterQual.length ? +(chartScatterQual.reduce((s, d) => s + d.qualidade, 0) / chartScatterQual.length).toFixed(1) : 85, [chartScatterQual]);
@@ -841,9 +840,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const { cx, cy, payload } = props;
                   const r = Math.max(8, Math.sqrt(payload.headcount) * 0.8);
                   const fill = payload.dias < 5 ? "#22c55e" : payload.dias <= 7 ? "#f97316" : "#ef4444";
+                  const isSelected = selectedRegional === payload.regional;
+                  const isDimmed = selectedRegional && !isSelected;
                   return (
-                    <g>
-                      <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={0.7} stroke={fill} strokeWidth={1.5} />
+                    <g opacity={isDimmed ? 0.25 : 1}>
+                      <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.9 : 0.7} stroke={fill} strokeWidth={isSelected ? 2.5 : 1.5} />
                       <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill="#374151">{payload.regional.replace("VIG EYES ", "").split(/\s+/)[0]?.slice(0, 4) || abreviar(payload.regional)}</text>
                     </g>
                   );
