@@ -263,6 +263,7 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
           </div>
         </div>
       </div>
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />
     </div>
   );
 
