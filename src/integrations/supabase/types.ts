@@ -82,6 +82,60 @@ export type Database = {
         }
         Relationships: []
       }
+      score_config: {
+        Row: {
+          config_key: string
+          created_at: string
+          grade_1_3d: number
+          grade_3_7d: number
+          grade_7_15d: number
+          grade_over_15d: number
+          grade_under_1d: number
+          id: string
+          threshold_excellent: number
+          threshold_good: number
+          threshold_poor: number
+          threshold_warning: number
+          updated_at: string
+          weight_quality: number
+          weight_treatment: number
+        }
+        Insert: {
+          config_key?: string
+          created_at?: string
+          grade_1_3d?: number
+          grade_3_7d?: number
+          grade_7_15d?: number
+          grade_over_15d?: number
+          grade_under_1d?: number
+          id?: string
+          threshold_excellent?: number
+          threshold_good?: number
+          threshold_poor?: number
+          threshold_warning?: number
+          updated_at?: string
+          weight_quality?: number
+          weight_treatment?: number
+        }
+        Update: {
+          config_key?: string
+          created_at?: string
+          grade_1_3d?: number
+          grade_3_7d?: number
+          grade_7_15d?: number
+          grade_over_15d?: number
+          grade_under_1d?: number
+          id?: string
+          threshold_excellent?: number
+          threshold_good?: number
+          threshold_poor?: number
+          threshold_warning?: number
+          updated_at?: string
+          weight_quality?: number
+          weight_treatment?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
