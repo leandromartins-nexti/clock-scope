@@ -478,27 +478,29 @@ export default function AnalyticsDisciplinaOperacional({ embedded }: { embedded?
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
   const content = (
-    <div className="px-6 py-4 space-y-3">
-      {/* Sub-tab toggle */}
-      <div className="flex gap-2">
-        {subTabs.map(t => (
-          <button
-            key={t.id}
-            onClick={() => { setActiveSubTab(t.id); setSelectedRegional(null); }}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-              activeSubTab === t.id
-                ? "bg-[#FF5722] text-white border-[#FF5722]"
-                : "bg-white text-muted-foreground border-border hover:border-[#FF5722]/40"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+    <div className="flex flex-1 min-h-0">
+      <div className="flex-1 min-w-0 pl-6 py-4 space-y-3 overflow-y-auto">
+        {/* Sub-tab toggle */}
+        <div className="flex gap-2">
+          {subTabs.map(t => (
+            <button
+              key={t.id}
+              onClick={() => { setActiveSubTab(t.id); setSelectedRegional(null); }}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                activeSubTab === t.id
+                  ? "bg-[#FF5722] text-white border-[#FF5722]"
+                  : "bg-white text-muted-foreground border-border hover:border-[#FF5722]/40"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-      {activeSubTab === "qualidade" && <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
-      {activeSubTab === "absenteismo" && <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
-      {activeSubTab === "movimentacoes" && <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+        {activeSubTab === "qualidade" && <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+        {activeSubTab === "absenteismo" && <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+        {activeSubTab === "movimentacoes" && <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />}
+      </div>
     </div>
   );
 
@@ -661,7 +663,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const mais15dColor = activeData.mais15DiaPct <= 10 ? "text-green-600" : activeData.mais15DiaPct <= 25 ? "text-orange-500" : "text-red-600";
 
   return (
-    <div className="flex gap-3">
+    <div className="flex">
       {/* Left: KPI cards + charts */}
       <div className="flex-1 min-w-0 space-y-3">
         {/* Linha 1: 5 KPI Cards */}
@@ -1206,7 +1208,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   const avgHE = chartScatter.reduce((s, d) => s + d.he, 0) / (chartScatter.length || 1);
 
   return (
-    <div className="flex gap-3">
+    <div className="flex">
       <div className="flex-1 min-w-0 space-y-3">
         {/* Linha 1: Score + 4 KPI Cards */}
         <div className="grid grid-cols-5 gap-3">
@@ -1404,7 +1406,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
   }, [groupBy, maxTotal]);
 
   return (
-    <div className="flex gap-3">
+    <div className="flex">
       <div className="flex-1 min-w-0 space-y-3">
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">

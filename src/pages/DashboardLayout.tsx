@@ -15,7 +15,7 @@ const DashboardLayout = () => {
             <div className="flex-1 flex flex-col">
               <header className="h-12 flex items-center border-b border-border bg-white px-4">
               </header>
-              <main className="flex-1">
+              <main className="flex-1 flex flex-col">
                 <Outlet />
               </main>
             </div>
