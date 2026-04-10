@@ -544,6 +544,7 @@ type ContentProps = { selectedRegional: string | null; onRegionalClick: (n: stri
 // Sub-aba 1: Qualidade do Ponto
 // ══════════════════════════════════════════════════════════════
 function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
+  const { config: scoreConfig } = useScoreConfig();
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
   const [chartMode, setChartMode] = useState<ChartMode>("line");
   const [dataMode, setDataMode] = useState<DataMode>("percent");
@@ -551,8 +552,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const [tratDataMode, setTratDataMode] = useState<DataMode>("percent");
 
   const activeData = useMemo(() => {
-    return getQualidadeKpiSummary(selectedRegional, groupBy as any);
-  }, [selectedRegional, groupBy]);
+    return getQualidadeKpiSummary(selectedRegional, groupBy as any, scoreConfig);
+  }, [selectedRegional, groupBy, scoreConfig]);
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
