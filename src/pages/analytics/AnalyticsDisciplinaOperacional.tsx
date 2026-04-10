@@ -658,25 +658,35 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const qualColor = activeData.qualidadePct >= 85 ? "text-green-600" : activeData.qualidadePct >= 70 ? "text-orange-500" : "text-red-600";
   const tempoColor = activeData.tempoMedioDias < 3 ? "text-green-600" : activeData.tempoMedioDias <= 7 ? "text-orange-500" : "text-red-600";
   const ate1dColor = activeData.ate1DiaPct >= 50 ? "text-green-600" : activeData.ate1DiaPct >= 30 ? "text-orange-500" : "text-red-600";
+  const mais15dColor = activeData.mais15DiaPct <= 10 ? "text-green-600" : activeData.mais15DiaPct <= 25 ? "text-orange-500" : "text-red-600";
 
   return (
-    <div className="space-y-3">
-      {/* Linha 1: 6 KPI Cards */}
-      <div className="grid grid-cols-6 gap-3">
-        <ScoreBoard title="Qualidade do Ponto" tooltip="Score composto considerando qualidade das marcações e tempo de tratativa dos ajustes.">
-          <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} />
-        </ScoreBoard>
-        <KPIBoard title="Qualidade" tooltip="Percentual de marcações registradas corretamente, sem necessidade de ajuste." value={`${activeData.qualidadePct}%`} valueColor={qualColor} />
-        <KPIBoard title="Tempo Médio" tooltip="Tempo médio em dias entre a marcação original e o ajuste pelo operador." value={`${activeData.tempoMedioDias} dias`} valueColor={tempoColor} />
-        <KPIBoard title="Até 1 Dia" tooltip="Percentual dos ajustes de ponto tratados em menos de 24 horas." value={`${activeData.ate1DiaPct}%`} valueColor={ate1dColor} />
-        <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · ${activeData.melhorOperacao.score >= 85 ? "Alta" : activeData.melhorOperacao.score >= 70 ? "Média" : "Baixa"}`} />
-        <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
-      </div>
+    <div className="flex gap-3">
+      {/* Left: KPI cards + charts */}
+      <div className="flex-1 min-w-0 space-y-3">
+        {/* Linha 1: 5 KPI Cards */}
+        <div className="grid grid-cols-5 gap-3">
+          <ScoreBoard title="Qualidade do Ponto" tooltip="Score composto considerando qualidade das marcações e tempo de tratativa dos ajustes.">
+            <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} />
+          </ScoreBoard>
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Qualidade</p>
+              <InfoTip text="Percentual de marcações registradas corretamente, sem necessidade de ajuste." />
+            </div>
+            <p className={`text-xl font-bold mt-0.5 truncate ${qualColor}`}>{activeData.qualidadePct}%</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Registradas {activeData.registradasPct}% · Ajustadas {activeData.ajustadasPct}%</p>
+            <p className="text-[11px] text-muted-foreground">Tempo médio {activeData.tempoMedioDias} dias</p>
+            <div className="flex items-center gap-3 mt-1">
+              <p className="text-[11px] text-muted-foreground">Até 1d <span className={`font-semibold ${ate1dColor}`}>{activeData.ate1DiaPct}%</span></p>
+              <p className="text-[11px] text-muted-foreground">+15d <span className={`font-semibold ${mais15dColor}`}>{activeData.mais15DiaPct}%</span></p>
+            </div>
+          </div>
+          <KPIBoard title="Tempo Médio" tooltip="Tempo médio em dias entre a marcação original e o ajuste pelo operador." value={`${activeData.tempoMedioDias} dias`} valueColor={tempoColor} />
+          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · ${activeData.melhorOperacao.score >= 85 ? "Alta" : activeData.melhorOperacao.score >= 70 ? "Média" : "Baixa"}`} />
+          <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
+        </div>
 
-      {/* Linha 2: Gráficos + Sidebar */}
-      <div className="flex gap-3">
-        {/* Charts */}
-        <div className="flex-1 min-w-0 space-y-3">
         {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
         <div className="grid grid-cols-2 gap-3">
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
