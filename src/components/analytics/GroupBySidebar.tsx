@@ -167,7 +167,7 @@ export default function GroupBySidebar({
 
   // ── Expanded mode ──
   return (
-    <div className="w-[220px] shrink-0">
+    <div className="w-[240px] shrink-0">
       <div className="bg-card border border-border/50 rounded-xl p-3 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
         {/* Header: title + collapse button */}
         <div className="flex items-center justify-between mb-1.5">
