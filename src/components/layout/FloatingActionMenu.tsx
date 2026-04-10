@@ -1,16 +1,19 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageSquare, Navigation, X, Lightbulb, Bug, BarChartHorizontal, ThumbsUp, CheckCircle } from "lucide-react";
+import { MessageSquare, Navigation, X, Lightbulb, Bug, BarChartHorizontal, ThumbsUp } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useNavigate, useLocation } from "react-router-dom";
+import { resetOnboardingTour } from "@/components/onboarding/OnboardingTour";
 
 type FeedbackType = "sugestao" | "problema" | "dado_incorreto" | "elogio" | null;
 
-const ONBOARDING_KEY = "analytics_onboarding_completed";
 
 export function FloatingActionMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Feedback state
   const [tipo, setTipo] = useState<FeedbackType>(null);
@@ -45,9 +48,11 @@ export function FloatingActionMenu() {
   };
 
   const handleStartTour = () => {
-    localStorage.removeItem(ONBOARDING_KEY);
+    resetOnboardingTour();
     setMenuOpen(false);
-    window.location.reload();
+    if (location.pathname !== "/analytics") {
+      navigate("/analytics");
+    }
   };
 
   const tipos: { key: FeedbackType; label: string; icon: React.ElementType }[] = [

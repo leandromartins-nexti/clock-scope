@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const STORAGE_KEY = "analytics_onboarding_completed";
+const RESTART_KEY = "analytics_onboarding_restart";
 
 // ── Confetti ────────────────────────────────────────────────
 function Confetti() {
@@ -402,16 +403,22 @@ export default function OnboardingTour() {
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const isMobile = window.innerWidth < 768;
 
-  // Check if should show on mount
+  // Check if should show on mount or restart requested
   useEffect(() => {
+    const restart = localStorage.getItem(RESTART_KEY);
+    if (restart === "true") {
+      localStorage.removeItem(RESTART_KEY);
+      localStorage.removeItem(STORAGE_KEY);
+      setPhase("welcome");
+      return;
+    }
     const done = localStorage.getItem(STORAGE_KEY);
     if (!done || done !== "true") {
-      // Only trigger on analytics routes
       if (location.pathname.startsWith("/analytics")) {
         setPhase("welcome");
       }
     }
-  }, []);
+  }, [location.pathname]);
 
   // Update target rect when step changes
   useEffect(() => {
@@ -590,16 +597,5 @@ export default function OnboardingTour() {
 // ── Reset helper (for "Refazer tour" button) ────────────────
 export function resetOnboardingTour() {
   localStorage.removeItem(STORAGE_KEY);
-}
-
-export function useOnboardingTour() {
-  const [, setTrigger] = useState(0);
-  return {
-    reset: () => {
-      resetOnboardingTour();
-      setTrigger(t => t + 1);
-      // Force page reload to re-trigger
-      window.location.reload();
-    },
-  };
+  localStorage.setItem(RESTART_KEY, "true");
 }
