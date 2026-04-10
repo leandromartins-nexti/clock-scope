@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Database, ChevronRight, ChevronDown, Table2, Eye } from "lucide-react";
+import { Database, ChevronRight, ChevronDown, Table2, Eye, Settings2 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
 
 // Import all data sources
 import {
@@ -298,6 +299,10 @@ export default function AnalyticsConfiguracao() {
             <TabsTrigger value="base-dados" className="gap-1.5">
               <Database className="w-3.5 h-3.5" />
               Base de Dados
+            </TabsTrigger>
+            <TabsTrigger value="score-qualidade" className="gap-1.5">
+              <Settings2 className="w-3.5 h-3.5" />
+              Score de Qualidade
             </TabsTrigger>
           </TabsList>
 
