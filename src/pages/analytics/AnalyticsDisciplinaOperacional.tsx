@@ -696,45 +696,39 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             </div>
             <ResponsiveContainer width="100%" height={250}>
               {chartMode === "bar" ? (
-                showDetalhado ? (
-                  <BarChart data={qualidadeDetalhado} onClick={(e: any) => {
-                    if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                  }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="mes" tick={(props: any) => {
-                      const { x, y, payload } = props;
-                      const isActive = selectedMes === payload.value;
-                      return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                    }} />
-                    <YAxis tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`} />
-                    <RechartsTooltip formatter={(v: number, name: string) => [v.toLocaleString("pt-BR"), name === "registradas" ? "Registradas" : "Justificadas"]} />
-                    <Legend formatter={(value: string) => value === "registradas" ? "Registradas" : "Justificadas"} wrapperStyle={{ fontSize: 11 }} />
-                    <Bar dataKey="registradas" stackId="qual" fill="#4CAF50" fillOpacity={0.85} radius={[0, 0, 0, 0]} />
-                    <Bar dataKey="justificadas" stackId="qual" fill="#FF5722" fillOpacity={0.85} radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                ) : (
-                  <BarChart data={qualidadeEvolucaoReal} onClick={(e: any) => {
-                    if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                  }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="mes" tick={(props: any) => {
-                      const { x, y, payload } = props;
-                      const isActive = selectedMes === payload.value;
-                      return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                    }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-                    <RechartsTooltip formatter={(v: number) => [`${v}%`, "Qualidade"]} />
-                    <ReferenceLine y={qualidadeMedia} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                    <Bar dataKey="value" radius={[4, 4, 0, 0]} fill="#FF5722" fillOpacity={0.85} cursor="pointer"
-                      shape={(props: any) => {
-                        const { x, y, width, height, payload } = props;
-                        const isSelected = selectedMes === payload.mes;
-                        const opacity = selectedMes ? (isSelected ? 1 : 0.3) : 0.85;
-                        return <rect x={x} y={y} width={width} height={height} rx={4} fill="#FF5722" fillOpacity={opacity} />;
-                      }}
-                    />
-                  </BarChart>
-                )
+                (() => {
+                  const barData = showDetalhado
+                    ? qualidadeDetalhado
+                    : qualidadeDetalhado.map(d => {
+                        const total = d.registradas + d.justificadas;
+                        return {
+                          mes: d.mes,
+                          registradas: total > 0 ? +((d.registradas / total) * 100).toFixed(1) : 0,
+                          justificadas: total > 0 ? +((d.justificadas / total) * 100).toFixed(1) : 0,
+                        };
+                      });
+                  return (
+                    <BarChart data={barData} onClick={(e: any) => {
+                      if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+                    }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="mes" tick={(props: any) => {
+                        const { x, y, payload } = props;
+                        const isActive = selectedMes === payload.value;
+                        return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                      }} />
+                      <YAxis tick={{ fontSize: 10 }} domain={showDetalhado ? undefined : [0, 100]}
+                        tickFormatter={v => showDetalhado ? (v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`) : `${v}%`} />
+                      <RechartsTooltip formatter={(v: number, name: string) => [
+                        showDetalhado ? v.toLocaleString("pt-BR") : `${v}%`,
+                        name === "registradas" ? "Registradas" : "Justificadas"
+                      ]} />
+                      <Legend formatter={(value: string) => value === "registradas" ? "Registradas" : "Justificadas"} wrapperStyle={{ fontSize: 11 }} />
+                      <Bar dataKey="registradas" stackId="qual" fill="#4CAF50" fillOpacity={0.85} radius={[0, 0, 0, 0]} />
+                      <Bar dataKey="justificadas" stackId="qual" fill="#FF5722" fillOpacity={0.85} radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  );
+                })()
               ) : chartMode === "area" ? (
                 showDetalhado ? (
                   <AreaChart data={qualidadeDetalhado} onClick={(e: any) => {
