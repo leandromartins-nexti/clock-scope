@@ -97,6 +97,19 @@ export const ajustesAreaData: AjusteRecord[] = [
 /** Backward compat alias */
 export const ajustesRawData = ajustesUnidadeData;
 
+/** Unique entities per grouping */
+export const ajustesUnidades = (() => {
+  const map = new Map<number, string>();
+  for (const r of ajustesUnidadeData) map.set(r.business_unit_id, r.business_unit_name);
+  return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+})();
+
+export const ajustesAreas = (() => {
+  const map = new Map<number, string>();
+  for (const r of ajustesAreaData) map.set(r.business_unit_id, r.business_unit_name);
+  return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+})();
+
 /** Available months sorted chronologically */
 export const ajustesMeses = (() => {
   const set = new Set(ajustesRawData.map(r => r.reference_month));
