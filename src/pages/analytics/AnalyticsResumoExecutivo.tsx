@@ -110,7 +110,7 @@ export default function AnalyticsResumoExecutivo() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
 
-  const sidebarItems = resumoGroupData[groupBy] || resumoUnidadeData;
+  const sidebarItems = resumoGroupData[groupBy] || resumoGroupData.unidade;
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 

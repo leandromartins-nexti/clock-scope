@@ -21,7 +21,7 @@ export default function AnalyticsViolacoesTrabalhistas({ embedded }: { embedded?
       <div className="flex-1 min-w-0 pl-6 pr-4 py-6 overflow-y-auto">
         <p className="text-muted-foreground">Violações Trabalhistas — em construção.</p>
       </div>
-      <GroupBySidebar items={placeholderItems} selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />
+      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} groupBy={groupBy} onGroupByChange={handleGroupByChange} />
     </div>
   );
 
