@@ -1009,7 +1009,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 }} />
                 <Scatter data={chartScatterQual} shape={(props: any) => {
                   const { cx, cy, payload } = props;
-                  const r = Math.sqrt(payload.headcount) / 4;
+                  const r = Math.max(8, Math.sqrt(payload.headcount) * 0.8);
                   const fill = payload.qualidade >= 85 ? "#22c55e" : payload.qualidade >= 75 ? "#f97316" : "#ef4444";
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                   return (
