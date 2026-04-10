@@ -11,6 +11,7 @@ import {
   ScatterChart, Scatter, ZAxis, Cell,
 } from "recharts";
 import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary } from "@/lib/ajustesData";
+import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
