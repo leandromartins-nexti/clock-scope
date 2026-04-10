@@ -34,7 +34,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route element={<DashboardLayout />}>
-            <Route path="/" element={<NextiAnalytics />} />
+            <Route path="/" element={<AnalyticsResumoExecutivo />} />
             <Route path="/nexti-analytics" element={<NextiAnalytics />} />
             <Route path="/strategy-prime" element={<StrategyPrime />} />
             <Route path="/operacional-prime" element={<OperacionalPrime />} />
