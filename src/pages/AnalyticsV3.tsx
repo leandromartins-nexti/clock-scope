@@ -86,7 +86,6 @@ export default function AnalyticsV3() {
             <span className="font-semibold text-gray-700">Filtros Aplicados:</span>
           </div>
           <span className="bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-3 py-1 text-xs font-medium">Período: abr/2025 - mar/2026</span>
-          <span className="bg-orange-50 text-[#FF5722] border border-[#FF5722] rounded-full px-3 py-1 text-xs font-medium">Cliente: Orsegups</span>
         </div>
         <button className="flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline">
           <Eraser className="w-4 h-4" /> Limpar Filtros
