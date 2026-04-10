@@ -241,6 +241,16 @@ export default function AnalyticsResumoExecutivo() {
                     <div className="flex-1 h-[36px] min-w-[120px]">
                       <ResponsiveContainer width="100%" height={36}>
                         <LineChart data={card.evolucao}>
+                          {(card as any).perPointColors && (
+                            <defs>
+                              <linearGradient id={`grad-${card.label.replace(/\s/g,'')}`} x1="0" y1="0" x2="1" y2="0">
+                                {card.evolucao.map((pt, i) => {
+                                  const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
+                                  return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} />;
+                                })}
+                              </linearGradient>
+                            </defs>
+                          )}
                           <RechartsTooltip
                             content={<SparklineTooltip cardData={card} />}
                             cursor={false}
@@ -249,21 +259,27 @@ export default function AnalyticsResumoExecutivo() {
                           <Line
                             type="monotone"
                             dataKey="valor"
-                            stroke={getLineColor(card.score)}
+                            stroke={(card as any).perPointColors ? `url(#grad-${card.label.replace(/\s/g,'')})` : getLineColor(card.score)}
                             strokeWidth={3}
-                            dot={(props: any) => (
-                              <circle
-                                key={props.index}
-                                cx={props.cx}
-                                cy={props.cy}
-                                r={props.index === lastIdx ? 5 : 3.5}
-                                fill={getLineColor(card.score)}
-                                stroke="white"
-                                strokeWidth={2}
-                                className="cursor-pointer"
-                              />
-                            )}
-                            activeDot={{ r: 4, fill: getLineColor(card.score), stroke: 'white', strokeWidth: 2 }}
+                            dot={(props: any) => {
+                              const ptColor = (card as any).perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
+                              return (
+                                <circle
+                                  key={props.index}
+                                  cx={props.cx}
+                                  cy={props.cy}
+                                  r={props.index === lastIdx ? 5 : 3.5}
+                                  fill={ptColor}
+                                  stroke="white"
+                                  strokeWidth={2}
+                                  className="cursor-pointer"
+                                />
+                              );
+                            }}
+                            activeDot={(props: any) => {
+                              const ptColor = (card as any).perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
+                              return <circle cx={props.cx} cy={props.cy} r={4} fill={ptColor} stroke="white" strokeWidth={2} />;
+                            }}
                           />
                         </LineChart>
                       </ResponsiveContainer>
