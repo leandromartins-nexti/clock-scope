@@ -984,7 +984,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <h4 className="text-sm font-semibold">Qualidade vs Volume</h4>
               <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
