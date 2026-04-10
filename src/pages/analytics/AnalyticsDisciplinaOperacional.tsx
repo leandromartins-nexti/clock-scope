@@ -857,20 +857,19 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             return (
             <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
               <div className="flex items-center justify-between mb-0.5">
-                <div className="flex items-center gap-1.5">
+                <div>
                   <h4 className="text-sm font-semibold">Composição do Tempo de Tratativa</h4>
-                  <InfoTip text="Evolução mensal da distribuição percentual por faixa de tempo. Quanto mais verde na base, melhor. Crescimento do vermelho indica piora." />
+                  <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal da distribuição por faixa</p>
                 </div>
                 <ChartModeToggle
                   dataMode={tratDataMode} onDataModeChange={setTratDataMode}
                   chartMode={tratChartMode} onChartModeChange={setTratChartMode}
                 />
               </div>
-              <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal da distribuição por faixa</p>
               <ResponsiveContainer width="100%" height={250}>
                 {tratChartMode === "bar" ? (
-                  <BarChart data={tratData} onClick={tratClick} barCategoryGap="15%">
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
+                  <BarChart data={tratData} onClick={tratClick}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="mes" tick={tratXTick} />
                     <YAxis tick={{ fontSize: 10 }} domain={tratYDomain as any} tickFormatter={tratYFmt} />
                     <RechartsTooltip content={tratTooltip} />
@@ -886,7 +885,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   </BarChart>
                 ) : tratChartMode === "area" ? (
                   <AreaChart data={tratData} onClick={tratClick}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="mes" tick={tratXTick} />
                     <YAxis tick={{ fontSize: 10 }} tickFormatter={tratYFmt} domain={tratYDomain as any} />
                     <RechartsTooltip content={tratTooltip} />
@@ -898,7 +897,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   </AreaChart>
                 ) : (
                   <LineChart data={tratData} onClick={tratClick}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="mes" tick={tratXTick} />
                     <YAxis tick={{ fontSize: 10 }} tickFormatter={tratYFmt} domain={tratYDomain as any} />
                     <RechartsTooltip content={tratTooltip} />
