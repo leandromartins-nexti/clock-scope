@@ -791,6 +791,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                   );
                 }} />
+                {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                 <Area type="monotone" dataKey="ate1d" stackId="1" stroke="#22c55e" fill="rgba(34,197,94,0.55)" fillOpacity={1} name="Até 1 dia" />
                 <Area type="monotone" dataKey="de1a3d" stackId="1" stroke="#84cc16" fill="rgba(132,204,22,0.55)" fillOpacity={1} name="1–3 dias" />
                 <Area type="monotone" dataKey="de3a7d" stackId="1" stroke="#eab308" fill="rgba(234,179,8,0.55)" fillOpacity={1} name="3–7 dias" />
