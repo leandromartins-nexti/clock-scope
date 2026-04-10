@@ -617,7 +617,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const sidebarItems = useMemo(() => {
     if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
     if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
-    return [...qualidadeRegionais].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
+    return [...unidadeData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
   }, [groupBy]);
 
   const allScatter = useMemo(() => {
