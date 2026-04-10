@@ -527,7 +527,7 @@ export default function OnboardingTour() {
 
           {/* Left arrow indicator for sidebar hint */}
           {step?.showLeftArrow && (
-            <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[10002] flex items-center animate-fade-in">
+            <div className="fixed left-0 top-[72px] z-[10002] flex items-center animate-fade-in">
               <div className="flex items-center gap-1 pl-4 pr-3 py-3">
                 <div className="flex items-center animate-bounce-horizontal">
                   <ArrowLeft size={36} className="text-[#FF5722]" strokeWidth={2.5} />
@@ -574,7 +574,7 @@ export default function OnboardingTour() {
               title={step.title}
               description={step.description}
               icon={step.icon}
-              position={step?.showLeftArrow ? { top: window.innerHeight / 2 - 140, left: 80 } : tooltipPos}
+              position={step?.showLeftArrow ? { top: 60, left: 80 } : tooltipPos}
               arrowDir={step?.showLeftArrow ? "left" : tooltipPos.arrowDir}
               onNext={handleNext}
               onPrev={handlePrev}
