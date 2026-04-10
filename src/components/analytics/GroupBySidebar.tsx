@@ -167,8 +167,8 @@ export default function GroupBySidebar({
 
   // ── Expanded mode ──
   return (
-    <div className="w-[240px] shrink-0">
-      <div className="bg-white border-l border-border/40 pl-3 pr-1 py-2 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
+    <div className="w-[240px] shrink-0 self-stretch">
+      <div className="bg-white border-l border-border/40 pl-3 pr-1 pt-2 h-full flex flex-col">
         {/* Header: title + collapse button */}
         <div className="flex items-center justify-between mb-1.5">
           <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Filtrar por</p>
