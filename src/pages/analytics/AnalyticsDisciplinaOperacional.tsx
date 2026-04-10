@@ -8,7 +8,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine,
   ScatterChart, Scatter, ZAxis,
 } from "recharts";
-import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas } from "@/lib/ajustesData";
+import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao } from "@/lib/ajustesData";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
@@ -144,14 +144,7 @@ const scatterTratativa = [
   { regional: "Unidade de Negócios", volume: 110000, dias: 7.0, headcount: 850 },
 ];
 
-// ── Qualidade do Ponto ──
-const qualidadeEvolucao = [
-  { mes: "abr/25", value: 83.2 }, { mes: "mai/25", value: 84.1 }, { mes: "jun/25", value: 84.5 },
-  { mes: "jul/25", value: 85.0 }, { mes: "ago/25", value: 85.3 }, { mes: "set/25", value: 85.8 },
-  { mes: "out/25", value: 86.2 }, { mes: "nov/25", value: 86.5 }, { mes: "dez/25", value: 86.1 },
-  { mes: "jan/26", value: 87.0 }, { mes: "fev/26", value: 87.8 }, { mes: "mar/26", value: 87.3 },
-];
-const qualidadeMedia = 85.7;
+// qualidadeEvolucao is now computed dynamically inside QualidadeContent via aggregateQualidadeEvolucao
 
 // Derive all 30 regionais from scatter data
 const qualidadeRegionais = scatterQualidade.map(sq => {
@@ -570,12 +563,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
-  const mesesJsonLabels = useMemo(() => new Set(ajustesMeses.map(formatMesLabel)), []);
-  const mesLabelToReferenceMonth = useMemo(() => new Map(ajustesMeses.map((month) => [formatMesLabel(month), month])), []);
-
-  const qualidadeEvolucaoFiltrada = useMemo(
-    () => qualidadeEvolucao.filter((item) => mesesJsonLabels.has(item.mes)),
-    [mesesJsonLabels]
+  const qualidadeEvolucaoReal = useMemo(
+    () => aggregateQualidadeEvolucao(selectedRegional, groupBy as any),
+    [selectedRegional, groupBy]
+  );
+  const qualidadeMedia = useMemo(
+    () => qualidadeEvolucaoReal.length ? +(qualidadeEvolucaoReal.reduce((s, d) => s + d.value, 0) / qualidadeEvolucaoReal.length).toFixed(1) : 85,
+    [qualidadeEvolucaoReal]
   );
 
   const tratativaFaixasFiltrada = useMemo(
@@ -587,6 +581,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   );
   const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
+  const mesLabelToReferenceMonth = useMemo(() => new Map(ajustesMeses.map((month) => [formatMesLabel(month), month])), []);
   const selectedReferenceMonth = useMemo(
     () => (selectedMes ? mesLabelToReferenceMonth.get(selectedMes) ?? null : null),
     [mesLabelToReferenceMonth, selectedMes]
@@ -666,7 +661,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             <h4 className="text-sm font-semibold mb-0.5">Evolução da Qualidade</h4>
             <p className="text-[10px] text-muted-foreground mb-2">Por competência · clique para filtrar</p>
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={qualidadeEvolucaoFiltrada} onClick={(e: any) => {
+              <LineChart data={qualidadeEvolucaoReal} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
