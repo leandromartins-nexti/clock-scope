@@ -612,7 +612,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const allScatter = useMemo(() => {
     if (groupBy === "empresa") return aggregateQualidadeVolume(selectedReferenceMonth, "empresa");
     if (groupBy === "unidade") return aggregateQualidadeVolume(selectedReferenceMonth, "unidade");
-    if (groupBy === "area") return areaScatter;
+    if (groupBy === "area") return aggregateQualidadeVolume(selectedReferenceMonth, "area");
     return scatterQualidade;
   }, [groupBy, selectedReferenceMonth]);
 
