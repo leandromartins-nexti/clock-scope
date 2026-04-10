@@ -420,28 +420,34 @@ export default function OnboardingTour() {
     }
   }, [location.pathname]);
 
-  // Update target rect when step changes
+  // Update target rect when step changes, navigate if needed
   useEffect(() => {
     if (phase !== "touring") return;
     const step = onboardingSteps[currentStep];
+
+    // Navigate to the step's route if specified
+    if (step?.route && location.pathname !== step.route) {
+      navigate(step.route);
+    }
+
     if (!step?.target) {
       setTargetRect(null);
       return;
     }
-    // Small delay to let DOM update
+    // Longer delay when navigating to let DOM render
+    const delay = step?.route && location.pathname !== step.route ? 500 : 100;
     const timeout = setTimeout(() => {
       const el = document.querySelector(step.target!);
       if (el) {
         const rect = el.getBoundingClientRect();
         setTargetRect(rect);
-        // Scroll into view if needed
         el.scrollIntoView({ behavior: "smooth", block: "nearest" });
       } else {
         setTargetRect(null);
       }
-    }, 100);
+    }, delay);
     return () => clearTimeout(timeout);
-  }, [phase, currentStep]);
+  }, [phase, currentStep, location.pathname]);
 
   // Keyboard navigation
   useEffect(() => {
