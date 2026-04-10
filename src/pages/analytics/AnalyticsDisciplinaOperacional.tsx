@@ -661,7 +661,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             <h4 className="text-sm font-semibold mb-0.5">Evolução da Qualidade</h4>
             <p className="text-[10px] text-muted-foreground mb-2">Por competência · clique para filtrar</p>
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={qualidadeEvolucaoFiltrada} onClick={(e: any) => {
+              <LineChart data={qualidadeEvolucaoReal} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
