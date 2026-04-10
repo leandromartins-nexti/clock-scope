@@ -724,8 +724,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         name === "registradas" ? "Registradas" : "Justificadas"
                       ]} />
                       <Legend formatter={(value: string) => value === "registradas" ? "Registradas" : "Justificadas"} wrapperStyle={{ fontSize: 11 }} />
-                      <Bar dataKey="registradas" stackId="qual" fill="#22c55e" fillOpacity={0.85} radius={[0, 0, 0, 0]} />
-                      <Bar dataKey="justificadas" stackId="qual" fill="#ef4444" fillOpacity={0.85} radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="registradas" stackId="qual" fill="rgba(34,197,94,0.35)" stroke="#22c55e" strokeWidth={1} radius={[0, 0, 0, 0]} />
+                      <Bar dataKey="justificadas" stackId="qual" fill="rgba(239,68,68,0.35)" stroke="#ef4444" strokeWidth={1} radius={[4, 4, 0, 0]} />
                     </BarChart>
                   );
                 })()
