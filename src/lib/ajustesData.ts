@@ -550,3 +550,30 @@ export function aggregateQualidadeEvolucao(selectedName: string | null, groupBy:
       value: d.reg + d.just > 0 ? +((d.reg / (d.reg + d.just)) * 100).toFixed(2) : 0,
     }));
 }
+
+/** Same aggregation but returns raw registradas + justificadas counts per month */
+export function aggregateQualidadeEvolucaoDetalhado(selectedName: string | null, groupBy: "empresa" | "unidade" | "area" = "empresa"): { mes: string; registradas: number; justificadas: number }[] {
+  type QRow = { name: string; reference_month: string; registradas: number; justificadas: number };
+  let rows: QRow[];
+
+  if (groupBy === "unidade") {
+    rows = qualidadeUnidadeData.map(r => ({ name: r.business_unit_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas }));
+  } else if (groupBy === "area") {
+    rows = qualidadeAreaData.map(r => ({ name: r.area_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas }));
+  } else {
+    rows = qualidadeEmpresaData.map(r => ({ name: r.company_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas }));
+  }
+
+  const filtered = selectedName ? rows.filter(r => r.name === selectedName) : rows;
+  const byMonth = new Map<string, { reg: number; just: number }>();
+
+  for (const r of filtered) {
+    const existing = byMonth.get(r.reference_month);
+    if (existing) { existing.reg += r.registradas; existing.just += r.justificadas; }
+    else { byMonth.set(r.reference_month, { reg: r.registradas, just: r.justificadas }); }
+  }
+
+  return Array.from(byMonth.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, d]) => ({ mes: formatMesLabel(month), registradas: d.reg, justificadas: d.just }));
+}
