@@ -550,24 +550,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const [tratDataMode, setTratDataMode] = useState<DataMode>("percent");
 
   const activeData = useMemo(() => {
-    if (!selectedRegional) return {
-      score: 87, diff: "+4 pp", registradas: "892.0K", justificadas: "130.2K",
-      melhorOperacao: { nome: "Regional SP", score: 89 },
-      maiorRisco: { nome: "Regional BA", score: 82, indicador: "Baixa qualidade" },
-    };
-    const r = qualidadeRegionais.find(x => x.nome === selectedRegional);
-    if (!r) return {
-      score: 87, diff: "+4 pp", registradas: "892.0K", justificadas: "130.2K",
-      melhorOperacao: { nome: "Regional SP", score: 89 },
-      maiorRisco: { nome: "Regional BA", score: 82, indicador: "Baixa qualidade" },
-    };
-    return {
-      score: Math.round(r.qualidade), diff: `${Math.round(r.qualidade - 87)} pp`,
-      registradas: `${(r.registradas * 12.4).toFixed(0)}K`, justificadas: `${(r.justificadas * 3.26).toFixed(0)}K`,
-      melhorOperacao: { nome: selectedRegional, score: Math.round(r.qualidade) },
-      maiorRisco: { nome: selectedRegional, score: Math.round(r.qualidade), indicador: `${r.atrasos}% atrasos` },
-    };
-  }, [selectedRegional]);
+    return getQualidadeKpiSummary(selectedRegional, groupBy as any);
+  }, [selectedRegional, groupBy]);
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
