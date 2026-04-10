@@ -843,7 +843,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const isSelected = selectedRegional === payload.regional;
                   const isDimmed = selectedRegional && !isSelected;
                   return (
-                    <g opacity={isDimmed ? 0.25 : 1}>
+                    <g opacity={isDimmed ? 0.25 : 1} style={{ cursor: "pointer" }} onClick={() => onRegionalClick(payload.regional)}>
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.9 : 0.7} stroke={fill} strokeWidth={isSelected ? 2.5 : 1.5} />
                       <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill="#374151">{payload.regional.replace("VIG EYES ", "").split(/\s+/)[0]?.slice(0, 4) || abreviar(payload.regional)}</text>
                     </g>
