@@ -21,6 +21,8 @@ export interface OnboardingStep {
   showLeftArrow?: boolean;
   /** Route to navigate to before showing this step */
   route?: string;
+  /** If true, render as GTM promo modal with lead form */
+  isGTM?: boolean;
 }
 
 export const onboardingSteps: OnboardingStep[] = [
@@ -129,6 +131,16 @@ export const onboardingSteps: OnboardingStep[] = [
       "Encontrou algo estranho? Tem uma sugestão? Clique aqui a qualquer momento para enviar feedback direto para o time de produto.",
     target: "[data-onboarding='feedback-button']",
     tooltipPosition: "left",
+  },
+  {
+    id: "gtm-promo",
+    icon: Sparkles,
+    title: "Oferta exclusiva de lançamento",
+    description: "",
+    target: null,
+    tooltipPosition: "bottom",
+    isModal: true,
+    isGTM: true,
     nextLabel: "Finalizar tour",
   },
 ];
