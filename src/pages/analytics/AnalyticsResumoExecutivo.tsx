@@ -193,8 +193,9 @@ export default function AnalyticsResumoExecutivo() {
       </div>
 
       {/* Content: main + sidebar */}
-      <div className="px-6 py-4 flex-1">
-        <div className="flex gap-3">
+      <div className="flex-1 flex">
+        <div className="flex-1 min-w-0 pl-6 py-4">
+        <div className="flex">
           {/* Main content */}
           <div className="flex-1 min-w-0 space-y-3">
 
