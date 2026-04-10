@@ -758,8 +758,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         name === "registradas" ? "Registradas" : "Justificadas"
                       ]} />
                       {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
-                      <Area type="monotone" dataKey="registradas" stackId="qual" stroke="#22c55e" fill={`rgba(34,197,94,${selectedMes ? 0.3 : 0.55})`} fillOpacity={1} name="Registradas" />
-                      <Area type="monotone" dataKey="justificadas" stackId="qual" stroke="#ef4444" fill={`rgba(239,68,68,${selectedMes ? 0.3 : 0.55})`} fillOpacity={1} name="Justificadas" />
+                      <Area type="monotone" dataKey="registradas" stackId="qual" stroke="#22c55e" fill={`rgba(34,197,94,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="Registradas" />
+                      <Area type="monotone" dataKey="justificadas" stackId="qual" stroke="#ef4444" fill={`rgba(239,68,68,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="Justificadas" />
                       <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
                     </AreaChart>
                   );
