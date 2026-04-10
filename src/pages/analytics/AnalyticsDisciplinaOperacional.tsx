@@ -745,31 +745,22 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     <AreaChart data={areaData} onClick={(e: any) => {
                       if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
                     }}>
-                      <defs>
-                        <linearGradient id="qualAreaGradReg" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#4CAF50" stopOpacity={0.55} />
-                          <stop offset="100%" stopColor="#4CAF50" stopOpacity={0.15} />
-                        </linearGradient>
-                        <linearGradient id="qualAreaGradJust" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#FF5722" stopOpacity={0.55} />
-                          <stop offset="100%" stopColor="#FF5722" stopOpacity={0.15} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
                       <XAxis dataKey="mes" tick={(props: any) => {
                         const { x, y, payload } = props;
                         const isActive = selectedMes === payload.value;
                         return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
                       }} />
                       <YAxis tick={{ fontSize: 10 }} domain={showDetalhado ? undefined : [0, 100]}
-                        tickFormatter={v => showDetalhado ? (v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`) : `${v}%`} />
+                        tickFormatter={v => showDetalhado ? (v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`) : `${Math.round(v)}%`} />
                       <RechartsTooltip formatter={(v: number, name: string) => [
                         showDetalhado ? v.toLocaleString("pt-BR") : `${v}%`,
                         name === "registradas" ? "Registradas" : "Justificadas"
                       ]} />
-                      <Legend formatter={(value: string) => value === "registradas" ? "Registradas" : "Justificadas"} wrapperStyle={{ fontSize: 11 }} />
-                      <Area type="monotone" dataKey="registradas" stackId="qual" stroke="none" fill="url(#qualAreaGradReg)" name="registradas" />
-                      <Area type="monotone" dataKey="justificadas" stackId="qual" stroke="none" fill="url(#qualAreaGradJust)" name="justificadas" />
+                      {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                      <Area type="monotone" dataKey="registradas" stackId="qual" stroke="#4CAF50" fill={`rgba(76,175,80,${selectedMes ? 0.3 : 0.55})`} fillOpacity={1} name="Registradas" />
+                      <Area type="monotone" dataKey="justificadas" stackId="qual" stroke="#FF5722" fill={`rgba(255,87,34,${selectedMes ? 0.3 : 0.55})`} fillOpacity={1} name="Justificadas" />
+                      <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
                     </AreaChart>
                   );
                 })()
