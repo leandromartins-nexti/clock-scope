@@ -730,54 +730,49 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   );
                 })()
               ) : chartMode === "area" ? (
-                showDetalhado ? (
-                  <AreaChart data={qualidadeDetalhado} onClick={(e: any) => {
-                    if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                  }}>
-                    <defs>
-                      <linearGradient id="qualAreaGradReg" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#4CAF50" stopOpacity={0.55} />
-                        <stop offset="100%" stopColor="#4CAF50" stopOpacity={0.15} />
-                      </linearGradient>
-                      <linearGradient id="qualAreaGradJust" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#FF5722" stopOpacity={0.55} />
-                        <stop offset="100%" stopColor="#FF5722" stopOpacity={0.15} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="mes" tick={(props: any) => {
-                      const { x, y, payload } = props;
-                      const isActive = selectedMes === payload.value;
-                      return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                    }} />
-                    <YAxis tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`} />
-                    <RechartsTooltip formatter={(v: number, name: string) => [v.toLocaleString("pt-BR"), name === "registradas" ? "Registradas" : "Justificadas"]} />
-                    <Legend formatter={(value: string) => value === "registradas" ? "Registradas" : "Justificadas"} wrapperStyle={{ fontSize: 11 }} />
-                    <Area type="monotone" dataKey="registradas" stackId="qual" stroke="none" fill="url(#qualAreaGradReg)" name="registradas" />
-                    <Area type="monotone" dataKey="justificadas" stackId="qual" stroke="none" fill="url(#qualAreaGradJust)" name="justificadas" />
-                  </AreaChart>
-                ) : (
-                  <AreaChart data={qualidadeEvolucaoReal} onClick={(e: any) => {
-                    if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                  }}>
-                    <defs>
-                      <linearGradient id="qualAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#FF5722" stopOpacity={0.4} />
-                        <stop offset="100%" stopColor="#FF5722" stopOpacity={0.05} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="mes" tick={(props: any) => {
-                      const { x, y, payload } = props;
-                      const isActive = selectedMes === payload.value;
-                      return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                    }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-                    <RechartsTooltip formatter={(v: number) => [`${v}%`, "Qualidade"]} />
-                    <ReferenceLine y={qualidadeMedia} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                    <Area type="monotone" dataKey="value" stroke="none" fill="url(#qualAreaGrad)" name="Qualidade" />
-                  </AreaChart>
-                )
+                (() => {
+                  const areaData = showDetalhado
+                    ? qualidadeDetalhado
+                    : qualidadeDetalhado.map(d => {
+                        const total = d.registradas + d.justificadas;
+                        return {
+                          mes: d.mes,
+                          registradas: total > 0 ? +((d.registradas / total) * 100).toFixed(1) : 0,
+                          justificadas: total > 0 ? +((d.justificadas / total) * 100).toFixed(1) : 0,
+                        };
+                      });
+                  return (
+                    <AreaChart data={areaData} onClick={(e: any) => {
+                      if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+                    }}>
+                      <defs>
+                        <linearGradient id="qualAreaGradReg" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#4CAF50" stopOpacity={0.55} />
+                          <stop offset="100%" stopColor="#4CAF50" stopOpacity={0.15} />
+                        </linearGradient>
+                        <linearGradient id="qualAreaGradJust" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#FF5722" stopOpacity={0.55} />
+                          <stop offset="100%" stopColor="#FF5722" stopOpacity={0.15} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="mes" tick={(props: any) => {
+                        const { x, y, payload } = props;
+                        const isActive = selectedMes === payload.value;
+                        return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                      }} />
+                      <YAxis tick={{ fontSize: 10 }} domain={showDetalhado ? undefined : [0, 100]}
+                        tickFormatter={v => showDetalhado ? (v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`) : `${v}%`} />
+                      <RechartsTooltip formatter={(v: number, name: string) => [
+                        showDetalhado ? v.toLocaleString("pt-BR") : `${v}%`,
+                        name === "registradas" ? "Registradas" : "Justificadas"
+                      ]} />
+                      <Legend formatter={(value: string) => value === "registradas" ? "Registradas" : "Justificadas"} wrapperStyle={{ fontSize: 11 }} />
+                      <Area type="monotone" dataKey="registradas" stackId="qual" stroke="none" fill="url(#qualAreaGradReg)" name="registradas" />
+                      <Area type="monotone" dataKey="justificadas" stackId="qual" stroke="none" fill="url(#qualAreaGradJust)" name="justificadas" />
+                    </AreaChart>
+                  );
+                })()
               ) : (
                 showDetalhado ? (
                   <LineChart data={qualidadeDetalhado} onClick={(e: any) => {
