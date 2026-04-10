@@ -47,59 +47,19 @@ const empresaData = [
   { nome: "NEXTI DEMONSTRAÇÃO", qualidade: 48.3, score: 48 },
 ].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
 
-// ── Área mock data ──
-const areaData = [
-  { nome: "ROTA - POA - DM52", qualidade: 91.5, score: 92 },
-  { nome: "MRH VEICULOS LTDA", qualidade: 90.8, score: 91 },
-  { nome: "A 365 - Renoá", qualidade: 90.1, score: 90 },
-  { nome: "ROTA - SOO - SEDE", qualidade: 89.4, score: 89 },
-  { nome: "Area Cliente Frimesa", qualidade: 88.7, score: 89 },
-  { nome: "ROTA - RSL - NM51", qualidade: 88.0, score: 88 },
-  { nome: "CCC - Sanepar", qualidade: 87.3, score: 87 },
-  { nome: "PROGRAMADA", qualidade: 86.6, score: 87 },
-  { nome: "GERENCIAL", qualidade: 86.0, score: 86 },
-  { nome: "G5 BANK", qualidade: 85.3, score: 85 },
-  { nome: "TESTE-TI", qualidade: 84.6, score: 85 },
-  { nome: "Gestão de Mão de Obra - RHO", qualidade: 84.0, score: 84 },
-  { nome: "ROTA - BNU - COORDENAÇÃO", qualidade: 83.3, score: 83 },
-  { nome: "ROTA - CTA - COORDENAÇÃO", qualidade: 82.6, score: 83 },
-  { nome: "ROTA - IAI - COORDENAÇÃO", qualidade: 82.0, score: 82 },
-  { nome: "ROTA - SOO - Coor. Asseio Continente", qualidade: 81.3, score: 81 },
-  { nome: "ROTA - SOO - Coor. Segurança Continente/ Ilha", qualidade: 80.6, score: 81 },
-  { nome: "ROTA - SOO - Coor. Asseio Ilha", qualidade: 80.0, score: 80 },
-  { nome: "ROTA - LGS - NM31", qualidade: 79.3, score: 79 },
-  { nome: "ROTA - JGS - NM48", qualidade: 78.6, score: 79 },
-  { nome: "ROTA - IAI - NM27", qualidade: 78.0, score: 78 },
-  { nome: "ROTA - BQE - NM06", qualidade: 77.3, score: 77 },
-  { nome: "CONTROLADORIA - KELLY", qualidade: 76.6, score: 77 },
-  { nome: "ADM FINANCEIRO - TIME TAISE SOARES", qualidade: 76.0, score: 76 },
-  { nome: "ALARME 365", qualidade: 75.3, score: 75 },
-  // Novas áreas do anexo
-  { nome: "ROTA - BQE - DM05", qualidade: 74.5, score: 75 },
-  { nome: "ROTA - CTA - DM14", qualidade: 73.8, score: 74 },
-  { nome: "ROTA - SOO - DF33", qualidade: 72.1, score: 72 },
-  { nome: "ROTA - SOO - DF34", qualidade: 71.4, score: 71 },
-  { nome: "ROTA - CAS - DM50", qualidade: 70.7, score: 71 },
-  { nome: "ROTA - SOO - DF35", qualidade: 69.0, score: 69 },
-  { nome: "ROTA - SOO - DF36", qualidade: 68.3, score: 68 },
-  { nome: "ROTA - SOO - DF37", qualidade: 66.5, score: 67 },
-  { nome: "ROTA - SOO - DF38", qualidade: 65.8, score: 66 },
-  { nome: "ROTA - SOO - DF39", qualidade: 64.1, score: 64 },
-  { nome: "ROTA - SOO - DF40", qualidade: 62.4, score: 62 },
-  { nome: "ROTA - SOO - DS41", qualidade: 60.7, score: 61 },
-  { nome: "ROTA - SOO - DS42", qualidade: 58.0, score: 58 },
-  { nome: "RAFAEL NEVES - GERENTE RELACIONAMENTO - CTA", qualidade: 55.3, score: 55 },
-  { nome: "JUSARA - GERENTE RE RELACIONAMENTO - CCO", qualidade: 52.6, score: 53 },
-  { nome: "CLECI - GERENTE DE REALACIONAMENTO - CSC", qualidade: 49.9, score: 50 },
-  { nome: "ARY CESARIO - GERENTE DE RELACIONAMENTO - SOO", qualidade: 47.2, score: 47 },
-  { nome: "ANDRE SILVA - GERENTE DE RELACIONAMENTO - IAI", qualidade: 44.5, score: 45 },
-  { nome: "MARIA INES - GERENTE DE RELACIONAMENTO - SOO - ILHA", qualidade: 41.8, score: 42 },
-  { nome: "ILMAR DERETTI - GERENTE DE RELACIONAMENTO - BNU", qualidade: 56.1, score: 56 },
-  { nome: "LEI Nº 14.151 – Home Office Gestantes", qualidade: 63.4, score: 63 },
-  { nome: "Superintendência de Relacionamento", qualidade: 59.7, score: 60 },
-  { nome: "SUPERINTENDÊNCIA COMERCIAL", qualidade: 51.0, score: 51 },
-  { nome: "ROTA - SOO - DS43", qualidade: 46.3, score: 46 },
-].map(e => ({ ...e, tendencia: e.qualidade >= 88 ? "melhorando" : e.qualidade >= 85 ? "estavel" : "piorando" }));
+// ── Área data from real JSON entities ──
+const areaData = ajustesAreas.map((a, i) => {
+  const quals = [88.5, 82.3, 79.1];
+  const q = quals[i % quals.length];
+  return { nome: a.name, qualidade: q, score: Math.round(q), tendencia: q >= 88 ? "melhorando" : q >= 85 ? "estavel" : "piorando" };
+});
+
+// ── Unidade de Negócio data from real JSON entities ──
+const unidadeData = ajustesUnidades.map((u, i) => {
+  const quals = [90.2, 84.7, 76.5];
+  const q = quals[i % quals.length];
+  return { nome: u.name, qualidade: q, score: Math.round(q), tendencia: q >= 88 ? "melhorando" : q >= 85 ? "estavel" : "piorando" };
+});
 
 // ── Generate scatter-compatible data from any entity list ──
 function toScatterData(items: { nome: string; qualidade: number; score: number }[]) {
