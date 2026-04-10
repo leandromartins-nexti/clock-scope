@@ -124,8 +124,6 @@ function LegacyMenuItems({ isCollapsed }: { isCollapsed: boolean }) {
       )}
 
       {collapsibleSection("Nexti Control", Car, nextiControlOpen, setNextiControlOpen)}
-      {collapsibleSection("Nexti Control 2.0", Car, nextiControl2Open, setNextiControl2Open, "Beta")}
-      {collapsibleSection("Livro de Ocorrência", BookOpen, livroOpen, setLivroOpen)}
     </>
   );
 }
