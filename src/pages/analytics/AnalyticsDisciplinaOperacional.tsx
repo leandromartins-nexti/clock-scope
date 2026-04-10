@@ -618,7 +618,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
   const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
-  const chartScatterTrat = allScatterTratativa;
+  const chartScatterTrat = useMemo(() => {
+    if (selectedRegional) return allScatterTratativa.filter(s => s.regional === selectedRegional);
+    if (visibleSet.size > 0) return allScatterTratativa.filter(s => visibleSet.has(s.regional));
+    return allScatterTratativa;
+  }, [allScatterTratativa, selectedRegional, visibleSet]);
 
   const avgQualVolume = useMemo(() => chartScatterQual.length ? Math.round(chartScatterQual.reduce((s, d) => s + d.volume, 0) / chartScatterQual.length) : 170000, [chartScatterQual]);
   const avgQualQualidade = useMemo(() => chartScatterQual.length ? +(chartScatterQual.reduce((s, d) => s + d.qualidade, 0) / chartScatterQual.length).toFixed(1) : 85, [chartScatterQual]);
