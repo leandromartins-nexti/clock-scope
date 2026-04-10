@@ -232,7 +232,7 @@ export default function AnalyticsResumoExecutivo() {
                 const indicadorRouteMap: Record<string, string> = {
                   "Qualidade do Ponto": "/analytics/operacional",
                   "Absenteísmo": "/analytics/operacional?tab=absenteismo",
-                  "Volume HE": "/analytics/operacional?tab=banco-horas",
+                  "Volume HE": "/analytics/operacional?tab=bancoHoras",
                   "Movimentações": "/analytics/operacional?tab=movimentacoes",
                   "Cobertura Efetiva": "/analytics/operacional?tab=coberturas",
                 };
