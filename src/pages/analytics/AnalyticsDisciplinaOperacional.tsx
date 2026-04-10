@@ -755,6 +755,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               }))} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
                 <XAxis dataKey="mes" tick={(props: any) => {
                   const { x, y, payload } = props;
                   const isActive = selectedMes === payload.value;
