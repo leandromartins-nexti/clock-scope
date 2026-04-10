@@ -874,8 +874,13 @@ export function getQualidadeKpiSummary(
   }
   const tempoMedioDias = tempoVolume > 0 ? +(tempoWeighted / tempoVolume).toFixed(1) : 0;
 
-  // % até 1 dia
+  // % até 1 dia e +15 dias
   const ate1DiaPct = tTotal > 0 ? +((tF1 / tTotal) * 100).toFixed(1) : 0;
+  const mais15DiaPct = tTotal > 0 ? +((tF5 / tTotal) * 100).toFixed(1) : 0;
+
+  // % registradas e ajustadas
+  const registradasPct = totalMarcacoes > 0 ? +((totalReg / totalMarcacoes) * 100).toFixed(1) : 0;
+  const ajustadasPct = totalMarcacoes > 0 ? +((totalJust / totalMarcacoes) * 100).toFixed(1) : 0;
 
   function calcComposite(qPct: number, f1: number, f2: number, f3: number, f4: number, f5: number, tot: number): number {
     if (!scoreConfig) return Math.round(qPct);
