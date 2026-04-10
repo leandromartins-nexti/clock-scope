@@ -790,3 +790,80 @@ export function aggregateQualidadeVolume(
     headcount: d.headcount,
   }));
 }
+
+// ══════════════════════════════════════════════════════════════
+// KPI Summary – computes Registradas, Justificadas, Score,
+// Melhor Operação and Maior Risco from real JSON data
+// ══════════════════════════════════════════════════════════════
+
+function formatKpiValue(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return n.toLocaleString("pt-BR");
+}
+
+export function getQualidadeKpiSummary(
+  selectedName: string | null,
+  groupBy: "empresa" | "unidade" | "area" = "empresa"
+): {
+  score: number;
+  diff: string;
+  registradas: string;
+  justificadas: string;
+  melhorOperacao: { nome: string; score: number };
+  maiorRisco: { nome: string; score: number; indicador: string };
+} {
+  type Row = { name: string; reference_month: string; registradas: number; justificadas: number; total_marcacoes: number; qualidade: number };
+  let rows: Row[];
+
+  if (groupBy === "unidade") {
+    rows = qualidadeUnidadeData.map(r => ({ name: r.business_unit_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas, total_marcacoes: r.total_marcacoes, qualidade: r.qualidade_percentual }));
+  } else if (groupBy === "area") {
+    rows = qualidadeAreaData.map(r => ({ name: r.area_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas, total_marcacoes: r.total_marcacoes, qualidade: r.qualidade_percentual }));
+  } else {
+    rows = qualidadeEmpresaData.map(r => ({ name: r.company_name, reference_month: r.reference_month, registradas: r.registradas, justificadas: r.justificadas, total_marcacoes: r.total_marcacoes, qualidade: r.qualidade_percentual }));
+  }
+
+  const filtered = selectedName ? rows.filter(r => r.name === selectedName) : rows;
+
+  // Totals
+  let totalReg = 0, totalJust = 0, totalMarcacoes = 0, qualWeighted = 0;
+  for (const r of filtered) {
+    totalReg += r.registradas;
+    totalJust += r.justificadas;
+    totalMarcacoes += r.total_marcacoes;
+    qualWeighted += r.qualidade * r.total_marcacoes;
+  }
+  const score = totalMarcacoes > 0 ? Math.round(qualWeighted / totalMarcacoes) : 0;
+
+  // Per-entity weighted quality for melhor/pior
+  const entityMap = new Map<string, { qualW: number; vol: number }>();
+  for (const r of filtered) {
+    const e = entityMap.get(r.name);
+    if (e) { e.qualW += r.qualidade * r.total_marcacoes; e.vol += r.total_marcacoes; }
+    else { entityMap.set(r.name, { qualW: r.qualidade * r.total_marcacoes, vol: r.total_marcacoes }); }
+  }
+
+  let melhor = { nome: "-", score: 0 };
+  let pior = { nome: "-", score: 100, indicador: "" };
+  for (const [name, d] of entityMap) {
+    const q = Math.round(d.qualW / d.vol);
+    if (q > melhor.score) melhor = { nome: name, score: q };
+    if (q < pior.score) pior = { nome: name, score: q, indicador: "Baixa qualidade" };
+  }
+
+  // If only one entity selected, set both to it
+  if (selectedName) {
+    melhor = { nome: selectedName, score };
+    pior = { nome: selectedName, score, indicador: `${(100 - score).toFixed(0)}% justificadas` };
+  }
+
+  return {
+    score,
+    diff: "",
+    registradas: formatKpiValue(totalReg),
+    justificadas: formatKpiValue(totalJust),
+    melhorOperacao: melhor,
+    maiorRisco: pior,
+  };
+}

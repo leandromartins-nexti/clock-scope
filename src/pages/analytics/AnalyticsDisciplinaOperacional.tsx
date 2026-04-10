@@ -10,7 +10,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine,
   ScatterChart, Scatter, ZAxis, Cell,
 } from "recharts";
-import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume } from "@/lib/ajustesData";
+import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary } from "@/lib/ajustesData";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
@@ -550,24 +550,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const [tratDataMode, setTratDataMode] = useState<DataMode>("percent");
 
   const activeData = useMemo(() => {
-    if (!selectedRegional) return {
-      score: 87, diff: "+4 pp", registradas: "892.0K", justificadas: "130.2K",
-      melhorOperacao: { nome: "Regional SP", score: 89 },
-      maiorRisco: { nome: "Regional BA", score: 82, indicador: "Baixa qualidade" },
-    };
-    const r = qualidadeRegionais.find(x => x.nome === selectedRegional);
-    if (!r) return {
-      score: 87, diff: "+4 pp", registradas: "892.0K", justificadas: "130.2K",
-      melhorOperacao: { nome: "Regional SP", score: 89 },
-      maiorRisco: { nome: "Regional BA", score: 82, indicador: "Baixa qualidade" },
-    };
-    return {
-      score: Math.round(r.qualidade), diff: `${Math.round(r.qualidade - 87)} pp`,
-      registradas: `${(r.registradas * 12.4).toFixed(0)}K`, justificadas: `${(r.justificadas * 3.26).toFixed(0)}K`,
-      melhorOperacao: { nome: selectedRegional, score: Math.round(r.qualidade) },
-      maiorRisco: { nome: selectedRegional, score: Math.round(r.qualidade), indicador: `${r.atrasos}% atrasos` },
-    };
-  }, [selectedRegional]);
+    return getQualidadeKpiSummary(selectedRegional, groupBy as any);
+  }, [selectedRegional, groupBy]);
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
@@ -674,7 +658,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           <ScoreBoard title="Qualidade do Ponto" tooltip="Percentual de marcações registradas corretamente vs total de marcações que exigiram intervenção (justificativas manuais).">
             <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} />
           </ScoreBoard>
-          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · Alta`} />
+          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · ${activeData.melhorOperacao.score >= 85 ? "Alta" : activeData.melhorOperacao.score >= 70 ? "Média" : "Baixa"}`} />
           <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
           <KPIBoard title="Registradas" tooltip="Total de marcações registradas pelo colaborador sem necessidade de ajuste." value={activeData.registradas} valueColor="text-green-600" />
           <KPIBoard title="Justificadas" tooltip="Total de marcações que foram justificadas manualmente pelo operador ou gestor." value={activeData.justificadas} valueColor="text-orange-500" />
