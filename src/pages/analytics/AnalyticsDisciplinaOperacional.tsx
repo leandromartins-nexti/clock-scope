@@ -692,7 +692,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 chartMode={chartMode} onChartModeChange={setChartMode}
               />
             </div>
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={280}>
               {chartMode === "bar" ? (
                 (() => {
                   const barData = showDetalhado
@@ -948,7 +948,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   chartMode={tratChartMode} onChartModeChange={setTratChartMode}
                 />
               </div>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={280}>
                 {tratChartMode === "bar" ? (
                   <BarChart data={tratData} onClick={tratClick}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
