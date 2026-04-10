@@ -849,11 +849,30 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           </div>
 
           <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Tempo de Tratativa vs Volume</h4>
-              <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária." />
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center gap-1.5">
+                <h4 className="text-sm font-semibold">Tempo de Tratativa vs Volume</h4>
+                <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária. Dados reais agregados por unidade de negócio." />
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setTratativaMes(null)}
+                  className={`px-2 py-0.5 rounded text-[9px] font-medium transition-colors ${!tratativaMes ? "bg-[#FF5722] text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                >
+                  Todos
+                </button>
+                {ajustesMeses.map(m => (
+                  <button
+                    key={m}
+                    onClick={() => setTratativaMes(m)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-medium transition-colors ${tratativaMes === m ? "bg-[#FF5722] text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                  >
+                    {formatMesLabel(m)}
+                  </button>
+                ))}
+              </div>
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount{tratativaMes ? ` · ${formatMesLabel(tratativaMes)}` : " · consolidado"}</p>
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
