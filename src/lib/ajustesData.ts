@@ -309,10 +309,49 @@ export const composicaoUnidadeData: ComposicaoFaixaRecord[] = [
   { company_id: 17519, company_name: "VIG EYES SEGURANCA PATRIMONIAL", reference_month: "2026-04-01", total_ajustes: 18, faixa_ate_1_dia: 0, faixa_1_3_dias: 4, faixa_3_7_dias: 7, faixa_7_15_dias: 7, faixa_mais_15_dias: 0 },
 ];
 
+export const composicaoAreaData: ComposicaoFaixaRecord[] = [
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-04-01", total_ajustes: 721, faixa_ate_1_dia: 109, faixa_1_3_dias: 93, faixa_3_7_dias: 160, faixa_7_15_dias: 185, faixa_mais_15_dias: 174 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-04-01", total_ajustes: 41, faixa_ate_1_dia: 9, faixa_1_3_dias: 1, faixa_3_7_dias: 13, faixa_7_15_dias: 8, faixa_mais_15_dias: 10 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-04-01", total_ajustes: 2, faixa_ate_1_dia: 2, faixa_1_3_dias: 0, faixa_3_7_dias: 0, faixa_7_15_dias: 0, faixa_mais_15_dias: 0 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-05-01", total_ajustes: 726, faixa_ate_1_dia: 122, faixa_1_3_dias: 142, faixa_3_7_dias: 171, faixa_7_15_dias: 109, faixa_mais_15_dias: 182 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-05-01", total_ajustes: 5, faixa_ate_1_dia: 1, faixa_1_3_dias: 0, faixa_3_7_dias: 1, faixa_7_15_dias: 1, faixa_mais_15_dias: 2 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-05-01", total_ajustes: 5, faixa_ate_1_dia: 2, faixa_1_3_dias: 0, faixa_3_7_dias: 0, faixa_7_15_dias: 0, faixa_mais_15_dias: 3 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-06-01", total_ajustes: 751, faixa_ate_1_dia: 91, faixa_1_3_dias: 154, faixa_3_7_dias: 211, faixa_7_15_dias: 172, faixa_mais_15_dias: 123 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-06-01", total_ajustes: 24, faixa_ate_1_dia: 3, faixa_1_3_dias: 7, faixa_3_7_dias: 12, faixa_7_15_dias: 1, faixa_mais_15_dias: 1 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-06-01", total_ajustes: 15, faixa_ate_1_dia: 10, faixa_1_3_dias: 2, faixa_3_7_dias: 0, faixa_7_15_dias: 2, faixa_mais_15_dias: 1 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-07-01", total_ajustes: 783, faixa_ate_1_dia: 205, faixa_1_3_dias: 204, faixa_3_7_dias: 179, faixa_7_15_dias: 82, faixa_mais_15_dias: 113 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-07-01", total_ajustes: 89, faixa_ate_1_dia: 30, faixa_1_3_dias: 26, faixa_3_7_dias: 31, faixa_7_15_dias: 2, faixa_mais_15_dias: 0 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-07-01", total_ajustes: 17, faixa_ate_1_dia: 10, faixa_1_3_dias: 2, faixa_3_7_dias: 4, faixa_7_15_dias: 1, faixa_mais_15_dias: 0 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-08-01", total_ajustes: 608, faixa_ate_1_dia: 176, faixa_1_3_dias: 157, faixa_3_7_dias: 139, faixa_7_15_dias: 114, faixa_mais_15_dias: 22 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-08-01", total_ajustes: 40, faixa_ate_1_dia: 17, faixa_1_3_dias: 7, faixa_3_7_dias: 4, faixa_7_15_dias: 7, faixa_mais_15_dias: 5 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-08-01", total_ajustes: 9, faixa_ate_1_dia: 4, faixa_1_3_dias: 5, faixa_3_7_dias: 0, faixa_7_15_dias: 0, faixa_mais_15_dias: 0 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-09-01", total_ajustes: 621, faixa_ate_1_dia: 152, faixa_1_3_dias: 139, faixa_3_7_dias: 149, faixa_7_15_dias: 122, faixa_mais_15_dias: 59 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-09-01", total_ajustes: 293, faixa_ate_1_dia: 49, faixa_1_3_dias: 37, faixa_3_7_dias: 59, faixa_7_15_dias: 135, faixa_mais_15_dias: 13 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-09-01", total_ajustes: 79, faixa_ate_1_dia: 14, faixa_1_3_dias: 21, faixa_3_7_dias: 27, faixa_7_15_dias: 16, faixa_mais_15_dias: 1 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-10-01", total_ajustes: 856, faixa_ate_1_dia: 88, faixa_1_3_dias: 118, faixa_3_7_dias: 192, faixa_7_15_dias: 88, faixa_mais_15_dias: 370 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-10-01", total_ajustes: 575, faixa_ate_1_dia: 110, faixa_1_3_dias: 53, faixa_3_7_dias: 116, faixa_7_15_dias: 117, faixa_mais_15_dias: 179 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-10-01", total_ajustes: 85, faixa_ate_1_dia: 5, faixa_1_3_dias: 3, faixa_3_7_dias: 4, faixa_7_15_dias: 8, faixa_mais_15_dias: 65 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-11-01", total_ajustes: 1070, faixa_ate_1_dia: 116, faixa_1_3_dias: 149, faixa_3_7_dias: 275, faixa_7_15_dias: 347, faixa_mais_15_dias: 183 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-11-01", total_ajustes: 365, faixa_ate_1_dia: 89, faixa_1_3_dias: 59, faixa_3_7_dias: 37, faixa_7_15_dias: 88, faixa_mais_15_dias: 92 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-11-01", total_ajustes: 168, faixa_ate_1_dia: 21, faixa_1_3_dias: 20, faixa_3_7_dias: 44, faixa_7_15_dias: 37, faixa_mais_15_dias: 46 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2025-12-01", total_ajustes: 795, faixa_ate_1_dia: 134, faixa_1_3_dias: 165, faixa_3_7_dias: 235, faixa_7_15_dias: 183, faixa_mais_15_dias: 78 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2025-12-01", total_ajustes: 307, faixa_ate_1_dia: 126, faixa_1_3_dias: 85, faixa_3_7_dias: 61, faixa_7_15_dias: 29, faixa_mais_15_dias: 6 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2025-12-01", total_ajustes: 125, faixa_ate_1_dia: 16, faixa_1_3_dias: 20, faixa_3_7_dias: 12, faixa_7_15_dias: 20, faixa_mais_15_dias: 57 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2026-01-01", total_ajustes: 681, faixa_ate_1_dia: 98, faixa_1_3_dias: 186, faixa_3_7_dias: 275, faixa_7_15_dias: 99, faixa_mais_15_dias: 23 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2026-01-01", total_ajustes: 131, faixa_ate_1_dia: 49, faixa_1_3_dias: 58, faixa_3_7_dias: 17, faixa_7_15_dias: 5, faixa_mais_15_dias: 2 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2026-01-01", total_ajustes: 18, faixa_ate_1_dia: 0, faixa_1_3_dias: 3, faixa_3_7_dias: 9, faixa_7_15_dias: 5, faixa_mais_15_dias: 1 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2026-02-01", total_ajustes: 825, faixa_ate_1_dia: 104, faixa_1_3_dias: 166, faixa_3_7_dias: 256, faixa_7_15_dias: 157, faixa_mais_15_dias: 142 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2026-02-01", total_ajustes: 103, faixa_ate_1_dia: 35, faixa_1_3_dias: 48, faixa_3_7_dias: 14, faixa_7_15_dias: 6, faixa_mais_15_dias: 0 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2026-02-01", total_ajustes: 65, faixa_ate_1_dia: 12, faixa_1_3_dias: 10, faixa_3_7_dias: 34, faixa_7_15_dias: 9, faixa_mais_15_dias: 0 },
+  { company_id: 11043, company_name: "SAO PAULO", reference_month: "2026-03-01", total_ajustes: 709, faixa_ate_1_dia: 105, faixa_1_3_dias: 168, faixa_3_7_dias: 265, faixa_7_15_dias: 168, faixa_mais_15_dias: 3 },
+  { company_id: 11046, company_name: "PIRACICABA", reference_month: "2026-03-01", total_ajustes: 77, faixa_ate_1_dia: 13, faixa_1_3_dias: 21, faixa_3_7_dias: 40, faixa_7_15_dias: 3, faixa_mais_15_dias: 0 },
+  { company_id: 11045, company_name: "SOROCABA", reference_month: "2026-03-01", total_ajustes: 31, faixa_ate_1_dia: 4, faixa_1_3_dias: 6, faixa_3_7_dias: 4, faixa_7_15_dias: 17, faixa_mais_15_dias: 0 },
+];
+
 /** Aggregate composição faixas by month, optionally filtering by entity name.
  *  groupBy selects the dataset; selectedName filters within it. */
 export function aggregateComposicaoFaixas(selectedName: string | null, groupBy: "empresa" | "unidade" | "area" = "empresa"): { mes: string; ate1d: number; de1a3d: number; de3a7d: number; de7a15d: number; mais15d: number; total: number }[] {
-  const source = groupBy === "unidade" ? composicaoUnidadeData : composicaoEmpresaData;
+  const source = groupBy === "unidade" ? composicaoUnidadeData : groupBy === "area" ? composicaoAreaData : composicaoEmpresaData;
   const filtered = selectedName
     ? source.filter(r => r.company_name === selectedName)
     : source;
