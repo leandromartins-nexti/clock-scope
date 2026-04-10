@@ -157,7 +157,7 @@ export function DashboardSidebar() {
             <img src={nextiLogoSmall} alt="N" className="h-12 w-auto object-contain" />
           </div>
         )}
-        <SidebarToggleButton className="text-white hover:bg-[rgba(255,255,255,0.1)] h-8 w-8 p-0 ml-auto" />
+        <SidebarToggleButton data-onboarding="sidebar-toggle" className="text-white hover:bg-[rgba(255,255,255,0.1)] h-8 w-8 p-0 ml-auto" />
       </SidebarHeader>
 
       <SidebarContent className="flex-1 overflow-y-auto bg-[#3d4449] [&>*+*]:mt-0">
@@ -175,7 +175,7 @@ export function DashboardSidebar() {
             </SidebarMenu>
           </SidebarGroup>
         ) : (
-          <Collapsible open={analyticsOpen} onOpenChange={setAnalyticsOpen} className="px-3 py-1">
+          <Collapsible open={analyticsOpen} onOpenChange={setAnalyticsOpen} className="px-3 py-1" data-onboarding="analytics-menu">
             <CollapsibleTrigger className="w-full">
               <SidebarMenuButton className="text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3 w-full justify-between">
                 <div className="flex items-center">
