@@ -715,7 +715,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                             {showDetalhado && <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>}
                             {[{ name: "Registradas", value: reg, color: "#22c55e" }, { name: "Justificadas", value: jus, color: "#ef4444" }].map(f => (
                               <div key={f.name} className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: f.color }} />
+                                <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
                                 <span className="text-muted-foreground">{f.name}:</span>
                                 <span className="font-medium text-foreground">{showDetalhado ? `${((f.value / total) * 100).toFixed(0)}% (${f.value.toLocaleString("pt-BR")})` : `${f.value}%`}</span>
                               </div>
@@ -772,7 +772,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                             {showDetalhado && <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>}
                             {[{ name: "Registradas", value: reg, color: "#22c55e" }, { name: "Justificadas", value: jus, color: "#ef4444" }].map(f => (
                               <div key={f.name} className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: f.color }} />
+                                <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
                                 <span className="text-muted-foreground">{f.name}:</span>
                                 <span className="font-medium text-foreground">{showDetalhado ? `${((f.value / total) * 100).toFixed(0)}% (${f.value.toLocaleString("pt-BR")})` : `${f.value}%`}</span>
                               </div>
@@ -810,7 +810,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>
                           {[{ name: "Registradas", value: reg, color: "#22c55e" }, { name: "Justificadas", value: jus, color: "#ef4444" }].map(f => (
                             <div key={f.name} className="flex items-center gap-1.5">
-                              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: f.color }} />
+                              <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
                               <span className="text-muted-foreground">{f.name}:</span>
                               <span className="font-medium text-foreground">{`${((f.value / total) * 100).toFixed(1)}% (${f.value.toLocaleString("pt-BR")})`}</span>
                             </div>
@@ -841,7 +841,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           <p className="font-semibold text-foreground">{label}</p>
                           {[{ name: "Registradas", value: val, color: "#22c55e" }, { name: "Justificadas", value: +(100 - val).toFixed(1), color: "#ef4444" }].map(f => (
                             <div key={f.name} className="flex items-center gap-1.5">
-                              <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: f.color }} />
+                              <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
                               <span className="text-muted-foreground">{f.name}:</span>
                               <span className="font-medium text-foreground">{f.value}%</span>
                             </div>
@@ -908,7 +908,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     const pct = ((abs / raw.total) * 100).toFixed(0);
                     return (
                       <div key={f.key} className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: f.color }} />
+                        <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
                         <span className="text-muted-foreground">{f.name}:</span>
                         <span className="font-medium text-foreground">{pct}% ({abs.toLocaleString("pt-BR")})</span>
                       </div>
