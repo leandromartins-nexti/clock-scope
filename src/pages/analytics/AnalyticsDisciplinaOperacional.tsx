@@ -563,12 +563,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
-  const mesesJsonLabels = useMemo(() => new Set(ajustesMeses.map(formatMesLabel)), []);
-  const mesLabelToReferenceMonth = useMemo(() => new Map(ajustesMeses.map((month) => [formatMesLabel(month), month])), []);
-
-  const qualidadeEvolucaoFiltrada = useMemo(
-    () => qualidadeEvolucao.filter((item) => mesesJsonLabels.has(item.mes)),
-    [mesesJsonLabels]
+  const qualidadeEvolucaoReal = useMemo(
+    () => aggregateQualidadeEvolucao(selectedRegional, groupBy as any),
+    [selectedRegional, groupBy]
+  );
+  const qualidadeMedia = useMemo(
+    () => qualidadeEvolucaoReal.length ? +(qualidadeEvolucaoReal.reduce((s, d) => s + d.value, 0) / qualidadeEvolucaoReal.length).toFixed(1) : 85,
+    [qualidadeEvolucaoReal]
   );
 
   const tratativaFaixasFiltrada = useMemo(
