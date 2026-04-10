@@ -608,10 +608,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   }, [groupBy]);
 
   const allScatter = useMemo(() => {
-    if (groupBy === "empresa") return empresaScatter;
+    if (groupBy === "empresa") return aggregateQualidadeVolume(selectedReferenceMonth);
     if (groupBy === "area") return areaScatter;
     return scatterQualidade;
-  }, [groupBy]);
+  }, [groupBy, selectedReferenceMonth]);
 
   const allScatterTratativa = useMemo(() => aggregateAjustes(selectedReferenceMonth, groupBy), [selectedReferenceMonth, groupBy]);
 
