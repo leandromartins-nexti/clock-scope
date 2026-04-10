@@ -73,6 +73,15 @@ export const onboardingSteps: OnboardingStep[] = [
     tooltipPosition: "left",
   },
   {
+    id: "drill-qualidade",
+    icon: MousePointerClick,
+    title: "Clique para detalhar",
+    description:
+      "Clique na linha de qualquer indicador para ir direto à tela de detalhes. Por exemplo, clique em 'Qualidade do Ponto' para ver a análise completa. Você também pode acessar pelo menu lateral esquerdo em Operacional.",
+    target: "[data-onboarding='row-qualidade']",
+    tooltipPosition: "bottom",
+  },
+  {
     id: "click-filter",
     icon: MousePointerClick,
     title: "Clique para filtrar",

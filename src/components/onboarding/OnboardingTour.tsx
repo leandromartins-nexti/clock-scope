@@ -221,7 +221,7 @@ function WelcomeModal({ onStart, onSkip, onDismiss }: { onStart: () => void; onS
           className="w-full bg-[#FF5722] text-white py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition mb-2"
         >
           Fazer tour guiado
-          <span className="block text-[10px] font-normal opacity-80 mt-0.5">12 etapas · 90 segundos</span>
+          <span className="block text-[10px] font-normal opacity-80 mt-0.5">11 etapas · 90 segundos</span>
         </button>
         <button
           onClick={onSkip}
