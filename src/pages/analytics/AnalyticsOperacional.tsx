@@ -76,7 +76,7 @@ export default function AnalyticsOperacional() {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex min-h-0">
         {renderTab()}
       </div>
 

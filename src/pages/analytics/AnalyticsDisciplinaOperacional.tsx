@@ -1481,10 +1481,12 @@ export function QualidadeTab() {
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   return (
-    <div className="px-6 py-4">
-      <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+    <>
+      <div className="flex-1 min-w-0 pl-6 py-4">
+        <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+      </div>
       <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
-    </div>
+    </>
   );
 }
 
@@ -1494,10 +1496,12 @@ export function AbsenteismoTab() {
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   return (
-    <div className="px-6 py-4">
-      <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+    <>
+      <div className="flex-1 min-w-0 pl-6 py-4">
+        <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+      </div>
       <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
-    </div>
+    </>
   );
 }
 
@@ -1507,9 +1511,11 @@ export function MovimentacoesTab() {
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   return (
-    <div className="px-6 py-4">
-      <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+    <>
+      <div className="flex-1 min-w-0 pl-6 py-4">
+        <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+      </div>
       <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
-    </div>
+    </>
   );
 }
