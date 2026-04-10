@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Info, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { bancoHoras } from "@/lib/analytics-mock-data";
+import { getSidebarItems } from "@/lib/ajustesData";
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid,
   Tooltip as RechartsTooltip, Legend,
@@ -30,10 +31,7 @@ export default function AnalyticsBancoHoras({ embedded }: { embedded?: boolean }
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
-  const sidebarItems = useMemo(() =>
-    bancoHoras.regionais.map((r: any) => ({ nome: r.nome, score: Math.max(0, 100 - Math.abs(r.saldo) / 50) | 0 })).sort((a: any, b: any) => b.score - a.score),
-    []
-  );
+  const sidebarItems = useMemo(() => getSidebarItems(groupBy), [groupBy]);
 
   const content = (
     <div className="flex flex-1 min-h-0">

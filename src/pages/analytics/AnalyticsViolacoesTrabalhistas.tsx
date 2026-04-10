@@ -1,17 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Filter, Eraser } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo } from "@/lib/analytics-mock-data";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
-
-const placeholderItems = [
-  { nome: "Regional SP", score: 82 },
-  { nome: "Regional RJ", score: 74 },
-  { nome: "Regional MG", score: 68 },
-  { nome: "Regional BA", score: 55 },
-  { nome: "Regional RS", score: 71 },
-];
+import { getSidebarItems } from "@/lib/ajustesData";
 
 export default function AnalyticsViolacoesTrabalhistas({ embedded }: { embedded?: boolean }) {
   const navigate = useNavigate();
@@ -19,6 +12,7 @@ export default function AnalyticsViolacoesTrabalhistas({ embedded }: { embedded?
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
 
+  const sidebarItems = useMemo(() => getSidebarItems(groupBy), [groupBy]);
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 

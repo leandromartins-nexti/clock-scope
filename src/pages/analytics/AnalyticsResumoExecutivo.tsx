@@ -5,6 +5,7 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import { useNavigate } from "react-router-dom";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
+import { getSidebarItems } from "@/lib/ajustesData";
 import {
   ChevronRight, Filter, Eraser, TrendingUp, TrendingDown, Minus,
   AlertTriangle, ArrowDownRight, ArrowUpRight, Info, DollarSign, CheckCircle,
@@ -91,31 +92,11 @@ function SparklineTooltip({ active, payload, cardData }: any) {
 }
 
 
-// ── Mock data for GroupBySidebar ──
-const resumoUnidadeData = [
-  "São José do Rio Preto", "Capital ACL", "Capital SEG", "Novo Hamburgo", "Curitiba Norte",
-  "Joinville", "Campinas", "Curitiba Sul", "Administração - Sede 2", "Goiânia",
-  "Blumenau", "RHO", "Itajaí", "Chapecó", "Ribeirão Preto", "Cascavel",
-  "Administração - Sede", "Jaraguá do Sul", "Brusque", "Novo Hamburgo 2",
-  "Criciúma", "Gaspar", "Palmas", "Tubarão", "Unidade de Negócios",
-].map((n, i) => ({ nome: n, score: 90 - i }));
-
-const resumoEmpresaData = [
-  "Grupo Marista", "Unimed Curitiba", "Sanepar", "Copel", "Renault do Brasil",
-  "Volvo do Brasil", "O Boticário", "Electrolux", "HSBC", "Condor Super Center",
-  "Positivo Tecnologia", "Nutrimental", "Herbarium", "Cargill", "BRF Foods",
-].map((n, i) => ({ nome: n, score: 92 - i * 2 }));
-
-const resumoAreaData = [
-  "ROTA - POA - DM52", "MRH VEICULOS LTDA", "A 365 - Renoá", "ROTA - SOO - SEDE",
-  "Area Cliente Frimesa", "ROTA - RSL - NM51", "CCC - Sanepar", "PROGRAMADA",
-  "GERENCIAL", "G5 BANK", "TESTE-TI", "Gestão de Mão de Obra - RHO",
-].map((n, i) => ({ nome: n, score: 92 - i }));
-
+// ── Sidebar data from real JSON ──
 const resumoGroupData: Record<string, { nome: string; score: number }[]> = {
-  unidade: resumoUnidadeData,
-  empresa: resumoEmpresaData,
-  area: resumoAreaData,
+  unidade: getSidebarItems("unidade"),
+  empresa: getSidebarItems("empresa"),
+  area: getSidebarItems("area"),
 };
 
 

@@ -3,6 +3,7 @@ import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRi
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { coberturas } from "@/lib/analytics-mock-data";
+import { getSidebarItems } from "@/lib/ajustesData";
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip as RechartsTooltip, Legend, PieChart, Pie, Cell,
@@ -60,10 +61,7 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
   };
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
-  const sidebarItems = useMemo(() =>
-    regionais.map((r: any) => ({ nome: r.nome, score: r.score })).sort((a: any, b: any) => b.score - a.score),
-    [regionais]
-  );
+  const sidebarItems = useMemo(() => getSidebarItems(groupBy), [groupBy]);
 
   const content = (
     <div className="flex flex-1 min-h-0">

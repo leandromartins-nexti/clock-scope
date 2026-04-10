@@ -10,7 +10,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine,
   ScatterChart, Scatter, ZAxis, Cell,
 } from "recharts";
-import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary } from "@/lib/ajustesData";
+import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary, getSidebarItems } from "@/lib/ajustesData";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
@@ -31,28 +31,24 @@ function abreviar(nome: string): string {
 // ── Re-export GroupBy from shared component ──
 import GroupBySidebar, { type GroupBy, groupByOptions } from "@/components/analytics/GroupBySidebar";
 
-// ── Empresa data from real aggregated quality ──
-const empresaDataFromReal = aggregateQualidadeVolume(null);
-const empresaData = empresaDataFromReal.map(e => ({
-  nome: e.regional,
-  qualidade: e.qualidade,
-  score: Math.round(e.qualidade),
-  tendencia: e.qualidade >= 88 ? "melhorando" as const : e.qualidade >= 75 ? "estavel" as const : "piorando" as const,
+// ── Sidebar data from real JSON ──
+const empresaData = getSidebarItems("empresa").map(e => ({
+  ...e,
+  qualidade: e.score,
+  tendencia: e.score >= 88 ? "melhorando" as const : e.score >= 75 ? "estavel" as const : "piorando" as const,
 }));
 
-// ── Área data from real JSON entities ──
-const areaData = ajustesAreas.map((a, i) => {
-  const quals = [88.5, 82.3, 79.1];
-  const q = quals[i % quals.length];
-  return { nome: a.name, qualidade: q, score: Math.round(q), tendencia: q >= 88 ? "melhorando" : q >= 85 ? "estavel" : "piorando" };
-});
+const areaData = getSidebarItems("area").map(e => ({
+  ...e,
+  qualidade: e.score,
+  tendencia: e.score >= 88 ? "melhorando" as const : e.score >= 85 ? "estavel" as const : "piorando" as const,
+}));
 
-// ── Unidade de Negócio data from real JSON entities ──
-const unidadeData = ajustesUnidades.map((u, i) => {
-  const quals = [90.2, 84.7, 76.5];
-  const q = quals[i % quals.length];
-  return { nome: u.name, qualidade: q, score: Math.round(q), tendencia: q >= 88 ? "melhorando" : q >= 85 ? "estavel" : "piorando" };
-});
+const unidadeData = getSidebarItems("unidade").map(e => ({
+  ...e,
+  qualidade: e.score,
+  tendencia: e.score >= 88 ? "melhorando" as const : e.score >= 85 ? "estavel" as const : "piorando" as const,
+}));
 
 // ── Generate scatter-compatible data from any entity list ──
 function toScatterData(items: { nome: string; qualidade: number; score: number }[]) {
