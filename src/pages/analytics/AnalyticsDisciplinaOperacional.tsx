@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown } from "lucide-react";
 import IndicatorTable, { type TableColumn, getScoreColor, getScoreBg, getLineColor, TrendIcon } from "@/components/analytics/IndicatorTable";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -8,6 +8,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine,
   ScatterChart, Scatter, ZAxis,
 } from "recharts";
+import { aggregateAjustes, ajustesMeses, formatMesLabel } from "@/lib/ajustesData";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
@@ -648,11 +649,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     return scatterQualidade;
   }, [groupBy]);
 
+  const [tratativaMes, setTratativaMes] = useState<string | null>(null);
+
   const allScatterTratativa = useMemo(() => {
-    if (groupBy === "empresa") return empresaScatter;
-    if (groupBy === "area") return areaScatter;
-    return scatterTratativa;
-  }, [groupBy]);
+    return aggregateAjustes(tratativaMes);
+  }, [tratativaMes]);
 
   const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
   const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
@@ -848,11 +849,30 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           </div>
 
           <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Tempo de Tratativa vs Volume</h4>
-              <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária." />
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center gap-1.5">
+                <h4 className="text-sm font-semibold">Tempo de Tratativa vs Volume</h4>
+                <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária. Dados reais agregados por unidade de negócio." />
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setTratativaMes(null)}
+                  className={`px-2 py-0.5 rounded text-[9px] font-medium transition-colors ${!tratativaMes ? "bg-[#FF5722] text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                >
+                  Todos
+                </button>
+                {ajustesMeses.map(m => (
+                  <button
+                    key={m}
+                    onClick={() => setTratativaMes(m)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-medium transition-colors ${tratativaMes === m ? "bg-[#FF5722] text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                  >
+                    {formatMesLabel(m)}
+                  </button>
+                ))}
+              </div>
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount{tratativaMes ? ` · ${formatMesLabel(tratativaMes)}` : " · consolidado"}</p>
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -875,13 +895,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 }} />
                 <Scatter data={chartScatterTrat} shape={(props: any) => {
                   const { cx, cy, payload } = props;
-                  const r = Math.sqrt(payload.headcount) / 4;
+                  const r = Math.max(8, Math.sqrt(payload.headcount) * 0.8);
                   const fill = payload.dias <= 5 ? "#22c55e" : payload.dias <= 7 ? "#f97316" : "#ef4444";
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                   return (
                     <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={7} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
+                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{payload.regional.replace("VIG EYES ", "").split(/\s+/)[0]?.slice(0, 4) || abreviar(payload.regional)}</text>
                     </g>
                   );
                 }} />
