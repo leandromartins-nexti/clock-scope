@@ -673,11 +673,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
       </div>
 
-      {/* Linha 2: Painel GroupBy horizontal */}
-      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} horizontal />
-
-      {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Linha 2: Gráficos + Sidebar */}
+      <div className="flex gap-3">
+        {/* Charts */}
+        <div className="flex-1 min-w-0 space-y-3">
+        {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
+        <div className="grid grid-cols-2 gap-3">
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-0.5">
               <div>
@@ -1079,6 +1080,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               </ScatterChart>
             </ResponsiveContainer>
           </div>
+        </div>
+        </div>
+
+        <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
       </div>
     </div>
   );
