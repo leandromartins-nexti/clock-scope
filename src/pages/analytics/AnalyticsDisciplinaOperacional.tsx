@@ -666,7 +666,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     return scatterQualidade;
   }, [groupBy]);
 
-  const allScatterTratativa = useMemo(() => aggregateAjustes(selectedReferenceMonth), [selectedReferenceMonth]);
+  const allScatterTratativa = useMemo(() => aggregateAjustes(selectedReferenceMonth, groupBy), [selectedReferenceMonth, groupBy]);
 
   const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
   const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
