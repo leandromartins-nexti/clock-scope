@@ -325,6 +325,16 @@ export default function AnalyticsConfiguracao() {
               ))}
             </div>
           </TabsContent>
+
+          <TabsContent value="score-qualidade">
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-foreground">Score de Qualidade do Ponto</h2>
+              <p className="text-xs text-muted-foreground">
+                Configure os pesos dos componentes e as notas por faixa de tempo de tratativa
+              </p>
+            </div>
+            <ScoreQualidadeConfig />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
