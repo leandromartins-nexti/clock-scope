@@ -579,9 +579,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   );
 
   const tratativaFaixasFiltrada = useMemo(
-    () => evolucaoTratativaFaixas.filter((item) => mesesJsonLabels.has(item.mes)),
-    [mesesJsonLabels]
+    () => {
+      const companyFilter = (groupBy === "empresa" && selectedRegional) ? selectedRegional : null;
+      return aggregateComposicaoFaixas(companyFilter);
+    },
+    [groupBy, selectedRegional]
   );
+  const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
   const selectedReferenceMonth = useMemo(
     () => (selectedMes ? mesLabelToReferenceMonth.get(selectedMes) ?? null : null),
