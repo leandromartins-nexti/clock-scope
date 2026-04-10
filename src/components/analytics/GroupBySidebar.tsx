@@ -93,8 +93,8 @@ export default function GroupBySidebar({
   // ── Collapsed mode ──
   if (collapsed) {
     return (
-      <div className="w-[52px] shrink-0">
-        <div className="bg-card border border-border/50 rounded-xl p-1.5 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col items-center gap-1">
+      <div className="w-[52px] shrink-0 self-stretch">
+        <div className="bg-white border-l border-border/40 p-1.5 h-full flex flex-col items-center gap-1">
           {/* Expand button */}
           <button
             onClick={() => setCollapsed(false)}
@@ -167,8 +167,8 @@ export default function GroupBySidebar({
 
   // ── Expanded mode ──
   return (
-    <div className="w-[240px] shrink-0">
-      <div className="bg-white border-l border-border/40 pl-3 pr-1 py-2 sticky top-4 max-h-[calc(100vh-120px)] flex flex-col">
+    <div className="w-[240px] shrink-0 self-stretch">
+      <div className="bg-white border-l border-border/40 pl-3 pr-1 pt-2 h-full flex flex-col">
         {/* Header: title + collapse button */}
         <div className="flex items-center justify-between mb-1.5">
           <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Filtrar por</p>
