@@ -649,11 +649,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     return scatterQualidade;
   }, [groupBy]);
 
+  const [tratativaMes, setTratativaMes] = useState<string | null>(null);
+
   const allScatterTratativa = useMemo(() => {
-    if (groupBy === "empresa") return empresaScatter;
-    if (groupBy === "area") return areaScatter;
-    return scatterTratativa;
-  }, [groupBy]);
+    return aggregateAjustes(tratativaMes);
+  }, [tratativaMes]);
 
   const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
   const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
