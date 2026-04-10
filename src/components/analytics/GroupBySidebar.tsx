@@ -171,7 +171,7 @@ export default function GroupBySidebar({
       <div className="bg-white border-l border-border/40 pl-3 pr-1 pt-2 h-full flex flex-col">
         {/* Header: title + collapse button */}
         <div className="flex items-center justify-between mb-1.5">
-          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Filtrar por</p>
+          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Tipo de Operação</p>
           <button
             onClick={() => setCollapsed(true)}
             className="p-1 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
