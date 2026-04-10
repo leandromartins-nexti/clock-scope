@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { onboardingSteps } from "./onboarding-steps";
-import { Sparkles, CheckCircle2, ChevronLeft, ChevronRight, X, List, ArrowLeft } from "lucide-react";
+import { Sparkles, CheckCircle2, ChevronLeft, ChevronRight, X, List, ArrowLeft, Gift, Phone, Mail, Users, Clock, Percent } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -221,7 +222,7 @@ function WelcomeModal({ onStart, onSkip, onDismiss }: { onStart: () => void; onS
           className="w-full bg-[#FF5722] text-white py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition mb-2"
         >
           Fazer tour guiado
-          <span className="block text-[10px] font-normal opacity-80 mt-0.5">11 etapas · 90 segundos</span>
+          <span className="block text-[10px] font-normal opacity-80 mt-0.5">12 etapas · 90 segundos</span>
         </button>
         <button
           onClick={onSkip}
@@ -271,6 +272,125 @@ function CompletionModal({ onExplore, onQualidade }: { onExplore: () => void; on
             Ver a aba Qualidade do Ponto
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── GTM Promo Modal ─────────────────────────────────────────
+function GTMPromoModal({ onNext, onSkip }: { onNext: () => void; onSkip: () => void }) {
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = () => {
+    if (!email.trim() || !phone.trim()) {
+      toast({ title: "Preencha todos os campos", description: "E-mail e telefone com DDD são obrigatórios.", variant: "destructive" });
+      return;
+    }
+    // Log lead data (replace with actual API call)
+    console.log("[GTM Lead]", { email: email.trim(), phone: phone.trim(), timestamp: new Date().toISOString() });
+    setSubmitted(true);
+    toast({ title: "Interesse registrado! 🎉", description: "Entraremos em contato em breve." });
+  };
+
+  return (
+    <div className="fixed inset-0 z-[10001] flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="relative bg-white rounded-2xl shadow-2xl w-[520px] max-h-[90vh] overflow-y-auto p-8 animate-scale-in z-10">
+        {/* Badge */}
+        <div className="flex justify-center mb-4">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
+            <Gift size={14} /> Oferta de Lançamento
+          </span>
+        </div>
+
+        <h2 className="text-xl font-bold text-foreground text-center mb-2">
+          Experimente grátis por 3 meses
+        </h2>
+        <p className="text-sm text-muted-foreground text-center mb-6 leading-relaxed">
+          Você tem acesso completo ao Analytics por <strong className="text-foreground">3 meses sem custo</strong>. 
+          Explore todas as funcionalidades e veja o impacto na sua operação.
+        </p>
+
+        {/* Promo highlight */}
+        <div className="bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-xl p-5 mb-6">
+          <div className="flex items-start gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#FF5722] flex items-center justify-center shrink-0">
+              <Percent size={20} className="text-white" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-foreground">30% de desconto por 12 meses</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Assine durante o período gratuito e garanta <strong className="text-[#FF5722]">30% OFF</strong> nos próximos 12 meses de contrato.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 mt-3">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Clock size={13} className="text-amber-600" />
+              <span>Válido por 3 meses</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Users size={13} className="text-amber-600" />
+              <span className="font-semibold text-foreground">Apenas 30 vagas</span>
+            </div>
+          </div>
+        </div>
+
+        {submitted ? (
+          <div className="text-center py-4">
+            <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
+              <CheckCircle2 size={28} className="text-emerald-500" />
+            </div>
+            <h3 className="text-base font-semibold text-foreground mb-1">Recebemos seu interesse!</h3>
+            <p className="text-sm text-muted-foreground mb-4">Nossa equipe entrará em contato em até 24h.</p>
+            <button
+              onClick={onNext}
+              className="w-full bg-[#FF5722] text-white py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition"
+            >
+              Finalizar tour
+            </button>
+          </div>
+        ) : (
+          <>
+            <h3 className="text-sm font-semibold text-foreground mb-3">Tenho interesse!</h3>
+            <div className="space-y-3 mb-4">
+              <div className="relative">
+                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="email"
+                  placeholder="Seu e-mail corporativo"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5722]/30 focus:border-[#FF5722] transition"
+                />
+              </div>
+              <div className="relative">
+                <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="tel"
+                  placeholder="Telefone com DDD — ex: (11) 99999-0000"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5722]/30 focus:border-[#FF5722] transition"
+                />
+              </div>
+            </div>
+            <button
+              onClick={handleSubmit}
+              className="w-full bg-[#FF5722] text-white py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition mb-2"
+            >
+              Quero garantir minha vaga
+            </button>
+            <button
+              onClick={onSkip}
+              className="w-full text-xs text-muted-foreground hover:text-foreground transition py-2"
+            >
+              Agora não, finalizar tour
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -530,7 +650,12 @@ export default function OnboardingTour() {
         <WelcomeModal onStart={handleStart} onSkip={handleSkip} onDismiss={handleDismiss} />
       )}
 
-      {phase === "touring" && (
+      {phase === "touring" && step?.isGTM ? (
+        <GTMPromoModal
+          onNext={() => setPhase("completed")}
+          onSkip={() => setPhase("completed")}
+        />
+      ) : phase === "touring" && (
         <>
           <SpotlightOverlay targetRect={step?.isModal || step?.showLeftArrow ? null : targetRect} />
 
