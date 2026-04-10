@@ -584,11 +584,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   );
   const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
-  const mesLabelToReferenceMonth = useMemo(() => new Map(ajustesMeses.map((month) => [formatMesLabel(month), month])), []);
-  const selectedReferenceMonth = useMemo(
-    () => (selectedMes ? mesLabelToReferenceMonth.get(selectedMes) ?? null : null),
-    [mesLabelToReferenceMonth, selectedMes]
-  );
+
+
   
   const scoreClassif = getScoreClassification(activeData.score, scoreConfig);
   const scoreColor = scoreClassif.text;
