@@ -193,11 +193,9 @@ export default function AnalyticsResumoExecutivo() {
       </div>
 
       {/* Content: main + sidebar */}
-      <div className="flex-1 flex">
-        <div className="flex-1 min-w-0 pl-6 py-4">
-        <div className="flex">
+      <div className="flex-1 flex min-h-0">
           {/* Main content */}
-          <div className="flex-1 min-w-0 space-y-3">
+          <div className="flex-1 min-w-0 pl-6 py-4 space-y-3 overflow-y-auto">
 
             {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
             <div className="grid grid-cols-5 gap-3">
