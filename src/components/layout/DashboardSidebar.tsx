@@ -38,8 +38,6 @@ const analyticsSubmenus: AnalyticsMenuItem[] = [
 function LegacyMenuItems({ isCollapsed }: { isCollapsed: boolean }) {
   const [rhDigitalOpen, setRhDigitalOpen] = useState(false);
   const [nextiControlOpen, setNextiControlOpen] = useState(false);
-  const [nextiControl2Open, setNextiControl2Open] = useState(false);
-  const [livroOpen, setLivroOpen] = useState(false);
 
   const collapsibleSection = (
     label: string,
@@ -124,8 +122,6 @@ function LegacyMenuItems({ isCollapsed }: { isCollapsed: boolean }) {
       )}
 
       {collapsibleSection("Nexti Control", Car, nextiControlOpen, setNextiControlOpen)}
-      {collapsibleSection("Nexti Control 2.0", Car, nextiControl2Open, setNextiControl2Open, "Beta")}
-      {collapsibleSection("Livro de Ocorrência", BookOpen, livroOpen, setLivroOpen)}
     </>
   );
 }
