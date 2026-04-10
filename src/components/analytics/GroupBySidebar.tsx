@@ -19,6 +19,7 @@ interface GroupBySidebarProps {
   onGroupByChange: (g: GroupBy) => void;
   onPagedItemsChange?: (names: string[]) => void;
   pageSize?: number;
+  horizontal?: boolean;
 }
 
 /**
