@@ -1217,6 +1217,9 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     // Check real per-unidade data
     const perUnidade = absenteismoEvolucaoPorUnidade[selectedRegional];
     if (perUnidade) return perUnidade;
+    // Check real per-area data
+    const perArea = absenteismoEvolucaoPorArea[selectedRegional];
+    if (perArea) return perArea;
     // Fallback: ratio-based simulation
     const item = allScatterData.find(d => d.regional === selectedRegional);
     if (!item) return absenteismoEvolucao;
