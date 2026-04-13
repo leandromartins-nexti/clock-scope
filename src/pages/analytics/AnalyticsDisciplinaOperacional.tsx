@@ -1224,7 +1224,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     };
   }, [selectedRegional, allScatterData]);
 
-  const getAbsScore = (abs: number) => Math.round(Math.max(0, 100 - abs * 10));
+  const getAbsScore = (abs: number) => Math.round(Math.max(0, Math.min(100, 100 - abs * 5)));
   const sidebarItems = useMemo(() => {
     if (groupBy === "empresa") return [...empresaAbsScatter].sort((a, b) => a.absenteismo - b.absenteismo).map(e => ({ nome: e.regional, score: getAbsScore(e.absenteismo) }));
     if (groupBy === "area") return [...areaAbsScatter].sort((a, b) => a.absenteismo - b.absenteismo).map(e => ({ nome: e.regional, score: getAbsScore(e.absenteismo) }));
