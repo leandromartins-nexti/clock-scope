@@ -2076,8 +2076,8 @@ ORDER BY a.reference_month, a.headcount DESC;`;
                   );
                 }} />
                 <Legend formatter={(value: string) => <span className="text-xs">{value}</span>} />
-                <Bar dataKey="admissoes" name="Admissões" fill="#22c55e" barSize={32} radius={[3, 3, 0, 0]} animationDuration={600} />
-                <Bar dataKey="demissoes" name="Demissões" fill="#ef4444" barSize={32} radius={[0, 0, 3, 3]} animationDuration={600} />
+                <Bar dataKey="admissoes" name="Admissões" fill="#22c55e" stackId="movimentacao" barSize={32} radius={[3, 3, 0, 0]} animationDuration={600} />
+                <Bar dataKey="demissoes" name="Demissões" fill="#ef4444" stackId="movimentacao" barSize={32} radius={[0, 0, 3, 3]} animationDuration={600} />
               </BarChart>
             </ResponsiveContainer>
           </div>
