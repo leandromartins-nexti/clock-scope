@@ -1188,12 +1188,15 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     return allScatterData.filter(d => visibleNames.includes(d.regional));
   }, [allScatterData, visibleNames]);
 
-  // Evolution data filtered by selectedRegional (use real per-empresa data when available)
+  // Evolution data filtered by selectedRegional (use real per-empresa/unidade data when available)
   const filteredAbsEvolucao = useMemo(() => {
     if (!selectedRegional) return absenteismoEvolucao;
-    // Check if we have real per-empresa evolution data
+    // Check real per-empresa data
     const perEmpresa = absenteismoEvolucaoPorEmpresa[selectedRegional];
     if (perEmpresa) return perEmpresa;
+    // Check real per-unidade data
+    const perUnidade = absenteismoEvolucaoPorUnidade[selectedRegional];
+    if (perUnidade) return perUnidade;
     // Fallback: ratio-based simulation
     const item = allScatterData.find(d => d.regional === selectedRegional);
     if (!item) return absenteismoEvolucao;
