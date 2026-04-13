@@ -507,7 +507,8 @@ const unidadeAbsScatter = realUnidadeAbsScatter;
 const empresaAbsScatter = realEmpresaAbsScatter;
 const areaAbsScatter = realAreaAbsScatter;
 
-
+const absVsTurnoverPorUnidade = buildAbsVsTurnoverFromMaps(absenteismoEvolucaoPorUnidade, turnoverEvolucaoPorUnidade, realUnidadeAbsScatter);
+const absVsTurnoverPorArea = buildAbsVsTurnoverFromMaps(absenteismoEvolucaoPorArea, turnoverEvolucaoPorArea, realAreaAbsScatter);
 
 
 // ── Movimentações ──
