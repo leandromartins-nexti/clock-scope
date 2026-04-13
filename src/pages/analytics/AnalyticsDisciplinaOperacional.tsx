@@ -1868,6 +1868,7 @@ ORDER BY a.reference_month, a.headcount DESC;`;
     return rows;
   }, [groupBy, selectedLabel]);
 
+  return (
     <div className="flex">
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
         {/* Linha 1: Score + 4 KPI Cards */}
