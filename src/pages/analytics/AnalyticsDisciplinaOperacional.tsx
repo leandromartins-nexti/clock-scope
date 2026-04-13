@@ -1939,9 +1939,10 @@ export function QualidadeTab() {
   const [detailRegional, setDetailRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
+  const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
   return (
     <>
-      <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+      <QualidadeContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={handleGroupByChange} />
       <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
     </>
   );
@@ -1952,9 +1953,10 @@ export function AbsenteismoTab() {
   const [detailRegional, setDetailRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
+  const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
   return (
     <>
-      <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+      <AbsenteismoContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={handleGroupByChange} />
       <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
     </>
   );
@@ -1965,9 +1967,10 @@ export function MovimentacoesTab() {
   const [detailRegional, setDetailRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
+  const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
   return (
     <>
-      <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={setGroupBy} />
+      <MovimentacoesContent selectedRegional={selectedRegional} onRegionalClick={handleRegionalClick} onItemDetail={setDetailRegional} groupBy={groupBy} onGroupByChange={handleGroupByChange} />
       <RegionalDetailModal regional={detailRegional} open={!!detailRegional} onClose={() => setDetailRegional(null)} />
     </>
   );
