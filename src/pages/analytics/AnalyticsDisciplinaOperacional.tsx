@@ -205,6 +205,34 @@ const absenteismoEvolucaoPorEmpresa: Record<string, { mes: string; value: number
   ],
 };
 
+// Evolução por unidade de negócio (dados reais)
+const absenteismoEvolucaoPorUnidade: Record<string, { mes: string; value: number; ausencias: number }[]> = {
+  "PORTARIA E LIMPEZA": [
+    { mes: "abr/25", value: 13.41, ausencias: 4824 }, { mes: "mai/25", value: 15.36, ausencias: 5697 },
+    { mes: "jun/25", value: 13.35, ausencias: 4824 }, { mes: "jul/25", value: 13.6, ausencias: 5109 },
+    { mes: "ago/25", value: 13.85, ausencias: 5122 }, { mes: "set/25", value: 10.27, ausencias: 6106 },
+    { mes: "out/25", value: 16.8, ausencias: 12108 }, { mes: "nov/25", value: 16.54, ausencias: 10907 },
+    { mes: "dez/25", value: 18.96, ausencias: 12932 }, { mes: "jan/26", value: 15.1, ausencias: 10213 },
+    { mes: "fev/26", value: 19.79, ausencias: 12981 }, { mes: "mar/26", value: 12.67, ausencias: 9099 },
+  ],
+  "SEGURANCA PATRIMONIAL": [
+    { mes: "abr/25", value: 4.6, ausencias: 150 }, { mes: "mai/25", value: 14.46, ausencias: 458 },
+    { mes: "jun/25", value: 15.64, ausencias: 452 }, { mes: "jul/25", value: 23.44, ausencias: 725 },
+    { mes: "ago/25", value: 11.19, ausencias: 396 }, { mes: "set/25", value: 11.11, ausencias: 372 },
+    { mes: "out/25", value: 16.71, ausencias: 569 }, { mes: "nov/25", value: 20.82, ausencias: 725 },
+    { mes: "dez/25", value: 10.86, ausencias: 393 }, { mes: "jan/26", value: 5.42, ausencias: 187 },
+    { mes: "fev/26", value: 16.39, ausencias: 543 }, { mes: "mar/26", value: 17.41, ausencias: 653 },
+  ],
+  "TERCEIRIZACAO": [
+    { mes: "abr/25", value: 16.44, ausencias: 613 }, { mes: "mai/25", value: 14.25, ausencias: 523 },
+    { mes: "jun/25", value: 19.41, ausencias: 679 }, { mes: "jul/25", value: 16.58, ausencias: 573 },
+    { mes: "ago/25", value: 11.54, ausencias: 371 }, { mes: "set/25", value: 12.03, ausencias: 397 },
+    { mes: "out/25", value: 8.66, ausencias: 305 }, { mes: "nov/25", value: 11.72, ausencias: 493 },
+    { mes: "dez/25", value: 8.65, ausencias: 422 }, { mes: "jan/26", value: 12.41, ausencias: 584 },
+    { mes: "fev/26", value: 11.31, ausencias: 424 }, { mes: "mar/26", value: 28.68, ausencias: 1106 },
+  ],
+};
+
 const turnoverEvolucao = [
   { mes: "abr/25", value: 9.1 }, { mes: "mai/25", value: 8.8 }, { mes: "jun/25", value: 9.4 },
   { mes: "jul/25", value: 8.5 }, { mes: "ago/25", value: 8.2 }, { mes: "set/25", value: 7.9 },
@@ -218,6 +246,13 @@ const realEmpresaAbsScatter = [
   { regional: "SEGURANCA PATRIMONIAL", absenteismo: 12.87, turnover: 8.5, he: 320, headcount: 13 },
   { regional: "PORTARIA E LIMPEZA", absenteismo: 15.27, turnover: 9.1, he: 480, headcount: 420 },
   { regional: "TERCEIRIZACAO", absenteismo: 14.05, turnover: 7.2, he: 350, headcount: 22 },
+];
+
+// Real unidade scatter data from JSON
+const realUnidadeAbsScatter = [
+  { regional: "PORTARIA E LIMPEZA", absenteismo: 15.27, turnover: 8.4, he: 479, headcount: 408 },
+  { regional: "SEGURANCA PATRIMONIAL", absenteismo: 13.95, turnover: 7.7, he: 459, headcount: 27 },
+  { regional: "TERCEIRIZACAO", absenteismo: 14.17, turnover: 7.8, he: 463, headcount: 30 },
 ];
 
 // Generate absenteísmo scatter data from any entity list (seeded, deterministic)
@@ -235,13 +270,7 @@ function toAbsScatterData(items: { nome: string; qualidade: number; score: numbe
   });
 }
 
-// Unidade scatter (from real unidadeData)
-const unidadeAbsScatter = unidadeData.map(u => {
-  const taxa = +(8 + (92 - u.qualidade) * 0.8).toFixed(1);
-  const turnover = +(4 + (92 - u.qualidade) * 0.8).toFixed(1);
-  const he = Math.round(250 + (92 - u.qualidade) * 12);
-  return { regional: u.nome, absenteismo: taxa, turnover, he, headcount: 200 };
-});
+const unidadeAbsScatter = realUnidadeAbsScatter;
 const empresaAbsScatter = realEmpresaAbsScatter;
 const areaAbsScatter = toAbsScatterData(areaData);
 
