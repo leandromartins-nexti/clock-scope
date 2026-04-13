@@ -1159,13 +1159,17 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     return allScatterData.filter(d => visibleNames.includes(d.regional));
   }, [allScatterData, visibleNames]);
 
-  // Evolution data filtered by selectedRegional (simulate variation)
+  // Evolution data filtered by selectedRegional (use real per-empresa data when available)
   const filteredAbsEvolucao = useMemo(() => {
     if (!selectedRegional) return absenteismoEvolucao;
+    // Check if we have real per-empresa evolution data
+    const perEmpresa = absenteismoEvolucaoPorEmpresa[selectedRegional];
+    if (perEmpresa) return perEmpresa;
+    // Fallback: ratio-based simulation
     const item = allScatterData.find(d => d.regional === selectedRegional);
     if (!item) return absenteismoEvolucao;
     const ratio = item.absenteismo / absenteismoMedia;
-    return absenteismoEvolucao.map(d => ({ ...d, value: +(d.value * ratio).toFixed(1) }));
+    return absenteismoEvolucao.map(d => ({ ...d, value: +(d.value * ratio).toFixed(1), ausencias: Math.round(d.ausencias * ratio) }));
   }, [selectedRegional, allScatterData]);
 
   const filteredTurnoverEvolucao = useMemo(() => {
@@ -1176,13 +1180,13 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     return turnoverEvolucao.map(d => ({ ...d, value: +(d.value * ratio).toFixed(1) }));
   }, [selectedRegional, allScatterData]);
 
-  // Absolute value data for # mode
+  // Data with ausencias for # mode (already in filteredAbsEvolucao from real data)
   const absEvolucaoValor = useMemo(() => filteredAbsEvolucao.map(d => ({
-    ...d, ausencias: Math.round(d.value * 80), // ~80 ausências por 1% de taxa
+    ...d, ausencias: (d as any).ausencias ?? Math.round(d.value * 80),
   })), [filteredAbsEvolucao]);
 
   const turnEvolucaoValor = useMemo(() => filteredTurnoverEvolucao.map(d => ({
-    ...d, desligamentos: Math.round(d.value * 12), // ~12 desligamentos por 1%
+    ...d, desligamentos: Math.round(d.value * 12),
   })), [filteredTurnoverEvolucao]);
 
   const activeData = useMemo(() => {
