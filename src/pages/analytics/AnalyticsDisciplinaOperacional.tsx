@@ -1803,6 +1803,18 @@ ORDER BY a.reference_month, a.headcount DESC;`;
     return rows;
   }, [groupBy, selectedLabel]);
 
+  const absVsTurnoverModalData = useMemo(() => {
+    const map = groupBy === "empresa" ? absVsTurnoverPorEmpresa : groupBy === "unidade" ? absVsTurnoverPorUnidade : absVsTurnoverPorArea;
+    const rows: { operacao: string; mes: string; absenteismo: number; turnover: number; headcount: number; desligamentos: number }[] = [];
+    for (const [name, data] of Object.entries(map)) {
+      if (selectedLabel && name !== selectedLabel) continue;
+      for (const d of data) {
+        rows.push({ operacao: name, mes: d.mes, absenteismo: d.absenteismo, turnover: d.turnover, headcount: d.headcount, desligamentos: d.desligamentos });
+      }
+    }
+    return rows;
+  }, [groupBy, selectedLabel]);
+
   return (
     <div className="flex">
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
