@@ -2047,9 +2047,13 @@ ORDER BY a.reference_month, a.headcount DESC;`;
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Admissões e demissões em número absoluto · clique para filtrar</p>
             <ResponsiveContainer width="100%" height={280}>
-               <BarChart data={movimentacaoData} barCategoryGap="20%" stackOffset="sign" margin={{ top: 10, right: 80, bottom: 10, left: 0 }}>
+               <BarChart data={movimentacaoData} stackOffset="sign" margin={{ top: 10, right: 80, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+                <XAxis dataKey="mes" tick={(props: any) => {
+                  const { x, y, payload } = props;
+                  const isActive = selectedMes === payload.value;
+                  return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                }} />
                 <YAxis
                   tick={{ fontSize: 10 }}
                   domain={[-movimentacaoYMax, movimentacaoYMax]}
@@ -2060,24 +2064,41 @@ ORDER BY a.reference_month, a.headcount DESC;`;
                 {movimentacaoSaldoMedio !== 0 && (
                   <ReferenceLine y={movimentacaoSaldoMedio} stroke="#f59e0b" strokeWidth={1.2} strokeDasharray="6 4" label={{ value: `Saldo médio: ${movimentacaoSaldoMedio > 0 ? "+" : ""}${Math.round(movimentacaoSaldoMedio)}`, position: "right", fontSize: 9, fill: "#f59e0b" }} />
                 )}
-                <RechartsTooltip content={({ active, payload, label }) => {
+                <RechartsTooltip content={({ active, payload, label: lbl }) => {
                   if (!active || !payload?.length) return null;
                   const row = payload[0]?.payload;
                   if (!row) return null;
                   const saldo = row.admissoes + row.demissoes;
                   return (
-                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs min-w-[180px]">
-                      <p className="font-semibold mb-1">{label}</p>
-                      <p style={{ color: "#16a34a" }}>Admissões: {row.admissoes} pessoas</p>
-                      <p style={{ color: "#dc2626" }}>Demissões: {Math.abs(row.demissoes)} pessoas</p>
-                      <p style={{ color: saldo >= 0 ? "#16a34a" : "#dc2626", fontWeight: 500 }}>Saldo: {saldo > 0 ? "+" : ""}{saldo} pessoas</p>
-                      <p style={{ color: "#6b7280" }}>Movimentação total: {row.admissoes + Math.abs(row.demissoes)}</p>
+                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                      <p className="font-semibold text-foreground">{lbl}</p>
+                      <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{(row.admissoes + Math.abs(row.demissoes)).toLocaleString("pt-BR")}</span></p>
+                      {[{ name: "Admissões", value: row.admissoes, color: "#22c55e" }, { name: "Demissões", value: Math.abs(row.demissoes), color: "#ef4444" }].map(f => (
+                        <div key={f.name} className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
+                          <span className="text-muted-foreground">{f.name}:</span>
+                          <span className="font-medium text-foreground">{f.value} pessoas</span>
+                        </div>
+                      ))}
+                      <div className="flex items-center gap-1.5 pt-0.5 border-t border-border/50">
+                        <span className="text-muted-foreground">Saldo:</span>
+                        <span className={`font-semibold ${saldo > 0 ? "text-green-600" : saldo < 0 ? "text-red-600" : "text-muted-foreground"}`}>{saldo > 0 ? "+" : ""}{saldo} pessoas</span>
+                      </div>
                     </div>
                   );
                 }} />
-                <Legend formatter={(value: string) => <span className="text-xs">{value}</span>} />
-                <Bar dataKey="admissoes" name="Admissões" fill="#22c55e" stackId="movimentacao" barSize={32} radius={[3, 3, 0, 0]} animationDuration={600} />
-                <Bar dataKey="demissoes" name="Demissões" fill="#ef4444" stackId="movimentacao" barSize={32} radius={[0, 0, 3, 3]} animationDuration={600} />
+                {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 11 }} payload={[{ value: "Admissões", type: "square" as const, color: "#22c55e" }, { value: "Demissões", type: "square" as const, color: "#ef4444" }]} />
+                <Bar dataKey="admissoes" name="Admissões" stackId="movimentacao" stroke="#22c55e" strokeWidth={1} radius={[4, 4, 0, 0]} animationDuration={600}>
+                  {movimentacaoData.map((entry, idx) => (
+                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.25)" : "rgba(34,197,94,0.65)"} />
+                  ))}
+                </Bar>
+                <Bar dataKey="demissoes" name="Demissões" stackId="movimentacao" stroke="rgba(239,68,68,0.5)" strokeWidth={1} radius={[0, 0, 4, 4]} animationDuration={600}>
+                  {movimentacaoData.map((entry, idx) => (
+                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.25)" : "rgba(239,68,68,0.65)"} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
