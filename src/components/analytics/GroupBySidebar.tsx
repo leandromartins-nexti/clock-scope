@@ -18,10 +18,10 @@ function abreviar(nome: string): string {
 }
 
 interface GroupBySidebarProps {
-  items: { nome: string; score: number }[];
+  items: { nome: string; score: number; value?: string }[];
   selectedRegional: string | null;
-  onRegionalClick: (name: string) => void;
-  onItemDetail?: (name: string) => void;
+  onRegionalClick: (value: string) => void;
+  onItemDetail?: (value: string) => void;
   groupBy: GroupBy;
   onGroupByChange: (g: GroupBy) => void;
   onPagedItemsChange?: (names: string[]) => void;
