@@ -53,11 +53,6 @@ function isPdfRequest(text: string): boolean {
 }
 
 async function generateTabPdf(tab: string): Promise<{ url: string; fileName: string }> {
-  const jsPDFModule = await import("jspdf");
-  const jsPDF = jsPDFModule.default || jsPDFModule.jsPDF;
-  // Side-effect import to attach autoTable to jsPDF prototype
-  await import("jspdf-autotable");
-
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const tabName = tabLabels[tab] || tab;
