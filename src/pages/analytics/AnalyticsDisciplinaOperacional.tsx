@@ -2094,7 +2094,7 @@ ORDER BY a.reference_month, a.headcount DESC;`;
                     <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.25)" : "rgba(34,197,94,0.65)"} />
                   ))}
                 </Bar>
-                <Bar dataKey="demissoes" name="Demissões" stackId="movimentacao" stroke="rgba(239,68,68,0.5)" strokeWidth={1} radius={[0, 0, 4, 4]} animationDuration={600} isAnimationActive={false}>
+                <Bar dataKey="demissoes" name="Demissões" stackId="movimentacao" stroke="rgba(239,68,68,0.5)" strokeWidth={1} radius={[4, 4, 0, 0]} animationDuration={600}>
                   {movimentacaoData.map((entry, idx) => (
                     <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.25)" : "rgba(239,68,68,0.65)"} />
                   ))}
