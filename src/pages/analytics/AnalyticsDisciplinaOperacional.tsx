@@ -1339,6 +1339,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   const [absDataMode, setAbsDataMode] = useState<DataMode>("percent");
   const [turnChartMode, setTurnChartMode] = useState<ChartMode>("line");
   const [turnDataMode, setTurnDataMode] = useState<DataMode>("percent");
+  const [chartDataModal, setChartDataModal] = useState<string | null>(null);
   const { config: absConfig } = useAbsenteismoScoreConfig();
 
   const idToLabelByGroup = useMemo(() => ({
