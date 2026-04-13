@@ -254,12 +254,65 @@ const realAreaAbsScatter = [
 ];
 
 const turnoverEvolucao = [
-  { mes: "abr/25", value: 9.1 }, { mes: "mai/25", value: 8.8 }, { mes: "jun/25", value: 9.4 },
-  { mes: "jul/25", value: 8.5 }, { mes: "ago/25", value: 8.2 }, { mes: "set/25", value: 7.9 },
-  { mes: "out/25", value: 8.0 }, { mes: "nov/25", value: 7.6 }, { mes: "dez/25", value: 9.0 },
-  { mes: "jan/26", value: 7.4 }, { mes: "fev/26", value: 7.8 }, { mes: "mar/26", value: 8.2 },
+  { mes: "abr/25", value: 3.16, desligamentos: 8 },
+  { mes: "mai/25", value: 4.82, desligamentos: 12 },
+  { mes: "jun/25", value: 2.81, desligamentos: 7 },
+  { mes: "jul/25", value: 3.17, desligamentos: 8 },
+  { mes: "ago/25", value: 7.2, desligamentos: 18 },
+  { mes: "set/25", value: 4.65, desligamentos: 16 },
+  { mes: "out/25", value: 3.39, desligamentos: 15 },
+  { mes: "nov/25", value: 2.69, desligamentos: 12 },
+  { mes: "dez/25", value: 4.91, desligamentos: 22 },
+  { mes: "jan/26", value: 1.75, desligamentos: 8 },
+  { mes: "fev/26", value: 2.94, desligamentos: 14 },
+  { mes: "mar/26", value: 1.65, desligamentos: 8 },
 ];
-const turnoverMedia = 8.2;
+const turnoverMedia = 3.6;
+
+const turnoverEvolucaoPorEmpresa: Record<string, { mes: string; value: number; desligamentos: number }[]> = {
+  "Portaria e Limpeza": [
+    { mes: "abr/25", value: 1.35, desligamentos: 3 },
+    { mes: "mai/25", value: 5.48, desligamentos: 12 },
+    { mes: "jun/25", value: 3.2, desligamentos: 7 },
+    { mes: "jul/25", value: 3.15, desligamentos: 7 },
+    { mes: "ago/25", value: 7.24, desligamentos: 16 },
+    { mes: "set/25", value: 5.08, desligamentos: 16 },
+    { mes: "out/25", value: 3.14, desligamentos: 13 },
+    { mes: "nov/25", value: 2.88, desligamentos: 12 },
+    { mes: "dez/25", value: 5.31, desligamentos: 22 },
+    { mes: "jan/26", value: 1.89, desligamentos: 8 },
+    { mes: "fev/26", value: 2.71, desligamentos: 12 },
+    { mes: "mar/26", value: 1.33, desligamentos: 6 },
+  ],
+  "Segurança Patrimonial": [
+    { mes: "abr/25", value: 0.0, desligamentos: 0 },
+    { mes: "mai/25", value: 0.0, desligamentos: 0 },
+    { mes: "jun/25", value: 0.0, desligamentos: 0 },
+    { mes: "jul/25", value: 0.0, desligamentos: 0 },
+    { mes: "ago/25", value: 7.69, desligamentos: 1 },
+    { mes: "set/25", value: 0.0, desligamentos: 0 },
+    { mes: "out/25", value: 8.0, desligamentos: 1 },
+    { mes: "nov/25", value: 0.0, desligamentos: 0 },
+    { mes: "dez/25", value: 0.0, desligamentos: 0 },
+    { mes: "jan/26", value: 0.0, desligamentos: 0 },
+    { mes: "fev/26", value: 0.0, desligamentos: 0 },
+    { mes: "mar/26", value: 8.33, desligamentos: 1 },
+  ],
+  "Terceirização": [
+    { mes: "abr/25", value: 28.57, desligamentos: 5 },
+    { mes: "mai/25", value: 0.0, desligamentos: 0 },
+    { mes: "jun/25", value: 0.0, desligamentos: 0 },
+    { mes: "jul/25", value: 6.06, desligamentos: 1 },
+    { mes: "ago/25", value: 6.25, desligamentos: 1 },
+    { mes: "set/25", value: 0.0, desligamentos: 0 },
+    { mes: "out/25", value: 6.67, desligamentos: 1 },
+    { mes: "nov/25", value: 0.0, desligamentos: 0 },
+    { mes: "dez/25", value: 0.0, desligamentos: 0 },
+    { mes: "jan/26", value: 0.0, desligamentos: 0 },
+    { mes: "fev/26", value: 9.52, desligamentos: 2 },
+    { mes: "mar/26", value: 5.13, desligamentos: 1 },
+  ],
+};
 
 // Real empresa scatter data from JSON
 const realEmpresaAbsScatter = [
