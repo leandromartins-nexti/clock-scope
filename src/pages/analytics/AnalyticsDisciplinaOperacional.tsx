@@ -2047,7 +2047,7 @@ ORDER BY a.reference_month, a.headcount DESC;`;
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Admissões e demissões em número absoluto · clique para filtrar</p>
             <ResponsiveContainer width="100%" height={280}>
-               <BarChart data={movimentacaoData} barCategoryGap="20%" barGap="-100%" margin={{ top: 10, right: 80, bottom: 10, left: 0 }}>
+               <BarChart data={movimentacaoData} barCategoryGap="20%" stackOffset="sign" margin={{ top: 10, right: 80, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
                 <YAxis
@@ -2076,8 +2076,8 @@ ORDER BY a.reference_month, a.headcount DESC;`;
                   );
                 }} />
                 <Legend formatter={(value: string) => <span className="text-xs">{value}</span>} />
-                <Bar dataKey="admissoes" name="Admissões" fill="#22c55e" barSize={32} radius={[3, 3, 0, 0]} animationDuration={600} />
-                <Bar dataKey="demissoes" name="Demissões" fill="#ef4444" barSize={32} radius={[0, 0, 3, 3]} animationDuration={600} />
+                <Bar dataKey="admissoes" name="Admissões" fill="#22c55e" stackId="movimentacao" barSize={32} radius={[3, 3, 0, 0]} animationDuration={600} />
+                <Bar dataKey="demissoes" name="Demissões" fill="#ef4444" stackId="movimentacao" barSize={32} radius={[0, 0, 3, 3]} animationDuration={600} />
               </BarChart>
             </ResponsiveContainer>
           </div>
