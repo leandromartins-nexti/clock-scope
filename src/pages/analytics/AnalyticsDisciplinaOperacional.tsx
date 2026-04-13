@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown, LineChartIcon, BarChart3, AreaChartIcon, Percent, Hash } from "lucide-react";
+import { Info, TrendingUp, TrendingDown, Minus, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown, LineChartIcon, BarChart3, AreaChartIcon, Percent, Hash, Database } from "lucide-react";
+import ChartDataModal from "@/components/analytics/ChartDataModal";
 import ChartModeToggle from "@/components/analytics/ChartModeToggle";
 import type { DataMode, ChartMode } from "@/components/analytics/ChartModeToggle";
 import IndicatorTable, { type TableColumn, getScoreColor, getScoreBg, getLineColor, TrendIcon } from "@/components/analytics/IndicatorTable";
@@ -1338,6 +1339,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   const [absDataMode, setAbsDataMode] = useState<DataMode>("percent");
   const [turnChartMode, setTurnChartMode] = useState<ChartMode>("line");
   const [turnDataMode, setTurnDataMode] = useState<DataMode>("percent");
+  const [chartDataModal, setChartDataModal] = useState<string | null>(null);
   const { config: absConfig } = useAbsenteismoScoreConfig();
 
   const idToLabelByGroup = useMemo(() => ({
@@ -1649,6 +1651,13 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
       </LineChart>
     );
   };
+  const groupColumn = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
+  const filterClause = selectedLabel ? `\n  AND ${groupColumn} = '${selectedLabel}'` : "";
+
+  const sqlAbsEvolucao = `SELECT\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_absenteismo, 2) AS value,\n  total_ausencias AS ausencias\nFROM vw_absenteismo_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY competencia;`;
+  const sqlTurnEvolucao = `SELECT\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_turnover, 2) AS value,\n  total_desligamentos AS desligamentos\nFROM vw_turnover_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY competencia;`;
+  const sqlAbsVsTurnover = `SELECT\n  ${groupColumn} AS operacao,\n  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,\n  ROUND(taxa_turnover, 2) AS turnover_pct,\n  headcount\nFROM vw_indicadores_operacao\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'\nGROUP BY operacao\nORDER BY absenteismo_pct DESC;`;
+  const sqlAbsVsHE = `SELECT\n  ${groupColumn} AS operacao,\n  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,\n  ROUND(horas_extras_por_100_colab, 0) AS he_por_100_colab,\n  headcount\nFROM vw_indicadores_operacao\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'\nGROUP BY operacao\nORDER BY absenteismo_pct DESC;`;
 
   return (
     <div className="flex">
@@ -1672,7 +1681,10 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                 <h4 className="text-sm font-semibold">Evolução do Absenteísmo</h4>
                 <p className="text-[10px] text-muted-foreground mb-2">Por competência · clique para filtrar</p>
               </div>
-              <ChartModeToggle dataMode={absDataMode} onDataModeChange={setAbsDataMode} chartMode={absChartMode} onChartModeChange={setAbsChartMode} />
+              <div className="flex items-center gap-1">
+                <button onClick={() => setChartDataModal("absEvolucao")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
+                <ChartModeToggle dataMode={absDataMode} onDataModeChange={setAbsDataMode} chartMode={absChartMode} onChartModeChange={setAbsChartMode} />
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={280}>
               {renderEvoChart(absEvolucaoValor, "ausencias", "value", "hsl(var(--destructive))", absChartMode, absDataMode, absMediaRef, "Absenteísmo")}
@@ -1688,7 +1700,10 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
                 </div>
                 <p className="text-[10px] text-muted-foreground mb-2">Por competência · clique para filtrar</p>
               </div>
-              <ChartModeToggle dataMode={turnDataMode} onDataModeChange={setTurnDataMode} chartMode={turnChartMode} onChartModeChange={setTurnChartMode} />
+              <div className="flex items-center gap-1">
+                <button onClick={() => setChartDataModal("turnEvolucao")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
+                <ChartModeToggle dataMode={turnDataMode} onDataModeChange={setTurnDataMode} chartMode={turnChartMode} onChartModeChange={setTurnChartMode} />
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={280}>
               {renderEvoChart(turnEvolucaoValor, "desligamentos", "value", "#f97316", turnChartMode, turnDataMode, turnMediaRef, "Turnover")}
@@ -1699,9 +1714,12 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
         {/* Row 3: 2 Scatter charts */}
         <div className="grid grid-cols-2 gap-3">
           <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Absenteísmo vs Turnover</h4>
-              <InfoTip text="Operações no quadrante superior direito indicam problema estrutural: alta rotatividade combinada com alto absenteísmo." />
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center gap-1.5">
+                <h4 className="text-sm font-semibold">Absenteísmo vs Turnover</h4>
+                <InfoTip text="Operações no quadrante superior direito indicam problema estrutural: alta rotatividade combinada com alto absenteísmo." />
+              </div>
+              <button onClick={() => setChartDataModal("absVsTurnover")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
             <ResponsiveContainer width="100%" height={280}>
@@ -1741,9 +1759,12 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
           </div>
 
           <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Absenteísmo vs Hora Extra</h4>
-              <InfoTip text="Operações no quadrante superior direito podem estar em ciclo vicioso: colaboradores faltam, quem fica faz hora extra, se cansa e falta mais." />
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center gap-1.5">
+                <h4 className="text-sm font-semibold">Absenteísmo vs Hora Extra</h4>
+                <InfoTip text="Operações no quadrante superior direito podem estar em ciclo vicioso: colaboradores faltam, quem fica faz hora extra, se cansa e falta mais." />
+              </div>
+              <button onClick={() => setChartDataModal("absVsHE")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount</p>
             <ResponsiveContainer width="100%" height={280}>
@@ -1785,6 +1806,11 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
       </div>
 
       <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
+
+      <ChartDataModal open={chartDataModal === "absEvolucao"} onClose={() => setChartDataModal(null)} title="Evolução do Absenteísmo — Dados" data={absEvolucaoValor} columns={[{ key: "mes", label: "Competência" }, { key: "value", label: "Taxa (%)" }, { key: "ausencias", label: "Ausências" }]} sqlQuery={sqlAbsEvolucao} />
+      <ChartDataModal open={chartDataModal === "turnEvolucao"} onClose={() => setChartDataModal(null)} title="Evolução do Turnover — Dados" data={turnEvolucaoValor} columns={[{ key: "mes", label: "Competência" }, { key: "value", label: "Taxa (%)" }, { key: "desligamentos", label: "Desligamentos" }]} sqlQuery={sqlTurnEvolucao} />
+      <ChartDataModal open={chartDataModal === "absVsTurnover"} onClose={() => setChartDataModal(null)} title="Absenteísmo vs Turnover — Dados" data={chartScatter} columns={[{ key: "regional", label: "Operação" }, { key: "absenteismo", label: "Absenteísmo (%)" }, { key: "turnover", label: "Turnover (%)" }, { key: "headcount", label: "Headcount" }]} sqlQuery={sqlAbsVsTurnover} />
+      <ChartDataModal open={chartDataModal === "absVsHE"} onClose={() => setChartDataModal(null)} title="Absenteísmo vs Hora Extra — Dados" data={chartScatter} columns={[{ key: "regional", label: "Operação" }, { key: "absenteismo", label: "Absenteísmo (%)" }, { key: "he", label: "HE/100 colab (h)" }, { key: "headcount", label: "Headcount" }]} sqlQuery={sqlAbsVsHE} />
     </div>
   );
 }
