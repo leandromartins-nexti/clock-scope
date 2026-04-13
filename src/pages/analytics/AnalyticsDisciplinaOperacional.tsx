@@ -1420,8 +1420,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [absChartMode, setAbsChartMode] = useState<ChartMode>("line");
   const [absDataMode, setAbsDataMode] = useState<DataMode>("percent");
-  const [turnChartMode, setTurnChartMode] = useState<ChartMode>("line");
-  const [turnDataMode, setTurnDataMode] = useState<DataMode>("percent");
+  const [chartDataModal, setChartDataModal] = useState<string | null>(null);
   const [chartDataModal, setChartDataModal] = useState<string | null>(null);
   const { config: absConfig } = useAbsenteismoScoreConfig();
 
@@ -1616,7 +1615,6 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
 
   // Shared chart helpers
   const showAbsValor = absDataMode === "valor";
-  const showTurnValor = turnDataMode === "valor";
 
   const absMediaRef = filteredAbsEvolucao.reduce((s, d) => s + d.value, 0) / filteredAbsEvolucao.length;
   const turnMediaExitRef = filteredTurnoverEvolucao.reduce((s, d) => s + d.turnover_exit, 0) / filteredTurnoverEvolucao.length;
