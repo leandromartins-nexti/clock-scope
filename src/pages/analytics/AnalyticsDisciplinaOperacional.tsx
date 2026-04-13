@@ -1338,6 +1338,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   const [absDataMode, setAbsDataMode] = useState<DataMode>("percent");
   const [turnChartMode, setTurnChartMode] = useState<ChartMode>("line");
   const [turnDataMode, setTurnDataMode] = useState<DataMode>("percent");
+  const { config: absConfig } = useAbsenteismoScoreConfig();
 
   // Scatter data per groupBy
   const allScatterData = useMemo(() => {
