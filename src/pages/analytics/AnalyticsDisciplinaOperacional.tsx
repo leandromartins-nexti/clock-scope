@@ -315,7 +315,7 @@ const turnoverEvolucaoPorEmpresa: Record<string, { mes: string; value: number; d
 };
 
 const turnoverEvolucaoPorUnidade: Record<string, { mes: string; value: number; desligamentos: number }[]> = {
-  "Portaria e Limpeza": [
+  "PORTARIA E LIMPEZA": [
     { mes: "abr/25", value: 1.44, desligamentos: 3 },
     { mes: "mai/25", value: 5.35, desligamentos: 11 },
     { mes: "jun/25", value: 1.95, desligamentos: 4 },
@@ -329,7 +329,7 @@ const turnoverEvolucaoPorUnidade: Record<string, { mes: string; value: number; d
     { mes: "fev/26", value: 3.33, desligamentos: 14 },
     { mes: "mar/26", value: 0.46, desligamentos: 2 },
   ],
-  "Segurança Patrimonial": [
+  "SEGURANCA PATRIMONIAL": [
     { mes: "abr/25", value: 4.08, desligamentos: 1 },
     { mes: "mai/25", value: 4.26, desligamentos: 1 },
     { mes: "jun/25", value: 12.77, desligamentos: 3 },
@@ -343,7 +343,7 @@ const turnoverEvolucaoPorUnidade: Record<string, { mes: string; value: number; d
     { mes: "fev/26", value: 0.0, desligamentos: 0 },
     { mes: "mar/26", value: 7.55, desligamentos: 2 },
   ],
-  "Terceirização": [
+  "TERCEIRIZACAO": [
     { mes: "abr/25", value: 19.51, desligamentos: 4 },
     { mes: "mai/25", value: 0.0, desligamentos: 0 },
     { mes: "jun/25", value: 0.0, desligamentos: 0 },
