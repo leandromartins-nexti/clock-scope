@@ -1847,32 +1847,21 @@ ORDER BY a.reference_month, a.headcount DESC;`;
   }, [groupBy, selectedLabel]);
 
   const movimentacaoYMax = useMemo(() => {
-    const maxVal = Math.max(...movimentacaoData.map(d => Math.max(d.hires, d.terminations)));
-    if (maxVal <= 0) return 10;
-    // Determine increment based on range
-    let inc: number;
-    if (maxVal <= 10) inc = 2;
-    else if (maxVal <= 25) inc = 5;
-    else if (maxVal <= 50) inc = 10;
-    else if (maxVal <= 100) inc = 20;
-    else inc = 50;
-    return Math.ceil(maxVal / inc) * inc;
+    const maxVal = Math.max(
+      ...movimentacaoData.map(d => d.hires),
+      ...movimentacaoData.map(d => Math.abs(d.demissoes))
+    );
+    if (maxVal <= 0) return 2;
+    return Math.ceil(maxVal / 2) * 2;
   }, [movimentacaoData]);
 
   const movimentacaoTicks = useMemo(() => {
-    const maxVal = Math.max(...movimentacaoData.map(d => Math.max(d.hires, d.terminations)));
-    let inc: number;
-    if (maxVal <= 10) inc = 2;
-    else if (maxVal <= 25) inc = 5;
-    else if (maxVal <= 50) inc = 10;
-    else if (maxVal <= 100) inc = 20;
-    else inc = 50;
     const ticks: number[] = [];
-    for (let i = -movimentacaoYMax; i <= movimentacaoYMax; i += inc) {
+    for (let i = -movimentacaoYMax; i <= movimentacaoYMax; i += 2) {
       ticks.push(i);
     }
     return ticks;
-  }, [movimentacaoYMax, movimentacaoData]);
+  }, [movimentacaoYMax]);
 
   const [hoveredMovMes, setHoveredMovMes] = useState<string | null>(null);
 
@@ -2082,13 +2071,13 @@ ORDER BY a.reference_month, a.headcount DESC;`;
                   );
                 }} />
                 <Legend formatter={(value: string) => <span className="text-xs">{value}</span>} />
-                <Bar dataKey="hires" name="Admissões" fill="#22c55e" maxBarSize={28} radius={[3, 3, 0, 0]} animationDuration={600}
+                <Bar dataKey="hires" name="Admissões" fill="#22c55e" barSize={32} radius={[3, 3, 0, 0]} animationDuration={600}
                   shape={(props: any) => {
                     const isHovered = !hoveredMovMes || props?.payload?.mes === hoveredMovMes;
                     return <rect x={props.x} y={props.y} width={props.width} height={props.height} fill="#22c55e" rx={3} ry={3} opacity={isHovered ? 1 : 0.4} stroke={hoveredMovMes && isHovered ? "#15803d" : "none"} strokeWidth={1} />;
                   }}
                 />
-                <Bar dataKey="demissoes" name="Demissões" fill="#ef4444" maxBarSize={28} radius={[0, 0, 3, 3]} animationDuration={600}
+                <Bar dataKey="demissoes" name="Demissões" fill="#ef4444" barSize={32} radius={[0, 0, 3, 3]} animationDuration={600}
                   shape={(props: any) => {
                     const isHovered = !hoveredMovMes || props?.payload?.mes === hoveredMovMes;
                     return <rect x={props.x} y={props.y} width={props.width} height={Math.abs(props.height)} fill="#ef4444" rx={3} ry={3} opacity={isHovered ? 1 : 0.4} stroke={hoveredMovMes && isHovered ? "#b91c1c" : "none"} strokeWidth={1} />;
