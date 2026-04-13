@@ -1653,6 +1653,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   };
 
   return (
+    <>
     <div className="flex">
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
         {/* Linha 1: Score + 4 KPI Cards */}
@@ -1801,6 +1802,89 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
 
       <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
     </div>
+
+      {/* Data Modals */}
+      <ChartDataModal
+        open={chartDataModal === "absEvolucao"}
+        onClose={() => setChartDataModal(null)}
+        title="Evolução do Absenteísmo — Dados"
+        data={absEvolucaoValor}
+        columns={[
+          { key: "mes", label: "Competência" },
+          { key: "value", label: "Taxa (%)", format: (v: number) => `${v}%` },
+          { key: "ausencias", label: "Ausências", format: (v: number) => v?.toLocaleString("pt-BR") ?? "—" },
+        ]}
+        sqlQuery={`SELECT
+  DATE_FORMAT(competencia, '%b/%y') AS mes,
+  ROUND(taxa_absenteismo, 2) AS value,
+  total_ausencias AS ausencias
+FROM vw_absenteismo_mensal
+WHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'
+${selectedLabel ? `  AND ${groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name"} = '${selectedLabel}'` : ""}
+ORDER BY competencia;`}
+      />
+      <ChartDataModal
+        open={chartDataModal === "turnEvolucao"}
+        onClose={() => setChartDataModal(null)}
+        title="Evolução do Turnover — Dados"
+        data={turnEvolucaoValor}
+        columns={[
+          { key: "mes", label: "Competência" },
+          { key: "value", label: "Taxa (%)", format: (v: number) => `${v}%` },
+          { key: "desligamentos", label: "Desligamentos", format: (v: number) => v?.toLocaleString("pt-BR") ?? "—" },
+        ]}
+        sqlQuery={`SELECT
+  DATE_FORMAT(competencia, '%b/%y') AS mes,
+  ROUND(taxa_turnover, 2) AS value,
+  total_desligamentos AS desligamentos
+FROM vw_turnover_mensal
+WHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'
+${selectedLabel ? `  AND ${groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name"} = '${selectedLabel}'` : ""}
+ORDER BY competencia;`}
+      />
+      <ChartDataModal
+        open={chartDataModal === "absVsTurnover"}
+        onClose={() => setChartDataModal(null)}
+        title="Absenteísmo vs Turnover — Dados"
+        data={chartScatter}
+        columns={[
+          { key: "regional", label: "Operação" },
+          { key: "absenteismo", label: "Absenteísmo (%)", format: (v: number) => `${v}%` },
+          { key: "turnover", label: "Turnover (%)", format: (v: number) => `${v}%` },
+          { key: "headcount", label: "Headcount", format: (v: number) => v?.toLocaleString("pt-BR") ?? "—" },
+        ]}
+        sqlQuery={`SELECT
+  ${groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name"} AS operacao,
+  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,
+  ROUND(taxa_turnover, 2) AS turnover_pct,
+  headcount
+FROM vw_indicadores_operacao
+WHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'
+GROUP BY operacao
+ORDER BY absenteismo_pct DESC;`}
+      />
+      <ChartDataModal
+        open={chartDataModal === "absVsHE"}
+        onClose={() => setChartDataModal(null)}
+        title="Absenteísmo vs Hora Extra — Dados"
+        data={chartScatter}
+        columns={[
+          { key: "regional", label: "Operação" },
+          { key: "absenteismo", label: "Absenteísmo (%)", format: (v: number) => `${v}%` },
+          { key: "he", label: "HE/100 colab (h)", format: (v: number) => `${v}` },
+          { key: "headcount", label: "Headcount", format: (v: number) => v?.toLocaleString("pt-BR") ?? "—" },
+        ]}
+        sqlQuery={`SELECT
+  ${groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name"} AS operacao,
+  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,
+  ROUND(horas_extras_por_100_colab, 0) AS he_por_100_colab,
+  headcount
+FROM vw_indicadores_operacao
+WHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'
+GROUP BY operacao
+ORDER BY absenteismo_pct DESC;`}
+      />
+    </>
   );
 }
 
