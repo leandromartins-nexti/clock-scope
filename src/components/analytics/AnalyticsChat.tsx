@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageCircle, X, Send, Bot, User, FileDown, Loader2 } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { jsPDF } from "jspdf";
 
 interface ChatMessage {
   id: string;
@@ -51,9 +52,6 @@ function isPdfRequest(text: string): boolean {
 }
 
 async function generateTabPdf(tab: string): Promise<{ url: string; fileName: string }> {
-  const { default: jsPDF } = await import("jspdf");
-  await import("jspdf-autotable");
-
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const tabName = tabLabels[tab] || tab;
@@ -114,19 +112,42 @@ async function generateTabPdf(tab: string): Promise<{ url: string; fileName: str
   doc.text(tableData.title, 14, y);
   y += 4;
 
-  (doc as any).autoTable({
-    startY: y,
-    head: [tableData.headers],
-    body: tableData.rows,
-    margin: { left: 14, right: 14 },
-    styles: { fontSize: 8, cellPadding: 3, textColor: [60, 60, 60] },
-    headStyles: { fillColor: [255, 87, 34], textColor: [255, 255, 255], fontStyle: "bold", fontSize: 8 },
-    alternateRowStyles: { fillColor: [252, 252, 252] },
-    tableLineColor: [230, 230, 230],
-    tableLineWidth: 0.2,
+  // Manual table drawing
+  const colW = (pageW - 28) / tableData.headers.length;
+  const rowH = 8;
+
+  // Header row
+  doc.setFillColor(255, 87, 34);
+  doc.rect(14, y, pageW - 28, rowH, "F");
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(255, 255, 255);
+  tableData.headers.forEach((h, i) => {
+    doc.text(h, 14 + i * colW + 3, y + 5.5);
+  });
+  y += rowH;
+
+  // Data rows
+  doc.setFont("helvetica", "normal");
+  tableData.rows.forEach((row, ri) => {
+    if (ri % 2 === 1) {
+      doc.setFillColor(249, 250, 251);
+      doc.rect(14, y, pageW - 28, rowH, "F");
+    }
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(8);
+    row.forEach((cell, ci) => {
+      doc.text(cell, 14 + ci * colW + 3, y + 5.5);
+    });
+    y += rowH;
   });
 
-  y = (doc as any).lastAutoTable.finalY + 10;
+  // Table border
+  doc.setDrawColor(230, 230, 230);
+  doc.setLineWidth(0.2);
+  doc.rect(14, y - rowH * (tableData.rows.length + 1), pageW - 28, rowH * (tableData.rows.length + 1));
+
+  y += 10;
 
   // Summary section
   const summaryLines = getTabSummary(tab);
@@ -322,6 +343,7 @@ export default function AnalyticsChat({ activeTab }: AnalyticsChatProps) {
           };
           setMessages((prev) => [...prev, botMsg]);
         } catch (err) {
+          console.error("PDF generation error:", err);
           const botMsg: ChatMessage = {
             id: `a-${Date.now()}`,
             role: "assistant",
