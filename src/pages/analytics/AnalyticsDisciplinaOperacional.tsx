@@ -1744,7 +1744,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   const filterClause = selectedLabel ? `\n  AND ${groupColumn} = '${selectedLabel}'` : "";
 
   const sqlAbsEvolucao = `SELECT\n  ${groupColumn} AS operacao,\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_absenteismo, 2) AS taxa_pct,\n  total_ausencias AS ausencias\nFROM vw_absenteismo_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY operacao, competencia;`;
-  const sqlTurnEvolucao = `SELECT\n  ${groupColumn} AS operacao,\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_turnover, 2) AS taxa_pct,\n  total_desligamentos AS desligamentos\nFROM vw_turnover_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY operacao, competencia;`;
+  const sqlTurnEvolucao = `SELECT\n  ${groupColumn} AS operacao,\n  DATE_FORMAT(reference_month, '%b/%y') AS mes,\n  turnover_exit_percentage AS demissoes_pct,\n  turnover_entry_percentage AS admissoes_pct,\n  terminations AS desligamentos,\n  hires AS admissoes,\n  avg_headcount AS headcount_medio\nFROM vw_turnover_mensal\nWHERE reference_month BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY operacao, reference_month;`;
   const sqlAbsVsTurnover = `WITH absenteismo AS (
     SELECT
         tt.customer_id,
