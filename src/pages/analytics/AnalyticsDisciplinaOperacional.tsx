@@ -1842,23 +1842,37 @@ ORDER BY a.reference_month, a.headcount DESC;`;
         const row = data.find(d => d.mes === mes);
         if (row) { totalHires += row.hires; totalTerminations += row.terminations; }
       }
-      return { mes, hires: totalHires, terminations: totalTerminations, terminations_negative: -totalTerminations };
+      return { mes, hires: totalHires, terminations: totalTerminations, demissoes: -totalTerminations };
     });
   }, [groupBy, selectedLabel]);
 
   const movimentacaoYMax = useMemo(() => {
     const maxVal = Math.max(...movimentacaoData.map(d => Math.max(d.hires, d.terminations)));
     if (maxVal <= 0) return 10;
-    // Round up to a nice number for symmetric ticks
-    const candidates = [10, 20, 25, 50, 100, 150, 200, 250, 300, 400, 500, 750, 1000];
-    const nice = candidates.find(c => c >= maxVal) ?? Math.ceil(maxVal / 50) * 50;
-    return nice;
+    // Determine increment based on range
+    let inc: number;
+    if (maxVal <= 10) inc = 2;
+    else if (maxVal <= 25) inc = 5;
+    else if (maxVal <= 50) inc = 10;
+    else if (maxVal <= 100) inc = 20;
+    else inc = 50;
+    return Math.ceil(maxVal / inc) * inc;
   }, [movimentacaoData]);
 
   const movimentacaoTicks = useMemo(() => {
-    const step = movimentacaoYMax / 4;
-    return [-movimentacaoYMax, -step * 3, -step * 2, -step, 0, step, step * 2, step * 3, movimentacaoYMax].map(v => Math.round(v));
-  }, [movimentacaoYMax]);
+    const maxVal = Math.max(...movimentacaoData.map(d => Math.max(d.hires, d.terminations)));
+    let inc: number;
+    if (maxVal <= 10) inc = 2;
+    else if (maxVal <= 25) inc = 5;
+    else if (maxVal <= 50) inc = 10;
+    else if (maxVal <= 100) inc = 20;
+    else inc = 50;
+    const ticks: number[] = [];
+    for (let i = -movimentacaoYMax; i <= movimentacaoYMax; i += inc) {
+      ticks.push(i);
+    }
+    return ticks;
+  }, [movimentacaoYMax, movimentacaoData]);
 
   const [hoveredMovMes, setHoveredMovMes] = useState<string | null>(null);
 
@@ -2042,9 +2056,9 @@ ORDER BY a.reference_month, a.headcount DESC;`;
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Admissões e demissões em número absoluto · clique para filtrar</p>
             <ResponsiveContainer width="100%" height={280}>
-               <BarChart data={movimentacaoData} margin={{ top: 10, right: 80, bottom: 10, left: 0 }}
-                 onMouseMove={(state: any) => { if (state?.activeLabel) setHoveredMovMes(state.activeLabel); }}
-                 onMouseLeave={() => setHoveredMovMes(null)}>
+               <BarChart data={movimentacaoData} barCategoryGap="20%" margin={{ top: 10, right: 80, bottom: 10, left: 0 }}
+                  onMouseMove={(state: any) => { if (state?.activeLabel) setHoveredMovMes(state.activeLabel); }}
+                  onMouseLeave={() => setHoveredMovMes(null)}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${Math.abs(v)}`} domain={[-movimentacaoYMax, movimentacaoYMax]} ticks={movimentacaoTicks} />
@@ -2068,15 +2082,15 @@ ORDER BY a.reference_month, a.headcount DESC;`;
                   );
                 }} />
                 <Legend formatter={(value: string) => <span className="text-xs">{value}</span>} />
-                <Bar dataKey="hires" name="Admissões" fill="#22c55e" radius={[3, 3, 0, 0]} animationDuration={600}
+                <Bar dataKey="hires" name="Admissões" fill="#22c55e" maxBarSize={28} radius={[3, 3, 0, 0]} animationDuration={600}
                   shape={(props: any) => {
-                    const isHovered = !hoveredMovMes || props?.mes === hoveredMovMes || props?.payload?.mes === hoveredMovMes;
+                    const isHovered = !hoveredMovMes || props?.payload?.mes === hoveredMovMes;
                     return <rect x={props.x} y={props.y} width={props.width} height={props.height} fill="#22c55e" rx={3} ry={3} opacity={isHovered ? 1 : 0.4} stroke={hoveredMovMes && isHovered ? "#15803d" : "none"} strokeWidth={1} />;
                   }}
                 />
-                <Bar dataKey="terminations_negative" name="Demissões" fill="#ef4444" radius={[0, 0, 3, 3]} animationDuration={600}
+                <Bar dataKey="demissoes" name="Demissões" fill="#ef4444" maxBarSize={28} radius={[0, 0, 3, 3]} animationDuration={600}
                   shape={(props: any) => {
-                    const isHovered = !hoveredMovMes || props?.mes === hoveredMovMes || props?.payload?.mes === hoveredMovMes;
+                    const isHovered = !hoveredMovMes || props?.payload?.mes === hoveredMovMes;
                     return <rect x={props.x} y={props.y} width={props.width} height={Math.abs(props.height)} fill="#ef4444" rx={3} ry={3} opacity={isHovered ? 1 : 0.4} stroke={hoveredMovMes && isHovered ? "#b91c1c" : "none"} strokeWidth={1} />;
                   }}
                 />
