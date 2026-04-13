@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary, getSidebarItems } from "@/lib/ajustesData";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
+import { useAbsenteismoScoreConfig, computeAbsCompositeScore, getAbsScoreClassification } from "@/contexts/AbsenteismoScoreConfigContext";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
