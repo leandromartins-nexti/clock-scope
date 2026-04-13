@@ -219,7 +219,7 @@ export default function InsightsCenter() {
                       {ins.actionFilter && (
                         <button
                           onClick={() => setOpen(false)}
-                          className="inline-flex items-center gap-1 bg-foreground text-background text-[11px] px-2.5 py-1 rounded hover:opacity-90 transition-opacity"
+                          className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded border border-border text-foreground hover:bg-muted/50 transition-colors"
                         >
                           Filtrar contexto <ExternalLink size={10} />
                         </button>
