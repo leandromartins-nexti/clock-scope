@@ -233,6 +233,26 @@ const absenteismoEvolucaoPorUnidade: Record<string, { mes: string; value: number
   ],
 };
 
+// Evolução por área (dados reais)
+const absenteismoEvolucaoPorArea: Record<string, { mes: string; value: number; ausencias: number }[]> = {
+  "PIRACICABA": [
+    { mes: "abr/25", value: 3.11, ausencias: 46 }, { mes: "mai/25", value: 14.43, ausencias: 197 }, { mes: "jun/25", value: 24.73, ausencias: 286 }, { mes: "jul/25", value: 22.1, ausencias: 294 }, { mes: "ago/25", value: 13.2, ausencias: 203 }, { mes: "set/25", value: 15.4, ausencias: 220 }, { mes: "out/25", value: 17.74, ausencias: 256 }, { mes: "nov/25", value: 26.12, ausencias: 390 }, { mes: "dez/25", value: 13.5, ausencias: 196 }, { mes: "jan/26", value: 6.76, ausencias: 97 }, { mes: "fev/26", value: 22.27, ausencias: 310 }, { mes: "mar/26", value: 22.63, ausencias: 359 },
+  ],
+  "SAO PAULO": [
+    { mes: "abr/25", value: 10.67, ausencias: 908 }, { mes: "mai/25", value: 13.76, ausencias: 1221 }, { mes: "jun/25", value: 20.03, ausencias: 1709 }, { mes: "jul/25", value: 15.9, ausencias: 1335 }, { mes: "ago/25", value: 14.95, ausencias: 1265 }, { mes: "set/25", value: 14.32, ausencias: 1159 }, { mes: "out/25", value: 11.84, ausencias: 981 }, { mes: "nov/25", value: 16.83, ausencias: 1409 }, { mes: "dez/25", value: 7.8, ausencias: 664 }, { mes: "jan/26", value: 11.3, ausencias: 983 }, { mes: "fev/26", value: 15.17, ausencias: 1300 }, { mes: "mar/26", value: 19.24, ausencias: 1780 },
+  ],
+  "SOROCABA": [
+    { mes: "abr/25", value: 22.13, ausencias: 154 }, { mes: "mai/25", value: 20.26, ausencias: 139 }, { mes: "jun/25", value: 34.35, ausencias: 225 }, { mes: "jul/25", value: 1.51, ausencias: 11 }, { mes: "ago/25", value: 0.07, ausencias: 0 }, { mes: "set/25", value: 9.3, ausencias: 179 }, { mes: "out/25", value: 18.09, ausencias: 484 }, { mes: "nov/25", value: 27.2, ausencias: 542 }, { mes: "dez/25", value: 31.99, ausencias: 653 }, { mes: "jan/26", value: 8.94, ausencias: 194 }, { mes: "fev/26", value: 12.21, ausencias: 242 }, { mes: "mar/26", value: 4.51, ausencias: 102 },
+  ],
+};
+
+// Real area scatter data from JSON
+const realAreaAbsScatter = [
+  { regional: "PIRACICABA", absenteismo: 16.83, turnover: 7.6, he: 421, headcount: 9 },
+  { regional: "SAO PAULO", absenteismo: 14.32, turnover: 6.4, he: 358, headcount: 52 },
+  { regional: "SOROCABA", absenteismo: 15.88, turnover: 7.1, he: 397, headcount: 10 },
+];
+
 const turnoverEvolucao = [
   { mes: "abr/25", value: 9.1 }, { mes: "mai/25", value: 8.8 }, { mes: "jun/25", value: 9.4 },
   { mes: "jul/25", value: 8.5 }, { mes: "ago/25", value: 8.2 }, { mes: "set/25", value: 7.9 },
@@ -272,7 +292,7 @@ function toAbsScatterData(items: { nome: string; qualidade: number; score: numbe
 
 const unidadeAbsScatter = realUnidadeAbsScatter;
 const empresaAbsScatter = realEmpresaAbsScatter;
-const areaAbsScatter = toAbsScatterData(areaData);
+const areaAbsScatter = realAreaAbsScatter;
 
 
 
@@ -1197,6 +1217,9 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     // Check real per-unidade data
     const perUnidade = absenteismoEvolucaoPorUnidade[selectedRegional];
     if (perUnidade) return perUnidade;
+    // Check real per-area data
+    const perArea = absenteismoEvolucaoPorArea[selectedRegional];
+    if (perArea) return perArea;
     // Fallback: ratio-based simulation
     const item = allScatterData.find(d => d.regional === selectedRegional);
     if (!item) return absenteismoEvolucao;
