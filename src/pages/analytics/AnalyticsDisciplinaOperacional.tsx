@@ -1630,13 +1630,13 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
         {/* Linha 1: Score + 4 KPI Cards */}
         <div className="grid grid-cols-5 gap-3">
-          <ScoreBoard title="Absenteísmo" tooltip="Score composto de saúde da força de trabalho (0-100), considerando taxa de absenteísmo, turnover e faltas não justificadas.">
+          <ScoreBoard title="Score da Aba" tooltip="Score composto que combina Absenteísmo e Turnover. Configure pesos e limites em Configuração.">
             <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={activeData.faixa} />
           </ScoreBoard>
-          <KPIBoard title="Absenteísmo" tooltip="Taxa de ausências sobre o efetivo total no período." value={`${activeData.taxa}%`} valueColor={activeData.taxa <= 4 ? "text-green-600" : activeData.taxa <= 6 ? "text-orange-500" : "text-red-600"} />
-          <KPIBoard title="Turnover" tooltip="Taxa de rotatividade: desligamentos no período sobre o efetivo médio." value={activeData.turnover} valueColor="text-orange-500" />
-          <KPIBoard title="Melhor Operação" tooltip="Operação com menor taxa de absenteísmo no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · Alta`} />
-          <KPIBoard title="Maior Risco" tooltip="Operação com maior taxa de absenteísmo e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
+          <KPIBoard title="Absenteísmo (%)" tooltip="Taxa de ausências sobre o efetivo total no período." value={`${activeData.taxa}%`} valueColor={activeData.taxa <= 4 ? "text-green-600" : activeData.taxa <= 6 ? "text-orange-500" : "text-red-600"} />
+          <KPIBoard title="Turnover Anual (%)" tooltip="Taxa anualizada para comparação com benchmarks de mercado. O setor de vigilância e facilities tem média de 40% a 80% ao ano." value={activeData.turnover} valueColor="text-orange-500" />
+          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score composto no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score}`} />
+          <KPIBoard title="Maior Risco" tooltip="Operação com menor score composto e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
         </div>
 
         {/* Row 2: 2 Evolution charts with ChartModeToggle */}
