@@ -469,7 +469,7 @@ const absVsTurnoverPorEmpresa: Record<string, { mes: string; absenteismo: number
 // Abs vs Turnover monthly data per unidade (derived from abs + turnover evolution data)
 function buildAbsVsTurnoverFromMaps(
   absMap: Record<string, { mes: string; value: number }[]>,
-  turnMap: Record<string, { mes: string; value: number; desligamentos: number }[]>,
+  turnMap: Record<string, TurnoverEvoRow[]>,
   scatterData: { regional: string; headcount: number }[]
 ): Record<string, { mes: string; absenteismo: number; turnover: number; headcount: number; desligamentos: number }[]> {
   const result: Record<string, { mes: string; absenteismo: number; turnover: number; headcount: number; desligamentos: number }[]> = {};
@@ -480,9 +480,9 @@ function buildAbsVsTurnoverFromMaps(
     result[name] = absData.map(a => ({
       mes: a.mes,
       absenteismo: a.value,
-      turnover: turnByMes[a.mes]?.value ?? 0,
+      turnover: turnByMes[a.mes]?.turnover_exit ?? 0,
       headcount: hcMap[name] ?? 0,
-      desligamentos: turnByMes[a.mes]?.desligamentos ?? 0,
+      desligamentos: turnByMes[a.mes]?.terminations ?? 0,
     }));
   }
   return result;
@@ -1484,7 +1484,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     return absenteismoEvolucao.map(d => ({ ...d, value: +(d.value * ratio).toFixed(1), ausencias: Math.round(d.ausencias * ratio) }));
   }, [selectedRegional, selectedLabel, allScatterData, groupBy]);
 
-  const filteredTurnoverEvolucao = useMemo(() => {
+  const filteredTurnoverEvolucao = useMemo((): TurnoverEvoRow[] => {
     if (!selectedRegional) return turnoverEvolucao;
     const mapByGroupBy = groupBy === "empresa" ? turnoverEvolucaoPorEmpresa
       : groupBy === "unidade" ? turnoverEvolucaoPorUnidade
@@ -1494,16 +1494,20 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     const item = allScatterData.find(d => ((d as any).entityId ?? d.regional) === selectedRegional);
     if (!item) return turnoverEvolucao;
     const ratio = item.turnover / turnoverMedia;
-    return turnoverEvolucao.map(d => ({ ...d, value: +(d.value * ratio).toFixed(1), desligamentos: Math.round(d.desligamentos * ratio) }));
+    return turnoverEvolucao.map(d => ({
+      ...d,
+      turnover_exit: +(d.turnover_exit * ratio).toFixed(2),
+      turnover_entry: +(d.turnover_entry * ratio).toFixed(2),
+      terminations: Math.round(d.terminations * ratio),
+      hires: Math.round(d.hires * ratio),
+    }));
   }, [selectedRegional, selectedLabel, allScatterData, groupBy]);
 
   const absEvolucaoValor = useMemo(() => filteredAbsEvolucao.map(d => ({
     ...d, ausencias: (d as any).ausencias ?? Math.round(d.value * 80),
   })), [filteredAbsEvolucao]);
 
-  const turnEvolucaoValor = useMemo(() => filteredTurnoverEvolucao.map(d => ({
-    ...d, desligamentos: (d as any).desligamentos ?? Math.round(d.value * 12),
-  })), [filteredTurnoverEvolucao]);
+  const turnEvolucaoValor = useMemo(() => filteredTurnoverEvolucao, [filteredTurnoverEvolucao]);
 
   const getItemCompositeScore = useCallback((absTaxa: number, turnoverMensal: number) => {
     const turnoverAnual = turnoverMensal * 12;
@@ -1615,7 +1619,8 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   const showTurnValor = turnDataMode === "valor";
 
   const absMediaRef = filteredAbsEvolucao.reduce((s, d) => s + d.value, 0) / filteredAbsEvolucao.length;
-  const turnMediaRef = filteredTurnoverEvolucao.reduce((s, d) => s + d.value, 0) / filteredTurnoverEvolucao.length;
+  const turnMediaExitRef = filteredTurnoverEvolucao.reduce((s, d) => s + d.turnover_exit, 0) / filteredTurnoverEvolucao.length;
+  const turnMediaEntryRef = filteredTurnoverEvolucao.reduce((s, d) => s + d.turnover_entry, 0) / filteredTurnoverEvolucao.length;
 
   const handleChartClick = (e: any) => {
     if (e?.activeLabel) setSelectedMes((prev: string | null) => prev === e.activeLabel ? null : e.activeLabel);
