@@ -125,8 +125,8 @@ export default function AnalyticsChat({ activeTab }: AnalyticsChatProps) {
                 <div
                   className={`max-w-[85%] rounded-lg px-3 py-2 text-xs leading-relaxed ${
                     msg.role === "user"
-                      ? "bg-foreground text-background"
-                      : "bg-muted/50 text-foreground border border-border"
+                      ? "bg-muted text-foreground"
+                      : "bg-orange-50 text-foreground border border-orange-100"
                   }`}
                 >
                   {msg.content}
