@@ -1651,6 +1651,13 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
       </LineChart>
     );
   };
+  const groupColumn = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
+  const filterClause = selectedLabel ? `\n  AND ${groupColumn} = '${selectedLabel}'` : "";
+
+  const sqlAbsEvolucao = `SELECT\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_absenteismo, 2) AS value,\n  total_ausencias AS ausencias\nFROM vw_absenteismo_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY competencia;`;
+  const sqlTurnEvolucao = `SELECT\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_turnover, 2) AS value,\n  total_desligamentos AS desligamentos\nFROM vw_turnover_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY competencia;`;
+  const sqlAbsVsTurnover = `SELECT\n  ${groupColumn} AS operacao,\n  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,\n  ROUND(taxa_turnover, 2) AS turnover_pct,\n  headcount\nFROM vw_indicadores_operacao\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'\nGROUP BY operacao\nORDER BY absenteismo_pct DESC;`;
+  const sqlAbsVsHE = `SELECT\n  ${groupColumn} AS operacao,\n  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,\n  ROUND(horas_extras_por_100_colab, 0) AS he_por_100_colab,\n  headcount\nFROM vw_indicadores_operacao\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'\nGROUP BY operacao\nORDER BY absenteismo_pct DESC;`;
 
   return (
     <>
