@@ -406,6 +406,74 @@ const turnoverEvolucaoPorArea: Record<string, { mes: string; value: number; desl
   ],
 };
 
+// Abs vs Turnover monthly data per empresa (from real JSON)
+const absVsTurnoverPorEmpresa: Record<string, { mes: string; absenteismo: number; turnover: number; headcount: number; desligamentos: number }[]> = {
+  "PORTARIA E LIMPEZA": [
+    { mes: "abr/25", absenteismo: 13.21, turnover: 1.38, headcount: 218, desligamentos: 3 },
+    { mes: "mai/25", absenteismo: 15.80, turnover: 5.38, headcount: 223, desligamentos: 12 },
+    { mes: "jun/25", absenteismo: 13.64, turnover: 3.15, headcount: 222, desligamentos: 7 },
+    { mes: "jul/25", absenteismo: 13.33, turnover: 3.11, headcount: 225, desligamentos: 7 },
+    { mes: "ago/25", absenteismo: 14.15, turnover: 7.11, headcount: 225, desligamentos: 16 },
+    { mes: "set/25", absenteismo: 9.85, turnover: 3.83, headcount: 418, desligamentos: 16 },
+    { mes: "out/25", absenteismo: 16.76, turnover: 3.10, headcount: 420, desligamentos: 13 },
+    { mes: "nov/25", absenteismo: 17.03, turnover: 2.96, headcount: 405, desligamentos: 12 },
+    { mes: "dez/25", absenteismo: 18.92, turnover: 5.41, headcount: 407, desligamentos: 22 },
+    { mes: "jan/26", absenteismo: 14.80, turnover: 1.96, headcount: 408, desligamentos: 8 },
+    { mes: "fev/26", absenteismo: 19.57, turnover: 2.88, headcount: 417, desligamentos: 12 },
+    { mes: "mar/26", absenteismo: 12.86, turnover: 1.44, headcount: 417, desligamentos: 6 },
+  ],
+  "TERCEIRIZACAO": [
+    { mes: "abr/25", absenteismo: 14.22, turnover: 25.00, headcount: 20, desligamentos: 5 },
+    { mes: "mai/25", absenteismo: 11.47, turnover: 0.00, headcount: 17, desligamentos: 0 },
+    { mes: "jun/25", absenteismo: 13.83, turnover: 0.00, headcount: 17, desligamentos: 0 },
+    { mes: "jul/25", absenteismo: 18.64, turnover: 5.88, headcount: 17, desligamentos: 1 },
+    { mes: "ago/25", absenteismo: 6.87, turnover: 5.88, headcount: 17, desligamentos: 1 },
+    { mes: "set/25", absenteismo: 14.98, turnover: 0.00, headcount: 16, desligamentos: 0 },
+    { mes: "out/25", absenteismo: 9.10, turnover: 6.67, headcount: 15, desligamentos: 1 },
+    { mes: "nov/25", absenteismo: 4.97, turnover: 0.00, headcount: 20, desligamentos: 0 },
+    { mes: "dez/25", absenteismo: 6.95, turnover: 0.00, headcount: 22, desligamentos: 0 },
+    { mes: "jan/26", absenteismo: 14.26, turnover: 0.00, headcount: 22, desligamentos: 0 },
+    { mes: "fev/26", absenteismo: 17.25, turnover: 9.09, headcount: 22, desligamentos: 2 },
+    { mes: "mar/26", absenteismo: 34.13, turnover: 4.76, headcount: 21, desligamentos: 1 },
+  ],
+  "SEGURANCA PATRIMONIAL": [
+    { mes: "abr/25", absenteismo: 7.13, turnover: 0.00, headcount: 12, desligamentos: 0 },
+    { mes: "mai/25", absenteismo: 10.00, turnover: 0.00, headcount: 12, desligamentos: 0 },
+    { mes: "jun/25", absenteismo: 20.81, turnover: 0.00, headcount: 12, desligamentos: 0 },
+    { mes: "jul/25", absenteismo: 29.98, turnover: 0.00, headcount: 12, desligamentos: 0 },
+    { mes: "ago/25", absenteismo: 9.65, turnover: 7.69, headcount: 13, desligamentos: 1 },
+    { mes: "set/25", absenteismo: 20.89, turnover: 0.00, headcount: 12, desligamentos: 0 },
+    { mes: "out/25", absenteismo: 13.89, turnover: 8.33, headcount: 12, desligamentos: 1 },
+    { mes: "nov/25", absenteismo: 13.36, turnover: 0.00, headcount: 11, desligamentos: 0 },
+    { mes: "dez/25", absenteismo: 4.90, turnover: 0.00, headcount: 11, desligamentos: 0 },
+    { mes: "jan/26", absenteismo: 3.36, turnover: 0.00, headcount: 11, desligamentos: 0 },
+    { mes: "fev/26", absenteismo: 8.68, turnover: 0.00, headcount: 11, desligamentos: 0 },
+    { mes: "mar/26", absenteismo: 9.53, turnover: 8.33, headcount: 12, desligamentos: 1 },
+  ],
+};
+
+// Abs vs Turnover monthly data per unidade (derived from abs + turnover evolution data)
+function buildAbsVsTurnoverFromMaps(
+  absMap: Record<string, { mes: string; value: number }[]>,
+  turnMap: Record<string, { mes: string; value: number; desligamentos: number }[]>,
+  scatterData: { regional: string; headcount: number }[]
+): Record<string, { mes: string; absenteismo: number; turnover: number; headcount: number; desligamentos: number }[]> {
+  const result: Record<string, { mes: string; absenteismo: number; turnover: number; headcount: number; desligamentos: number }[]> = {};
+  const hcMap = Object.fromEntries(scatterData.map(s => [s.regional, s.headcount]));
+  for (const [name, absData] of Object.entries(absMap)) {
+    const turnData = turnMap[name] || [];
+    const turnByMes = Object.fromEntries(turnData.map(t => [t.mes, t]));
+    result[name] = absData.map(a => ({
+      mes: a.mes,
+      absenteismo: a.value,
+      turnover: turnByMes[a.mes]?.value ?? 0,
+      headcount: hcMap[name] ?? 0,
+      desligamentos: turnByMes[a.mes]?.desligamentos ?? 0,
+    }));
+  }
+  return result;
+}
+
 
 const realEmpresaAbsScatter = [
   { regional: "SEGURANCA PATRIMONIAL", absenteismo: 12.87, turnover: 8.5, he: 320, headcount: 13 },
@@ -439,7 +507,8 @@ const unidadeAbsScatter = realUnidadeAbsScatter;
 const empresaAbsScatter = realEmpresaAbsScatter;
 const areaAbsScatter = realAreaAbsScatter;
 
-
+const absVsTurnoverPorUnidade = buildAbsVsTurnoverFromMaps(absenteismoEvolucaoPorUnidade, turnoverEvolucaoPorUnidade, realUnidadeAbsScatter);
+const absVsTurnoverPorArea = buildAbsVsTurnoverFromMaps(absenteismoEvolucaoPorArea, turnoverEvolucaoPorArea, realAreaAbsScatter);
 
 
 // ── Movimentações ──
@@ -1657,7 +1726,56 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
 
   const sqlAbsEvolucao = `SELECT\n  ${groupColumn} AS operacao,\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_absenteismo, 2) AS taxa_pct,\n  total_ausencias AS ausencias\nFROM vw_absenteismo_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY operacao, competencia;`;
   const sqlTurnEvolucao = `SELECT\n  ${groupColumn} AS operacao,\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_turnover, 2) AS taxa_pct,\n  total_desligamentos AS desligamentos\nFROM vw_turnover_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY operacao, competencia;`;
-  const sqlAbsVsTurnover = `SELECT\n  ${groupColumn} AS operacao,\n  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,\n  ROUND(taxa_turnover, 2) AS turnover_pct,\n  headcount\nFROM vw_indicadores_operacao\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'\nGROUP BY operacao\nORDER BY absenteismo_pct DESC;`;
+  const sqlAbsVsTurnover = `WITH absenteismo AS (
+    SELECT
+        tt.customer_id,
+        co.id AS company_id,
+        co.${groupColumn} AS operacao,
+        DATE_FORMAT(tt.reference_date, '%Y-%m-01') AS reference_month,
+        ROUND(
+            SUM(CASE WHEN tt.time_tracking_type_id IN (18,19,20,21,22,23,24,25,26,51,55,79,80,81,93,127,309) THEN tt.minutes ELSE 0 END)
+            / NULLIF(
+                SUM(CASE WHEN tt.time_tracking_type_id IN (1,2,8,12,13,71,72,94,95,217,218,262,18,19,20,21,22,23,24,25,26,51,55,79,80,81,93,127,309) THEN tt.minutes ELSE 0 END), 0
+            ) * 100, 2
+        ) AS absenteeism_percentage,
+        COUNT(DISTINCT tt.person_id) AS headcount
+    FROM time_tracking tt
+    JOIN person p ON tt.person_id = p.id
+    JOIN company co ON p.company_id = co.id
+    WHERE tt.customer_id = 642
+      AND tt.reference_date >= '2025-04-01'
+      AND tt.reference_date < '2026-04-01'${filterClause}
+    GROUP BY tt.customer_id, co.id, operacao, reference_month
+),
+demissoes AS (
+    SELECT p.id AS person_id, p.company_id,
+        COALESCE(p.demission_date,
+            (SELECT MAX(a.start_date) FROM absence a
+             JOIN absence_situation asit ON a.absence_situation_id = asit.id
+             WHERE a.person_id = p.id AND asit.absence_type_id = 3)
+        ) AS demission_date_final
+    FROM person p
+    WHERE p.customer_id = 642 AND p.person_situation_id = 3
+),
+turnover AS (
+    SELECT d.company_id,
+        DATE_FORMAT(d.demission_date_final, '%Y-%m-01') AS reference_month,
+        COUNT(DISTINCT d.person_id) AS terminations
+    FROM demissoes d
+    WHERE d.demission_date_final >= '2025-04-01'
+      AND d.demission_date_final < '2026-04-01'
+    GROUP BY d.company_id, reference_month
+)
+SELECT
+    a.operacao,
+    a.reference_month,
+    a.absenteeism_percentage,
+    a.headcount,
+    COALESCE(t.terminations, 0) AS terminations,
+    ROUND(COALESCE(t.terminations, 0) / NULLIF(a.headcount, 0) * 100, 2) AS turnover_percentage
+FROM absenteismo a
+LEFT JOIN turnover t ON a.company_id = t.company_id AND a.reference_month = t.reference_month
+ORDER BY a.reference_month, a.headcount DESC;`;
   const sqlAbsVsHE = `SELECT\n  ${groupColumn} AS operacao,\n  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,\n  ROUND(horas_extras_por_100_colab, 0) AS he_por_100_colab,\n  headcount\nFROM vw_indicadores_operacao\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'\nGROUP BY operacao\nORDER BY absenteismo_pct DESC;`;
 
   // Build comprehensive table data for modals (all entities flattened)
@@ -1680,6 +1798,18 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
       if (selectedLabel && name !== selectedLabel) continue;
       for (const d of data) {
         rows.push({ operacao: name, mes: d.mes, value: d.value, desligamentos: d.desligamentos });
+      }
+    }
+    return rows;
+  }, [groupBy, selectedLabel]);
+
+  const absVsTurnoverModalData = useMemo(() => {
+    const map = groupBy === "empresa" ? absVsTurnoverPorEmpresa : groupBy === "unidade" ? absVsTurnoverPorUnidade : absVsTurnoverPorArea;
+    const rows: { operacao: string; mes: string; absenteismo: number; turnover: number; headcount: number; desligamentos: number }[] = [];
+    for (const [name, data] of Object.entries(map)) {
+      if (selectedLabel && name !== selectedLabel) continue;
+      for (const d of data) {
+        rows.push({ operacao: name, mes: d.mes, absenteismo: d.absenteismo, turnover: d.turnover, headcount: d.headcount, desligamentos: d.desligamentos });
       }
     }
     return rows;
@@ -1835,7 +1965,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
 
       <ChartDataModal open={chartDataModal === "absEvolucao"} onClose={() => setChartDataModal(null)} title={`Evolução do Absenteísmo — ${groupLabel}`} data={absModalData} columns={[{ key: "operacao", label: groupLabel }, { key: "mes", label: "Competência" }, { key: "value", label: "Taxa (%)" }, { key: "ausencias", label: "Ausências" }]} sqlQuery={sqlAbsEvolucao} />
       <ChartDataModal open={chartDataModal === "turnEvolucao"} onClose={() => setChartDataModal(null)} title={`Evolução do Turnover — ${groupLabel}`} data={turnModalData} columns={[{ key: "operacao", label: groupLabel }, { key: "mes", label: "Competência" }, { key: "value", label: "Taxa (%)" }, { key: "desligamentos", label: "Desligamentos" }]} sqlQuery={sqlTurnEvolucao} />
-      <ChartDataModal open={chartDataModal === "absVsTurnover"} onClose={() => setChartDataModal(null)} title={`Absenteísmo vs Turnover — ${groupLabel}`} data={chartScatter} columns={[{ key: "regional", label: groupLabel }, { key: "absenteismo", label: "Absenteísmo (%)" }, { key: "turnover", label: "Turnover (%)" }, { key: "headcount", label: "Headcount" }]} sqlQuery={sqlAbsVsTurnover} />
+      <ChartDataModal open={chartDataModal === "absVsTurnover"} onClose={() => setChartDataModal(null)} title={`Absenteísmo vs Turnover — ${groupLabel}`} data={absVsTurnoverModalData} columns={[{ key: "operacao", label: groupLabel }, { key: "mes", label: "Competência" }, { key: "absenteismo", label: "Absenteísmo (%)" }, { key: "turnover", label: "Turnover (%)" }, { key: "headcount", label: "Headcount" }, { key: "desligamentos", label: "Desligamentos" }]} sqlQuery={sqlAbsVsTurnover} />
       <ChartDataModal open={chartDataModal === "absVsHE"} onClose={() => setChartDataModal(null)} title={`Absenteísmo vs Hora Extra — ${groupLabel}`} data={chartScatter} columns={[{ key: "regional", label: groupLabel }, { key: "absenteismo", label: "Absenteísmo (%)" }, { key: "he", label: "HE/100 colab (h)" }, { key: "headcount", label: "Headcount" }]} sqlQuery={sqlAbsVsHE} />
     </div>
   );
