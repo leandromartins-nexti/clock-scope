@@ -1831,7 +1831,43 @@ ORDER BY a.reference_month, a.headcount DESC;`;
     return rows;
   }, [groupBy, selectedLabel]);
 
-  return (
+  // Movimentação Mensal data (derived from turnover evolution data)
+  const movimentacaoData = useMemo(() => {
+    const turnMap = groupBy === "empresa" ? turnoverEvolucaoPorEmpresa : groupBy === "unidade" ? turnoverEvolucaoPorUnidade : turnoverEvolucaoPorArea;
+    const meses = ["abr/25","mai/25","jun/25","jul/25","ago/25","set/25","out/25","nov/25","dez/25","jan/26","fev/26","mar/26"];
+    return meses.map(mes => {
+      let totalHires = 0, totalTerminations = 0;
+      for (const [name, data] of Object.entries(turnMap)) {
+        if (selectedLabel && name !== selectedLabel) continue;
+        const row = data.find(d => d.mes === mes);
+        if (row) { totalHires += row.hires; totalTerminations += row.terminations; }
+      }
+      return { mes, hires: totalHires, terminations: totalTerminations, terminations_negative: -totalTerminations };
+    });
+  }, [groupBy, selectedLabel]);
+
+  const movimentacaoYMax = useMemo(() => {
+    const maxVal = Math.max(...movimentacaoData.map(d => Math.max(d.hires, d.terminations)));
+    return Math.ceil(maxVal * 1.15) || 10;
+  }, [movimentacaoData]);
+
+  const movimentacaoSaldoMedio = useMemo(() => {
+    const saldos = movimentacaoData.map(d => d.hires - d.terminations);
+    return saldos.reduce((a, b) => a + b, 0) / (saldos.length || 1);
+  }, [movimentacaoData]);
+
+  const movimentacaoModalData = useMemo(() => {
+    const turnMap = groupBy === "empresa" ? turnoverEvolucaoPorEmpresa : groupBy === "unidade" ? turnoverEvolucaoPorUnidade : turnoverEvolucaoPorArea;
+    const rows: { operacao: string; mes: string; hires: number; terminations: number; saldo: number; total: number }[] = [];
+    for (const [name, data] of Object.entries(turnMap)) {
+      if (selectedLabel && name !== selectedLabel) continue;
+      for (const d of data) {
+        rows.push({ operacao: name, mes: d.mes, hires: d.hires, terminations: d.terminations, saldo: d.hires - d.terminations, total: d.hires + d.terminations });
+      }
+    }
+    return rows;
+  }, [groupBy, selectedLabel]);
+
     <div className="flex">
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
         {/* Linha 1: Score + 4 KPI Cards */}
