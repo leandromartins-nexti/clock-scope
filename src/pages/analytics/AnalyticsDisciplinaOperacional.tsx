@@ -1189,32 +1189,37 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     ...d, desligamentos: Math.round(d.value * 12),
   })), [filteredTurnoverEvolucao]);
 
+  const getAbsScoreFromTaxa = (taxa: number) => Math.round(Math.max(0, Math.min(100, 100 - taxa * 5)));
+  const getAbsFaixa = (taxa: number) => taxa <= 8 ? "Bom" : taxa <= 15 ? "Atenção" : "Crítico";
+
   const activeData = useMemo(() => {
     if (!selectedRegional) {
       const sorted = [...allScatterData].sort((a, b) => a.absenteismo - b.absenteismo);
       const best = sorted[0];
       const worst = sorted[sorted.length - 1];
+      const avgTaxa = absenteismoMedia;
+      const score = getAbsScoreFromTaxa(avgTaxa);
       return {
-        score: 52, taxa: 4.8, faixa: "Atenção" as string,
-        melhorOperacao: { nome: best?.regional ?? "—", score: Math.round(Math.max(0, 100 - (best?.absenteismo ?? 5) * 10)) },
-        maiorRisco: { nome: worst?.regional ?? "—", score: Math.round(Math.max(0, 100 - (worst?.absenteismo ?? 5) * 10)), indicador: "Baixa qualidade" },
+        score, taxa: avgTaxa, faixa: getAbsFaixa(avgTaxa),
+        melhorOperacao: { nome: best?.regional ?? "—", score: getAbsScoreFromTaxa(best?.absenteismo ?? 10) },
+        maiorRisco: { nome: worst?.regional ?? "—", score: getAbsScoreFromTaxa(worst?.absenteismo ?? 10), indicador: `${worst?.absenteismo ?? 0}% taxa` },
         faltasNJ: "38%", turnover: "8.2%",
       };
     }
     const r = allScatterData.find(x => x.regional === selectedRegional);
     if (!r) return {
-      score: 52, taxa: 4.8, faixa: "Atenção" as string,
+      score: 52, taxa: absenteismoMedia, faixa: "Atenção" as string,
       melhorOperacao: { nome: "—", score: 0 },
       maiorRisco: { nome: "—", score: 0, indicador: "—" },
       faltasNJ: "38%", turnover: "8.2%",
     };
-    const score = Math.round(Math.max(0, 100 - r.absenteismo * 10));
+    const score = getAbsScoreFromTaxa(r.absenteismo);
     return {
       score, taxa: r.absenteismo,
-      faixa: (r.absenteismo <= 4 ? "Bom" : r.absenteismo <= 6 ? "Atenção" : "Crítico") as string,
+      faixa: getAbsFaixa(r.absenteismo),
       melhorOperacao: { nome: selectedRegional, score },
       maiorRisco: { nome: selectedRegional, score, indicador: `${r.absenteismo}% taxa` },
-      faltasNJ: `${Math.round(30 + r.absenteismo * 3)}%`,
+      faltasNJ: `${Math.round(30 + r.absenteismo * 1.5)}%`,
       turnover: `${r.turnover}%`,
     };
   }, [selectedRegional, allScatterData]);
