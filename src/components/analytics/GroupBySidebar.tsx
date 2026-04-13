@@ -87,7 +87,7 @@ export default function GroupBySidebar({
   );
 
   useEffect(() => {
-    onPagedItemsChange?.(pagedItems.map(i => i.nome));
+    onPagedItemsChange?.(pagedItems.map(i => i.value ?? i.nome));
   }, [pagedItems, onPagedItemsChange]);
 
   // ── Collapsed mode ──
