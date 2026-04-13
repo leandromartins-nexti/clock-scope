@@ -1902,9 +1902,9 @@ ORDER BY a.reference_month, a.headcount DESC;`;
                   const { cx, cy, payload } = props;
                   const r = Math.max(8, Math.sqrt(payload.headcount) * 0.8);
                   const fill = getAbsTurnoverColor(payload.absenteismo, payload.turnover);
-                  const isSelected = !selectedRegional || selectedRegional === payload.regional;
+                  const isSelected = !selectedRegional || selectedRegional === (payload.entityId ?? payload.regional);
                   return (
-                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
+                    <g onClick={() => onRegionalClick(payload.entityId ?? payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.entityId ?? payload.regional); }} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
                       <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                     </g>
@@ -1947,9 +1947,9 @@ ORDER BY a.reference_month, a.headcount DESC;`;
                   const { cx, cy, payload } = props;
                   const r = Math.max(8, Math.sqrt(payload.headcount) * 0.8);
                   const fill = getAbsHEColor(payload.absenteismo, payload.he);
-                  const isSelected = !selectedRegional || selectedRegional === payload.regional;
+                  const isSelected = !selectedRegional || selectedRegional === (payload.entityId ?? payload.regional);
                   return (
-                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
+                    <g onClick={() => onRegionalClick(payload.entityId ?? payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.entityId ?? payload.regional); }} className="cursor-pointer">
                       <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
                       <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{abreviar(payload.regional)}</text>
                     </g>
