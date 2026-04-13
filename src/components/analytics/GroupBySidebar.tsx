@@ -131,17 +131,18 @@ export default function GroupBySidebar({
           {/* Abbreviated items */}
           <div className="flex flex-col gap-0.5 overflow-y-auto flex-1">
             {pagedItems.map(op => {
-              const isSelected = selectedRegional === op.nome;
+              const itemValue = op.value ?? op.nome;
+              const isSelected = selectedRegional === itemValue;
               const isDimmed = selectedRegional && !isSelected;
               const scoreColor =
                 op.score >= 85 ? "text-green-600" : op.score >= 75 ? "text-orange-500" : "text-red-600";
               const abbr = abreviar(op.nome);
               return (
-                <UITooltip key={op.nome}>
+                <UITooltip key={itemValue}>
                   <TooltipTrigger asChild>
                     <button
-                      onClick={() => onRegionalClick(op.nome)}
-                      onContextMenu={e => { e.preventDefault(); onItemDetail?.(op.nome); }}
+                      onClick={() => onRegionalClick(itemValue)}
+                      onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
                       className={`flex flex-col items-center px-1 py-1 rounded-md cursor-pointer transition-all text-[9px] leading-tight ${
                         isSelected
                           ? "bg-orange-50 border border-[#FF5722]/30"
