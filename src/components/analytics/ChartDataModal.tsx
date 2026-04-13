@@ -61,7 +61,7 @@ export default function ChartDataModal({ open, onClose, title, data, columns, sq
                     <TableRow key={i} className="hover:bg-muted/30">
                       {columns.map(col => (
                         <TableCell key={col.key} className="text-xs py-2 whitespace-nowrap">
-                          {col.format ? col.format(row[col.key]) : row[col.key]}
+                          {col.format ? col.format(row[col.key]) : (typeof row[col.key] === "number" ? row[col.key].toLocaleString("pt-BR") : row[col.key])}
                         </TableCell>
                       ))}
                     </TableRow>
