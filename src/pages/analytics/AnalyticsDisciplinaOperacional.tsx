@@ -314,7 +314,52 @@ const turnoverEvolucaoPorEmpresa: Record<string, { mes: string; value: number; d
   ],
 };
 
-// Real empresa scatter data from JSON
+const turnoverEvolucaoPorUnidade: Record<string, { mes: string; value: number; desligamentos: number }[]> = {
+  "Portaria e Limpeza": [
+    { mes: "abr/25", value: 1.44, desligamentos: 3 },
+    { mes: "mai/25", value: 5.35, desligamentos: 11 },
+    { mes: "jun/25", value: 1.95, desligamentos: 4 },
+    { mes: "jul/25", value: 2.39, desligamentos: 5 },
+    { mes: "ago/25", value: 6.81, desligamentos: 14 },
+    { mes: "set/25", value: 4.67, desligamentos: 14 },
+    { mes: "out/25", value: 3.54, desligamentos: 14 },
+    { mes: "nov/25", value: 2.52, desligamentos: 10 },
+    { mes: "dez/25", value: 5.56, desligamentos: 22 },
+    { mes: "jan/26", value: 1.98, desligamentos: 8 },
+    { mes: "fev/26", value: 3.33, desligamentos: 14 },
+    { mes: "mar/26", value: 0.46, desligamentos: 2 },
+  ],
+  "Segurança Patrimonial": [
+    { mes: "abr/25", value: 4.08, desligamentos: 1 },
+    { mes: "mai/25", value: 4.26, desligamentos: 1 },
+    { mes: "jun/25", value: 12.77, desligamentos: 3 },
+    { mes: "jul/25", value: 8.33, desligamentos: 2 },
+    { mes: "ago/25", value: 11.54, desligamentos: 3 },
+    { mes: "set/25", value: 7.69, desligamentos: 2 },
+    { mes: "out/25", value: 0.0, desligamentos: 0 },
+    { mes: "nov/25", value: 7.69, desligamentos: 2 },
+    { mes: "dez/25", value: 0.0, desligamentos: 0 },
+    { mes: "jan/26", value: 0.0, desligamentos: 0 },
+    { mes: "fev/26", value: 0.0, desligamentos: 0 },
+    { mes: "mar/26", value: 7.55, desligamentos: 2 },
+  ],
+  "Terceirização": [
+    { mes: "abr/25", value: 19.51, desligamentos: 4 },
+    { mes: "mai/25", value: 0.0, desligamentos: 0 },
+    { mes: "jun/25", value: 0.0, desligamentos: 0 },
+    { mes: "jul/25", value: 5.26, desligamentos: 1 },
+    { mes: "ago/25", value: 5.41, desligamentos: 1 },
+    { mes: "set/25", value: 0.0, desligamentos: 0 },
+    { mes: "out/25", value: 5.13, desligamentos: 1 },
+    { mes: "nov/25", value: 0.0, desligamentos: 0 },
+    { mes: "dez/25", value: 0.0, desligamentos: 0 },
+    { mes: "jan/26", value: 0.0, desligamentos: 0 },
+    { mes: "fev/26", value: 0.0, desligamentos: 0 },
+    { mes: "mar/26", value: 16.0, desligamentos: 4 },
+  ],
+};
+
+
 const realEmpresaAbsScatter = [
   { regional: "SEGURANCA PATRIMONIAL", absenteismo: 12.87, turnover: 8.5, he: 320, headcount: 13 },
   { regional: "PORTARIA E LIMPEZA", absenteismo: 15.27, turnover: 9.1, he: 480, headcount: 420 },
