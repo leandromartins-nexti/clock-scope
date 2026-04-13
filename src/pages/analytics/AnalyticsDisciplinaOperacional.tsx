@@ -292,7 +292,7 @@ function toAbsScatterData(items: { nome: string; qualidade: number; score: numbe
 
 const unidadeAbsScatter = realUnidadeAbsScatter;
 const empresaAbsScatter = realEmpresaAbsScatter;
-const areaAbsScatter = toAbsScatterData(areaData);
+const areaAbsScatter = realAreaAbsScatter;
 
 
 
