@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      absenteismo_score_config: {
+        Row: {
+          absenteeism_critical_threshold: number
+          absenteeism_excellent_threshold: number
+          config_key: string
+          created_at: string
+          id: string
+          profile_type: string
+          score_excellent: number
+          score_good: number
+          score_poor: number
+          score_warning: number
+          turnover_critical_threshold: number
+          turnover_excellent_threshold: number
+          updated_at: string
+          weight_absenteeism: number
+          weight_turnover: number
+        }
+        Insert: {
+          absenteeism_critical_threshold?: number
+          absenteeism_excellent_threshold?: number
+          config_key?: string
+          created_at?: string
+          id?: string
+          profile_type?: string
+          score_excellent?: number
+          score_good?: number
+          score_poor?: number
+          score_warning?: number
+          turnover_critical_threshold?: number
+          turnover_excellent_threshold?: number
+          updated_at?: string
+          weight_absenteeism?: number
+          weight_turnover?: number
+        }
+        Update: {
+          absenteeism_critical_threshold?: number
+          absenteeism_excellent_threshold?: number
+          config_key?: string
+          created_at?: string
+          id?: string
+          profile_type?: string
+          score_excellent?: number
+          score_good?: number
+          score_poor?: number
+          score_warning?: number
+          turnover_critical_threshold?: number
+          turnover_excellent_threshold?: number
+          updated_at?: string
+          weight_absenteeism?: number
+          weight_turnover?: number
+        }
+        Relationships: []
+      }
       improvement_comments: {
         Row: {
           author: string

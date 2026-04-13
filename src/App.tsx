@@ -14,6 +14,7 @@ import ROIConfig from "./pages/ROIConfig";
 import ROIConfigV3 from "./pages/ROIConfigV3";
 import NotFound from "./pages/NotFound";
 import { ScoreConfigProvider } from "./contexts/ScoreConfigContext";
+import { AbsenteismoScoreConfigProvider } from "./contexts/AbsenteismoScoreConfigContext";
 
 // Analytics V1 pages
 import AnalyticsResumoExecutivo from "./pages/analytics/AnalyticsResumoExecutivo";
@@ -30,6 +31,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ScoreConfigProvider>
+    <AbsenteismoScoreConfigProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -60,6 +62,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
+    </AbsenteismoScoreConfigProvider>
     </ScoreConfigProvider>
   </QueryClientProvider>
 );

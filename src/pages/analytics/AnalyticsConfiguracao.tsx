@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Database, ChevronRight, ChevronDown, Table2, Eye, Settings2 } from "lucide-react";
+import { Database, ChevronRight, ChevronDown, Table2, Eye, Settings2, TrendingDown } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
+import ScoreAbsenteismoConfig from "./ScoreAbsenteismoConfig";
 
 // Import all data sources
 import {
@@ -304,6 +305,10 @@ export default function AnalyticsConfiguracao() {
               <Settings2 className="w-3.5 h-3.5" />
               Score de Qualidade
             </TabsTrigger>
+            <TabsTrigger value="score-absenteismo" className="gap-1.5">
+              <TrendingDown className="w-3.5 h-3.5" />
+              Score de Absenteísmo
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="base-dados">
@@ -334,6 +339,16 @@ export default function AnalyticsConfiguracao() {
               </p>
             </div>
             <ScoreQualidadeConfig />
+          </TabsContent>
+
+          <TabsContent value="score-absenteismo">
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-foreground">Score de Absenteísmo + Turnover</h2>
+              <p className="text-xs text-muted-foreground">
+                Configure os pesos dos componentes e os limites para classificar absenteísmo e turnover. Calibrado para vigilância e facilities.
+              </p>
+            </div>
+            <ScoreAbsenteismoConfig />
           </TabsContent>
         </Tabs>
       </div>
