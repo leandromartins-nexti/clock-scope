@@ -1652,12 +1652,38 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     );
   };
   const groupColumn = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
+  const groupLabel = groupBy === "empresa" ? "Empresa" : groupBy === "unidade" ? "Un. Negócio" : "Área";
   const filterClause = selectedLabel ? `\n  AND ${groupColumn} = '${selectedLabel}'` : "";
 
-  const sqlAbsEvolucao = `SELECT\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_absenteismo, 2) AS value,\n  total_ausencias AS ausencias\nFROM vw_absenteismo_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY competencia;`;
-  const sqlTurnEvolucao = `SELECT\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_turnover, 2) AS value,\n  total_desligamentos AS desligamentos\nFROM vw_turnover_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY competencia;`;
+  const sqlAbsEvolucao = `SELECT\n  ${groupColumn} AS operacao,\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_absenteismo, 2) AS taxa_pct,\n  total_ausencias AS ausencias\nFROM vw_absenteismo_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY operacao, competencia;`;
+  const sqlTurnEvolucao = `SELECT\n  ${groupColumn} AS operacao,\n  DATE_FORMAT(competencia, '%b/%y') AS mes,\n  ROUND(taxa_turnover, 2) AS taxa_pct,\n  total_desligamentos AS desligamentos\nFROM vw_turnover_mensal\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'${filterClause}\nORDER BY operacao, competencia;`;
   const sqlAbsVsTurnover = `SELECT\n  ${groupColumn} AS operacao,\n  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,\n  ROUND(taxa_turnover, 2) AS turnover_pct,\n  headcount\nFROM vw_indicadores_operacao\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'\nGROUP BY operacao\nORDER BY absenteismo_pct DESC;`;
   const sqlAbsVsHE = `SELECT\n  ${groupColumn} AS operacao,\n  ROUND(taxa_absenteismo, 2) AS absenteismo_pct,\n  ROUND(horas_extras_por_100_colab, 0) AS he_por_100_colab,\n  headcount\nFROM vw_indicadores_operacao\nWHERE competencia BETWEEN '2025-04-01' AND '2026-03-31'\nGROUP BY operacao\nORDER BY absenteismo_pct DESC;`;
+
+  // Build comprehensive table data for modals (all entities flattened)
+  const absModalData = useMemo(() => {
+    const absMap = groupBy === "empresa" ? absenteismoEvolucaoPorEmpresa : groupBy === "unidade" ? absenteismoEvolucaoPorUnidade : absenteismoEvolucaoPorArea;
+    const rows: { operacao: string; mes: string; value: number; ausencias: number }[] = [];
+    for (const [name, data] of Object.entries(absMap)) {
+      if (selectedLabel && name !== selectedLabel) continue;
+      for (const d of data) {
+        rows.push({ operacao: name, mes: d.mes, value: d.value, ausencias: d.ausencias });
+      }
+    }
+    return rows;
+  }, [groupBy, selectedLabel]);
+
+  const turnModalData = useMemo(() => {
+    const turnMap = groupBy === "empresa" ? turnoverEvolucaoPorEmpresa : groupBy === "unidade" ? turnoverEvolucaoPorUnidade : turnoverEvolucaoPorArea;
+    const rows: { operacao: string; mes: string; value: number; desligamentos: number }[] = [];
+    for (const [name, data] of Object.entries(turnMap)) {
+      if (selectedLabel && name !== selectedLabel) continue;
+      for (const d of data) {
+        rows.push({ operacao: name, mes: d.mes, value: d.value, desligamentos: d.desligamentos });
+      }
+    }
+    return rows;
+  }, [groupBy, selectedLabel]);
 
   return (
     <div className="flex">
