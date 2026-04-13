@@ -1298,7 +1298,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
   })), [filteredAbsEvolucao]);
 
   const turnEvolucaoValor = useMemo(() => filteredTurnoverEvolucao.map(d => ({
-    ...d, desligamentos: Math.round(d.value * 12),
+    ...d, desligamentos: (d as any).desligamentos ?? Math.round(d.value * 12),
   })), [filteredTurnoverEvolucao]);
 
   const getAbsScoreFromTaxa = (taxa: number) => Math.round(Math.max(0, Math.min(100, 100 - taxa * 5)));
