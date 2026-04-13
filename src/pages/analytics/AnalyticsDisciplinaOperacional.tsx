@@ -359,6 +359,51 @@ const turnoverEvolucaoPorUnidade: Record<string, { mes: string; value: number; d
   ],
 };
 
+const turnoverEvolucaoPorArea: Record<string, { mes: string; value: number; desligamentos: number }[]> = {
+  "PIRACICABA": [
+    { mes: "abr/25", value: 10.53, desligamentos: 1 },
+    { mes: "mai/25", value: 0.0, desligamentos: 0 },
+    { mes: "jun/25", value: 22.22, desligamentos: 2 },
+    { mes: "jul/25", value: 0.0, desligamentos: 0 },
+    { mes: "ago/25", value: 0.0, desligamentos: 0 },
+    { mes: "set/25", value: 10.53, desligamentos: 1 },
+    { mes: "out/25", value: 0.0, desligamentos: 0 },
+    { mes: "nov/25", value: 10.53, desligamentos: 1 },
+    { mes: "dez/25", value: 0.0, desligamentos: 0 },
+    { mes: "jan/26", value: 0.0, desligamentos: 0 },
+    { mes: "fev/26", value: 0.0, desligamentos: 0 },
+    { mes: "mar/26", value: 10.0, desligamentos: 1 },
+  ],
+  "SAO PAULO": [
+    { mes: "abr/25", value: 6.25, desligamentos: 3 },
+    { mes: "mai/25", value: 2.11, desligamentos: 1 },
+    { mes: "jun/25", value: 6.32, desligamentos: 3 },
+    { mes: "jul/25", value: 8.6, desligamentos: 4 },
+    { mes: "ago/25", value: 10.53, desligamentos: 5 },
+    { mes: "set/25", value: 4.17, desligamentos: 2 },
+    { mes: "out/25", value: 8.25, desligamentos: 4 },
+    { mes: "nov/25", value: 3.88, desligamentos: 2 },
+    { mes: "dez/25", value: 1.83, desligamentos: 1 },
+    { mes: "jan/26", value: 1.79, desligamentos: 1 },
+    { mes: "fev/26", value: 5.31, desligamentos: 3 },
+    { mes: "mar/26", value: 7.34, desligamentos: 4 },
+  ],
+  "SOROCABA": [
+    { mes: "abr/25", value: 0.0, desligamentos: 0 },
+    { mes: "mai/25", value: 0.0, desligamentos: 0 },
+    { mes: "jun/25", value: 0.0, desligamentos: 0 },
+    { mes: "jul/25", value: 0.0, desligamentos: 0 },
+    { mes: "ago/25", value: 0.0, desligamentos: 0 },
+    { mes: "set/25", value: 0.0, desligamentos: 0 },
+    { mes: "out/25", value: 8.0, desligamentos: 1 },
+    { mes: "nov/25", value: 7.69, desligamentos: 1 },
+    { mes: "dez/25", value: 21.43, desligamentos: 3 },
+    { mes: "jan/26", value: 6.67, desligamentos: 1 },
+    { mes: "fev/26", value: 5.88, desligamentos: 1 },
+    { mes: "mar/26", value: 0.0, desligamentos: 0 },
+  ],
+};
+
 
 const realEmpresaAbsScatter = [
   { regional: "SEGURANCA PATRIMONIAL", absenteismo: 12.87, turnover: 8.5, he: 320, headcount: 13 },
@@ -1331,6 +1376,8 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     if (perEmpresa) return perEmpresa;
     const perUnidade = turnoverEvolucaoPorUnidade[selectedRegional];
     if (perUnidade) return perUnidade;
+    const perArea = turnoverEvolucaoPorArea[selectedRegional];
+    if (perArea) return perArea;
     const item = allScatterData.find(d => d.regional === selectedRegional);
     if (!item) return turnoverEvolucao;
     const ratio = item.turnover / turnoverMedia;
