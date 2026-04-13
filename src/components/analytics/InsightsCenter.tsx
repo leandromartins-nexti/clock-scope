@@ -4,8 +4,8 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { mockInsights, type Insight } from "@/data/insightsMockData";
 import { useDismissedInsights } from "@/hooks/useDismissedInsights";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
-/* ── colour maps ────────────────────────────────────── */
 type Cat = Insight["category"];
 
 const chipColors: Record<string, { bg: string; text: string; bgActive: string; textActive: string }> = {
@@ -26,33 +26,21 @@ const cardColors: Record<Cat, { border: string; borderLeft: string; badgeBg: str
 };
 
 const catLabel: Record<Cat, string> = {
-  critical: "RISCO CRÍTICO",
-  achievement: "CONQUISTA",
-  event: "EVENTO DETECTADO",
-  opportunity: "OPORTUNIDADE",
-  trend: "TENDÊNCIA",
+  critical: "RISCO CRÍTICO", achievement: "CONQUISTA", event: "EVENTO DETECTADO",
+  opportunity: "OPORTUNIDADE", trend: "TENDÊNCIA",
 };
 
 const chipLabel: Record<string, string> = {
-  all: "Todos",
-  critical: "Riscos",
-  achievement: "Conquistas",
-  event: "Eventos",
-  opportunity: "Oportunidades",
-  trend: "Tendências",
+  all: "Todos", critical: "Riscos", achievement: "Conquistas",
+  event: "Eventos", opportunity: "Oportunidades", trend: "Tendências",
 };
 
 const severityBadgeColor: Record<string, string> = {
-  critical: "#A32D2D",
-  warning: "#BA7517",
-  info: "#185FA5",
-  success: "#3B6D11",
+  critical: "#A32D2D", warning: "#BA7517", info: "#185FA5", success: "#3B6D11",
 };
 
-/* priority sort order */
 const catPriority: Record<Cat, number> = { critical: 0, event: 1, achievement: 2, opportunity: 3, trend: 4 };
 
-/* ── Component ──────────────────────────────────────── */
 export default function InsightsCenter() {
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<string>("all");
@@ -60,10 +48,7 @@ export default function InsightsCenter() {
   const [fadingOut, setFadingOut] = useState<string | null>(null);
 
   const activeInsights = useMemo(
-    () =>
-      mockInsights
-        .filter((i) => !dismissed.includes(i.id))
-        .sort((a, b) => catPriority[a.category] - catPriority[b.category]),
+    () => mockInsights.filter((i) => !dismissed.includes(i.id)).sort((a, b) => catPriority[a.category] - catPriority[b.category]),
     [dismissed]
   );
 
@@ -73,8 +58,7 @@ export default function InsightsCenter() {
   );
 
   const maxSeverity = useMemo(() => {
-    const order = ["critical", "warning", "info", "success"];
-    for (const s of order) {
+    for (const s of ["critical", "warning", "info", "success"]) {
       if (activeInsights.some((i) => i.severity === s)) return s;
     }
     return "info";
@@ -88,74 +72,57 @@ export default function InsightsCenter() {
 
   const handleDismiss = (id: string) => {
     setFadingOut(id);
-    setTimeout(() => {
-      dismiss(id);
-      setFadingOut(null);
-    }, 200);
-  };
-
-  const handleFilter = (ins: Insight) => {
-    if (!ins.actionFilter) return;
-    // Future: apply filters to the main page via context
-    setOpen(false);
+    setTimeout(() => { dismiss(id); setFadingOut(null); }, 200);
   };
 
   const chipKeys = ["all", "critical", "achievement", "event", "opportunity", "trend"];
 
   return (
     <>
-      {/* ── Trigger button ── */}
+      {/* Icon-only trigger */}
       <Tooltip>
         <TooltipTrigger asChild>
           <button
             onClick={() => setOpen(true)}
-            className="inline-flex items-center gap-1.5 transition-all hover:brightness-[0.97]"
-            style={{
-              padding: "6px 12px",
-              borderRadius: 9999,
-              background: "linear-gradient(180deg, #FAEEDA 0%, #F5C4B3 100%)",
-              border: "0.5px solid #BA7517",
-              color: "#854F0B",
-              fontSize: 12,
-              fontWeight: 500,
-            }}
+            className="relative p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
           >
-            <Lightbulb size={14} />
-            <span>Insights</span>
-            <span
-              style={{
-                padding: "1px 6px",
-                borderRadius: 9999,
-                fontSize: 10,
-                fontWeight: 500,
-                minWidth: 16,
-                textAlign: "center",
-                background: severityBadgeColor[maxSeverity],
-                color: "white",
-              }}
-            >
-              {activeInsights.length}
-            </span>
+            <Lightbulb size={18} />
+            {activeInsights.length > 0 && (
+              <span
+                className="absolute -top-1 -right-1 flex items-center justify-center text-white"
+                style={{
+                  fontSize: 9,
+                  fontWeight: 600,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 9999,
+                  padding: "0 4px",
+                  background: severityBadgeColor[maxSeverity],
+                }}
+              >
+                {activeInsights.length}
+              </span>
+            )}
           </button>
         </TooltipTrigger>
-        <TooltipContent>Ver insights gerados a partir dos seus dados</TooltipContent>
+        <TooltipContent side="bottom">Insights gerados dos seus dados</TooltipContent>
       </Tooltip>
 
-      {/* ── Sheet ── */}
+      {/* Sheet */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="p-0 w-[480px] max-w-full flex flex-col [&>button]:hidden">
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-white border-b px-4 py-4" style={{ borderColor: "#e5e7eb" }}>
+          <div className="sticky top-0 z-10 bg-white border-b border-border px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Lightbulb size={16} style={{ color: "#BA7517" }} />
-                <span style={{ fontSize: 15, fontWeight: 500 }}>Central de Insights</span>
+                <Lightbulb size={16} className="text-[#FF5722]" />
+                <span className="text-sm font-semibold text-foreground">Central de Insights</span>
               </div>
-              <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X size={18} />
               </button>
             </div>
-            <p style={{ fontSize: 11, color: "#6b7280", marginTop: 4 }}>
+            <p className="text-[11px] text-muted-foreground mt-1">
               {activeInsights.length} ativos · gerados dos seus dados
             </p>
             <div className="flex gap-1.5 flex-wrap mt-3">
@@ -168,6 +135,7 @@ export default function InsightsCenter() {
                   <button
                     key={key}
                     onClick={() => setFilter(key)}
+                    className="transition-all"
                     style={{
                       padding: "4px 10px",
                       borderRadius: 9999,
@@ -175,7 +143,6 @@ export default function InsightsCenter() {
                       fontWeight: 500,
                       background: active ? c.bgActive : c.bg,
                       color: active ? c.textActive : c.text,
-                      transition: "all 150ms",
                     }}
                   >
                     {chipLabel[key]}·{count}
@@ -189,10 +156,10 @@ export default function InsightsCenter() {
           <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5">
             {filtered.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center gap-3 py-16">
-                <Lightbulb size={32} className="text-gray-300" />
-                <p style={{ fontSize: 13, color: "#6b7280" }}>Nenhum insight ativo no momento.</p>
+                <Lightbulb size={32} className="text-muted-foreground/30" />
+                <p className="text-[13px] text-muted-foreground">Nenhum insight ativo no momento.</p>
                 {dismissed.length > 0 && (
-                  <button onClick={restore} style={{ fontSize: 11, color: "#6b7280", textDecoration: "underline" }}>
+                  <button onClick={restore} className="text-[11px] text-muted-foreground underline hover:text-foreground">
                     Restaurar dispensados
                   </button>
                 )}
@@ -216,82 +183,50 @@ export default function InsightsCenter() {
                       animation: `insightCardIn 250ms ease-out ${idx * 50}ms both`,
                     }}
                   >
-                    {/* Row 1: meta */}
                     <div className="flex items-center justify-between mb-1.5">
                       <span
                         style={{
-                          padding: "2px 8px",
-                          borderRadius: 4,
-                          fontSize: 10,
-                          fontWeight: 500,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.4px",
-                          background: cc.badgeBg,
-                          color: cc.badgeText,
+                          padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 500,
+                          textTransform: "uppercase", letterSpacing: "0.4px",
+                          background: cc.badgeBg, color: cc.badgeText,
                         }}
                       >
                         {catLabel[ins.category]}
                       </span>
-                      <span style={{ fontSize: 10, color: "#9ca3af" }}>
+                      <span className="text-[10px] text-muted-foreground">
                         {ins.tabOrigin} · {ins.timestamp}
                       </span>
                     </div>
 
-                    {/* Row 2: título */}
-                    <p style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.3, marginBottom: 4, color: "#111827" }}>
-                      {ins.title}
-                    </p>
+                    <p className="text-[13px] font-medium leading-tight mb-1 text-foreground">{ins.title}</p>
+                    <p className="text-xs leading-relaxed text-muted-foreground mb-2">{ins.narrative}</p>
 
-                    {/* Row 3: narrativa */}
-                    <p style={{ fontSize: 12, lineHeight: 1.4, color: "#4b5563", marginBottom: 8 }}>
-                      {ins.narrative}
-                    </p>
-
-                    {/* Row 4: evidence */}
                     {ins.evidence && (
-                      <div
-                        className="flex items-center gap-2 mb-2"
-                        style={{ background: "#F1EFE8", borderRadius: 4, padding: 8 }}
-                      >
+                      <div className="flex items-center gap-2 mb-2 bg-muted/50 rounded p-2">
                         <div>
-                          <span style={{ fontSize: 10, color: "#9ca3af", display: "block" }}>{ins.evidence.before.label}</span>
-                          <span style={{ fontSize: 13, fontWeight: 600 }}>{ins.evidence.before.value}</span>
+                          <span className="text-[10px] text-muted-foreground block">{ins.evidence.before.label}</span>
+                          <span className="text-[13px] font-semibold">{ins.evidence.before.value}</span>
                         </div>
-                        <span style={{ color: "#d1d5db", fontSize: 14 }}>→</span>
+                        <span className="text-muted-foreground/50 text-sm">→</span>
                         <div>
-                          <span style={{ fontSize: 10, color: "#9ca3af", display: "block" }}>{ins.evidence.after.label}</span>
-                          <span style={{ fontSize: 13, fontWeight: 600 }}>{ins.evidence.after.value}</span>
+                          <span className="text-[10px] text-muted-foreground block">{ins.evidence.after.label}</span>
+                          <span className="text-[13px] font-semibold">{ins.evidence.after.value}</span>
                         </div>
                       </div>
                     )}
 
-                    {/* Row 5: ações */}
                     <div className="flex gap-1.5">
                       {ins.actionFilter && (
                         <button
-                          onClick={() => handleFilter(ins)}
-                          className="inline-flex items-center gap-1"
-                          style={{
-                            background: "#2C2C2A",
-                            color: "white",
-                            padding: "4px 10px",
-                            borderRadius: 4,
-                            fontSize: 11,
-                          }}
+                          onClick={() => setOpen(false)}
+                          className="inline-flex items-center gap-1 bg-foreground text-background text-[11px] px-2.5 py-1 rounded hover:opacity-90 transition-opacity"
                         >
                           Filtrar contexto <ExternalLink size={10} />
                         </button>
                       )}
                       <button
                         onClick={() => handleDismiss(ins.id)}
-                        style={{
-                          background: "transparent",
-                          color: "#6b7280",
-                          border: "0.5px solid #e5e7eb",
-                          padding: "4px 10px",
-                          borderRadius: 4,
-                          fontSize: 11,
-                        }}
+                        className="text-[11px] text-muted-foreground border border-border px-2.5 py-1 rounded hover:bg-muted/50 transition-colors"
                       >
                         Dispensar
                       </button>
@@ -301,10 +236,9 @@ export default function InsightsCenter() {
               })
             )}
 
-            {/* Restore footer */}
             {dismissed.length > 0 && filtered.length > 0 && (
               <div className="text-center pt-2 pb-4">
-                <button onClick={restore} style={{ fontSize: 11, color: "#6b7280", textDecoration: "underline" }}>
+                <button onClick={restore} className="text-[11px] text-muted-foreground underline hover:text-foreground">
                   Restaurar dispensados
                 </button>
               </div>
@@ -313,7 +247,6 @@ export default function InsightsCenter() {
         </SheetContent>
       </Sheet>
 
-      {/* Keyframe for cascade animation */}
       <style>{`
         @keyframes insightCardIn {
           from { opacity: 0; transform: translateY(8px); }
