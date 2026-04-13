@@ -1376,6 +1376,8 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     if (perEmpresa) return perEmpresa;
     const perUnidade = turnoverEvolucaoPorUnidade[selectedRegional];
     if (perUnidade) return perUnidade;
+    const perArea = turnoverEvolucaoPorArea[selectedRegional];
+    if (perArea) return perArea;
     const item = allScatterData.find(d => d.regional === selectedRegional);
     if (!item) return turnoverEvolucao;
     const ratio = item.turnover / turnoverMedia;
