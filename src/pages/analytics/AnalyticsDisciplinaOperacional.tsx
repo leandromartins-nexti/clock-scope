@@ -1539,6 +1539,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
                 <ReferenceLine y={70} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
                 <ReferenceLine x={medianVolume} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                {/* Corner labels */}
+                <ReferenceArea x1={qualDomain.xMax * 0.75} x2={qualDomain.xMax} y1={qualDomain.yMax * 0.95} y2={qualDomain.yMax} fill="transparent" strokeOpacity={0} label={{ value: "Saudável", position: "insideTopRight", fontSize: 9, fontWeight: 500, fill: "rgba(34,197,94,0.6)" }} />
+                <ReferenceArea x1={qualDomain.xMin} x2={qualDomain.xMax * 0.25} y1={qualDomain.yMin} y2={qualDomain.yMin + (qualDomain.yMax - qualDomain.yMin) * 0.05} fill="transparent" strokeOpacity={0} label={{ value: "Requer atenção", position: "insideBottomLeft", fontSize: 9, fontWeight: 500, fill: "rgba(239,68,68,0.6)" }} />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
