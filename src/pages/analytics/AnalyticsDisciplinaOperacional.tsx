@@ -990,16 +990,17 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
 
   
-  const scoreClassif = getScoreClassification(activeData.score, scoreConfig);
+  // Use 4-component composite score (3-month window) instead of the 2-component one from getQualidadeKpiSummary
+  const compositeScore = useMemo(() => computeCompositeScore(selectedRegional, groupBy as any, scoreConfig), [selectedRegional, groupBy, scoreConfig]);
+  const scoreClassif = getScoreClassification(compositeScore, scoreConfig);
   const scoreColor = scoreClassif.text;
   const scoreFaixa = scoreClassif.label;
 
   const sidebarItems = useMemo(() => {
-    // Compute composite score per entity using config
     const entities = groupBy === "empresa" ? empresaData : groupBy === "area" ? areaData : unidadeData;
     return entities.map(e => {
-      const summary = getQualidadeKpiSummary(e.nome, groupBy as any, scoreConfig);
-      return { nome: e.nome, score: summary.score };
+      const score = computeCompositeScore(e.nome, groupBy as any, scoreConfig);
+      return { nome: e.nome, score };
     }).sort((a, b) => b.score - a.score);
   }, [groupBy, scoreConfig]);
 
