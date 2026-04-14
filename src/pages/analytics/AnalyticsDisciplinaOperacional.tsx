@@ -1410,7 +1410,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
               <div className="flex items-center justify-between mb-0.5">
                 <div>
-                  <h4 className="text-sm font-semibold">Composição do Tempo de Tratativa</h4>
+                  <h4 className="text-sm font-semibold">Evolução do Tempo de Tratativa</h4>
                   <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal da distribuição por faixa · linha azul = tempo médio (dias)</p>
                 </div>
               </div>
