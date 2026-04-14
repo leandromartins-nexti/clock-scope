@@ -934,7 +934,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   );
   const qualidadeComHeadcount = useMemo(
     () => qualidadeDetalhado.map(d => ({ ...d, headcount: headcountMap[d.mes] ?? 0 })),
-    [qualidadeDetalhado]
+    [qualidadeDetalhado, headcountMap]
   );
   const maxHeadcount = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.headcount), 1), [qualidadeComHeadcount]);
   const maxBarTotal = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.registradas + d.justificadas), 1), [qualidadeComHeadcount]);
