@@ -1,0 +1,33 @@
+{
+  "customer_id": 642,
+  "ratio_ideal": 4500,
+  "dados": [
+    {
+      "business_unit_name": "PORTARIA E LIMPEZA",
+      "operadores_ativos": 8,
+      "qtd_ajustes": 46500,
+      "volume_medio_mensal": 3875,
+      "headcount_total": 420,
+      "ajustes_por_operador_mensal": 484,
+      "status": "saudavel"
+    },
+    {
+      "business_unit_name": "SEGURANCA PATRIMONIAL",
+      "operadores_ativos": 3,
+      "qtd_ajustes": 4650,
+      "volume_medio_mensal": 388,
+      "headcount_total": 26,
+      "ajustes_por_operador_mensal": 129,
+      "status": "superdimensionado"
+    },
+    {
+      "business_unit_name": "TERCEIRIZACAO",
+      "operadores_ativos": 2,
+      "qtd_ajustes": 4482,
+      "volume_medio_mensal": 374,
+      "headcount_total": 25,
+      "ajustes_por_operador_mensal": 187,
+      "status": "superdimensionado"
+    }
+  ]
+}

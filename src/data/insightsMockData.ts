@@ -145,4 +145,43 @@ export const mockInsights: Insight[] = [
     evidence: null,
     actionFilter: { client_id: 549859 },
   },
+  {
+    id: "ins_011",
+    category: "critical",
+    severity: "critical",
+    tabOrigin: "Operação de Ponto · Estrutura da Tratativa",
+    timestamp: "há 1h",
+    title: "Supervisor Geral concentra 25% da tratativa de ponto",
+    narrative:
+      "Uma única pessoa com cargo de Supervisor Geral processou 14.073 dos 56.892 ajustes do período. Saída, ausência ou sobrecarga dessa pessoa impactaria a operação inteira. Recomenda-se redistribuir parte da carga entre os 5 Inspetores ativos.",
+    evidence: {
+      before: { label: "Supervisor Geral (1 pessoa)", value: "14.073 ajustes" },
+      after: { label: "Total do período", value: "56.892 ajustes" },
+    },
+    actionFilter: null,
+  },
+  {
+    id: "ins_012",
+    category: "event",
+    severity: "warning",
+    tabOrigin: "Operação de Ponto · Estrutura da Tratativa",
+    timestamp: "há 1h",
+    title: "Cargos gerenciais tratam 13.7% do ponto",
+    narrative:
+      "Diretor Operacional e Gerente Financeiro somaram 7.658 ajustes no período. Isso indica ausência de time administrativo dedicado ao back-office de ponto ou processo de aprovação excessivamente centralizado em níveis estratégicos. Em ambos os casos há oportunidade de estruturação organizacional.",
+    evidence: null,
+    actionFilter: null,
+  },
+  {
+    id: "ins_013",
+    category: "opportunity",
+    severity: "warning",
+    tabOrigin: "Operação de Ponto · Estrutura da Tratativa",
+    timestamp: "há 1h",
+    title: "Redistribuir carga reduziria risco em 60%",
+    narrative:
+      "Delegar metade da carga do Supervisor Geral (7.000 ajustes) para os 5 Inspetores elevaria a média individual de cada Inspetor em 28%, ainda dentro de faixa saudável, e reduziria a concentração crítica de 25% para menos de 13%. Ação de baixo custo com alto impacto em resiliência operacional.",
+    evidence: null,
+    actionFilter: null,
+  },
 ];
