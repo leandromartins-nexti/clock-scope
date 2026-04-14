@@ -567,10 +567,10 @@ export async function buildAnalyticsPdf(
     y = drawTable(doc, faixaHeaders, faixaRows, y);
 
     // ════════════════════════════════════════════════════
-    // PAGE 4: Qualidade vs Volume — SCATTER + TABELA
+    // PAGE 4: Matriz de Saúde Operacional — SCATTER + TABELA
     // ════════════════════════════════════════════════════
     y = newPage(doc, dateStr);
-    y = drawSectionTitle(doc, `Dispersão: Qualidade vs Volume por ${groupByLabel[groupBy]}`, y);
+    y = drawSectionTitle(doc, `Matriz de Saúde Operacional por ${groupByLabel[groupBy]}`, y);
 
     const scatterQual = aggregateQualidadeVolume(null, groupBy);
     const scatterData = scatterQual.map(d => ({

@@ -16,6 +16,9 @@ import {
 import esforcoEmpresa from "@/data/qualidade-ponto/esforco-tratativa-por-empresa.json";
 import esforcoUnNegocio from "@/data/qualidade-ponto/esforco-tratativa-por-un-negocio.json";
 import esforcoArea from "@/data/qualidade-ponto/esforco-tratativa-por-area.json";
+import tratTempoEmpresa from "@/data/qualidade-ponto/tratativa-tempo-por-empresa.json";
+import tratTempoUnidade from "@/data/qualidade-ponto/tratativa-tempo-por-un-negocio.json";
+import tratTempoArea from "@/data/qualidade-ponto/tratativa-tempo-por-area.json";
 import hcEmpresaJson from "@/data/qualidade-ponto/headcount-por-empresa.json";
 import hcUnNegocioJson from "@/data/qualidade-ponto/headcount-por-un-negocio.json";
 import hcAreaJson from "@/data/qualidade-ponto/headcount-por-area.json";
@@ -1009,12 +1012,66 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   const allScatterTratativa = useMemo(() => aggregateAjustes(selectedReferenceMonth, groupBy), [selectedReferenceMonth, groupBy]);
 
+  // Compute tempo_medio_dias per operation from tratativa-tempo JSONs
+  const tempoMedioPorOperacao = useMemo(() => {
+    const tratSources: Record<string, any[]> = {
+      empresa: tratTempoEmpresa,
+      unidade: tratTempoUnidade,
+      area: tratTempoArea,
+    };
+    const raw = tratSources[groupBy] ?? tratTempoEmpresa;
+    const nameField = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
+    const normName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
+    
+    // Filter by selected month if applicable
+    const filtered = selectedReferenceMonth
+      ? raw.filter((r: any) => r.reference_month === selectedReferenceMonth)
+      : raw;
+    
+    // Weighted average: SUM(tempo_medio_horas × total_ajustes) / SUM(total_ajustes) / 24
+    const map = new Map<string, { sumHorasXVol: number; sumVol: number }>();
+    filtered.forEach((r: any) => {
+      const name = normName(r[nameField] ?? "");
+      const existing = map.get(name) ?? { sumHorasXVol: 0, sumVol: 0 };
+      existing.sumHorasXVol += (r.tempo_medio_horas ?? 0) * (r.total_ajustes ?? 0);
+      existing.sumVol += (r.total_ajustes ?? 0);
+      map.set(name, existing);
+    });
+    
+    const result = new Map<string, number>();
+    map.forEach((v, k) => {
+      result.set(k, v.sumVol > 0 ? +(v.sumHorasXVol / v.sumVol / 24).toFixed(1) : 0);
+    });
+    return result;
+  }, [groupBy, selectedReferenceMonth]);
+
   const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
-  const chartScatterQual = useMemo(() => allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional)), [allScatter, visibleSet]);
+  const chartScatterQual = useMemo(() => {
+    const normName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
+    const base = allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional));
+    return base.map(s => ({
+      ...s,
+      tempoMedioDias: tempoMedioPorOperacao.get(normName(s.regional)) ?? 5,
+    }));
+  }, [allScatter, visibleSet, tempoMedioPorOperacao]);
   const chartScatterTrat = useMemo(() => {
     if (visibleSet.size > 0) return allScatterTratativa.filter(s => visibleSet.has(s.regional));
     return allScatterTratativa;
   }, [allScatterTratativa, visibleSet]);
+
+  // Clicked/fixed bubble state
+  const [fixedBubble, setFixedBubble] = useState<string | null>(null);
+  
+  // Critical zone badge
+  const criticalCount = useMemo(() => chartScatterQual.filter(d => d.qualidade < 70 && (d.tempoMedioDias > 7 || d.qualidade < 50)).length, [chartScatterQual]);
+
+  // Median volume for reference line
+  const medianVolume = useMemo(() => {
+    if (!chartScatterQual.length) return 170000;
+    const sorted = [...chartScatterQual].sort((a, b) => a.volume - b.volume);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0 ? Math.round((sorted[mid - 1].volume + sorted[mid].volume) / 2) : sorted[mid].volume;
+  }, [chartScatterQual]);
 
   const avgQualVolume = useMemo(() => chartScatterQual.length ? Math.round(chartScatterQual.reduce((s, d) => s + d.volume, 0) / chartScatterQual.length) : 170000, [chartScatterQual]);
   const avgQualQualidade = useMemo(() => chartScatterQual.length ? +(chartScatterQual.reduce((s, d) => s + d.qualidade, 0) / chartScatterQual.length).toFixed(1) : 85, [chartScatterQual]);
@@ -1450,48 +1507,88 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           <div data-onboarding="scatter-qualidade" className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-0.5">
               <div className="flex items-center gap-1.5">
-                <h4 className="text-sm font-semibold">Qualidade vs Volume</h4>
-                <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
+                <h4 className="text-sm font-semibold">Matriz de Saúde Operacional</h4>
+                <InfoTip text="Cada bolha é uma operação. Posição indica volume e qualidade, tamanho é headcount, cor é tempo médio de tratativa. Use os quadrantes para identificar operações saudáveis e operações em risco." />
               </div>
-              <button onClick={() => setChartDataModal("matrizSaude")} className="p-1 rounded hover:bg-muted/60 transition-colors" title="Ver dados">
-                <Database className="w-3.5 h-3.5 text-muted-foreground" />
-              </button>
+              <div className="flex items-center gap-1">
+                {criticalCount > 0 && (
+                  <span className="text-[10px] font-medium bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full">
+                    {criticalCount} operação{criticalCount > 1 ? "ões" : ""} em zona crítica
+                  </span>
+                )}
+                <button onClick={() => setChartDataModal("matrizSaude")} className="p-1 rounded hover:bg-muted/60 transition-colors" title="Ver dados">
+                  <Database className="w-3.5 h-3.5 text-muted-foreground" />
+                </button>
+              </div>
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Volume × Qualidade × Tempo de Resposta por operação{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" dataKey="volume" name="Volume" domain={[qualDomain.xMin, qualDomain.xMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="qualidade" name="Qualidade" domain={[qualDomain.yMin, qualDomain.yMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Qualidade (%)", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={avgQualQualidade} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                <ReferenceLine x={avgQualVolume} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine y={70} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
+                <ReferenceLine x={medianVolume} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
+                  const tempoClass = d.tempoMedioDias <= 3 ? "Rápido" : d.tempoMedioDias <= 7 ? "Moderado" : "Lento";
+                  const tempoColor = d.tempoMedioDias <= 3 ? "text-green-600" : d.tempoMedioDias <= 7 ? "text-amber-600" : "text-red-600";
+                  const isHighVol = d.volume >= medianVolume;
+                  const isHighQual = d.qualidade >= 70;
+                  const quadrante = isHighVol && isHighQual ? "Escala excelente" : !isHighVol && isHighQual ? "Pequena excelente" : isHighVol && !isHighQual ? "Alto risco" : "Requer atenção";
                   return (
-                    <div className="bg-white border rounded-lg p-2 shadow-md text-xs">
-                      <p className="font-semibold">{d.regional}</p>
-                      <p>Volume: {(d.volume / 1000).toFixed(0)}K marcações</p>
-                      <p>Qualidade: {d.qualidade}%</p>
-                      <p>Headcount: {d.headcount}</p>
+                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                      <p className="font-semibold text-sm">{d.regional}</p>
+                      <div className="border-t pt-1 space-y-0.5">
+                        <p>Volume: <span className="font-medium">{d.volume.toLocaleString("pt-BR")}</span> marcações</p>
+                        <p>Qualidade: <span className="font-medium">{d.qualidade}%</span></p>
+                        <p>Headcount: <span className="font-medium">{d.headcount}</span> pessoas</p>
+                        <p>Tempo médio: <span className={`font-medium ${tempoColor}`}>{d.tempoMedioDias}d</span> · {tempoClass}</p>
+                      </div>
+                      <div className="border-t pt-1">
+                        <p className="text-muted-foreground">Quadrante: <span className="font-medium text-foreground">{quadrante}</span></p>
+                      </div>
                     </div>
                   );
                 }} />
                 <Scatter data={chartScatterQual} shape={(props: any) => {
                   const { cx, cy, payload } = props;
                   const r = Math.max(8, Math.sqrt(payload.headcount) * 0.8);
-                  const fill = payload.qualidade >= 85 ? "#22c55e" : payload.qualidade >= 75 ? "#f97316" : "#ef4444";
+                  const fill = payload.tempoMedioDias <= 3 ? "#22c55e" : payload.tempoMedioDias <= 7 ? "#f59e0b" : "#ef4444";
+                  const isFixed = fixedBubble === payload.regional;
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
+                  const opacity = isFixed ? 0.85 : isSelected ? 0.7 : 0.15;
+                  const strokeW = isFixed ? 2.5 : isSelected ? 1.5 : 0.5;
                   return (
-                    <g onClick={() => onRegionalClick(payload.regional)} onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }} className="cursor-pointer">
-                      <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.7 : 0.15} stroke={fill} strokeWidth={isSelected ? 1.5 : 0.5} />
-                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill={isSelected ? "#374151" : "#9ca3af"}>{payload.regional.replace("", "").split(/\s+/)[0]?.slice(0, 3).toUpperCase() || abreviar(payload.regional)}</text>
+                    <g
+                      onClick={() => {
+                        setFixedBubble(prev => prev === payload.regional ? null : payload.regional);
+                        onRegionalClick(payload.regional);
+                      }}
+                      onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }}
+                      className="cursor-pointer"
+                    >
+                      <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={opacity} stroke={isFixed ? "#1e293b" : fill} strokeWidth={strokeW} />
+                      {isFixed && (
+                        <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fontWeight={700} fill="#374151">
+                          {payload.regional.split(/\s+/)[0]?.slice(0, 8) || abreviar(payload.regional)}
+                        </text>
+                      )}
                     </g>
                   );
                 }} />
               </ScatterChart>
             </ResponsiveContainer>
+            {/* Legend */}
+            <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500 inline-block" /> até 3d</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 3-7d</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> acima de 7d</span>
+              <span className="text-muted-foreground/60">·</span>
+              <span>Tamanho da bolha = headcount</span>
+            </div>
           </div>
 
           {(() => {

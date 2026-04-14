@@ -58,7 +58,7 @@ const dataRegistry: MenuEntry[] = [
           },
           {
             id: "matriz-saude",
-            chartName: "Matriz de Saúde Operacional (Qualidade vs Volume)",
+            chartName: "Matriz de Saúde Operacional",
             columns: evolucaoQualidadeHeadcountColumns,
             source: evolucaoQualidadeHeadcountSource,
             derived: true,

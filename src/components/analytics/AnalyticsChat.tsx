@@ -90,7 +90,7 @@ export default function AnalyticsChat({ activeTab, groupBy = "unidade" }: Analyt
           const botMsg: ChatMessage = {
             id: `a-${Date.now()}`,
             role: "assistant",
-            content: `Relatório completo de **${tabLabels[tab] || tab}** gerado com sucesso!\n\nAgrupamento: **${groupLabel}**\nInclui: KPIs, ranking, evolução mensal, composição de faixas, dispersão qualidade vs volume, e detalhe por operação.\n\nClique no botão abaixo para baixar.`,
+            content: `Relatório completo de **${tabLabels[tab] || tab}** gerado com sucesso!\n\nAgrupamento: **${groupLabel}**\nInclui: KPIs, ranking, evolução mensal, composição de faixas, matriz de saúde operacional, e detalhe por operação.\n\nClique no botão abaixo para baixar.`,
             timestamp: new Date(),
             pdfUrl: url,
             pdfFileName: fileName,
