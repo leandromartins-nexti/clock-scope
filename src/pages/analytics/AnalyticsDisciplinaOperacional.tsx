@@ -1282,15 +1282,24 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               { key: "de7a15d", name: "7–15 dias", color: "#f97316", rgba: "249,115,22" },
               { key: "mais15d", name: "+15 dias", color: "#ef4444", rgba: "239,68,68" },
             ];
-            const tratData = tratativaFaixasFiltrada.map(d => ({
-              mes: d.mes,
-              ate1d: (d.ate1d / d.total) * 100,
-              de1a3d: (d.de1a3d / d.total) * 100,
-              de3a7d: (d.de3a7d / d.total) * 100,
-              de7a15d: (d.de7a15d / d.total) * 100,
-              mais15d: (d.mais15d / d.total) * 100,
-              _raw: d,
-            }));
+            // Compute weighted avg tempo (days) per month from faixa midpoints
+            const FAIXA_MIDPOINTS: Record<string, number> = { ate1d: 0.5, de1a3d: 2, de3a7d: 5, de7a15d: 11, mais15d: 20 };
+            const tratData = tratativaFaixasFiltrada.map(d => {
+              const tempoDias = d.total > 0
+                ? +(Object.keys(FAIXA_MIDPOINTS).reduce((sum, k) => sum + (d[k as keyof typeof d] as number) * FAIXA_MIDPOINTS[k], 0) / d.total).toFixed(1)
+                : 0;
+              return {
+                mes: d.mes,
+                ate1d: (d.ate1d / d.total) * 100,
+                de1a3d: (d.de1a3d / d.total) * 100,
+                de3a7d: (d.de3a7d / d.total) * 100,
+                de7a15d: (d.de7a15d / d.total) * 100,
+                mais15d: (d.mais15d / d.total) * 100,
+                tempoDias,
+                _raw: d,
+              };
+            });
+            const maxTempo = Math.max(...tratData.map(d => d.tempoDias), 1);
             const tratClick = (e: any) => {
               if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
             };
@@ -1301,7 +1310,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             };
             const tratTooltip = ({ active, payload, label }: any) => {
               if (!active || !payload?.length) return null;
-              const raw = payload[0]?.payload?._raw;
+              const d = payload[0]?.payload;
+              const raw = d?._raw;
               if (!raw) return null;
               return (
                 <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
@@ -1318,6 +1328,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       </div>
                     );
                   })}
+                  <div className="flex items-center gap-1.5 pt-0.5 border-t border-border/40">
+                    <span className="w-2.5 h-0 border-t-2 border-dashed" style={{ borderColor: "#3b82f6" }} />
+                    <span className="text-muted-foreground">Tempo médio:</span>
+                    <span className="font-medium text-foreground">{d.tempoDias} dias</span>
+                  </div>
                 </div>
               );
             };
@@ -1326,21 +1341,26 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <div className="flex items-center justify-between mb-0.5">
                 <div>
                   <h4 className="text-sm font-semibold">Composição do Tempo de Tratativa</h4>
-                  <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal da distribuição por faixa</p>
+                  <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal da distribuição por faixa · linha azul = tempo médio (dias)</p>
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={280}>
-                <AreaChart data={tratData} onClick={tratClick}>
+                <ComposedChart data={tratData} onClick={tratClick}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="mes" tick={tratXTick} />
-                  <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${Math.round(v)}%`} domain={[0, 100]} />
+                  <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={v => `${Math.round(v)}%`} domain={[0, 100]} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, Math.ceil(maxTempo * 1.3)]} label={{ value: "dias", angle: 90, position: "insideRight", fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
                   <RechartsTooltip content={tratTooltip} />
-                  {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                  {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                   {FAIXAS.map(f => (
-                    <Area key={f.key} type="monotone" dataKey={f.key} stackId="1" stroke={f.color} fill={`rgba(${f.rgba},${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name={f.name} />
+                    <Area yAxisId="left" key={f.key} type="monotone" dataKey={f.key} stackId="1" stroke={f.color} fill={`rgba(${f.rgba},${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name={f.name} />
                   ))}
-                  <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
-                </AreaChart>
+                  <Line yAxisId="right" type="monotone" dataKey="tempoDias" name="Tempo médio" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }} />
+                  <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
+                    ...FAIXAS.map(f => ({ value: f.name, type: "square" as const, color: f.color })),
+                    { value: "Tempo médio (dias)", type: "plainline" as const, color: "#3b82f6" },
+                  ]} />
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
             );
