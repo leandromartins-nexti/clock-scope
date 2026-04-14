@@ -1674,20 +1674,14 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             const P90 = prodValues[p90Idx] || 500;
             const thresholdYellow = Math.round(P50 * 1.5);
 
+            const limiteSaudavel = Math.round(P50 * 1.5);
+
             const sobrecargaData = allEntries.map(d => {
-              const categoria = d.produtividade > P90 ? "Pico crítico" : d.produtividade > thresholdYellow ? "Acima do baseline" : "Saudável";
-              const barColor = d.produtividade > P90 ? "#ef4444" : d.produtividade > thresholdYellow ? "#f59e0b" : "#22c55e";
-              return { ...d, categoria, barColor };
+              const categoria = d.produtividade > P90 ? "Pico crítico" : d.produtividade > limiteSaudavel ? "Acima do limite" : "Saudável";
+              const barColor = d.produtividade > P90 ? "#ef4444" : d.produtividade > limiteSaudavel ? "#f59e0b" : "#22c55e";
+              return { ...d, categoria, barColor, limiteSaudavel };
             });
 
-            // Contextual indicators
-            const picoHEEntry = sobrecargaData.reduce((max, d) => d.he > max.he ? d : max, sobrecargaData[0]);
-            const heP50 = (() => {
-              const heVals = sobrecargaData.map(d => d.he).sort((a, b) => a - b);
-              return heVals[Math.floor(heVals.length * 0.5)] || 0;
-            })();
-            const mesesCriticos = sobrecargaData.filter(d => d.produtividade > P90);
-            const heCriticoAcumulada = mesesCriticos.reduce((sum, d) => sum + d.he, 0);
             const picoEntry = sobrecargaData.reduce((max, d) => d.produtividade > max.produtividade ? d : max, sobrecargaData[0]);
 
             if (areaInsufficient) {
@@ -1707,18 +1701,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       <h4 className="text-sm font-semibold">Sobrecarga do Back-office</h4>
                       <InfoTip text="Mostra quantos ajustes cada operador do back-office processou em média por mês e quantas horas extras o time teve. A cor da barra indica se a carga está dentro do normal histórico ou em zona crítica. A linha tracejada mostra horas extras acumuladas, para entender como o time absorveu os picos." />
                     </div>
-                    <p className="text-[10px] text-muted-foreground mb-1">Carga por operador e horas extras do time por mês</p>
+                    <p className="text-[10px] text-muted-foreground mb-1">Carga de ajustes e HE por operador. Linha tracejada azul = HE total do time.</p>
                   </div>
-                </div>
-                {/* Contextual indicators */}
-                <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2 flex-wrap">
-                  <span>Baseline (P50): {P50} ajustes/pessoa</span>
-                  <span className="mx-0.5">·</span>
-                  <span>{Math.round(heP50)}h HE/mês</span>
-                  <span className="mx-0.5">·</span>
-                  <span>Pico: {picoHEEntry?.mes} ({Math.round(picoHEEntry?.he)}h HE)</span>
-                  <span className="mx-0.5">·</span>
-                  <span>HE acumulada no período crítico: {Math.round(heCriticoAcumulada)}h</span>
                 </div>
                 <ResponsiveContainer width="100%" height={280}>
                   <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }}>
@@ -1726,42 +1710,37 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
                     <YAxis yAxisId="left" tick={{ fontSize: 10 }} />
                     <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} label={{ value: "HE (h)", angle: 90, position: "insideRight", fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
-                    <ReferenceLine yAxisId="left" y={P50} stroke="#22c55e" strokeDasharray="8 4" strokeWidth={1.5} label={{ value: `Baseline P50`, position: "left", fontSize: 9, fill: "#22c55e" }} />
+                    <ReferenceLine yAxisId="left" y={limiteSaudavel} stroke="#22c55e" strokeDasharray="5 3" strokeWidth={1.2} label={{ value: `Limite saudável: ${limiteSaudavel} aj/operador`, position: "left", fontSize: 9, fill: "#22c55e" }} />
                     <RechartsTooltip content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
                       const d = payload[0]?.payload;
                       if (!d) return null;
-                      const isCriticalOrWarning = d.categoria !== "Saudável";
                       return (
                         <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                           <p className="font-semibold text-foreground">{label}</p>
+                          <hr className="border-border/50" />
                           <div className="flex items-center gap-1.5">
                             <span className="w-2.5 h-2.5" style={{ backgroundColor: d.barColor }} />
                             <span className="text-muted-foreground">Ajustes por operador:</span>
-                            <span className="font-medium text-foreground">
-                              {d.produtividade.toLocaleString("pt-BR")}
-                              {isCriticalOrWarning && " ⚠"}
-                            </span>
+                            <span className="font-medium text-foreground">{d.produtividade.toLocaleString("pt-BR")}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "#3b82f6" }} />
+                            <span className="w-2.5 h-2.5 bg-blue-500" />
                             <span className="text-muted-foreground">Operadores ativos:</span>
                             <span className="font-medium text-foreground">{d.operadores}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "#3b82f6" }} />
-                            <span className="text-muted-foreground">Horas extras do time:</span>
+                            <span className="w-2.5 h-2.5 bg-blue-500" />
+                            <span className="text-muted-foreground">HE rateada do time:</span>
                             <span className="font-medium text-foreground">{d.he.toLocaleString("pt-BR")}h</span>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "hsl(var(--muted-foreground))" }} />
-                            <span className="text-muted-foreground">Volume total:</span>
-                            <span className="font-medium text-foreground">{d.ajustes.toLocaleString("pt-BR")} ajustes</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 pt-0.5 border-t border-border/50">
-                            <span className="w-2.5 h-2.5" style={{ backgroundColor: d.barColor }} />
-                            <span className="text-muted-foreground">Classificação:</span>
+                          <div className="flex items-center gap-1.5 pt-1 border-t border-border/50">
+                            <span className="text-muted-foreground">Status:</span>
                             <span className="font-medium" style={{ color: d.barColor }}>{d.categoria}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-muted-foreground">Limite saudável:</span>
+                            <span className="font-medium text-foreground">{d.limiteSaudavel} aj/operador</span>
                           </div>
                         </div>
                       );
@@ -1794,9 +1773,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 </ResponsiveContainer>
                 {/* Legend */}
                 <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-muted-foreground">
-                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#22c55e", opacity: 0.75 }} /> Saudável (≤P50×1.5)</span>
-                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#f59e0b", opacity: 0.75 }} /> Acima do baseline</span>
-                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#ef4444", opacity: 0.75 }} /> Pico crítico (&gt;P90)</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#22c55e", opacity: 0.75 }} /> Saudável</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#f59e0b", opacity: 0.75 }} /> Acima do limite</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#ef4444", opacity: 0.75 }} /> Pico crítico</span>
                   <span className="flex items-center gap-1"><span className="w-1.5 h-0 inline-block border-t-2 border-dashed" style={{ borderColor: "#3b82f6", width: 12 }} /> HE do time</span>
                 </div>
               </div>
