@@ -1259,11 +1259,35 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   {qualidadeComHeadcount.map((entry, idx) => (
                     <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.25)" : "rgba(34,197,94,0.65)"} />
                   ))}
+                  <LabelList dataKey="registradas" position="center" fontSize={9} fill="#fff" fontWeight={600} formatter={(v: number) => {
+                    return `${v.toLocaleString("pt-BR")}`;
+                  }} content={({ x, y, width, height, index }: any) => {
+                    const d = qualidadeComHeadcount[index];
+                    if (!d) return null;
+                    const total = d.registradas + d.justificadas;
+                    const pct = total > 0 ? ((d.registradas / total) * 100).toFixed(0) : "0";
+                    return (
+                      <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
+                        {pct}%
+                      </text>
+                    );
+                  }} />
                 </Bar>
                 <Bar yAxisId="left" dataKey="justificadas" stackId="qual" stroke="rgba(239,68,68,0.5)" strokeWidth={1} radius={[4, 4, 0, 0]} name="Justificadas">
                   {qualidadeComHeadcount.map((entry, idx) => (
                     <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.25)" : "rgba(239,68,68,0.65)"} />
                   ))}
+                  <LabelList content={({ x, y, width, height, index }: any) => {
+                    const d = qualidadeComHeadcount[index];
+                    if (!d) return null;
+                    const total = d.registradas + d.justificadas;
+                    const pct = total > 0 ? ((d.justificadas / total) * 100).toFixed(0) : "0";
+                    return (
+                      <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
+                        {pct}%
+                      </text>
+                    );
+                  }} />
                 </Bar>
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: "Registradas", type: "square", color: "#22c55e" },
