@@ -1644,7 +1644,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       ))}
                       <LabelList dataKey="labelTruncated" position="top" fontSize={9} fontWeight={700} fill="#ef4444" formatter={(v: any) => v || ""} />
                     </Bar>
-                    <Line yAxisId="right" type="monotone" dataKey="operadores" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: "#3b82f6", stroke: "#fff", strokeWidth: 2 }} name="Operadores ativos" />
+                    
                     <Line yAxisId="right" type="monotone" dataKey="produtividade" stroke="#f97316" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#f97316", stroke: "#fff", strokeWidth: 2 }} name="Produtividade (ajustes/pessoa)" />
                     <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
                   </ComposedChart>
