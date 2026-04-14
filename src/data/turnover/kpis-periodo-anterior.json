@@ -3,7 +3,7 @@
   "periodo_atual": { "inicio": "2025-04-01", "fim": "2026-04-01" },
   "periodo_anterior": { "inicio": "2024-04-01", "fim": "2025-04-01" },
   "kpis": {
-    "score_aba": { "atual": 74, "anterior": 68, "delta": 6, "direcao": "up" },
+    "score_aba": { "atual": 79, "anterior": 72, "delta": 7, "direcao": "up" },
     "turnover_anual_pct": { "atual": 43.1, "anterior": 37.9, "delta": 5.2, "direcao": "up" },
     "turnover_precoce_90d_pct": { "atual": 38.4, "anterior": 42.1, "delta": -3.7, "direcao": "down" },
     "melhor_operacao": { "atual": "SEGURANCA PATRIMONIAL", "anterior": "SEGURANCA PATRIMONIAL", "mudou": false, "mudanca_label": "" },
