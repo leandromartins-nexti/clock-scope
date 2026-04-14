@@ -956,14 +956,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     // But headcount varies per month. Just ensure the area envelope sits above bars.
     // Simple: rightMax = minHeadcount / 1.1 would push all above, but let's use maxHeadcount
     // to keep nice ticks, and scale so area top = 10% above tallest bar visually
-    const minHC = Math.min(...qualidadeComHeadcount.map(d => d.headcount));
-    // The month with tallest bar has bar/leftAutoMax ≈ 1.0
-    // We want that month's hc/rightMax > 1.1 → rightMax < hc_that_month / 1.1
-    // Find the month with max bar total and use its headcount
+    const minHC = Math.min(...qualidadeComHeadcount.map(d => d.activeHeadcount));
     const maxBarMonth = qualidadeComHeadcount.reduce((best, d) => 
       (d.registradas + d.justificadas) > (best.registradas + best.justificadas) ? d : best
     );
-    const hcAtMaxBar = maxBarMonth.headcount;
+    const hcAtMaxBar = maxBarMonth.activeHeadcount;
     // rightMax so that hcAtMaxBar / rightMax ≈ 1.1 (i.e. 110% of chart = above top)
     // But can't go above chart. Instead: the left axis will auto-extend.
     // Let's just set rightMax = maxHeadcount * factor where the area is a background band.
