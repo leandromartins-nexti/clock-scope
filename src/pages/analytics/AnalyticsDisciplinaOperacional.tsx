@@ -1528,7 +1528,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
       const bestScore = best ? getItemCompositeScore(best.absenteismo, best.turnover).score : 0;
       const worstScore = worst ? getItemCompositeScore(worst.absenteismo, worst.turnover).score : 0;
       return {
-        score: Math.round(composite.score), taxa: avgTaxa, faixa: classif.label,
+        score: Math.round(composite.score), taxa: avgTaxa, faixa: classif.label, scoreColor: classif.color,
         melhorOperacao: { nome: best?.regional ?? "—", score: Math.round(bestScore) },
         maiorRisco: { nome: worst?.regional ?? "—", score: Math.round(worstScore), indicador: `${worst?.absenteismo ?? 0}% taxa` },
         turnover: `${turnoverAnual}%`,
@@ -1890,7 +1890,7 @@ ORDER BY a.reference_month, a.headcount DESC;`;
         {/* Linha 1: Score + 4 KPI Cards */}
         <div className="grid grid-cols-5 gap-3">
           <ScoreBoard title="Score da Aba" tooltip="Score composto que combina Absenteísmo e Turnover. Configure pesos e limites em Configuração.">
-            <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={activeData.faixa} />
+            <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={activeData.faixa} color={activeData.scoreColor} />
           </ScoreBoard>
           <KPIBoard title="Absenteísmo (%)" tooltip="Taxa de ausências sobre o efetivo total no período." value={`${activeData.taxa}%`} valueColor={activeData.taxa <= 4 ? "text-green-600" : activeData.taxa <= 6 ? "text-orange-500" : "text-red-600"} />
           <KPIBoard title="Turnover Anual (%)" tooltip="Taxa anualizada para comparação com benchmarks de mercado. O setor de vigilância e facilities tem média de 40% a 80% ao ano." value={activeData.turnover} valueColor="text-orange-500" />
