@@ -14,7 +14,7 @@ export function ScoreBoard({
   children: ReactNode;
 }) {
   return (
-    <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
+    <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center hover:shadow-lg hover:-translate-y-0.5 transition-all">
       <div className="flex items-center gap-1 mb-1">
         <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">
           {title}

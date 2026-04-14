@@ -1,6 +1,6 @@
 {
   "customer_id": 642,
-  "score_composto": 74,
+  "score_composto": 79,
   "score_label": "Bom",
   "componentes": [
     {
@@ -8,26 +8,17 @@
       "valor_atual": 43.1,
       "unidade": "%",
       "nota": 100,
-      "peso": 50,
-      "contribuicao": 50,
+      "peso": 70,
+      "contribuicao": 70,
       "cor_semantica": "success"
-    },
-    {
-      "metrica": "Turnover Voluntário",
-      "valor_atual": 60.2,
-      "unidade": "%",
-      "nota": 60,
-      "peso": 30,
-      "contribuicao": 18,
-      "cor_semantica": "warning"
     },
     {
       "metrica": "Turnover Precoce",
       "valor_atual": 38.4,
       "unidade": "%",
       "nota": 30,
-      "peso": 20,
-      "contribuicao": 6,
+      "peso": 30,
+      "contribuicao": 9,
       "cor_semantica": "critical"
     }
   ]
