@@ -1266,11 +1266,14 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const reg = d?.registradas ?? 0;
                   const jus = d?.justificadas ?? 0;
                   const total = reg + jus;
-                  const hc = d?.headcount ?? 0;
+                  const activeHC = d?.activeHeadcount ?? 0;
+                  const hcPonto = d?.hcPonto ?? 0;
+                  const engagement = activeHC > 0 ? (hcPonto / activeHC) * 100 : 0;
+                  const lowEngagement = engagement > 0 && engagement < 90;
                   return (
                     <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                       <p className="font-semibold text-foreground">{label}</p>
-                      <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>
+                      <p className="text-muted-foreground">Marcações: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>
                       {[{ name: "Registradas", value: reg, color: "#22c55e" }, { name: "Justificadas", value: jus, color: "#ef4444" }].map(f => (
                         <div key={f.name} className="flex items-center gap-1.5">
                           <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
@@ -1278,16 +1281,26 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           <span className="font-medium text-foreground">{`${((f.value / total) * 100).toFixed(0)}% (${f.value.toLocaleString("pt-BR")})`}</span>
                         </div>
                       ))}
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5" style={{ backgroundColor: "#D3D1C7" }} />
-                        <span className="text-muted-foreground">Headcount:</span>
-                        <span className="font-medium text-foreground">{hc}</span>
+                      <div className="border-t border-border/40 pt-1 mt-1 space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5" style={{ backgroundColor: "#D3D1C7" }} />
+                          <span className="text-muted-foreground">Headcount ativo:</span>
+                          <span className="font-medium text-foreground">{activeHC} pessoas</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 bg-transparent" />
+                          <span className="text-muted-foreground">Bateram ponto:</span>
+                          <span className={`font-medium ${lowEngagement ? "text-amber-600" : "text-foreground"}`}>
+                            {hcPonto} ({engagement.toFixed(0)}%)
+                            {lowEngagement && <span className="ml-1" title="Engagement abaixo de 90%">⚠️</span>}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   );
                 }} />
                 {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
-                <Area yAxisId="right" type="monotone" dataKey="headcount" fill="#D3D1C7" fillOpacity={0.4} stroke="#D3D1C7" strokeWidth={0} name="Headcount" />
+                <Area yAxisId="right" type="monotone" dataKey="activeHeadcount" fill="#D3D1C7" fillOpacity={0.4} stroke="#D3D1C7" strokeWidth={0} name="Headcount" />
                 <Bar yAxisId="left" dataKey="registradas" stackId="qual" stroke="#22c55e" strokeWidth={1} radius={[0, 0, 0, 0]} name="Registradas">
                   {qualidadeComHeadcount.map((entry, idx) => (
                     <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.25)" : "rgba(34,197,94,0.65)"} />
