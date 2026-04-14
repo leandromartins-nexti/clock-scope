@@ -1,0 +1,12 @@
+{
+  "customer_id": 642,
+  "periodo_atual": { "inicio": "2025-04-01", "fim": "2026-04-01" },
+  "periodo_anterior": { "inicio": "2024-04-01", "fim": "2025-04-01" },
+  "kpis": {
+    "score_aba": { "atual": 69, "anterior": 64, "delta": 5, "direcao": "up" },
+    "qualidade_pct": { "atual": 76.6, "anterior": 73.2, "delta": 3.4, "direcao": "up" },
+    "tempo_medio_dias": { "atual": 6.1, "anterior": 7.8, "delta": -1.7, "direcao": "down" },
+    "melhor_operacao": { "atual": "SEGURANCA PATRIMONIAL", "anterior": "SEGURANCA PATRIMONIAL", "mudou": false, "mudanca_label": "" },
+    "maior_risco": { "atual": "TERCEIRIZACAO", "anterior": "PORTARIA E LIMPEZA", "mudou": true, "mudanca_label": "Passou a liderar o risco" }
+  }
+}

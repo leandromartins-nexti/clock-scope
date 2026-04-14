@@ -1,0 +1,25 @@
+{
+  "customer_id": 642,
+  "score_composto": 69,
+  "score_label": "Atenção",
+  "componentes": [
+    {
+      "metrica": "Qualidade das Marcações",
+      "valor_atual": 76.6,
+      "unidade": "%",
+      "nota": 77,
+      "peso": 70,
+      "contribuicao": 54,
+      "cor_semantica": "warning"
+    },
+    {
+      "metrica": "Tempo de Tratativa",
+      "valor_atual": 6.1,
+      "unidade": " dias",
+      "nota": 50,
+      "peso": 30,
+      "contribuicao": 15,
+      "cor_semantica": "critical"
+    }
+  ]
+}
