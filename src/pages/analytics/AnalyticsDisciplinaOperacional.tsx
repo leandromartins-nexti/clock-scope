@@ -975,10 +975,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max };
   }, [chartScatterTrat]);
 
-  const qualColor = activeData.qualidadePct >= 85 ? "text-green-600" : activeData.qualidadePct >= 70 ? "text-orange-500" : "text-red-600";
+  const qualClassif = getScoreClassification(Math.round(activeData.qualidadePct), scoreConfig);
   const tempoColor = activeData.tempoMedioDias < 3 ? "text-green-600" : activeData.tempoMedioDias <= 7 ? "text-orange-500" : "text-red-600";
   const ate1dColor = activeData.ate1DiaPct >= 50 ? "text-green-600" : activeData.ate1DiaPct >= 30 ? "text-orange-500" : "text-red-600";
   const mais15dColor = activeData.mais15DiaPct <= 10 ? "text-green-600" : activeData.mais15DiaPct <= 25 ? "text-orange-500" : "text-red-600";
+  const melhorClassif = getScoreClassification(activeData.melhorOperacao.score, scoreConfig);
+  const riscoClassif = getScoreClassification(activeData.maiorRisco.score, scoreConfig);
 
   return (
     <div className="flex">
@@ -994,11 +996,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Qualidade</p>
               <InfoTip text="Percentual de marcações registradas corretamente, sem necessidade de ajuste." />
             </div>
-            <p className={`text-xl font-bold mt-0.5 truncate ${qualColor}`}>{activeData.qualidadePct}%</p>
+            <p className="text-xl font-bold mt-0.5 truncate" style={{ color: qualClassif.color }}>{activeData.qualidadePct}%</p>
           </div>
           <KPIBoard title="Tempo Médio" tooltip="Tempo médio em dias entre a marcação original e o ajuste pelo operador." value={`${activeData.tempoMedioDias} dias`} valueColor={tempoColor} />
-          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${activeData.melhorOperacao.score} · ${activeData.melhorOperacao.score >= 85 ? "Alta" : activeData.melhorOperacao.score >= 70 ? "Média" : "Baixa"}`} />
-          <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`} />
+          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueStyle={{ color: melhorClassif.color }} subtitle={`Score ${activeData.melhorOperacao.score} · ${melhorClassif.label}`} subtitleStyle={{ color: melhorClassif.color }} />
+          <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueStyle={{ color: riscoClassif.color }} subtitle={`Score ${activeData.maiorRisco.score} · ${riscoClassif.label}`} subtitleStyle={{ color: riscoClassif.color }} />
         </div>
 
         {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
