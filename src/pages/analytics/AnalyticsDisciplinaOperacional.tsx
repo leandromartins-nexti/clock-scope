@@ -1678,6 +1678,15 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       </div>
 
       <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
+
+      <ChartDataModal
+        open={chartDataModal === "evoQualidade"}
+        onClose={() => setChartDataModal(null)}
+        title="Evolução da Qualidade e Headcount"
+        columns={evolucaoQualidadeHeadcountColumns}
+        source={evolucaoQualidadeHeadcountSource}
+        activeGroupBy={groupBy as "empresa" | "unidade" | "area"}
+      />
     </div>
   );
 }
