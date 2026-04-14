@@ -6,8 +6,9 @@
     "client_id": 549577,
     "client_name": "PREFEITURA DE SOROCABA",
     "headcount_atual": 412,
+    "headcount_medio": 356,
     "saidas_periodo": 110,
-    "turnover_pct": 19.7,
+    "turnover_pct": 30.9,
     "avg_tenure_days": 274
   },
   {
@@ -17,8 +18,9 @@
     "client_id": 549578,
     "client_name": "SUPER LAMINAÇÃO DE FERRO E AÇO IND E COM LTDA",
     "headcount_atual": 9,
+    "headcount_medio": 11,
     "saidas_periodo": 14,
-    "turnover_pct": 50.0,
+    "turnover_pct": 127.3,
     "avg_tenure_days": 206
   },
   {
@@ -28,8 +30,9 @@
     "client_id": 549859,
     "client_name": "VIG EYES",
     "headcount_atual": 13,
+    "headcount_medio": 14,
     "saidas_periodo": 5,
-    "turnover_pct": 25.0,
+    "turnover_pct": 35.7,
     "avg_tenure_days": 247
   },
   {
@@ -39,8 +42,9 @@
     "client_id": 549573,
     "client_name": "CONDOMINO EDIFICIO ALANA II",
     "headcount_atual": 0,
+    "headcount_medio": 2,
     "saidas_periodo": 3,
-    "turnover_pct": 100.0,
+    "turnover_pct": 150.0,
     "avg_tenure_days": 324
   },
   {
@@ -50,6 +54,7 @@
     "client_id": 549574,
     "client_name": "CONSTRUTORA TENDA S/A",
     "headcount_atual": 0,
+    "headcount_medio": 1,
     "saidas_periodo": 1,
     "turnover_pct": 100.0,
     "avg_tenure_days": 152
@@ -61,6 +66,7 @@
     "client_id": 549572,
     "client_name": "CONDOMÍNIO ADVANCED OFFICES BRIGADEIRO",
     "headcount_atual": 2,
+    "headcount_medio": 3,
     "saidas_periodo": 1,
     "turnover_pct": 33.3,
     "avg_tenure_days": 901
@@ -72,8 +78,9 @@
     "client_id": 549576,
     "client_name": "GILBERTO DE ASSIS PIRES",
     "headcount_atual": 4,
+    "headcount_medio": 4,
     "saidas_periodo": 1,
-    "turnover_pct": 20.0,
+    "turnover_pct": 25.0,
     "avg_tenure_days": 1227
   },
   {
@@ -83,8 +90,9 @@
     "client_id": 549859,
     "client_name": "VIG EYES",
     "headcount_atual": 4,
+    "headcount_medio": 5,
     "saidas_periodo": 2,
-    "turnover_pct": 33.3,
+    "turnover_pct": 40.0,
     "avg_tenure_days": 711
   },
   {
@@ -94,8 +102,9 @@
     "client_id": 549578,
     "client_name": "SUPER LAMINAÇÃO DE FERRO E AÇO IND E COM LTDA",
     "headcount_atual": 7,
+    "headcount_medio": 7,
     "saidas_periodo": 1,
-    "turnover_pct": 12.5,
+    "turnover_pct": 14.3,
     "avg_tenure_days": 1230
   },
   {
@@ -105,8 +114,9 @@
     "client_id": 549859,
     "client_name": "VIG EYES",
     "headcount_atual": 0,
+    "headcount_medio": 4,
     "saidas_periodo": 5,
-    "turnover_pct": 71.4,
+    "turnover_pct": 125.0,
     "avg_tenure_days": 122
   },
   {
@@ -116,8 +126,9 @@
     "client_id": 549574,
     "client_name": "CONSTRUTORA TENDA S/A",
     "headcount_atual": 6,
+    "headcount_medio": 8,
     "saidas_periodo": 4,
-    "turnover_pct": 40.0,
+    "turnover_pct": 50.0,
     "avg_tenure_days": 228
   },
   {
@@ -127,6 +138,7 @@
     "client_id": 549572,
     "client_name": "CONDOMÍNIO ADVANCED OFFICES BRIGADEIRO",
     "headcount_atual": 6,
+    "headcount_medio": 7,
     "saidas_periodo": 1,
     "turnover_pct": 14.3,
     "avg_tenure_days": 922
@@ -138,8 +150,9 @@
     "client_id": 549573,
     "client_name": "CONDOMINO EDIFICIO ALANA II",
     "headcount_atual": 7,
+    "headcount_medio": 7,
     "saidas_periodo": 1,
-    "turnover_pct": 10.0,
+    "turnover_pct": 14.3,
     "avg_tenure_days": 423
   }
 ]
