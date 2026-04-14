@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Database } from "lucide-react";
+import { Database, AlertTriangle } from "lucide-react";
 import ChartModeToggle from "@/components/analytics/ChartModeToggle";
 import type { ChartMode } from "@/components/analytics/ChartModeToggle";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
@@ -8,6 +8,9 @@ import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
 import tempoCasaData from "@/data/turnover/tempo-casa-desligados.json";
+import rankingEmpresa from "@/data/turnover/ranking-clientes-turnover-por-empresa.json";
+import rankingUnidade from "@/data/turnover/ranking-clientes-turnover-por-un-negocio.json";
+import rankingArea from "@/data/turnover/ranking-clientes-turnover-por-area.json";
 import {
   ResponsiveContainer, ComposedChart, LineChart, Line, BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine, Cell,
