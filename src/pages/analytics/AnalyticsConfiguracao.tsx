@@ -262,7 +262,7 @@ export default function AnalyticsConfiguracao() {
                   <div className="mb-4">
                     <h2 className="text-lg font-bold text-foreground">Score de Qualidade do Ponto</h2>
                     <p className="text-xs text-muted-foreground">
-                      Configure os pesos dos componentes e as notas por faixa de tempo de tratativa
+                      Configure os pesos dos 4 componentes, as notas por faixa e os limites de classificação
                     </p>
                   </div>
                   <ScoreQualidadeConfig />
