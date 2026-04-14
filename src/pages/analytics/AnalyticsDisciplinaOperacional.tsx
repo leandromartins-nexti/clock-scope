@@ -1358,7 +1358,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   <Line yAxisId="right" type="monotone" dataKey="tempoDias" name="Tempo médio" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }} />
                   <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                     ...FAIXAS.map(f => ({ value: f.name, type: "square" as const, color: f.color })),
-                    { value: "Tempo médio (dias)", type: "plainline" as const, color: "#3b82f6" },
+                    { value: "Tempo médio (dias)", type: "line" as const, color: "#3b82f6" },
                   ]} />
                 </ComposedChart>
               </ResponsiveContainer>
