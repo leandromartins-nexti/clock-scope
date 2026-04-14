@@ -988,21 +988,180 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     <div className="flex">
       {/* Left: KPI cards + charts */}
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
-        {/* Linha 1: 5 KPI Cards */}
-        <div className="grid grid-cols-5 gap-3">
-          <ScoreBoard title="Qualidade do Ponto" tooltip="Score composto considerando qualidade das marcações e tempo de tratativa dos ajustes.">
-            <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} color={scoreClassif.color} />
+        {/* Linha 1: 6 KPI Cards */}
+        <div className="grid grid-cols-6 gap-3">
+          {/* 1. Score with decomposition popover */}
+          <ScoreBoard title="Qualidade do Ponto" tooltip="Score composto considerando qualidade das marcações e tempo de tratativa dos ajustes. Clique para ver a decomposição.">
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="flex flex-col items-center gap-0 cursor-pointer" title="Ver decomposição do score">
+                  <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} color={scoreClassif.color} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-0" side="bottom" align="start">
+                <div className="p-3 border-b border-border/50">
+                  <p className="text-sm font-semibold">Como o Score {activeData.score} foi calculado</p>
+                </div>
+                <div className="p-3 space-y-3">
+                  {qpDecomposicaoScore.componentes.map((comp) => {
+                    const COMP_COLORS: Record<string, string> = { success: "#22c55e", warning: "#eab308", critical: "#ef4444" };
+                    const barColor = COMP_COLORS[comp.cor_semantica] || "#6b7280";
+                    const barWidth = Math.max(comp.contribuicao / qpDecomposicaoScore.score_composto * 100, 4);
+                    return (
+                      <div key={comp.metrica} className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium">{comp.metrica}</span>
+                          <span className="text-[10px] text-muted-foreground">peso {comp.peso}%</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span>{comp.valor_atual}{comp.unidade}  →  Nota {comp.nota}</span>
+                          <span className="font-semibold">{comp.contribuicao} pts</span>
+                        </div>
+                        <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full transition-all" style={{ width: `${barWidth}%`, backgroundColor: barColor }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div className="border-t border-border/50 pt-2 flex items-center justify-between">
+                    <span className="text-xs font-semibold">Score composto</span>
+                    <span className="text-sm font-bold" style={{ color: scoreClassif.color }}>
+                      {activeData.score} ({scoreFaixa})
+                    </span>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+            {(() => {
+              const kpi = (qpKpisPeriodoAnterior.kpis as any).score_aba;
+              if (!kpi) return null;
+              const delta = kpi.delta;
+              const absDelta = Math.abs(delta);
+              const improved = delta > 0;
+              const DeltaIcon = delta > 0 ? ArrowUp : delta < 0 ? ArrowDown : MinusIcon;
+              const dColor = absDelta < 1 ? "text-muted-foreground" : improved ? "text-green-600" : "text-red-600";
+              return (
+                <UITooltip>
+                  <TooltipTrigger asChild>
+                    <span className={`text-[9px] flex items-center gap-0.5 cursor-help -mt-0.5 ${dColor}`}>
+                      <DeltaIcon className="w-3 h-3" /> {absDelta.toFixed(1)}pp vs {kpi.anterior} (ant.)
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    <p>Atual: {kpi.atual} · Anterior: {kpi.anterior}</p>
+                  </TooltipContent>
+                </UITooltip>
+              );
+            })()}
           </ScoreBoard>
+
+          {/* 2. Qualidade % */}
           <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
             <div className="flex items-center gap-1 mb-2">
               <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Qualidade</p>
               <InfoTip text="Percentual de marcações registradas corretamente, sem necessidade de ajuste." />
             </div>
             <p className="text-xl font-bold mt-0.5 truncate" style={{ color: qualClassif.color }}>{activeData.qualidadePct}%</p>
+            {(() => {
+              const kpi = (qpKpisPeriodoAnterior.kpis as any).qualidade_pct;
+              if (!kpi) return null;
+              const delta = kpi.delta;
+              const absDelta = Math.abs(delta);
+              const improved = delta > 0;
+              const DeltaIcon = delta > 0 ? ArrowUp : delta < 0 ? ArrowDown : MinusIcon;
+              const dColor = absDelta < 0.5 ? "text-muted-foreground" : improved ? "text-green-600" : "text-red-600";
+              return (
+                <UITooltip>
+                  <TooltipTrigger asChild>
+                    <span className={`text-[10px] flex items-center gap-0.5 cursor-help mt-1 ${dColor}`}>
+                      <DeltaIcon className="w-3 h-3" /> {absDelta.toFixed(1)}pp vs {kpi.anterior}% (ant.)
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    <p>Atual: {kpi.atual}% · Anterior: {kpi.anterior}%</p>
+                  </TooltipContent>
+                </UITooltip>
+              );
+            })()}
           </div>
-          <KPIBoard title="Tempo Médio" tooltip="Tempo médio em dias entre a marcação original e o ajuste pelo operador." value={`${activeData.tempoMedioDias} dias`} valueColor={tempoColor} />
-          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de qualidade no período" value={activeData.melhorOperacao.nome} valueStyle={{ color: melhorClassif.color }} subtitle={`Score ${activeData.melhorOperacao.score} · ${melhorClassif.label}`} subtitleStyle={{ color: melhorClassif.color }} />
-          <KPIBoard title="Maior Risco" tooltip="Operação com menor qualidade e maior concentração de risco" value={activeData.maiorRisco.nome} valueStyle={{ color: riscoClassif.color }} subtitle={`Score ${activeData.maiorRisco.score} · ${riscoClassif.label}`} subtitleStyle={{ color: riscoClassif.color }} />
+
+          {/* 3. Tempo Médio */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Tempo Médio</p>
+              <InfoTip text="Tempo médio em dias entre a marcação original e o ajuste pelo operador." />
+            </div>
+            <p className={`text-xl font-bold mt-0.5 truncate ${tempoColor}`}>{activeData.tempoMedioDias} dias</p>
+            {(() => {
+              const kpi = (qpKpisPeriodoAnterior.kpis as any).tempo_medio_dias;
+              if (!kpi) return null;
+              const delta = kpi.delta;
+              const absDelta = Math.abs(delta);
+              // For tempo: down = better
+              const improved = delta < 0;
+              const DeltaIcon = delta > 0 ? ArrowUp : delta < 0 ? ArrowDown : MinusIcon;
+              const dColor = absDelta < 0.3 ? "text-muted-foreground" : improved ? "text-green-600" : "text-red-600";
+              return (
+                <UITooltip>
+                  <TooltipTrigger asChild>
+                    <span className={`text-[10px] flex items-center gap-0.5 cursor-help mt-1 ${dColor}`}>
+                      <DeltaIcon className="w-3 h-3" /> {absDelta.toFixed(1)} dias vs {kpi.anterior} (ant.)
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    <p>Atual: {kpi.atual} dias · Anterior: {kpi.anterior} dias</p>
+                  </TooltipContent>
+                </UITooltip>
+              );
+            })()}
+          </div>
+
+          {/* 4. Melhor Operação */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Melhor Operação</p>
+              <InfoTip text="Operação com maior score de qualidade no período" />
+            </div>
+            <p className="text-xl font-bold mt-0.5 truncate" style={{ color: melhorClassif.color }}>{activeData.melhorOperacao.nome}</p>
+            <p className="text-[11px] mt-1 truncate" style={{ color: melhorClassif.color }}>Score {activeData.melhorOperacao.score} · {melhorClassif.label}</p>
+            <span className="text-[10px] text-muted-foreground mt-0.5">
+              {(qpKpisPeriodoAnterior.kpis as any).melhor_operacao?.mudou
+                ? (qpKpisPeriodoAnterior.kpis as any).melhor_operacao.mudanca_label
+                : "Mesma posição do período anterior"}
+            </span>
+          </div>
+
+          {/* 5. Maior Risco */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maior Risco</p>
+              <InfoTip text="Operação com menor qualidade e maior concentração de risco" />
+            </div>
+            <p className="text-xl font-bold mt-0.5 truncate" style={{ color: riscoClassif.color }}>{activeData.maiorRisco.nome}</p>
+            <p className="text-[11px] mt-1 truncate" style={{ color: riscoClassif.color }}>Score {activeData.maiorRisco.score} · {riscoClassif.label}</p>
+            <span className="text-[10px] text-muted-foreground mt-0.5">
+              {(qpKpisPeriodoAnterior.kpis as any).maior_risco?.mudou
+                ? (qpKpisPeriodoAnterior.kpis as any).maior_risco.mudanca_label
+                : "Mesma posição do período anterior"}
+            </span>
+          </div>
+
+          {/* 6. Custo da Operação de Ponto — locked */}
+          <UITooltip>
+            <TooltipTrigger asChild>
+              <div className="bg-card border border-border/50 rounded-xl p-4 flex flex-col relative opacity-60 cursor-default select-none">
+                <Lock className="w-3.5 h-3.5 absolute top-2.5 right-2.5 text-muted-foreground" />
+                <div className="flex items-center gap-1 mb-2">
+                  <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Custo da Operação</p>
+                </div>
+                <p className="text-lg font-bold mt-0.5 text-muted-foreground">Em breve</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Disponível após integração da folha</p>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+              Cálculo do custo financeiro da operação de ponto (horas gastas em ajustes, retrabalho e auditoria). Requer integração da folha de pagamento. Previsto para a próxima versão.
+            </TooltipContent>
+          </UITooltip>
         </div>
 
         {/* Row 1: Evolução Qualidade + Tempo Médio Tratativa */}
