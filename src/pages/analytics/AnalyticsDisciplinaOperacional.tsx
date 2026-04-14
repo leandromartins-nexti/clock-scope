@@ -16,6 +16,9 @@ import {
 import esforcoEmpresa from "@/data/qualidade-ponto/esforco-tratativa-por-empresa.json";
 import esforcoUnNegocio from "@/data/qualidade-ponto/esforco-tratativa-por-un-negocio.json";
 import esforcoArea from "@/data/qualidade-ponto/esforco-tratativa-por-area.json";
+import sobrecargaEmpresaJson from "@/data/qualidade-ponto/sobrecarga-por-empresa.json";
+import sobrecargaUnidadeJson from "@/data/qualidade-ponto/sobrecarga-por-un-negocio.json";
+import sobrecargaAreaJson from "@/data/qualidade-ponto/sobrecarga-por-area.json";
 import tratTempoEmpresa from "@/data/qualidade-ponto/tratativa-tempo-por-empresa.json";
 import tratTempoUnidade from "@/data/qualidade-ponto/tratativa-tempo-por-un-negocio.json";
 import tratTempoArea from "@/data/qualidade-ponto/tratativa-tempo-por-area.json";
@@ -35,6 +38,7 @@ import qpDecomposicaoScore from "@/data/qualidade-ponto/decomposicao-score.json"
 import qpKpisPeriodoAnterior from "@/data/qualidade-ponto/kpis-periodo-anterior.json";
 import { evolucaoQualidadeHeadcountSource, evolucaoQualidadeHeadcountColumns } from "@/data/chart-sources/evolucao-qualidade-headcount";
 import { evolucaoTempoTratativaSource, evolucaoTempoTratativaColumns } from "@/data/chart-sources/evolucao-tempo-tratativa";
+import { sobrecargaBackofficeSource, sobrecargaBackofficeColumns } from "@/data/chart-sources/sobrecarga-backoffice";
 function abreviar(nome: string): string {
   const words = nome.replace(/[-–]/g, " ").split(/\s+/).filter(w => w.length > 1);
   if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
@@ -1616,12 +1620,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           </div>
 
           {(() => {
-            const esforcoSources: Record<string, any[]> = {
-              empresa: esforcoEmpresa,
-              unidade: esforcoUnNegocio,
-              area: esforcoArea,
+            const sobrecargaSources: Record<string, any[]> = {
+              empresa: sobrecargaEmpresaJson,
+              unidade: sobrecargaUnidadeJson,
+              area: sobrecargaAreaJson,
             };
-            const rawEsforco = esforcoSources[groupBy] ?? esforcoEmpresa;
+            const rawEsforco = sobrecargaSources[groupBy] ?? sobrecargaEmpresaJson;
 
             // Check area insufficiency
             const areaInsufficient = groupBy === "area" && (rawEsforco.length < 6 || new Set(rawEsforco.map((r: any) => r.area_name)).size < 3);
@@ -1701,6 +1705,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                     <p className="text-[10px] text-muted-foreground mb-1">Carga de ajustes e HE por operador. Linha tracejada azul = HE total do time.</p>
                   </div>
+                  <button onClick={() => setChartDataModal("sobrecarga")} className="text-muted-foreground hover:text-foreground transition-colors" title="Ver dados do gráfico">
+                    <Database className="w-4 h-4" />
+                  </button>
                 </div>
                 <ResponsiveContainer width="100%" height={280}>
                   <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }}>
@@ -1821,6 +1828,14 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             columns: evolucaoTempoTratativaColumns,
           },
         ]}
+      />
+      <ChartDataModal
+        open={chartDataModal === "sobrecarga"}
+        onClose={() => setChartDataModal(null)}
+        title="Sobrecarga do Back-office"
+        columns={sobrecargaBackofficeColumns}
+        source={sobrecargaBackofficeSource}
+        activeGroupBy={groupBy as "empresa" | "unidade" | "area"}
       />
     </div>
   );

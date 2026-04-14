@@ -16,9 +16,9 @@ import {
 import hcEmpresa from "@/data/qualidade-ponto/headcount-por-empresa.json";
 import hcUnidade from "@/data/qualidade-ponto/headcount-por-un-negocio.json";
 import hcArea from "@/data/qualidade-ponto/headcount-por-area.json";
-import efEmpresa from "@/data/qualidade-ponto/esforco-tratativa-por-empresa.json";
-import efUnidade from "@/data/qualidade-ponto/esforco-tratativa-por-un-negocio.json";
-import efArea from "@/data/qualidade-ponto/esforco-tratativa-por-area.json";
+import efEmpresa from "@/data/qualidade-ponto/sobrecarga-por-empresa.json";
+import efUnidade from "@/data/qualidade-ponto/sobrecarga-por-un-negocio.json";
+import efArea from "@/data/qualidade-ponto/sobrecarga-por-area.json";
 
 // ── Rolling 3-month window (last 3 complete months before today) ──
 const LAST_3_MONTHS = ["2026-01-01", "2026-02-01", "2026-03-01"];

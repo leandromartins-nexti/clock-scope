@@ -1,0 +1,362 @@
+[
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 525,
+    "operadores_ativos": 2,
+    "ajustes_por_operador": 263,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 455,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 152,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 385,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 96,
+    "horas_extras_rateadas": 2.7
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 407,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 102,
+    "horas_extras_rateadas": 6.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 390,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 98,
+    "horas_extras_rateadas": 18.6
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 354,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 89,
+    "horas_extras_rateadas": 12.9
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 432,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 108,
+    "horas_extras_rateadas": 18.7
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 674,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 135,
+    "horas_extras_rateadas": 44.6
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 924,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 231,
+    "horas_extras_rateadas": 0.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 830,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 830,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 575,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 192,
+    "horas_extras_rateadas": 0.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "qtd_ajustes": 303,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 303,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 631,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 126,
+    "horas_extras_rateadas": 34.6
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 788,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 197,
+    "horas_extras_rateadas": 40.8
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 797,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 199,
+    "horas_extras_rateadas": 0.7
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 672,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 168,
+    "horas_extras_rateadas": 8
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 532,
+    "operadores_ativos": 6,
+    "ajustes_por_operador": 89,
+    "horas_extras_rateadas": 38.9
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 7350,
+    "operadores_ativos": 6,
+    "ajustes_por_operador": 1225,
+    "horas_extras_rateadas": 137.6
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 6156,
+    "operadores_ativos": 7,
+    "ajustes_por_operador": 879,
+    "horas_extras_rateadas": 174
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 3717,
+    "operadores_ativos": 7,
+    "ajustes_por_operador": 531,
+    "horas_extras_rateadas": 191.8
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 2003,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 250,
+    "horas_extras_rateadas": 87.9
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 1582,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 198,
+    "horas_extras_rateadas": 143.3
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 1760,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 220,
+    "horas_extras_rateadas": 136.5
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 1765,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 221,
+    "horas_extras_rateadas": 80.3
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 86,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 29,
+    "horas_extras_rateadas": 0.2
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 51,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 13,
+    "horas_extras_rateadas": 1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 88,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 22,
+    "horas_extras_rateadas": 0.3
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 106,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 21,
+    "horas_extras_rateadas": 0.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 137,
+    "operadores_ativos": 6,
+    "ajustes_por_operador": 23,
+    "horas_extras_rateadas": 1.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 185,
+    "operadores_ativos": 6,
+    "ajustes_por_operador": 31,
+    "horas_extras_rateadas": 4
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 165,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 55,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 187,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 37,
+    "horas_extras_rateadas": 0.5
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 159,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 40,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 68,
+    "operadores_ativos": 2,
+    "ajustes_por_operador": 34,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 111,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 37,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 142,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 47,
+    "horas_extras_rateadas": 0
+  }
+]

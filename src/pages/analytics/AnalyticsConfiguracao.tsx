@@ -15,6 +15,10 @@ import {
   evolucaoTempoTratativaSource,
   evolucaoTempoTratativaColumns,
 } from "@/data/chart-sources/evolucao-tempo-tratativa";
+import {
+  sobrecargaBackofficeSource,
+  sobrecargaBackofficeColumns,
+} from "@/data/chart-sources/sobrecarga-backoffice";
 
 // ── Registry types ──
 interface ChartEntry {
@@ -66,6 +70,12 @@ const dataRegistry: MenuEntry[] = [
               { label: "Fonte: Evolução da Qualidade e Headcount", source: evolucaoQualidadeHeadcountSource, columns: evolucaoQualidadeHeadcountColumns },
               { label: "Fonte: Evolução do Tempo de Tratativa", source: evolucaoTempoTratativaSource, columns: evolucaoTempoTratativaColumns },
             ],
+          },
+          {
+            id: "sobrecarga-backoffice",
+            chartName: "Sobrecarga do Back-office",
+            columns: sobrecargaBackofficeColumns,
+            source: sobrecargaBackofficeSource,
           },
         ],
       },
