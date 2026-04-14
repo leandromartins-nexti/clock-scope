@@ -1708,6 +1708,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   <button onClick={() => setChartDataModal("sobrecarga")} className="text-muted-foreground hover:text-foreground transition-colors" title="Ver dados do gráfico">
                     <Database className="w-4 h-4" />
                   </button>
+                </div>
                 <ResponsiveContainer width="100%" height={280}>
                   <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
