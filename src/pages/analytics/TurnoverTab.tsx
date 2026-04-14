@@ -64,9 +64,9 @@ const decomposicaoData = [
   { mes: "mar/26", voluntario: 9, involuntario: 5, fimContrato: 4 },
 ];
 const DECOMP_SERIES = [
-  { key: "voluntario", name: "Voluntário", color: "#3B6D11" },
-  { key: "involuntario", name: "Involuntário", color: "#A32D2D" },
-  { key: "fimContrato", name: "Fim de Contrato", color: "#888780" },
+  { key: "voluntario", name: "Voluntário", color: "#22c55e" },
+  { key: "involuntario", name: "Involuntário", color: "#ef4444" },
+  { key: "fimContrato", name: "Fim de Contrato", color: "#eab308" },
 ];
 
 // Chart 4: Movimentação Mensal (migrated from Absenteísmo)
