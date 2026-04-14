@@ -1182,205 +1182,66 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-0.5">
               <div>
-                <h4 className="text-sm font-semibold">Evolução da Qualidade</h4>
-                <p className="text-[10px] text-muted-foreground mb-2">Por competência · clique para filtrar</p>
+                <h4 className="text-sm font-semibold">Evolução da Qualidade e Headcount</h4>
+                <p className="text-[10px] text-muted-foreground mb-2">Registradas vs Justificadas (barras) · Headcount (área) · clique para filtrar</p>
               </div>
-              <ChartModeToggle
-                dataMode={dataMode} onDataModeChange={setDataMode}
-                chartMode={chartMode} onChartModeChange={setChartMode}
-              />
             </div>
             <ResponsiveContainer width="100%" height={280}>
-              {chartMode === "bar" ? (
-                (() => {
-                  const barData = showDetalhado
-                    ? qualidadeDetalhado
-                    : qualidadeDetalhado.map(d => {
-                        const total = d.registradas + d.justificadas;
-                        return {
-                          mes: d.mes,
-                          registradas: total > 0 ? +((d.registradas / total) * 100).toFixed(1) : 0,
-                          justificadas: total > 0 ? +((d.justificadas / total) * 100).toFixed(1) : 0,
-                        };
-                      });
+              <ComposedChart data={qualidadeComHeadcount} onClick={(e: any) => {
+                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+              }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={(props: any) => {
+                  const { x, y, payload } = props;
+                  const isActive = selectedMes === payload.value;
+                  return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                }} />
+                <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, Math.ceil(maxHeadcount * 1.3)]} ticks={[0, Math.round(maxHeadcount * 0.33), Math.round(maxHeadcount * 0.66), maxHeadcount]} />
+                <RechartsTooltip content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+                  const d = payload[0]?.payload;
+                  const reg = d?.registradas ?? 0;
+                  const jus = d?.justificadas ?? 0;
+                  const total = reg + jus;
+                  const hc = d?.headcount ?? 0;
                   return (
-                    <BarChart data={barData} onClick={(e: any) => {
-                      if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                    }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="mes" tick={(props: any) => {
-                        const { x, y, payload } = props;
-                        const isActive = selectedMes === payload.value;
-                        return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                      }} />
-                      <YAxis tick={{ fontSize: 10 }} domain={showDetalhado ? undefined : [0, 100]}
-                        tickFormatter={v => showDetalhado ? (v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`) : `${v}%`} />
-                      <RechartsTooltip content={({ active, payload, label }) => {
-                        if (!active || !payload?.length) return null;
-                        const reg = payload.find((p: any) => p.dataKey === "registradas")?.value as number ?? 0;
-                        const jus = payload.find((p: any) => p.dataKey === "justificadas")?.value as number ?? 0;
-                        const total = showDetalhado ? reg + jus : 100;
-                        return (
-                          <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
-                            <p className="font-semibold text-foreground">{label}</p>
-                            {showDetalhado && <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>}
-                            {[{ name: "Registradas", value: reg, color: "#22c55e" }, { name: "Justificadas", value: jus, color: "#ef4444" }].map(f => (
-                              <div key={f.name} className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
-                                <span className="text-muted-foreground">{f.name}:</span>
-                                <span className="font-medium text-foreground">{showDetalhado ? `${((f.value / total) * 100).toFixed(0)}% (${f.value.toLocaleString("pt-BR")})` : `${f.value}%`}</span>
-                              </div>
-                            ))}
-                          </div>
-                        );
-                      }} />
-                      <Legend iconType="square" iconSize={10} formatter={(value: string) => value === "registradas" ? "Registradas" : "Justificadas"} wrapperStyle={{ fontSize: 11 }} payload={[{ value: "Registradas", type: "square", color: "#22c55e" }, { value: "Justificadas", type: "square", color: "#ef4444" }]} />
-                      <Bar dataKey="registradas" stackId="qual" stroke="#22c55e" strokeWidth={1} radius={[0, 0, 0, 0]}>
-                        {barData.map((entry, idx) => (
-                          <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.25)" : "rgba(34,197,94,0.65)"} />
-                        ))}
-                      </Bar>
-                      <Bar dataKey="justificadas" stackId="qual" stroke="rgba(239,68,68,0.5)" strokeWidth={1} radius={[4, 4, 0, 0]}>
-                        {barData.map((entry, idx) => (
-                          <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.25)" : "rgba(239,68,68,0.65)"} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  );
-                })()
-              ) : chartMode === "area" ? (
-                (() => {
-                  const areaData = showDetalhado
-                    ? qualidadeDetalhado
-                    : qualidadeDetalhado.map(d => {
-                        const total = d.registradas + d.justificadas;
-                        return {
-                          mes: d.mes,
-                          registradas: total > 0 ? +((d.registradas / total) * 100).toFixed(1) : 0,
-                          justificadas: total > 0 ? +((d.justificadas / total) * 100).toFixed(1) : 0,
-                        };
-                      });
-                  return (
-                    <AreaChart data={areaData} onClick={(e: any) => {
-                      if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                    }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.1)" />
-                      <XAxis dataKey="mes" tick={(props: any) => {
-                        const { x, y, payload } = props;
-                        const isActive = selectedMes === payload.value;
-                        return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                      }} />
-                      <YAxis tick={{ fontSize: 10 }} domain={showDetalhado ? undefined : [0, 100]}
-                        tickFormatter={v => showDetalhado ? (v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`) : `${Math.round(v)}%`} />
-                      <RechartsTooltip content={({ active, payload, label }) => {
-                        if (!active || !payload?.length) return null;
-                        const reg = payload.find((p: any) => p.dataKey === "registradas")?.value as number ?? 0;
-                        const jus = payload.find((p: any) => p.dataKey === "justificadas")?.value as number ?? 0;
-                        const total = showDetalhado ? reg + jus : 100;
-                        return (
-                          <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
-                            <p className="font-semibold text-foreground">{label}</p>
-                            {showDetalhado && <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>}
-                            {[{ name: "Registradas", value: reg, color: "#22c55e" }, { name: "Justificadas", value: jus, color: "#ef4444" }].map(f => (
-                              <div key={f.name} className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
-                                <span className="text-muted-foreground">{f.name}:</span>
-                                <span className="font-medium text-foreground">{showDetalhado ? `${((f.value / total) * 100).toFixed(0)}% (${f.value.toLocaleString("pt-BR")})` : `${f.value}%`}</span>
-                              </div>
-                            ))}
-                          </div>
-                        );
-                      }} />
-                      {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
-                      <Area type="monotone" dataKey="registradas" stackId="qual" stroke="#22c55e" fill={`rgba(34,197,94,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="Registradas" />
-                      <Area type="monotone" dataKey="justificadas" stackId="qual" stroke="#ef4444" fill={`rgba(239,68,68,${selectedMes ? 0.2 : 0.35})`} fillOpacity={1} name="Justificadas" />
-                      <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
-                    </AreaChart>
-                  );
-                })()
-              ) : (
-                showDetalhado ? (
-                  <LineChart data={qualidadeDetalhado} onClick={(e: any) => {
-                    if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                  }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="mes" tick={(props: any) => {
-                      const { x, y, payload } = props;
-                      const isActive = selectedMes === payload.value;
-                      return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                    }} />
-                    <YAxis tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`} />
-                    <RechartsTooltip content={({ active, payload, label }) => {
-                      if (!active || !payload?.length) return null;
-                      const reg = payload.find((p: any) => p.dataKey === "registradas")?.value as number ?? 0;
-                      const jus = payload.find((p: any) => p.dataKey === "justificadas")?.value as number ?? 0;
-                      const total = reg + jus;
-                      return (
-                        <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
-                          <p className="font-semibold text-foreground">{label}</p>
-                          <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>
-                          {[{ name: "Registradas", value: reg, color: "#22c55e" }, { name: "Justificadas", value: jus, color: "#ef4444" }].map(f => (
-                            <div key={f.name} className="flex items-center gap-1.5">
-                              <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
-                              <span className="text-muted-foreground">{f.name}:</span>
-                              <span className="font-medium text-foreground">{`${((f.value / total) * 100).toFixed(1)}% (${f.value.toLocaleString("pt-BR")})`}</span>
-                            </div>
-                          ))}
+                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                      <p className="font-semibold text-foreground">{label}</p>
+                      <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>
+                      {[{ name: "Registradas", value: reg, color: "#22c55e" }, { name: "Justificadas", value: jus, color: "#ef4444" }].map(f => (
+                        <div key={f.name} className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
+                          <span className="text-muted-foreground">{f.name}:</span>
+                          <span className="font-medium text-foreground">{`${((f.value / total) * 100).toFixed(0)}% (${f.value.toLocaleString("pt-BR")})`}</span>
                         </div>
-                      );
-                    }} />
-                    <Legend formatter={(value: string) => value === "registradas" ? "Registradas" : "Justificadas"} wrapperStyle={{ fontSize: 11 }} />
-                    <Line type="monotone" dataKey="registradas" stroke="#22c55e" strokeWidth={2} dot={{ r: 3, fill: "#22c55e", stroke: "#fff", strokeWidth: 2 }} name="registradas" />
-                    <Line type="monotone" dataKey="justificadas" stroke="#ef4444" strokeWidth={2} dot={{ r: 3, fill: "#ef4444", stroke: "#fff", strokeWidth: 2 }} name="justificadas" />
-                  </LineChart>
-                ) : (
-                  <LineChart data={qualidadeEvolucaoReal} onClick={(e: any) => {
-                    if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                  }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="mes" tick={(props: any) => {
-                      const { x, y, payload } = props;
-                      const isActive = selectedMes === payload.value;
-                      return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
-                    }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} />
-                    <RechartsTooltip content={({ active, payload, label }) => {
-                      if (!active || !payload?.length) return null;
-                      const val = payload[0]?.value as number ?? 0;
-                      const detRow = qualidadeDetalhado.find(d => d.mes === label);
-                      const total = detRow ? detRow.registradas + detRow.justificadas : 0;
-                      return (
-                        <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
-                          <p className="font-semibold text-foreground">{label}</p>
-                          {total > 0 && <p className="text-muted-foreground">Total: <span className="font-semibold text-foreground">{total.toLocaleString("pt-BR")}</span></p>}
-                          {[
-                            { name: "Registradas", pct: val, count: detRow?.registradas ?? 0, color: "#22c55e" },
-                            { name: "Justificadas", pct: +(100 - val).toFixed(2), count: detRow?.justificadas ?? 0, color: "#ef4444" },
-                          ].map(f => (
-                            <div key={f.name} className="flex items-center gap-1.5">
-                              <span className="w-2.5 h-2.5" style={{ backgroundColor: f.color }} />
-                              <span className="text-muted-foreground">{f.name}:</span>
-                              <span className="font-medium text-foreground">{total > 0 ? `${f.pct}% (${f.count.toLocaleString("pt-BR")})` : `${f.pct}%`}</span>
-                            </div>
-                          ))}
-                        </div>
-                      );
-                    }} />
-                    <ReferenceLine y={qualidadeMedia} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                    <Line type="monotone" dataKey="value" stroke={selectedMes ? "#FF572244" : "#FF5722"} strokeWidth={2} dot={(props: any) => {
-                      const { cx, cy, payload } = props;
-                      const isSelected = selectedMes === payload.mes;
-                      const isActive = !selectedMes || isSelected;
-                      return (
-                        <g key={payload.mes} className="cursor-pointer">
-                          {isSelected && <circle cx={cx} cy={cy} r={10} fill="#FF5722" fillOpacity={0.15} stroke="#FF5722" strokeWidth={1} strokeDasharray="3 2" />}
-                          <circle cx={cx} cy={cy} r={isSelected ? 6 : 4} fill={isSelected ? "#FF5722" : isActive ? "#FF5722" : "#FF572255"} stroke="#fff" strokeWidth={2} />
-                        </g>
-                      );
-                    }} activeDot={{ r: 6, stroke: "#FF5722", strokeWidth: 2, fill: "#fff" }} name="Qualidade" />
-                  </LineChart>
-                )
-              )}
+                      ))}
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5" style={{ backgroundColor: "#D3D1C7" }} />
+                        <span className="text-muted-foreground">Headcount:</span>
+                        <span className="font-medium text-foreground">{hc}</span>
+                      </div>
+                    </div>
+                  );
+                }} />
+                {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                <Area yAxisId="right" type="monotone" dataKey="headcount" fill="#D3D1C7" fillOpacity={0.4} stroke="#D3D1C7" strokeWidth={0} name="Headcount" />
+                <Bar yAxisId="left" dataKey="registradas" stackId="qual" stroke="#22c55e" strokeWidth={1} radius={[0, 0, 0, 0]} name="Registradas">
+                  {qualidadeComHeadcount.map((entry, idx) => (
+                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.25)" : "rgba(34,197,94,0.65)"} />
+                  ))}
+                </Bar>
+                <Bar yAxisId="left" dataKey="justificadas" stackId="qual" stroke="rgba(239,68,68,0.5)" strokeWidth={1} radius={[4, 4, 0, 0]} name="Justificadas">
+                  {qualidadeComHeadcount.map((entry, idx) => (
+                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.25)" : "rgba(239,68,68,0.65)"} />
+                  ))}
+                </Bar>
+                <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
+                  { value: "Registradas", type: "square", color: "#22c55e" },
+                  { value: "Justificadas", type: "square", color: "#ef4444" },
+                  { value: "Headcount", type: "square", color: "#D3D1C7" },
+                ]} />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
 
