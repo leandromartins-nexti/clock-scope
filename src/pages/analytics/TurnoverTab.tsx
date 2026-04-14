@@ -34,20 +34,24 @@ const turnoverHeadcountData = [
 ];
 const turnoverMediaAnual = turnoverHeadcountData.reduce((s, d) => s + d.turnover, 0) / turnoverHeadcountData.length;
 
-// Chart 2: Curva de Sobrevivência por Coorte
-const survivalData = [
-  { meses: 0, "Abr/25": 100, "Jul/25": 100, "Set/25": 100, "Dez/25": 100 },
-  { meses: 1, "Abr/25": 92, "Jul/25": 88, "Set/25": 78, "Dez/25": 91 },
-  { meses: 3, "Abr/25": 78, "Jul/25": 72, "Set/25": 58, "Dez/25": 80 },
-  { meses: 6, "Abr/25": 68, "Jul/25": 64, "Set/25": 51, "Dez/25": null },
-  { meses: 12, "Abr/25": 55, "Jul/25": null, "Set/25": null, "Dez/25": null },
-];
-const survivalCohorts = [
-  { key: "Abr/25", color: "#9ca3af", label: "Coorte Abr/25" },
-  { key: "Jul/25", color: "#6b7280", label: "Coorte Jul/25" },
-  { key: "Set/25", color: "#FF5722", label: "Coorte Set/25" },
-  { key: "Dez/25", color: "#378ADD", label: "Coorte Dez/25" },
-];
+// Tempo de Casa helpers
+const TENURE_COLORS = ["#ef4444", "#ef4444", "#f97316", "#eab308", "#eab308", "#22c55e", "#22c55e"];
+const TENURE_RANGE_LABELS: Record<string, string> = {
+  lt30: "0 a 29 dias de casa", "30_90": "30 a 89 dias de casa", "3_6m": "90 a 179 dias de casa",
+  "6_12m": "180 a 364 dias de casa", "1_2a": "365 a 729 dias de casa", "2_5a": "730 a 1824 dias de casa",
+  "5plus": "1825+ dias de casa",
+};
+const GROUP_TO_JSON_KEY: Record<GroupBy, string> = { empresa: "por_empresa", unidade: "por_un_negocio", area: "por_area" };
+
+function getTempoCasaDataset(groupBy: GroupBy, selectedRegional: string | null) {
+  if (!selectedRegional) return tempoCasaData.consolidado;
+  const jsonKey = GROUP_TO_JSON_KEY[groupBy];
+  const group = (tempoCasaData as any)[jsonKey] as Record<string, any>;
+  if (!group) return tempoCasaData.consolidado;
+  // Find by label match
+  const entry = Object.values(group).find((v: any) => v.label === selectedRegional);
+  return entry || tempoCasaData.consolidado;
+}
 
 // Chart 3: Decomposição do Turnover
 const decomposicaoData = [
