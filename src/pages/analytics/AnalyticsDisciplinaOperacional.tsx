@@ -16,6 +16,9 @@ import {
 import esforcoEmpresa from "@/data/qualidade-ponto/esforco-tratativa-por-empresa.json";
 import esforcoUnNegocio from "@/data/qualidade-ponto/esforco-tratativa-por-un-negocio.json";
 import esforcoArea from "@/data/qualidade-ponto/esforco-tratativa-por-area.json";
+import sobrecargaEmpresaJson from "@/data/qualidade-ponto/sobrecarga-por-empresa.json";
+import sobrecargaUnidadeJson from "@/data/qualidade-ponto/sobrecarga-por-un-negocio.json";
+import sobrecargaAreaJson from "@/data/qualidade-ponto/sobrecarga-por-area.json";
 import tratTempoEmpresa from "@/data/qualidade-ponto/tratativa-tempo-por-empresa.json";
 import tratTempoUnidade from "@/data/qualidade-ponto/tratativa-tempo-por-un-negocio.json";
 import tratTempoArea from "@/data/qualidade-ponto/tratativa-tempo-por-area.json";
@@ -35,6 +38,7 @@ import qpDecomposicaoScore from "@/data/qualidade-ponto/decomposicao-score.json"
 import qpKpisPeriodoAnterior from "@/data/qualidade-ponto/kpis-periodo-anterior.json";
 import { evolucaoQualidadeHeadcountSource, evolucaoQualidadeHeadcountColumns } from "@/data/chart-sources/evolucao-qualidade-headcount";
 import { evolucaoTempoTratativaSource, evolucaoTempoTratativaColumns } from "@/data/chart-sources/evolucao-tempo-tratativa";
+import { sobrecargaBackofficeSource, sobrecargaBackofficeColumns } from "@/data/chart-sources/sobrecarga-backoffice";
 function abreviar(nome: string): string {
   const words = nome.replace(/[-–]/g, " ").split(/\s+/).filter(w => w.length > 1);
   if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
