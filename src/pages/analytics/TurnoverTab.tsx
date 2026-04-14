@@ -250,13 +250,7 @@ function computeTurnoverCompositeScore(anual: number, precoce: number): number {
   return Math.round(nAnual * 0.7 + nPrecoce * 0.3);
 }
 
-function getTurnoverFaixa(score: number) {
-  if (score >= 85) return "Excelente";
-  if (score >= 70) return "Bom";
-  if (score >= 55) return "Médio";
-  if (score >= 40) return "Ruim";
-  return "Crítico";
-}
+// getTurnoverFaixa now delegated to getScoreClassification from config
 
 // ══════════════════════════════════════════════════════════════
 // Benchmark helpers
