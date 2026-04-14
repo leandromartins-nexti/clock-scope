@@ -10,7 +10,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import {
   ResponsiveContainer, LineChart, Line, BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine,
-  ScatterChart, Scatter, ZAxis, Cell, ComposedChart, LabelList,
+  ScatterChart, Scatter, ZAxis, Cell, LabelList,
 } from "recharts";
 import esforcoEmpresa from "@/data/qualidade-ponto/esforco-tratativa-por-empresa.json";
 import esforcoUnNegocio from "@/data/qualidade-ponto/esforco-tratativa-por-un-negocio.json";
@@ -1529,7 +1529,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           </div>
 
           {(() => {
-            const Y_CAP = 6000;
+            const THRESHOLD_HEALTHY = 500;
+            const THRESHOLD_CRITICAL = 1000;
             const esforcoSources: Record<string, any[]> = {
               empresa: esforcoEmpresa,
               unidade: esforcoUnNegocio,
@@ -1549,15 +1550,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 })
               : rawEsforco;
 
-            const byMonth = new Map<string, { ajustes: number; operadores: Set<number> }>();
-            filtered.forEach((r: any) => {
-              const m = r.competencia;
-              if (!byMonth.has(m)) byMonth.set(m, { ajustes: 0, operadores: new Set() });
-              const entry = byMonth.get(m)!;
-              entry.ajustes += r.qtd_ajustes;
-              entry.operadores.add(r.operadores_ativos);
-            });
-
             const MONTH_LABELS: Record<string, string> = {
               "2025-04": "abr/25", "2025-05": "mai/25", "2025-06": "jun/25",
               "2025-07": "jul/25", "2025-08": "ago/25", "2025-09": "set/25",
@@ -1565,24 +1557,35 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               "2026-01": "jan/26", "2026-02": "fev/26", "2026-03": "mar/26",
             };
 
-            const esforcoData = Array.from(byMonth.entries())
+            // Aggregate by month
+            const byMonth = new Map<string, { ajustes: number; operadores: number }>();
+            filtered.forEach((r: any) => {
+              const m = r.competencia;
+              if (!byMonth.has(m)) byMonth.set(m, { ajustes: 0, operadores: 0 });
+              const entry = byMonth.get(m)!;
+              entry.ajustes += r.qtd_ajustes;
+              entry.operadores += r.operadores_ativos;
+            });
+
+            const sobrecargaData = Array.from(byMonth.entries())
               .sort(([a], [b]) => a.localeCompare(b))
               .map(([m, d]) => {
-                // For consolidated view, sum distinct operators across groups
-                const opAtivos = selectedRegional
-                  ? filtered.filter((r: any) => r.competencia === m).reduce((s: number, r: any) => s + r.operadores_ativos, 0)
-                  : filtered.filter((r: any) => r.competencia === m).reduce((max: number, r: any) => max + r.operadores_ativos, 0);
-                const produtividade = opAtivos > 0 ? Math.round(d.ajustes / opAtivos) : 0;
+                const produtividade = d.operadores > 0 ? Math.round(d.ajustes / d.operadores) : 0;
+                const categoria = produtividade > THRESHOLD_CRITICAL ? "Crítico" : produtividade >= THRESHOLD_HEALTHY ? "Atenção" : "Saudável";
+                const barColor = produtividade > THRESHOLD_CRITICAL ? "#ef4444" : produtividade >= THRESHOLD_HEALTHY ? "#f59e0b" : "#22c55e";
                 return {
                   mes: MONTH_LABELS[m] || m,
                   ajustes: d.ajustes,
-                  ajustesCapped: Math.min(d.ajustes, Y_CAP),
-                  operadores: opAtivos,
+                  operadores: d.operadores,
                   produtividade,
-                  isTruncated: d.ajustes > Y_CAP,
-                  labelTruncated: d.ajustes > Y_CAP ? `+${d.ajustes.toLocaleString("pt-BR")}` : undefined,
+                  categoria,
+                  barColor,
                 };
               });
+
+            // Contextual indicators
+            const picoEntry = sobrecargaData.reduce((max, d) => d.produtividade > max.produtividade ? d : max, sobrecargaData[0]);
+            const mesesCriticos = sobrecargaData.filter(d => d.produtividade > THRESHOLD_CRITICAL).length;
 
             if (areaInsufficient) {
               return (
@@ -1598,22 +1601,31 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <div className="flex items-center justify-between mb-0.5">
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <h4 className="text-sm font-semibold">Esforço de Tratativa de Ponto</h4>
-                      <InfoTip text="Mostra a carga mensal de tratativas do back-office, quantos operadores estão envolvidos e a produtividade individual média no período." />
+                      <h4 className="text-sm font-semibold">Sobrecarga do Back-office</h4>
+                      <InfoTip text="Mostra quantos ajustes cada operador do back-office processou em média por mês. Cor da barra indica a saúde da operação: verde saudável, amarelo atenção, vermelho crítico." />
                     </div>
-                    <p className="text-[10px] text-muted-foreground mb-2">Volume de ajustes, operadores ativos e produtividade por mês</p>
+                    <p className="text-[10px] text-muted-foreground mb-1">Carga por operador ao mês, com zonas de saúde</p>
                   </div>
                 </div>
+                {/* Contextual indicators */}
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2 flex-wrap">
+                  <span>Baseline saudável: &lt;500 ajustes/pessoa</span>
+                  <span className="mx-0.5">·</span>
+                  <span>Pico: {picoEntry?.mes} ({picoEntry?.produtividade.toLocaleString("pt-BR")})</span>
+                  <span className="mx-0.5">·</span>
+                  <span>Meses em zona crítica: {mesesCriticos} de {sobrecargaData.length}</span>
+                </div>
                 <ResponsiveContainer width="100%" height={280}>
-                  <ComposedChart data={esforcoData} margin={{ top: 20, right: 10, bottom: 0, left: 0 }}>
+                  <BarChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
-                    <YAxis yAxisId="left" domain={[0, Y_CAP]} tick={{ fontSize: 10 }} tickFormatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}K` : `${v}`} />
-                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <ReferenceLine y={THRESHOLD_HEALTHY} stroke="#22c55e" strokeDasharray="8 4" strokeWidth={1.5} label={{ value: "Saudável: 500", position: "left", fontSize: 9, fill: "#22c55e" }} />
                     <RechartsTooltip content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
                       const d = payload[0]?.payload;
                       if (!d) return null;
+                      const isCritical = d.categoria === "Crítico";
                       return (
                         <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                           <p className="font-semibold text-foreground">{label}</p>
@@ -1628,27 +1640,52 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                             <span className="font-medium text-foreground">{d.operadores}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "#f97316" }} />
+                            <span className="w-2.5 h-2.5" style={{ backgroundColor: d.barColor }} />
                             <span className="text-muted-foreground">Produtividade:</span>
                             <span className="font-medium text-foreground">
                               {d.produtividade.toLocaleString("pt-BR")} ajustes/pessoa
-                              {d.produtividade > 1000 && " ⚠"}
+                              {isCritical && " ⚠"}
                             </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5" style={{ backgroundColor: d.barColor }} />
+                            <span className="text-muted-foreground">Classificação:</span>
+                            <span className="font-medium" style={{ color: d.barColor }}>{d.categoria}</span>
                           </div>
                         </div>
                       );
                     }} />
-                    <Bar yAxisId="left" dataKey="ajustesCapped" fill="hsl(var(--muted-foreground))" fillOpacity={0.35} radius={[4, 4, 0, 0]} name="Volume de ajustes">
-                      {esforcoData.map((entry, idx) => (
-                        <Cell key={idx} fill={entry.isTruncated ? "hsl(var(--muted-foreground))" : "hsl(var(--muted-foreground))"} fillOpacity={entry.isTruncated ? 0.5 : 0.35} />
+                    <Bar dataKey="produtividade" radius={[4, 4, 0, 0]} name="Carga por operador">
+                      {sobrecargaData.map((entry, idx) => (
+                        <Cell key={idx} fill={entry.barColor} fillOpacity={0.75} />
                       ))}
-                      <LabelList dataKey="labelTruncated" position="top" fontSize={9} fontWeight={700} fill="#ef4444" formatter={(v: any) => v || ""} />
+                      <LabelList content={({ x, y, width: w, index }: any) => {
+                        const d = sobrecargaData[index];
+                        if (!d) return null;
+                        const isCritical = d.categoria === "Crítico";
+                        const isPeak = d === picoEntry && isCritical;
+                        return (
+                          <g>
+                            <text x={(x ?? 0) + (w ?? 0) / 2} y={(y ?? 0) - (isPeak ? 14 : 4)} textAnchor="middle" fontSize={9} fill="hsl(var(--muted-foreground))" fontWeight={500}>
+                              {d.operadores}
+                            </text>
+                            {isPeak && (
+                              <text x={(x ?? 0) + (w ?? 0) / 2} y={(y ?? 0) - 3} textAnchor="middle" fontSize={8} fill="#ef4444" fontWeight={700}>
+                                ({d.produtividade.toLocaleString("pt-BR")})
+                              </text>
+                            )}
+                          </g>
+                        );
+                      }} />
                     </Bar>
-                    
-                    <Line yAxisId="right" type="monotone" dataKey="produtividade" stroke="#f97316" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#f97316", stroke: "#fff", strokeWidth: 2 }} name="Produtividade (ajustes/pessoa)" />
-                    <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
-                  </ComposedChart>
+                  </BarChart>
                 </ResponsiveContainer>
+                {/* Legend */}
+                <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-muted-foreground">
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#22c55e", opacity: 0.75 }} /> Saudável (&lt;500)</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#f59e0b", opacity: 0.75 }} /> Atenção (500–1.000)</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#ef4444", opacity: 0.75 }} /> Crítico (&gt;1.000)</span>
+                </div>
               </div>
             );
           })()}
