@@ -1710,12 +1710,19 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   </button>
                 </div>
                 <ResponsiveContainer width="100%" height={280}>
-                  <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }}>
+                  <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }} onClick={(e: any) => {
+                    if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+                  }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+                    <XAxis dataKey="mes" tick={(props: any) => {
+                      const { x, y, payload } = props;
+                      const isActive = selectedMes === payload.value;
+                      return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                    }} />
                     <YAxis yAxisId="left" tick={{ fontSize: 10 }} />
                     <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} label={{ value: "HE (h)", angle: 90, position: "insideRight", fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
                     <ReferenceLine yAxisId="left" y={limiteSaudavel} stroke="#22c55e" strokeDasharray="5 3" strokeWidth={1.2} label={{ value: `Limite saudável: ${limiteSaudavel} aj/operador`, position: "left", fontSize: 9, fill: "#22c55e" }} />
+                    {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                     <RechartsTooltip content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
                       const d = payload[0]?.payload;
@@ -1751,9 +1758,18 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       );
                     }} />
                     <Bar yAxisId="left" dataKey="produtividade" radius={[4, 4, 0, 0]} name="Carga por operador">
-                      {sobrecargaData.map((entry, idx) => (
-                        <Cell key={idx} fill={entry.barColor} fillOpacity={0.75} />
-                      ))}
+                      {sobrecargaData.map((entry, idx) => {
+                        const dimmed = selectedMes && selectedMes !== entry.mes;
+                        const baseColor = entry.barColor;
+                        // Convert hex to rgba for opacity control
+                        const hexToRgb = (hex: string) => {
+                          const r = parseInt(hex.slice(1, 3), 16);
+                          const g = parseInt(hex.slice(3, 5), 16);
+                          const b = parseInt(hex.slice(5, 7), 16);
+                          return `${r},${g},${b}`;
+                        };
+                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.25)` : `rgba(${hexToRgb(baseColor)},0.75)`} />;
+                      })}
                       <LabelList content={({ x, y, width: w, index }: any) => {
                         const d = sobrecargaData[index];
                         if (!d) return null;
