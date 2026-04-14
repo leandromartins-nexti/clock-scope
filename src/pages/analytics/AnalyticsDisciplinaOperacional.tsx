@@ -989,6 +989,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const riscoClassif = getScoreClassification(activeData.maiorRisco.score, scoreConfig);
 
   return (
+    <>
     <div className="flex">
       {/* Left: KPI cards + charts */}
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
