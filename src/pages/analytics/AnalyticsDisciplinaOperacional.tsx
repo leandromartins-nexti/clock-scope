@@ -1372,8 +1372,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <ComposedChart data={tratData} onClick={tratClick}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="mes" tick={tratXTick} />
-                  <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={v => `${Math.round(v)}%`} domain={[0, 100]} />
-                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, Math.ceil(maxTempo * 1.3)]} label={{ value: "dias", angle: 90, position: "insideRight", fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                  <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={v => `${Math.round(v)}%`} domain={[0, 100]} label={{ value: "Distribuição por faixa (%)", angle: -90, position: "insideLeft", style: { fontSize: 9, fill: "hsl(var(--muted-foreground))" }, offset: 5 }} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, Math.ceil(maxTempo * 1.3)]} label={{ value: "Tempo médio (dias)", angle: 90, position: "insideRight", style: { fontSize: 9, fill: "hsl(var(--muted-foreground))" }, offset: 5 }} />
                   <RechartsTooltip content={tratTooltip} />
                   {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                   {FAIXAS.map(f => (
