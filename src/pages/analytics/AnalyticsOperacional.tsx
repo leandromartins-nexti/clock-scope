@@ -8,12 +8,10 @@ import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo } from "@/lib/analytics-mock-data";
 import { QualidadeTab, AbsenteismoTab, MovimentacoesTab } from "./AnalyticsDisciplinaOperacional";
 import TurnoverTab from "./TurnoverTab";
-import OperacaoPontoTab from "./OperacaoPontoTab";
 import AnalyticsCoberturasContinuidade from "./AnalyticsCoberturasContinuidade";
 
 const tabs = [
   { id: "qualidade", label: "Qualidade do Ponto" },
-  { id: "operacao", label: "Operação de Ponto" },
   { id: "absenteismo", label: "Absenteísmo" },
   { id: "turnover", label: "Turnover" },
   { id: "movimentacoes", label: "Movimentações" },
@@ -37,7 +35,6 @@ export default function AnalyticsOperacional() {
   const renderTab = () => {
     switch (activeTab) {
       case "qualidade": return <QualidadeTab />;
-      case "operacao": return <OperacaoPontoTab />;
       case "absenteismo": return <AbsenteismoTab />;
       case "turnover": return <TurnoverTab />;
       case "movimentacoes": return <MovimentacoesTab />;
