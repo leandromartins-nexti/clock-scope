@@ -1338,7 +1338,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: "Registradas", type: "square", color: "#22c55e" },
                   { value: "Justificadas", type: "square", color: "#ef4444" },
-                  { value: "Headcount", type: "square", color: "#D3D1C7" },
+                  { value: "Headcount Ativo", type: "square", color: "#D3D1C7" },
                 ]} />
               </ComposedChart>
             </ResponsiveContainer>
