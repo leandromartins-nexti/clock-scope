@@ -235,14 +235,6 @@ function notaTurnoverAnual(taxa: number): number {
   return 0;
 }
 
-function notaTurnoverVoluntario(taxa: number): number {
-  if (taxa < 30) return 100;
-  if (taxa < 50) return 80;
-  if (taxa < 70) return 60;
-  if (taxa < 90) return 30;
-  return 0;
-}
-
 function notaTurnoverPrecoce(taxa: number): number {
   if (taxa < 15) return 100;
   if (taxa < 25) return 80;
@@ -251,11 +243,10 @@ function notaTurnoverPrecoce(taxa: number): number {
   return 0;
 }
 
-function computeTurnoverCompositeScore(anual: number, voluntarioPct: number, precoce: number): number {
+function computeTurnoverCompositeScore(anual: number, precoce: number): number {
   const nAnual = notaTurnoverAnual(anual);
-  const nVol = notaTurnoverVoluntario(voluntarioPct);
   const nPrecoce = notaTurnoverPrecoce(precoce);
-  return Math.round(nAnual * 0.5 + nVol * 0.3 + nPrecoce * 0.2);
+  return Math.round(nAnual * 0.7 + nPrecoce * 0.3);
 }
 
 function getTurnoverFaixa(score: number) {
@@ -324,11 +315,8 @@ function ScoreDecompositionPopover({ score, faixa }: { score: number; faixa: str
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="flex flex-col items-center gap-0 cursor-pointer group" title="Ver decomposição do score">
+        <button className="flex flex-col items-center gap-0 cursor-pointer" title="Ver decomposição do score">
           <ScoreGauge score={score} label={`${score}`} faixa={faixa} />
-          <span className="text-[9px] text-muted-foreground group-hover:text-foreground flex items-center gap-0.5 -mt-1">
-            <Info className="w-3 h-3" /> Ver cálculo
-          </span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" side="bottom" align="start">
@@ -499,8 +487,7 @@ export default function TurnoverTab() {
   // KPI calculations
   const turnoverAnual = 43.1;
   const turnoverPrecoce = 38.4;
-  const turnoverVoluntarioPct = 55;
-  const score = computeTurnoverCompositeScore(turnoverAnual, turnoverVoluntarioPct, turnoverPrecoce);
+  const score = computeTurnoverCompositeScore(turnoverAnual, turnoverPrecoce);
   const faixa = getTurnoverFaixa(score);
   const melhorOp = sidebarItems.reduce((a, b) => a.score > b.score ? a : b);
   const maiorRisco = sidebarItems.reduce((a, b) => a.score < b.score ? a : b);
