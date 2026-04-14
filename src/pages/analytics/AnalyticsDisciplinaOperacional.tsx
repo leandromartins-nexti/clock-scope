@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { Info, TrendingUp, TrendingDown, Minus as MinusIcon, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown, LineChartIcon, BarChart3, AreaChartIcon, Percent, Hash, Database, Lock, ArrowUp, ArrowDown } from "lucide-react";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
+import CompositeChartDataModal from "@/components/analytics/CompositeChartDataModal";
 import ChartModeToggle from "@/components/analytics/ChartModeToggle";
 import type { DataMode, ChartMode } from "@/components/analytics/ChartModeToggle";
 import IndicatorTable, { type TableColumn, getScoreColor, getScoreBg, getLineColor, TrendIcon } from "@/components/analytics/IndicatorTable";
@@ -1447,9 +1448,14 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         {/* Row 2: Scatter charts */}
         <div className="grid grid-cols-2 gap-3">
           <div data-onboarding="scatter-qualidade" className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Qualidade vs Volume</h4>
-              <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center gap-1.5">
+                <h4 className="text-sm font-semibold">Qualidade vs Volume</h4>
+                <InfoTip text="Operações no quadrante inferior direito (alto volume, baixa qualidade) devem ser priorizadas." />
+              </div>
+              <button onClick={() => setChartDataModal("matrizSaude")} className="p-1 rounded hover:bg-muted/60 transition-colors" title="Ver dados">
+                <Database className="w-3.5 h-3.5 text-muted-foreground" />
+              </button>
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
             <ResponsiveContainer width="100%" height={280}>
