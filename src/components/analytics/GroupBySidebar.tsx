@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Search, ArrowUpDown, PanelRightClose, PanelRightOpen, Building2, Network, LayoutGrid } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 
 // ── Types ──
 export type GroupBy = "unidade" | "empresa" | "area";
@@ -38,6 +39,7 @@ export default function GroupBySidebar({
   onPagedItemsChange,
   pageSize = 25,
 }: GroupBySidebarProps) {
+  const { config: scoreConfig } = useScoreConfig();
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -134,8 +136,7 @@ export default function GroupBySidebar({
               const itemValue = op.value ?? op.nome;
               const isSelected = selectedRegional === itemValue;
               const isDimmed = selectedRegional && !isSelected;
-              const scoreColor =
-                op.score >= 85 ? "text-green-600" : op.score >= 75 ? "text-orange-500" : "text-red-600";
+              const scoreColor = getScoreClassification(op.score, scoreConfig).text;
               const abbr = abreviar(op.nome);
               return (
                 <UITooltip key={itemValue}>
@@ -249,8 +250,7 @@ export default function GroupBySidebar({
             const itemValue = op.value ?? op.nome;
             const isSelected = selectedRegional === itemValue;
             const isDimmed = selectedRegional && !isSelected;
-            const scoreColor =
-              op.score >= 85 ? "text-green-600" : op.score >= 75 ? "text-orange-500" : "text-red-600";
+            const scoreColor = getScoreClassification(op.score, scoreConfig).text;
             return (
               <div
                 key={itemValue}
