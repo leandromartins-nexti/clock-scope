@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { AlertTriangle, Trophy, Lightbulb, Activity, X, ArrowRight } from "lucide-react";
 import { qualidadeInsights, categoryConfig, type QualidadeInsight } from "@/data/qualidadeInsightsData";
 import { useDismissedInsights } from "@/hooks/useDismissedInsights";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 
 const iconMap = {
   AlertTriangle, Trophy, Lightbulb, Activity,
@@ -76,8 +76,7 @@ export default function QualidadeInsightsSection() {
               </div>
 
               {/* Body */}
-              <ScrollArea className="flex-1 max-h-[360px]">
-                <div className="p-2 flex flex-col gap-2">
+              <div className="p-2 flex flex-col gap-2">
                   {items.length === 0 ? (
                     <p className="text-[11px] text-muted-foreground text-center py-4">Nenhum insight ativo</p>
                   ) : (
@@ -124,8 +123,7 @@ export default function QualidadeInsightsSection() {
                       );
                     })
                   )}
-                </div>
-              </ScrollArea>
+              </div>
             </div>
           );
         })}
