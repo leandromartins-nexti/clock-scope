@@ -1,0 +1,262 @@
+[
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 627,
+    "operadores_ativos": 2,
+    "ajustes_por_operador": 314,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 596,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 199,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 628,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 209,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 590,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 148,
+    "horas_extras_rateadas": 2.5
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 445,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 111,
+    "horas_extras_rateadas": 15.6
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 456,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 91,
+    "horas_extras_rateadas": 10.2
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 554,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 111,
+    "horas_extras_rateadas": 5.6
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 664,
+    "operadores_ativos": 7,
+    "ajustes_por_operador": 95,
+    "horas_extras_rateadas": 24.8
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 573,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 143,
+    "horas_extras_rateadas": 0.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 529,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 176,
+    "horas_extras_rateadas": 0.4
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 568,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 189,
+    "horas_extras_rateadas": 0.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 426,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 107,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 2,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 2,
+    "horas_extras_rateadas": 0.4
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 5,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 5,
+    "horas_extras_rateadas": 0.3
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 10,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 10,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 9,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 9,
+    "horas_extras_rateadas": 0.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 5,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 5,
+    "horas_extras_rateadas": 0.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 252,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 50,
+    "horas_extras_rateadas": 8.5
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 305,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 76,
+    "horas_extras_rateadas": 13.2
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 200,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 50,
+    "horas_extras_rateadas": 10.5
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 51,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 10,
+    "horas_extras_rateadas": 1.6
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 38,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 13,
+    "horas_extras_rateadas": 2.3
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 21,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 7,
+    "horas_extras_rateadas": 1.1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 9,
+    "operadores_ativos": 2,
+    "ajustes_por_operador": 5,
+    "horas_extras_rateadas": 0.4
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "qtd_ajustes": 1,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 1,
+    "horas_extras_rateadas": 0
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "qtd_ajustes": 1,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 1,
+    "horas_extras_rateadas": 0
+  }
+]
