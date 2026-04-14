@@ -1,0 +1,173 @@
+[
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 1786,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 357
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 1819,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 364
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 1714,
+    "operadores_ativos": 6,
+    "ajustes_por_operador": 286
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 1665,
+    "operadores_ativos": 6,
+    "ajustes_por_operador": 278
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 1670,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 209
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 15301,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 1913
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 10328,
+    "operadores_ativos": 7,
+    "ajustes_por_operador": 1475
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 6814,
+    "operadores_ativos": 7,
+    "ajustes_por_operador": 973
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 5066,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 633
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 3996,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 500
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 3452,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 432
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "qtd_ajustes": 2887,
+    "operadores_ativos": 8,
+    "ajustes_por_operador": 361
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "company_id": 9381,
+    "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+    "qtd_ajustes": 19,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 19
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "company_id": 9381,
+    "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+    "qtd_ajustes": 3,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 3
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "company_id": 9381,
+    "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+    "qtd_ajustes": 7,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 7
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "company_id": 9381,
+    "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+    "qtd_ajustes": 13,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 13
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "company_id": 9381,
+    "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+    "qtd_ajustes": 45,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 45
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "company_id": 9381,
+    "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+    "qtd_ajustes": 102,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 102
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "company_id": 9381,
+    "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+    "qtd_ajustes": 205,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 205
+  }
+]

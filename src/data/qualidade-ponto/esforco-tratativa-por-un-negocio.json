@@ -1,0 +1,218 @@
+[
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 667,
+    "operadores_ativos": 2,
+    "ajustes_por_operador": 334
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 803,
+    "operadores_ativos": 2,
+    "ajustes_por_operador": 402
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 762,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 254
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 777,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 259
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 711,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 178
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 10452,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 2613
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 6102,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 1220
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 5276,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 1055
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 2971,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 594
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 2411,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 482
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 2147,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 429
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "qtd_ajustes": 1970,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 394
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 1138,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 285
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 1019,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 255
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 959,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 240
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 901,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 225
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 1004,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 201
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 4849,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 1212
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 4328,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 1443
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 1743,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 581
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 2095,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 698
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 1585,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 528
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 1305,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 435
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "qtd_ajustes": 917,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 306
+  }
+]
