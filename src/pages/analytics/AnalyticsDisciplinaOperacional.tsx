@@ -1983,8 +1983,10 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
   }, [selectedRegional]);
 
   const totalNum = parseFloat(activeData.total) * 1000;
-  const scoreColor = totalNum <= 15000 ? "text-green-600" : totalNum <= 25000 ? "text-orange-500" : "text-red-600";
-  const scoreFaixa = totalNum <= 15000 ? "Bom" : totalNum <= 25000 ? "Atenção" : "Crítico";
+  const movGaugeScore = Math.max(0, 100 - (totalNum / 30000) * 100);
+  const movClassif = getScoreClassification(Math.round(movGaugeScore), scoreConfig);
+  const scoreColor = movClassif.text;
+  const scoreFaixa = movClassif.label;
   const maxTotal = Math.max(...movimentacoesRegionais.map(r => r.total));
 
   const getMovScore = (total: number) => Math.round(Math.max(0, 100 - (total / maxTotal) * 100));
@@ -2003,7 +2005,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
               <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Movimentações</p>
               <InfoTip text="Total de trocas de escala e trocas de posto no período. Volume alto indica instabilidade operacional." />
             </div>
-            <ScoreGauge score={Math.max(0, 100 - (totalNum / 30000) * 100)} />
+            <ScoreGauge score={Math.round(movGaugeScore)} color={movClassif.color} />
             <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.total}</p>
             <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
           </div>
