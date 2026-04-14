@@ -1912,7 +1912,7 @@ ORDER BY a.reference_month, a.headcount DESC;`;
               </div>
             </div>
             <ResponsiveContainer width="100%" height={280}>
-              {renderEvoChart(absEvolucaoValor, "ausencias", "value", "hsl(var(--destructive))", absChartMode, absDataMode, absMediaRef, "Absenteísmo")}
+              {renderEvoChart(absEvolucaoValor, "ausencias", "value", "#ef4444", absChartMode, absDataMode, absMediaRef, "Absenteísmo")}
             </ResponsiveContainer>
           </div>
 
