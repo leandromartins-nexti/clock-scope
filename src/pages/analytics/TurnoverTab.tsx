@@ -201,17 +201,12 @@ function TempoCasaChart({ groupBy, selectedRegional, onOpenData }: { groupBy: Gr
           <Bar dataKey="count" radius={[0, 4, 4, 0]} animationDuration={600}
             label={({ x, y, width, value, index }: any) => {
               const faixa = dataset.faixas[index];
-              const labelX = faixa.count === 0 ? (x + maxCount * 0.02 + 6) : (x + width + 6);
+              const labelX = faixa.count === 0 ? (x + 4) : (x + width + 6);
               return (
                 <text x={labelX} y={y + 14} fontSize={10} fill="hsl(var(--foreground))" fontWeight={600}>
                   {faixa.count} · {faixa.pct}%
                 </text>
               );
-            }}
-            background={({ x, y, width, height, index }: any) => {
-              const faixa = dataset.faixas[index];
-              if (faixa.count > 0) return null;
-              return <rect x={x} y={y} width={width} height={height} rx={4} fill="hsl(var(--muted))" />;
             }}
           >
             {dataset.faixas.map((f: any, i: number) => {
