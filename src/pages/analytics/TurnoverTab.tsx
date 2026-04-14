@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Database, AlertTriangle } from "lucide-react";
+import { Database, AlertTriangle, Lock, Info, ArrowUp, ArrowDown, Minus } from "lucide-react";
 import ChartModeToggle from "@/components/analytics/ChartModeToggle";
 import type { ChartMode } from "@/components/analytics/ChartModeToggle";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
@@ -7,20 +7,30 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import tempoCasaData from "@/data/turnover/tempo-casa-desligados.json";
 import rankingEmpresa from "@/data/turnover/ranking-clientes-turnover-por-empresa.json";
 import rankingUnidade from "@/data/turnover/ranking-clientes-turnover-por-un-negocio.json";
 import rankingArea from "@/data/turnover/ranking-clientes-turnover-por-area.json";
+import benchmarks from "@/data/turnover/benchmarks-setoriais.json";
+import kpisPeriodoAnterior from "@/data/turnover/kpis-periodo-anterior.json";
+import decomposicaoScore from "@/data/turnover/decomposicao-score.json";
 import {
   ResponsiveContainer, ComposedChart, LineChart, Line, BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine, Cell,
 } from "recharts";
 
 // ══════════════════════════════════════════════════════════════
+// Benchmark config — default to vigilância
+// ══════════════════════════════════════════════════════════════
+const SETOR_KEY = "vigilancia_facilities";
+const bench = (benchmarks as any)[SETOR_KEY];
+
+// ══════════════════════════════════════════════════════════════
 // Mock data
 // ══════════════════════════════════════════════════════════════
 
-// Chart 1: Evolução do Turnover e Headcount
 const turnoverHeadcountData = [
   { mes: "abr/25", turnover: 3.2, headcount: 250 },
   { mes: "mai/25", turnover: 4.1, headcount: 257 },
@@ -38,16 +48,14 @@ const turnoverHeadcountData = [
 const turnoverMediaAnual = turnoverHeadcountData.reduce((s, d) => s + d.turnover, 0) / turnoverHeadcountData.length;
 
 // Tempo de Casa helpers
-// Semantic palette: same colors as header KPIs (Maior Risco = red, Melhor Operação = green, Atenção = yellow)
-// Opacity variation: 100% for most severe in category, 75% for less severe
 const TENURE_PALETTE = [
-  { color: "#ef4444", opacity: 1.0 },   // < 30 dias  — Crítico 100%
-  { color: "#ef4444", opacity: 0.75 },  // 30-90 dias — Crítico 75%
-  { color: "#eab308", opacity: 1.0 },   // 3-6 meses  — Atenção 100%
-  { color: "#eab308", opacity: 0.75 },  // 6-12 meses — Atenção 75%
-  { color: "#22c55e", opacity: 0.7 },   // 1-2 anos   — Saudável 70% (mais translúcido)
-  { color: "#22c55e", opacity: 1.0 },   // 2-5 anos   — Saudável 100%
-  { color: "#22c55e", opacity: 1.0 },   // 5+ anos    — Saudável 100%
+  { color: "#ef4444", opacity: 1.0 },
+  { color: "#ef4444", opacity: 0.75 },
+  { color: "#eab308", opacity: 1.0 },
+  { color: "#eab308", opacity: 0.75 },
+  { color: "#22c55e", opacity: 0.7 },
+  { color: "#22c55e", opacity: 1.0 },
+  { color: "#22c55e", opacity: 1.0 },
 ];
 const TENURE_RANGE_LABELS: Record<string, string> = {
   lt30: "0 a 29 dias de casa", "30_90": "30 a 89 dias de casa", "3_6m": "90 a 179 dias de casa",
@@ -61,17 +69,17 @@ function getTempoCasaDataset(groupBy: GroupBy, selectedRegional: string | null) 
   const jsonKey = GROUP_TO_JSON_KEY[groupBy];
   const group = (tempoCasaData as any)[jsonKey] as Record<string, any>;
   if (!group) return tempoCasaData.consolidado;
-  // Find by label match
   const entry = Object.values(group).find((v: any) => v.label === selectedRegional);
   return entry || tempoCasaData.consolidado;
 }
 
-// Ranking Clientes data mapping
+// Ranking Clientes
 interface RankingClienteRow {
   customer_id: number;
   client_id: number;
   client_name: string;
   headcount_atual: number;
+  headcount_medio?: number;
   saidas_periodo: number;
   turnover_pct: number;
   avg_tenure_days: number;
@@ -121,8 +129,6 @@ function getGroupName(row: RankingClienteRow, groupBy: GroupBy): string {
 
 function getRankingTop10(groupBy: GroupBy, selectedRegional: string | null): { data: RankingClienteRow[]; totalWithExits: number } {
   const raw = RANKING_JSON_MAP[groupBy];
-
-  // Filter by selected regional if any
   let filtered = raw;
   if (selectedRegional) {
     filtered = raw.filter(r => {
@@ -131,13 +137,14 @@ function getRankingTop10(groupBy: GroupBy, selectedRegional: string | null): { d
     });
   }
 
-  // Aggregate by client_id
-  const byClient = new Map<number, { client_name: string; headcount_atual: number; saidas_periodo: number; avg_tenure_days_sum: number; avg_tenure_count: number; groups: Set<string> }>();
+  const byClient = new Map<number, { client_name: string; headcount_atual: number; headcount_medio: number; saidas_periodo: number; avg_tenure_days_sum: number; avg_tenure_count: number; groups: Set<string> }>();
   for (const r of filtered) {
     const existing = byClient.get(r.client_id);
     const label = getGroupLabel(r, groupBy);
+    const hm = r.headcount_medio ?? r.headcount_atual;
     if (existing) {
       existing.headcount_atual += r.headcount_atual;
+      existing.headcount_medio += hm;
       existing.saidas_periodo += r.saidas_periodo;
       if (r.avg_tenure_days) { existing.avg_tenure_days_sum += r.avg_tenure_days * r.saidas_periodo; existing.avg_tenure_count += r.saidas_periodo; }
       existing.groups.add(label);
@@ -145,6 +152,7 @@ function getRankingTop10(groupBy: GroupBy, selectedRegional: string | null): { d
       byClient.set(r.client_id, {
         client_name: r.client_name,
         headcount_atual: r.headcount_atual,
+        headcount_medio: hm,
         saidas_periodo: r.saidas_periodo,
         avg_tenure_days_sum: r.avg_tenure_days ? r.avg_tenure_days * r.saidas_periodo : 0,
         avg_tenure_count: r.avg_tenure_days ? r.saidas_periodo : 0,
@@ -155,24 +163,22 @@ function getRankingTop10(groupBy: GroupBy, selectedRegional: string | null): { d
 
   const aggregated: (RankingClienteRow & { chipLabel: string })[] = [];
   for (const [clientId, v] of byClient) {
-    const totalPeople = v.headcount_atual + v.saidas_periodo;
+    const denom = v.headcount_medio > 0 ? v.headcount_medio : 1;
     aggregated.push({
       customer_id: 642,
       client_id: clientId,
       client_name: v.client_name,
       headcount_atual: v.headcount_atual,
+      headcount_medio: v.headcount_medio,
       saidas_periodo: v.saidas_periodo,
-      turnover_pct: totalPeople > 0 ? Math.round(v.saidas_periodo * 1000 / totalPeople) / 10 : 0,
+      turnover_pct: Math.round(v.saidas_periodo * 1000 / denom) / 10,
       avg_tenure_days: v.avg_tenure_count > 0 ? Math.round(v.avg_tenure_days_sum / v.avg_tenure_count) : 0,
       chipLabel: Array.from(v.groups).sort().join(" · "),
     } as any);
   }
 
-  // Exclude headcount_atual = 0 and saidas < 1
-  const valid = aggregated.filter(r => r.headcount_atual > 0 && r.saidas_periodo >= 1);
+  const valid = aggregated.filter(r => r.saidas_periodo >= 1);
   const totalWithExits = valid.length;
-
-  // Sort by saidas_periodo DESC, take top 10
   valid.sort((a, b) => b.saidas_periodo - a.saidas_periodo);
   return { data: valid.slice(0, 10), totalWithExits };
 }
@@ -183,7 +189,7 @@ function getTurnoverBarColor(pct: number): string {
   return "#22c55e";
 }
 
-// Chart 4: Movimentação Mensal (migrated from Absenteísmo)
+// Chart 4: Movimentação Mensal
 const movimentacaoData = [
   { mes: "abr/25", admissoes: 2, demissoes: -8 },
   { mes: "mai/25", admissoes: 8, demissoes: -12 },
@@ -261,11 +267,116 @@ function getTurnoverFaixa(score: number) {
 }
 
 // ══════════════════════════════════════════════════════════════
+// Benchmark helpers
+// ══════════════════════════════════════════════════════════════
+function getBenchmarkLabel(value: number, benchKey: "turnover_anual_pct" | "turnover_precoce_90d_pct") {
+  const b = bench[benchKey];
+  if (value < b.excelente) {
+    const diff = b.mediana - value;
+    return { text: `↓ ${Math.round(diff)}pp vs mediana setor (${b.mediana}%)`, color: "text-green-600" };
+  }
+  if (value <= b.mediana) {
+    return { text: `Abaixo da mediana setor (${b.mediana}%)`, color: "text-muted-foreground" };
+  }
+  if (value <= b.critico) {
+    const diff = value - b.mediana;
+    return { text: `↑ ${Math.round(diff)}pp vs mediana setor (${b.mediana}%)`, color: "text-orange-500" };
+  }
+  const diff = value - b.mediana;
+  return { text: `↑ ${Math.round(diff)}pp vs mediana setor (${b.mediana}%)`, color: "text-red-600" };
+}
+
+// ══════════════════════════════════════════════════════════════
+// Delta helpers (vs período anterior)
+// ══════════════════════════════════════════════════════════════
+const kpisAnterior = kpisPeriodoAnterior.kpis;
+
+function getDeltaDisplay(key: "turnover_anual_pct" | "turnover_precoce_90d_pct" | "score_aba") {
+  const kpi = (kpisAnterior as any)[key];
+  if (!kpi) return null;
+  const delta = kpi.delta;
+  const absDelta = Math.abs(delta);
+  
+  // For turnover: up = worse, down = better
+  // For score: up = better, down = worse
+  const isScoreKpi = key === "score_aba";
+  
+  if (absDelta < 1) {
+    return { icon: <Minus className="w-3 h-3" />, text: `Estável vs ${kpi.anterior}${isScoreKpi ? "" : "%"} (período anterior)`, color: "text-muted-foreground" };
+  }
+  
+  const improved = isScoreKpi ? delta > 0 : delta < 0;
+  const Icon = delta > 0 ? ArrowUp : ArrowDown;
+  
+  return {
+    icon: <Icon className="w-3 h-3" />,
+    text: `${absDelta.toFixed(1)}pp vs ${kpi.anterior}${isScoreKpi ? "" : "%"} (ant.)`,
+    color: improved ? "text-green-600" : "text-red-600",
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+// Score Decomposition Popover
+// ══════════════════════════════════════════════════════════════
+const COMP_COLORS: Record<string, string> = { success: "#22c55e", warning: "#eab308", critical: "#ef4444" };
+
+function ScoreDecompositionPopover({ score, faixa }: { score: number; faixa: string }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button className="flex flex-col items-center gap-0 cursor-pointer group" title="Ver decomposição do score">
+          <ScoreGauge score={score} label={`${score}`} faixa={faixa} />
+          <span className="text-[9px] text-muted-foreground group-hover:text-foreground flex items-center gap-0.5 -mt-1">
+            <Info className="w-3 h-3" /> Ver cálculo
+          </span>
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80 p-0" side="bottom" align="start">
+        <div className="p-3 border-b border-border/50">
+          <p className="text-sm font-semibold">Como o Score {score} foi calculado</p>
+        </div>
+        <div className="p-3 space-y-3">
+          {decomposicaoScore.componentes.map((comp) => {
+            const barColor = COMP_COLORS[comp.cor_semantica] || "#6b7280";
+            const barWidth = Math.max(comp.contribuicao / decomposicaoScore.score_composto * 100, 4);
+            return (
+              <div key={comp.metrica} className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium">{comp.metrica}</span>
+                  <span className="text-[10px] text-muted-foreground">peso {comp.peso}%</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span>{comp.valor_atual}{comp.unidade}  →  Nota {comp.nota}</span>
+                  <span className="font-semibold">{comp.contribuicao} pts</span>
+                </div>
+                <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full transition-all" style={{ width: `${barWidth}%`, backgroundColor: barColor }} />
+                </div>
+              </div>
+            );
+          })}
+          <div className="border-t border-border/50 pt-2 flex items-center justify-between">
+            <span className="text-xs font-semibold">Score composto</span>
+            <span className="text-sm font-bold" style={{ color: score >= 70 ? "#22c55e" : score >= 40 ? "#eab308" : "#ef4444" }}>
+              {score} ({faixa})
+            </span>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
 // Tempo de Casa Chart
 // ══════════════════════════════════════════════════════════════
 function TempoCasaChart({ groupBy, selectedRegional, onOpenData }: { groupBy: GroupBy; selectedRegional: string | null; onOpenData: () => void }) {
   const dataset = useMemo(() => getTempoCasaDataset(groupBy, selectedRegional), [groupBy, selectedRegional]);
   const maxCount = Math.max(...dataset.faixas.map((f: any) => f.count), 1);
+  
+  // Compute precoce percentage for header
+  const precoce90 = dataset.faixas.slice(0, 2).reduce((s: number, f: any) => s + f.count, 0);
+  const precocePct = dataset.total > 0 ? Math.round(precoce90 * 1000 / dataset.total) / 10 : 0;
 
   return (
     <div className="bg-card border rounded-xl p-4 border-border/50">
@@ -275,7 +386,11 @@ function TempoCasaChart({ groupBy, selectedRegional, onOpenData }: { groupBy: Gr
             <h4 className="text-sm font-semibold">Tempo de Casa dos Desligados</h4>
             <InfoTip text="Distribuição dos colaboradores que saíram da empresa no período, agrupados pela faixa de tempo de casa que tinham no momento do desligamento." />
           </div>
-          <p className="text-[10px] text-muted-foreground mb-2">Em qual faixa de tempo de casa estavam ao sair · clique para filtrar</p>
+          <p className="text-[10px] text-muted-foreground mb-1">Em qual faixa de tempo de casa estavam ao sair · clique para filtrar</p>
+          <p className="text-[10px] text-muted-foreground">
+            Turnover precoce &lt;90d: <span className="font-semibold text-foreground">{precocePct}%</span>
+            <span className="text-muted-foreground"> · Mediana setor: {bench.turnover_precoce_90d_pct.mediana}%</span>
+          </p>
         </div>
         <button onClick={onOpenData} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
       </div>
@@ -322,6 +437,45 @@ function TempoCasaChart({ groupBy, selectedRegional, onOpenData }: { groupBy: Gr
   );
 }
 
+// ══════════════════════════════════════════════════════════════
+// KPI Delta Sub-label component
+// ══════════════════════════════════════════════════════════════
+function KPIDelta({ deltaKey, benchmarkKey }: { deltaKey?: "turnover_anual_pct" | "turnover_precoce_90d_pct" | "score_aba"; benchmarkKey?: "turnover_anual_pct" | "turnover_precoce_90d_pct" }) {
+  const delta = deltaKey ? getDeltaDisplay(deltaKey) : null;
+  const benchmark = benchmarkKey ? getBenchmarkLabel(
+    deltaKey === "turnover_anual_pct" ? 43.1 : 38.4,
+    benchmarkKey
+  ) : null;
+
+  if (!delta && !benchmark) return null;
+
+  return (
+    <div className="flex flex-col gap-0.5 mt-1">
+      {delta && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className={`text-[10px] flex items-center gap-0.5 cursor-help ${delta.color}`}>
+              {delta.icon} {delta.text}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="max-w-[220px] text-xs">
+            <p className="font-semibold mb-1">Comparação com período anterior</p>
+            <p>Atual (abr/25 a mar/26): {deltaKey === "score_aba" ? (kpisAnterior as any)[deltaKey].atual : `${(kpisAnterior as any)[deltaKey].atual}%`}</p>
+            <p>Anterior (abr/24 a mar/25): {deltaKey === "score_aba" ? (kpisAnterior as any)[deltaKey].anterior : `${(kpisAnterior as any)[deltaKey].anterior}%`}</p>
+            <p>Variação: {(kpisAnterior as any)[deltaKey].delta > 0 ? "+" : ""}{(kpisAnterior as any)[deltaKey].delta}pp</p>
+          </TooltipContent>
+        </Tooltip>
+      )}
+      {benchmark && (
+        <span className={`text-[10px] ${benchmark.color}`}>{benchmark.text}</span>
+      )}
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// Main component
+// ══════════════════════════════════════════════════════════════
 export default function TurnoverTab() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
@@ -345,9 +499,8 @@ export default function TurnoverTab() {
   // KPI calculations
   const turnoverAnual = 43.1;
   const turnoverPrecoce = 38.4;
-   // Hardcoded voluntary turnover % (decomposição data removed)
-   const turnoverVoluntarioPct = 55;
-   const score = computeTurnoverCompositeScore(turnoverAnual, turnoverVoluntarioPct, turnoverPrecoce);
+  const turnoverVoluntarioPct = 55;
+  const score = computeTurnoverCompositeScore(turnoverAnual, turnoverVoluntarioPct, turnoverPrecoce);
   const faixa = getTurnoverFaixa(score);
   const melhorOp = sidebarItems.reduce((a, b) => a.score > b.score ? a : b);
   const maiorRisco = sidebarItems.reduce((a, b) => a.score < b.score ? a : b);
@@ -368,18 +521,103 @@ export default function TurnoverTab() {
 
   const maxHC = Math.max(...turnoverHeadcountData.map(d => d.headcount));
 
+  // KPI delta for descriptive cards
+  const melhorOpAnterior = kpisAnterior.melhor_operacao;
+  const maiorRiscoAnterior = kpisAnterior.maior_risco;
+
   return (
     <div className="flex flex-1 min-h-0">
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4 overflow-y-auto">
-        {/* Row 1: 5 KPI Cards */}
-        <div className="grid grid-cols-5 gap-3">
-          <ScoreBoard title="Score da Aba" tooltip="Score composto de turnover, calculado a partir do turnover anual, voluntário e precoce. Configurável.">
-            <ScoreGauge score={score} label={`${score}`} faixa={faixa} />
+        {/* Row 1: 6 KPI Cards */}
+        <div className="grid grid-cols-6 gap-3">
+          {/* 1. Score with decomposition popover */}
+          <ScoreBoard title="Score da Aba" tooltip="Score composto de turnover, calculado a partir do turnover anual, voluntário e precoce. Clique para ver a decomposição.">
+            <ScoreDecompositionPopover score={score} faixa={faixa} />
+            {(() => {
+              const d = getDeltaDisplay("score_aba");
+              if (!d) return null;
+              return (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className={`text-[9px] flex items-center gap-0.5 cursor-help -mt-0.5 ${d.color}`}>
+                      {d.icon} {d.text}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    <p>Atual: {kpisAnterior.score_aba.atual} · Anterior: {kpisAnterior.score_aba.anterior}</p>
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })()}
           </ScoreBoard>
-          <KPIBoard title="Turnover Anual %" tooltip="Demissões nos últimos 12 meses dividido pelo headcount médio do período. Benchmark vigilância: 80% a 120%." value={`${turnoverAnual}%`} valueColor={turnoverAnual < 60 ? "text-green-600" : turnoverAnual <= 100 ? "text-orange-500" : "text-red-600"} />
-          <KPIBoard title="Turnover Precoce <90D %" tooltip="Percentual dos desligamentos que ocorreram nos primeiros 90 dias de casa. Indicador de qualidade do recrutamento e onboarding." value={`${turnoverPrecoce}%`} valueColor={turnoverPrecoce < 20 ? "text-green-600" : turnoverPrecoce <= 35 ? "text-orange-500" : "text-red-600"} />
-          <KPIBoard title="Melhor Operação" tooltip="Operação com menor turnover anual no período" value={melhorOp.nome} valueColor="text-green-600" subtitle={`Score ${melhorOp.score}`} />
-          <KPIBoard title="Maior Risco" tooltip="Operação com maior turnover anual no período" value={maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${maiorRisco.score}`} />
+
+          {/* 2. Turnover Anual */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Turnover Anual %</p>
+              <InfoTip text="Demissões nos últimos 12 meses dividido pelo headcount médio do período." />
+            </div>
+            <p className={`text-xl font-bold mt-0.5 ${turnoverAnual < 60 ? "text-green-600" : turnoverAnual <= 100 ? "text-orange-500" : "text-red-600"}`}>{turnoverAnual}%</p>
+            <KPIDelta deltaKey="turnover_anual_pct" benchmarkKey="turnover_anual_pct" />
+          </div>
+
+          {/* 3. Turnover Precoce */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Turnover Precoce &lt;90D %</p>
+              <InfoTip text="Percentual dos desligamentos que ocorreram nos primeiros 90 dias de casa." />
+            </div>
+            <p className={`text-xl font-bold mt-0.5 ${turnoverPrecoce < 20 ? "text-green-600" : turnoverPrecoce <= 35 ? "text-orange-500" : "text-red-600"}`}>{turnoverPrecoce}%</p>
+            <KPIDelta deltaKey="turnover_precoce_90d_pct" benchmarkKey="turnover_precoce_90d_pct" />
+          </div>
+
+          {/* 4. Melhor Operação */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Melhor Operação</p>
+              <InfoTip text="Operação com menor turnover anual no período" />
+            </div>
+            <p className="text-xl font-bold mt-0.5 truncate text-green-600">{melhorOp.nome}</p>
+            <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {melhorOp.score}</p>
+            <span className="text-[10px] text-muted-foreground mt-0.5">
+              {melhorOpAnterior.mudou ? melhorOpAnterior.mudanca_label : "Mesma posição do período anterior"}
+            </span>
+          </div>
+
+          {/* 5. Maior Risco */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maior Risco</p>
+              <InfoTip text="Operação com maior turnover anual no período" />
+            </div>
+            <p className="text-xl font-bold mt-0.5 truncate text-red-600">{maiorRisco.nome}</p>
+            <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {maiorRisco.score}</p>
+            <span className="text-[10px] text-muted-foreground mt-0.5">
+              {maiorRiscoAnterior.mudou ? maiorRiscoAnterior.mudanca_label : "Mesma posição do período anterior"}
+            </span>
+          </div>
+
+          {/* 6. Custo do Turnover — locked placeholder for V2 */}
+          {/*
+            V2 Formula:
+            custo_turnover = saidas_periodo × custo_medio_desligamento
+            custo_medio_desligamento = rescisao_media (2.5x salario_base) + recrutamento (R$800-1500) + treinamento (40h × custo_hora) + produtividade_perdida (30% × salario × 3m) + overhead (15%)
+          */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="bg-card border border-border/50 rounded-xl p-4 flex flex-col relative opacity-60 cursor-default select-none">
+                <Lock className="w-3.5 h-3.5 absolute top-2.5 right-2.5 text-muted-foreground" />
+                <div className="flex items-center gap-1 mb-2">
+                  <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Custo do Turnover</p>
+                </div>
+                <p className="text-lg font-bold mt-0.5 text-muted-foreground">Em breve</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Disponível após integração da folha</p>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+              Cálculo do custo financeiro total do turnover no período. Requer integração da folha de pagamento (custo de recrutamento, treinamento, rescisão e produtividade perdida). Previsto para a próxima versão.
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         {/* Row 2: 2 charts */}
@@ -421,8 +659,12 @@ export default function TurnoverTab() {
                     </div>
                   );
                 }} />
-                {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                 <ReferenceLine yAxisId="left" y={turnoverMediaAnual} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" label={{ value: `Média ${turnoverMediaAnual.toFixed(1)}%`, position: "right", fontSize: 9, fill: "#C8860A" }} />
+                {/* Benchmark: Mediana setor */}
+                <ReferenceLine yAxisId="left" y={bench.turnover_anual_pct.mediana / 12} stroke="#9ca3af" strokeWidth={1} strokeDasharray="6 4" label={{ value: `Mediana setor: ${(bench.turnover_anual_pct.mediana / 12).toFixed(1)}%/mês`, position: "insideTopRight", fontSize: 8, fill: "#9ca3af" }} />
+                {/* Benchmark: Excelente setor */}
+                <ReferenceLine yAxisId="left" y={bench.turnover_anual_pct.excelente / 12} stroke="#86efac" strokeWidth={1} strokeDasharray="6 4" label={{ value: `Excelente setor: ${(bench.turnover_anual_pct.excelente / 12).toFixed(1)}%/mês`, position: "insideBottomRight", fontSize: 8, fill: "#22c55e" }} />
                 <Area yAxisId="right" type="monotone" dataKey="headcount" fill="#D3D1C7" fillOpacity={0.4} stroke="#D3D1C7" strokeWidth={0} name="Headcount" />
                 <Line yAxisId="left" type="monotone" dataKey="turnover" stroke="#E24B4A" strokeWidth={2} dot={(props: any) => {
                   const { cx, cy, payload: p } = props;
@@ -455,9 +697,9 @@ export default function TurnoverTab() {
                   <div>
                     <div className="flex items-center gap-1.5">
                       <h4 className="text-sm font-semibold">Top 10 Clientes com Maior Volume de Saídas</h4>
-                      <InfoTip text="Os 10 clientes com maior número absoluto de desligamentos no período. A cor da barra reflete a taxa de turnover: vermelho acima de 40%, amarelo entre 20% e 40%, verde abaixo de 20%." />
+                      <InfoTip text="Os 10 clientes com maior número absoluto de desligamentos no período. Turnover calculado com headcount médio do período. A cor da barra reflete a taxa de turnover." />
                     </div>
-                    <p className="text-[10px] text-muted-foreground mb-2">Ranking por volume no período · clique para filtrar</p>
+                    <p className="text-[10px] text-muted-foreground mb-2">Ranking por volume no período · base: headcount médio · clique para filtrar</p>
                   </div>
                   <button onClick={() => setChartDataModal("rankingClientes")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
                 </div>
@@ -485,9 +727,10 @@ export default function TurnoverTab() {
                           <p className="font-semibold text-foreground">{d.client_name}</p>
                           <p className="text-muted-foreground">{groupName}</p>
                           <div className="border-t border-border/50 pt-1 mt-1 space-y-0.5">
-                            <p>Headcount atual: <span className="font-medium">{d.headcount_atual} colaboradores</span></p>
+                            <p>Headcount médio: <span className="font-medium">{d.headcount_medio ?? d.headcount_atual} colaboradores</span></p>
                             <p>Saídas no período: <span className="font-medium">{d.saidas_periodo}</span></p>
                             <p>Turnover: <span className="font-medium">{d.turnover_pct}%</span></p>
+                            <p className="text-muted-foreground">Mediana setor: {bench.turnover_anual_pct.mediana}%</p>
                             <p>Tempo médio de casa: <span className="font-medium">{d.avg_tenure_days} dias</span></p>
                             {d.headcount_atual === 0 && (
                               <p className="text-orange-600 flex items-center gap-1 mt-1"><AlertTriangle className="w-3 h-3" />Contrato provavelmente encerrado</p>
@@ -580,7 +823,6 @@ export default function TurnoverTab() {
                     <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.25)" : "rgba(239,68,68,0.65)"} />
                   ))}
                 </Bar>
-                {/* Truncation label for set/25 */}
                 {movimentacaoData.map((d, i) => {
                   if (d.admissoes > movYMax) {
                     return (
@@ -606,8 +848,8 @@ export default function TurnoverTab() {
       {/* Data Modals */}
       <ChartDataModal open={chartDataModal === "evoHeadcount"} onClose={() => setChartDataModal(null)} title="Evolução do Turnover e Headcount" data={turnoverHeadcountData} columns={[{ key: "mes", label: "Competência" }, { key: "turnover", label: "Turnover (%)" }, { key: "headcount", label: "Headcount" }]} sqlQuery={`SELECT DATE_FORMAT(reference_month, '%b/%y') AS mes, ROUND(turnover_percentage, 1) AS turnover_pct, avg_headcount FROM vw_turnover_mensal WHERE reference_month BETWEEN '2025-04-01' AND '2026-03-31' ORDER BY reference_month;`} />
       <ChartDataModal open={chartDataModal === "tempoCasa"} onClose={() => setChartDataModal(null)} title="Tempo de Casa dos Desligados" data={getTempoCasaDataset(groupBy, selectedRegional).faixas} columns={[{ key: "label", label: "Faixa" }, { key: "count", label: "Desligamentos" }, { key: "pct", label: "%" , format: (v: number) => `${v}%` }, { key: "avg_days", label: "Média (dias)" }]} sqlQuery={`SELECT tenure_bucket, COUNT(*) AS desligamentos_count, ROUND(AVG(DATEDIFF(demission_date, admission_date)),0) AS avg_tenure_days, ROUND(COUNT(*)*100.0/SUM(COUNT(*)) OVER(),1) AS pct FROM vw_turnover_detail WHERE customer_id = 642 AND demission_date BETWEEN '2025-04-01' AND '2026-03-31' GROUP BY tenure_bucket ORDER BY bucket_order;`} />
-      <ChartDataModal open={chartDataModal === "rankingClientes"} onClose={() => setChartDataModal(null)} title="Top 10 Clientes com Maior Volume de Saídas" data={getRankingTop10(groupBy, selectedRegional).data} columns={[{ key: "client_name", label: "Cliente" }, { key: "headcount_atual", label: "Headcount" }, { key: "saidas_periodo", label: "Saídas" }, { key: "turnover_pct", label: "Turnover %", format: (v: number) => `${v}%` }, { key: "avg_tenure_days", label: "Tempo Médio (dias)" }]} sqlQuery={`SELECT cli.name AS client_name, COUNT(DISTINCT CASE WHEN p.demission_date IS NULL THEN p.id END) AS headcount_atual, COUNT(DISTINCT CASE WHEN p.demission_date >= '2025-04-01' AND p.demission_date < '2026-04-01' THEN p.id END) AS saidas_periodo, ROUND(saidas_periodo * 100.0 / NULLIF(COUNT(DISTINCT p.id), 0), 1) AS turnover_pct, ROUND(AVG(DATEDIFF(p.demission_date, p.admission_date)), 0) AS avg_tenure_days FROM person p INNER JOIN workplace_transfer wt ON wt.person_id = p.id INNER JOIN workplace w ON w.id = wt.workplace_id LEFT JOIN client cli ON cli.id = w.client_id WHERE p.customer_id = 642 GROUP BY cli.name HAVING saidas_periodo > 0 ORDER BY saidas_periodo DESC LIMIT 10;`} />
-      <ChartDataModal open={chartDataModal === "movimentacao"} onClose={() => setChartDataModal(null)} title="Movimentação Mensal" data={movimentacaoData.map(d => ({ ...d, demissoes_abs: Math.abs(d.demissoes), saldo: d.admissoes + d.demissoes }))} columns={[{ key: "mes", label: "Competência" }, { key: "admissoes", label: "Admissões" }, { key: "demissoes_abs", label: "Demissões" }, { key: "saldo", label: "Saldo" }]} sqlQuery={`SELECT DATE_FORMAT(reference_month, '%b/%y') AS mes, SUM(CASE WHEN tipo = 'admissao' THEN 1 ELSE 0 END) AS admissoes, SUM(CASE WHEN tipo = 'demissao' THEN 1 ELSE 0 END) AS demissoes FROM vw_movimentacoes WHERE customer_id = 642 AND reference_month BETWEEN '2025-04-01' AND '2026-03-31' GROUP BY reference_month ORDER BY reference_month;`} />
+      <ChartDataModal open={chartDataModal === "rankingClientes"} onClose={() => setChartDataModal(null)} title="Top 10 Clientes com Maior Volume de Saídas" data={getRankingTop10(groupBy, selectedRegional).data.map(r => ({ ...r, headcount_medio: r.headcount_medio ?? r.headcount_atual }))} columns={[{ key: "client_name", label: "Cliente" }, { key: "headcount_medio", label: "HC Médio" }, { key: "saidas_periodo", label: "Saídas" }, { key: "turnover_pct", label: "Turnover %", format: (v: number) => `${v}%` }, { key: "avg_tenure_days", label: "Média (dias)" }]} sqlQuery={`WITH headcount_inicial AS (\n  SELECT w.client_id, COUNT(DISTINCT p.id) AS qtd\n  FROM person p\n  INNER JOIN workplace_transfer wt ON wt.person_id = p.id AND COALESCE(wt.removed, 0) = 0\n    AND wt.transfer_date <= '2025-04-01' AND (wt.finish_date IS NULL OR wt.finish_date > '2025-04-01')\n  INNER JOIN workplace w ON w.id = wt.workplace_id\n  WHERE p.customer_id = 642 AND p.admission_date <= '2025-04-01'\n    AND (p.demission_date IS NULL OR p.demission_date > '2025-04-01') AND w.client_id IS NOT NULL\n  GROUP BY w.client_id\n)\nSELECT c.name AS client_name,\n  ROUND((COALESCE(hi.qtd,0) + COUNT(DISTINCT CASE WHEN p.demission_date IS NULL THEN p.id END)) / 2.0, 0) AS headcount_medio,\n  COUNT(DISTINCT CASE WHEN p.demission_date BETWEEN '2025-04-01' AND '2026-03-31' THEN p.id END) AS saidas_periodo,\n  ROUND(saidas_periodo * 100.0 / NULLIF(headcount_medio, 0), 1) AS turnover_pct\nFROM client c LEFT JOIN headcount_inicial hi ON hi.client_id = c.id\nWHERE c.customer_id = 642\nGROUP BY c.id ORDER BY saidas_periodo DESC LIMIT 10;`} />
+      <ChartDataModal open={chartDataModal === "movimentacao"} onClose={() => setChartDataModal(null)} title="Movimentação Mensal" data={movimentacaoData.map(d => ({ ...d, demissoes: Math.abs(d.demissoes), saldo: d.admissoes + d.demissoes }))} columns={[{ key: "mes", label: "Competência" }, { key: "admissoes", label: "Admissões" }, { key: "demissoes", label: "Demissões" }, { key: "saldo", label: "Saldo" }]} sqlQuery={`SELECT DATE_FORMAT(reference_month, '%b/%y') AS mes, SUM(CASE WHEN type = 'admission' THEN 1 ELSE 0 END) AS admissoes, SUM(CASE WHEN type = 'demission' THEN 1 ELSE 0 END) AS demissoes FROM vw_movimentacao WHERE customer_id = 642 AND reference_month BETWEEN '2025-04-01' AND '2026-03-31' GROUP BY reference_month ORDER BY reference_month;`} />
     </div>
   );
 }
