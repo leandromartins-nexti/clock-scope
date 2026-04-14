@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Save, Info, TrendingUp, TrendingDown } from "lucide-react";
+import { RotateCcw, Save, Info, TrendingUp, TrendingDown, Download } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import {
@@ -41,18 +41,16 @@ function ThresholdRow({ label, color, value, onChange }: { label: string; color:
 const WEIGHT_TOOLTIPS: Record<string, string> = {
   weight_quality: "% de marcações registradas corretamente sobre o total",
   weight_treatment: "Agilidade do time em resolver ajustes pendentes",
-  weight_pressure: "Quantos ajustes são gerados por colaborador no mês",
   weight_backoffice: "Custo operacional composto por volume de ajustes por operador e horas extras",
 };
 
 const WEIGHT_LABELS: Record<string, string> = {
   weight_quality: "Qualidade das Marcações",
   weight_treatment: "Velocidade de Tratativa",
-  weight_pressure: "Pressão do Sistema",
   weight_backoffice: "Saúde do Back-office",
 };
 
-const WEIGHT_KEYS = ["weight_quality", "weight_treatment", "weight_pressure", "weight_backoffice"] as const;
+const WEIGHT_KEYS = ["weight_quality", "weight_treatment", "weight_backoffice"] as const;
 
 export default function ScoreQualidadeConfig() {
   const { config, setConfig, saveConfig, resetToDefault } = useScoreConfig();
@@ -79,7 +77,19 @@ export default function ScoreQualidadeConfig() {
     setDirty(true);
   };
 
-  const weightSum = local.weight_quality + local.weight_treatment + local.weight_pressure + local.weight_backoffice;
+  const handleDownloadJson = () => {
+    const jsonStr = JSON.stringify(local, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "score-qualidade-config.json";
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("JSON da configuração baixado");
+  };
+
+  const weightSum = local.weight_quality + local.weight_treatment + local.weight_backoffice;
 
   // Live preview
   const breakdown = useMemo(() => computeFullBreakdown(null, "empresa", local), [local]);
@@ -97,22 +107,13 @@ export default function ScoreQualidadeConfig() {
     { label: "> 15 dias", pct: breakdown.treatData.pctOver15d, grade: local.grade_over_15d },
   ];
 
-  // Pressure distribution mock (based on entities)
-  const pressureFaixas = [
-    { label: "Até 1 aj/col", nota: local.grade_pressure_under_1 },
-    { label: "1 a 2 aj/col", nota: local.grade_pressure_1_2 },
-    { label: "2 a 4 aj/col", nota: local.grade_pressure_2_4 },
-    { label: "4 a 6 aj/col", nota: local.grade_pressure_4_6 },
-    { label: "> 6 aj/col", nota: local.grade_pressure_over_6 },
-  ];
-
-  const componentColors = ["#22c55e", "#3b82f6", "#f97316", "#8b5cf6"];
+  const componentColors = ["#22c55e", "#3b82f6", "#8b5cf6"];
 
   return (
     <div className="grid grid-cols-2 gap-6">
       {/* Left: Configuration */}
       <div className="space-y-6">
-        {/* Block 1: Weights (4 components) */}
+        {/* Block 1: Weights (3 components) */}
         <div className="bg-card border border-border/50 rounded-xl p-5 space-y-4">
           <h3 className="text-sm font-bold text-foreground">Peso dos Componentes</h3>
 
@@ -139,7 +140,7 @@ export default function ScoreQualidadeConfig() {
             ))}
 
             <p className={`text-[10px] ${weightSum === 100 ? "text-muted-foreground" : "text-red-500 font-semibold"}`}>
-              Os quatro pesos devem somar 100% · Atual: {weightSum}%
+              Os três pesos devem somar 100% · Atual: {weightSum}%
             </p>
           </div>
         </div>
@@ -173,36 +174,7 @@ export default function ScoreQualidadeConfig() {
           </div>
         </div>
 
-        {/* Block 3: Pressure grades */}
-        <div className="bg-card border border-border/50 rounded-xl p-5 space-y-4">
-          <div>
-            <h3 className="text-sm font-bold text-foreground">Notas por Faixa de Pressão</h3>
-            <p className="text-[10px] text-muted-foreground mt-0.5">Quanto menos ajustes por colaborador, melhor a nota. Métrica: ajustes por colaborador por mês</p>
-          </div>
-
-          <div className="space-y-3">
-            {([
-              { label: "Até 1 ajuste/colab", key: "grade_pressure_under_1" as const },
-              { label: "1 a 2 ajustes/colab", key: "grade_pressure_1_2" as const },
-              { label: "2 a 4 ajustes/colab", key: "grade_pressure_2_4" as const },
-              { label: "4 a 6 ajustes/colab", key: "grade_pressure_4_6" as const },
-              { label: "Mais de 6/colab", key: "grade_pressure_over_6" as const },
-            ]).map(({ label, key }) => (
-              <div key={key} className="flex items-center gap-3">
-                <span className="text-xs text-foreground w-32 shrink-0">{label}</span>
-                <Input
-                  type="number" min={0} max={100}
-                  value={local[key]}
-                  onChange={(e) => update({ [key]: Math.min(100, Math.max(0, parseInt(e.target.value) || 0)) })}
-                  className="w-16 h-8 text-xs text-center"
-                />
-                <div className="flex-1"><GradeBar value={local[key]} /></div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Block 4: Back-office Health */}
+        {/* Block 3: Back-office Health */}
         <div className="bg-card border border-border/50 rounded-xl p-5 space-y-4">
           <div>
             <h3 className="text-sm font-bold text-foreground">Saúde do Back-office</h3>
@@ -253,7 +225,7 @@ export default function ScoreQualidadeConfig() {
           </div>
         </div>
 
-        {/* Block 5: Thresholds */}
+        {/* Block 4: Thresholds */}
         <div className="bg-card border border-border/50 rounded-xl p-5 space-y-4">
           <div>
             <h3 className="text-sm font-bold text-foreground">Faixas de Classificação do Score</h3>
@@ -280,6 +252,9 @@ export default function ScoreQualidadeConfig() {
           </Button>
           <Button size="sm" className="gap-1.5" onClick={handleSave} disabled={!dirty || weightSum !== 100}>
             <Save className="w-3.5 h-3.5" /> Salvar configuração
+          </Button>
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={handleDownloadJson}>
+            <Download className="w-3.5 h-3.5" /> Baixar JSON
           </Button>
         </div>
       </div>
@@ -315,7 +290,7 @@ export default function ScoreQualidadeConfig() {
             <span className={`text-xs font-bold ${classification.text}`}>{classification.label}</span>
           </div>
 
-          {/* 4 Component breakdown */}
+          {/* 3 Component breakdown */}
           <div className="space-y-3 border-t border-border/30 pt-4">
             {/* Quality */}
             <ComponentRow 
@@ -335,22 +310,13 @@ export default function ScoreQualidadeConfig() {
               color={componentColors[1]}
               context="Baseado na distribuição abaixo"
             />
-            {/* Pressure */}
-            <ComponentRow 
-              name="Pressão do Sistema" 
-              score={breakdown.pressureScore} 
-              weight={local.weight_pressure} 
-              contrib={breakdown.pressureContrib} 
-              color={componentColors[2]}
-              context={`${breakdown.pressureData.ajustesPerColab} ajustes/colab/mês`}
-            />
             {/* Back-office */}
             <ComponentRow 
               name="Saúde do Back-office" 
               score={breakdown.boScore} 
               weight={local.weight_backoffice} 
               contrib={breakdown.boContrib} 
-              color={componentColors[3]}
+              color={componentColors[2]}
               context={`Ajustes: ${breakdown.boData.notaAjustes} pts · HE: ${breakdown.boData.notaHE} pts · Média 3m`}
             />
 
@@ -389,28 +355,17 @@ export default function ScoreQualidadeConfig() {
             </table>
           </div>
 
-          {/* Pressure breakdown table */}
+          {/* JSON config block */}
           <div className="border-t border-border/30 pt-4">
-            <h4 className="text-xs font-semibold text-foreground mb-2">Referência da Pressão</h4>
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-border/30">
-                  <th className="text-left py-1 text-muted-foreground font-medium">Faixa</th>
-                  <th className="text-right py-1 text-muted-foreground font-medium">Nota</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pressureFaixas.map((f) => (
-                  <tr key={f.label} className="border-b border-border/20">
-                    <td className="py-1.5 text-foreground">{f.label}</td>
-                    <td className="py-1.5 text-right font-medium text-foreground">{f.nota}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p className="text-[10px] text-muted-foreground mt-1.5">
-              Valor atual: <span className="font-semibold text-foreground">{breakdown.pressureData.ajustesPerColab} aj/colab/mês</span> → Nota: <span className="font-semibold text-foreground">{breakdown.pressureScore}</span>
-            </p>
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-xs font-semibold text-foreground">Configuração atual (JSON)</h4>
+              <button onClick={handleDownloadJson} className="text-[10px] text-[#FF5722] hover:underline flex items-center gap-1">
+                <Download className="w-3 h-3" /> Baixar
+              </button>
+            </div>
+            <pre className="bg-muted/40 border border-border/30 rounded-lg p-3 text-[10px] font-mono text-foreground/80 max-h-48 overflow-auto">
+              {JSON.stringify(local, null, 2)}
+            </pre>
           </div>
         </div>
       </div>
