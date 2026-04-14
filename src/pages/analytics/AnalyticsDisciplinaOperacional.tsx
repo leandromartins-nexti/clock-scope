@@ -1705,7 +1705,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                     <p className="text-[10px] text-muted-foreground mb-1">Carga de ajustes e HE por operador. Linha tracejada azul = HE total do time.</p>
                   </div>
-                </div>
+                  <button onClick={() => setChartDataModal("sobrecarga")} className="text-muted-foreground hover:text-foreground transition-colors" title="Ver dados do gráfico">
+                    <Database className="w-4 h-4" />
+                  </button>
                 <ResponsiveContainer width="100%" height={280}>
                   <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
