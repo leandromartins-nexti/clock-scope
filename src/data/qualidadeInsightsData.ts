@@ -7,6 +7,7 @@ export interface QualidadeInsight {
   evidence: { before: { label: string; value: string }; after: { label: string; value: string } } | null;
   action: string;
   actionFilter?: Record<string, string | number>;
+  crossRef?: { targetId: string; label: string };
 }
 
 export const qualidadeInsights: QualidadeInsight[] = [
@@ -20,6 +21,7 @@ export const qualidadeInsights: QualidadeInsight[] = [
     evidence: { before: { label: "Score atual", value: "48" }, after: { label: "Score mínimo aceitável", value: "70" } },
     action: "Revisar processos operacionais da empresa e supervisão local",
     actionFilter: { empresa: "TERCEIRIZACAO DE SERVICOS LTDA" },
+    crossRef: { targetId: "qi_o4", label: "Ver ação recomendada em Oportunidades" },
   },
   {
     id: "qi_r2",
@@ -55,7 +57,7 @@ export const qualidadeInsights: QualidadeInsight[] = [
     severity: "success",
     title: "Qualidade absorveu 4x o volume sem colapso",
     narrative: "Mesmo com o volume de ajustes explodindo 4x em set/25 (1.670 → 7.889), a qualidade do ponto caiu apenas 10pp no pior momento e já voltou ao patamar anterior de 76.5%. Poucas operações da mesma escala conseguiriam absorver esse impacto mantendo padrão.",
-    evidence: null,
+    evidence: { before: { label: "Volume set/25", value: "7.889 ajustes" }, after: { label: "Volume baseline", value: "1.670 ajustes" } },
     action: "Reconhecer esforço do time e documentar o processo de absorção como case interno",
   },
   {
@@ -73,7 +75,7 @@ export const qualidadeInsights: QualidadeInsight[] = [
     severity: "success",
     title: "Empresa SEGURANCA PATRIMONIAL LTDA opera com score 79 (Bom)",
     narrative: "A empresa SEGURANCA PATRIMONIAL LTDA mantém qualidade acima de 82% com equipe enxuta, tempo de tratativa de 4 dias e baixa variação sazonal. É o melhor exemplo interno de operação estável e pode servir de modelo para as demais empresas do grupo.",
-    evidence: null,
+    evidence: { before: { label: "Score", value: "79 (Bom)" }, after: { label: "Score médio do grupo", value: "65" } },
     action: "Mapear práticas da SEGURANCA PATRIMONIAL LTDA e replicar em outras unidades",
     actionFilter: { empresa: "SEGURANCA PATRIMONIAL LTDA" },
   },
@@ -93,7 +95,7 @@ export const qualidadeInsights: QualidadeInsight[] = [
     severity: "medium",
     title: "Aplicar SLA da SEGURANCA PATRIMONIAL na PORTARIA libera ~1.200 ajustes/mês mais rápido",
     narrative: "A empresa SEGURANCA PATRIMONIAL LTDA opera com tempo de tratativa de 4 dias, enquanto a empresa PORTARIA E LIMPEZA LTDA opera em 6 dias. Aplicar o mesmo processo operacional na PORTARIA permitiria resolver aproximadamente 1.200 ajustes/mês mais rápido, melhorando velocidade percebida pelos colaboradores.",
-    evidence: null,
+    evidence: { before: { label: "Tempo SEGURANCA", value: "4 dias" }, after: { label: "Tempo PORTARIA", value: "6 dias" } },
     action: "Mapear processo da SEGURANCA PATRIMONIAL LTDA e replicar na PORTARIA E LIMPEZA LTDA",
   },
   {
@@ -111,9 +113,10 @@ export const qualidadeInsights: QualidadeInsight[] = [
     severity: "high",
     title: "Problema da TERCEIRIZACAO DE SERVICOS LTDA é gerencial, não de carga",
     narrative: "Diferente das outras operações, a empresa TERCEIRIZACAO DE SERVICOS LTDA tem volume baixo mas qualidade crônica ruim. Não é um pico sazonal a ser resolvido com mais recurso, é um problema contínuo que exige intervenção de supervisão local, revisão de processo e possível capacitação da equipe operacional.",
-    evidence: null,
+    evidence: { before: { label: "Qualidade crônica", value: "50%" }, after: { label: "Qualidade esperada", value: "70%" } },
     action: "Iniciar auditoria operacional da empresa TERCEIRIZACAO DE SERVICOS LTDA",
     actionFilter: { empresa: "TERCEIRIZACAO DE SERVICOS LTDA" },
+    crossRef: { targetId: "qi_r1", label: "Contexto do risco em Riscos" },
   },
   // ── Eventos e Tendências ──
   {
@@ -121,7 +124,7 @@ export const qualidadeInsights: QualidadeInsight[] = [
     category: "event",
     severity: "info",
     title: "Contrato novo na unidade de negócio PORTARIA E LIMPEZA dobrou a operação",
-    narrative: "Em setembro de 2025, a unidade de negócio PORTARIA E LIMPEZA absorveu entrada de novo contrato com +193 colaboradores, gerando pico de 7.350 ajustes em 1 mês (baseline anterior ~630). Foi o maior evento operacional do período. Time absorveu o impacto com 878h acumuladas de horas extras e ajuste de processo.",
+    narrative: "Em setembro de 2025, a unidade de negócio PORTARIA E LIMPEZA absorveu entrada de novo contrato com +193 colaboradores, gerando pico de 7.553 ajustes em 1 mês (baseline anterior ~630). Foi o maior evento operacional do período. Time absorveu o impacto com 878h acumuladas de horas extras e ajuste de processo.",
     evidence: { before: { label: "Baseline ago/25", value: "628 ajustes" }, after: { label: "Pico set/25", value: "7.553 ajustes" } },
     action: "Documentar processo de onboarding de contrato grande pra próximas ocorrências",
   },
@@ -131,7 +134,7 @@ export const qualidadeInsights: QualidadeInsight[] = [
     severity: "info",
     title: "Backlog foi absorvido em 4 meses com queda mensal estável",
     narrative: "Após o pico de set/25, o volume de ajustes caiu em ritmo consistente: -14% em out, -35% em nov, -33% em dez, -40% em jan. A operação estabilizou no novo baseline em fev/26. Indicador saudável de capacidade de recuperação da equipe de back-office.",
-    evidence: null,
+    evidence: { before: { label: "Pico set/25", value: "7.553 ajustes" }, after: { label: "Estabilização fev/26", value: "1.938 ajustes" } },
     action: "Usar curva como benchmark para próximos picos operacionais",
   },
 ];
