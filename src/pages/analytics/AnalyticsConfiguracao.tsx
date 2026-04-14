@@ -89,23 +89,39 @@ function ChartRow({ chart }: { chart: ChartEntry }) {
       <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group cursor-pointer" onClick={() => setModalOpen(true)}>
         <Table2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium text-foreground truncate">{chart.chartName}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-xs font-medium text-foreground truncate">{chart.chartName}</p>
+            {chart.derived && (
+              <span className="shrink-0 text-[9px] font-medium bg-blue-50 text-blue-600 border border-blue-200 px-1.5 py-0.5 rounded">derivado</span>
+            )}
+          </div>
           <p className="text-[10px] text-muted-foreground truncate">
-            {totalRecords} registros · 3 agrupamentos (Empresa, Unidade, Área)
+            {chart.derived ? `2 fontes · ${totalRecords} registros` : `${totalRecords} registros · 3 agrupamentos (Empresa, Unidade, Área)`}
           </p>
         </div>
         <button className="h-7 px-2.5 text-xs rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-background transition-all opacity-0 group-hover:opacity-100 flex items-center gap-1.5">
           <Eye className="w-3.5 h-3.5" /> Ver dados
         </button>
       </div>
-      <ChartDataModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={chart.chartName}
-        columns={chart.columns}
-        source={chart.source}
-        activeGroupBy="empresa"
-      />
+      {chart.derived && chart.derivedSources ? (
+        <CompositeChartDataModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          title={chart.chartName}
+          subtitle="Gráfico derivado · consolida dados de 2 fontes"
+          sections={chart.derivedSources}
+          activeGroupBy="empresa"
+        />
+      ) : (
+        <ChartDataModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          title={chart.chartName}
+          columns={chart.columns}
+          source={chart.source}
+          activeGroupBy="empresa"
+        />
+      )}
     </>
   );
 }
