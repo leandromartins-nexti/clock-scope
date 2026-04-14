@@ -1132,12 +1132,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             <Popover>
               <PopoverTrigger asChild>
                 <button className="flex flex-col items-center gap-0 cursor-pointer" title="Ver decomposição do score">
-                  <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} color={scoreClassif.color} />
+                  <ScoreGauge score={compositeScore} label={`${compositeScore}`} faixa={scoreFaixa} color={scoreClassif.color} />
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-80 p-0" side="bottom" align="start">
                 <div className="p-3 border-b border-border/50">
-                  <p className="text-sm font-semibold">Como o Score {activeData.score} foi calculado</p>
+                  <p className="text-sm font-semibold">Como o Score {compositeScore} foi calculado</p>
                 </div>
                 <div className="p-3 space-y-3">
                   {qpDecomposicaoScore.componentes.map((comp) => {
@@ -1162,9 +1162,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   })}
                   <div className="border-t border-border/50 pt-2 flex items-center justify-between">
                     <span className="text-xs font-semibold">Score composto</span>
-                    <span className="text-sm font-bold" style={{ color: scoreClassif.color }}>
-                      {activeData.score} ({scoreFaixa})
-                    </span>
+                     <span className="text-sm font-bold" style={{ color: scoreClassif.color }}>
+                       {compositeScore} ({scoreFaixa})
+                     </span>
                   </div>
                 </div>
               </PopoverContent>
