@@ -6,7 +6,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 523,
     "operadores_ativos": 2,
-    "ajustes_por_operador": 262
+    "ajustes_por_operador": 262,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -15,7 +16,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 494,
     "operadores_ativos": 3,
-    "ajustes_por_operador": 165
+    "ajustes_por_operador": 165,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -24,7 +26,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 421,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 105
+    "ajustes_por_operador": 105,
+    "horas_extras_rateadas": 2.7
   },
   {
     "customer_id": 642,
@@ -33,7 +36,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 388,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 97
+    "ajustes_por_operador": 97,
+    "horas_extras_rateadas": 6.0
   },
   {
     "customer_id": 642,
@@ -42,7 +46,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 381,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 95
+    "ajustes_por_operador": 95,
+    "horas_extras_rateadas": 18.6
   },
   {
     "customer_id": 642,
@@ -51,7 +56,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 316,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 79
+    "ajustes_por_operador": 79,
+    "horas_extras_rateadas": 12.6
   },
   {
     "customer_id": 642,
@@ -60,7 +66,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 404,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 101
+    "ajustes_por_operador": 101,
+    "horas_extras_rateadas": 15.6
   },
   {
     "customer_id": 642,
@@ -69,7 +76,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 483,
     "operadores_ativos": 5,
-    "ajustes_por_operador": 97
+    "ajustes_por_operador": 97,
+    "horas_extras_rateadas": 37.1
   },
   {
     "customer_id": 642,
@@ -78,7 +86,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 652,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 163
+    "ajustes_por_operador": 163,
+    "horas_extras_rateadas": 0.1
   },
   {
     "customer_id": 642,
@@ -87,7 +96,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 651,
     "operadores_ativos": 1,
-    "ajustes_por_operador": 651
+    "ajustes_por_operador": 651,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -96,7 +106,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 457,
     "operadores_ativos": 3,
-    "ajustes_por_operador": 152
+    "ajustes_por_operador": 152,
+    "horas_extras_rateadas": 0.1
   },
   {
     "customer_id": 642,
@@ -105,7 +116,8 @@
     "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
     "qtd_ajustes": 240,
     "operadores_ativos": 2,
-    "ajustes_por_operador": 120
+    "ajustes_por_operador": 120,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -114,7 +126,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 654,
     "operadores_ativos": 5,
-    "ajustes_por_operador": 131
+    "ajustes_por_operador": 131,
+    "horas_extras_rateadas": 34.8
   },
   {
     "customer_id": 642,
@@ -123,7 +136,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 729,
     "operadores_ativos": 5,
-    "ajustes_por_operador": 146
+    "ajustes_por_operador": 146,
+    "horas_extras_rateadas": 41.3
   },
   {
     "customer_id": 642,
@@ -132,7 +146,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 822,
     "operadores_ativos": 6,
-    "ajustes_por_operador": 137
+    "ajustes_por_operador": 137,
+    "horas_extras_rateadas": 1.0
   },
   {
     "customer_id": 642,
@@ -141,7 +156,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 751,
     "operadores_ativos": 7,
-    "ajustes_por_operador": 107
+    "ajustes_por_operador": 107,
+    "horas_extras_rateadas": 8.1
   },
   {
     "customer_id": 642,
@@ -150,7 +166,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 628,
     "operadores_ativos": 9,
-    "ajustes_por_operador": 70
+    "ajustes_por_operador": 70,
+    "horas_extras_rateadas": 39.9
   },
   {
     "customer_id": 642,
@@ -159,7 +176,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 7553,
     "operadores_ativos": 8,
-    "ajustes_por_operador": 944
+    "ajustes_por_operador": 944,
+    "horas_extras_rateadas": 141.6
   },
   {
     "customer_id": 642,
@@ -168,7 +186,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 6281,
     "operadores_ativos": 8,
-    "ajustes_por_operador": 785
+    "ajustes_por_operador": 785,
+    "horas_extras_rateadas": 177.1
   },
   {
     "customer_id": 642,
@@ -177,7 +196,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 4043,
     "operadores_ativos": 8,
-    "ajustes_por_operador": 505
+    "ajustes_por_operador": 505,
+    "horas_extras_rateadas": 199.8
   },
   {
     "customer_id": 642,
@@ -186,7 +206,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 2383,
     "operadores_ativos": 8,
-    "ajustes_por_operador": 298
+    "ajustes_por_operador": 298,
+    "horas_extras_rateadas": 87.9
   },
   {
     "customer_id": 642,
@@ -195,7 +216,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 1793,
     "operadores_ativos": 8,
-    "ajustes_por_operador": 224
+    "ajustes_por_operador": 224,
+    "horas_extras_rateadas": 143.3
   },
   {
     "customer_id": 642,
@@ -204,7 +226,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 1938,
     "operadores_ativos": 8,
-    "ajustes_por_operador": 242
+    "ajustes_por_operador": 242,
+    "horas_extras_rateadas": 136.5
   },
   {
     "customer_id": 642,
@@ -213,7 +236,8 @@
     "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
     "qtd_ajustes": 1846,
     "operadores_ativos": 8,
-    "ajustes_por_operador": 231
+    "ajustes_por_operador": 231,
+    "horas_extras_rateadas": 68.5
   },
   {
     "customer_id": 642,
@@ -222,7 +246,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 65,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 16
+    "ajustes_por_operador": 16,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -231,7 +256,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 71,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 18
+    "ajustes_por_operador": 18,
+    "horas_extras_rateadas": 0.5
   },
   {
     "customer_id": 642,
@@ -240,7 +266,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 27,
     "operadores_ativos": 3,
-    "ajustes_por_operador": 9
+    "ajustes_por_operador": 9,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -249,7 +276,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 46,
     "operadores_ativos": 5,
-    "ajustes_por_operador": 9
+    "ajustes_por_operador": 9,
+    "horas_extras_rateadas": 0.1
   },
   {
     "customer_id": 642,
@@ -258,7 +286,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 50,
     "operadores_ativos": 5,
-    "ajustes_por_operador": 10
+    "ajustes_por_operador": 10,
+    "horas_extras_rateadas": 0.1
   },
   {
     "customer_id": 642,
@@ -267,7 +296,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 20,
     "operadores_ativos": 4,
-    "ajustes_por_operador": 5
+    "ajustes_por_operador": 5,
+    "horas_extras_rateadas": 0.2
   },
   {
     "customer_id": 642,
@@ -276,7 +306,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 68,
     "operadores_ativos": 3,
-    "ajustes_por_operador": 23
+    "ajustes_por_operador": 23,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -285,7 +316,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 52,
     "operadores_ativos": 3,
-    "ajustes_por_operador": 17
+    "ajustes_por_operador": 17,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -294,7 +326,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 51,
     "operadores_ativos": 3,
-    "ajustes_por_operador": 17
+    "ajustes_por_operador": 17,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -303,7 +336,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 36,
     "operadores_ativos": 2,
-    "ajustes_por_operador": 18
+    "ajustes_por_operador": 18,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -312,7 +346,8 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 51,
     "operadores_ativos": 2,
-    "ajustes_por_operador": 26
+    "ajustes_por_operador": 26,
+    "horas_extras_rateadas": 0.0
   },
   {
     "customer_id": 642,
@@ -321,6 +356,7 @@
     "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
     "qtd_ajustes": 56,
     "operadores_ativos": 2,
-    "ajustes_por_operador": 28
+    "ajustes_por_operador": 28,
+    "horas_extras_rateadas": 0.0
   }
 ]
