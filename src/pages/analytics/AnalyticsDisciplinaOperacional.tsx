@@ -989,7 +989,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const riscoClassif = getScoreClassification(activeData.maiorRisco.score, scoreConfig);
 
   return (
-    <>
     <div className="flex">
       {/* Left: KPI cards + charts */}
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
@@ -1715,16 +1714,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             );
           })()}
         </div>
+
+        {/* Insights da Qualidade do Ponto */}
+        <QualidadeInsightsSection />
       </div>
 
       <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
     </div>
-
-    {/* Insights da Qualidade do Ponto */}
-    <div className="px-6">
-      <QualidadeInsightsSection />
-    </div>
-  </>
   );
 }
 
