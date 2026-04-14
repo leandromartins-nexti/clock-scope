@@ -143,7 +143,17 @@ export type Database = {
           grade_1_3d: number
           grade_3_7d: number
           grade_7_15d: number
+          grade_bo_1000_1400: number
+          grade_bo_400_700: number
+          grade_bo_700_1000: number
+          grade_bo_over_1400: number
+          grade_bo_under_400: number
           grade_over_15d: number
+          grade_pressure_1_2: number
+          grade_pressure_2_4: number
+          grade_pressure_4_6: number
+          grade_pressure_over_6: number
+          grade_pressure_under_1: number
           grade_under_1d: number
           id: string
           threshold_excellent: number
@@ -151,6 +161,8 @@ export type Database = {
           threshold_poor: number
           threshold_warning: number
           updated_at: string
+          weight_backoffice: number
+          weight_pressure: number
           weight_quality: number
           weight_treatment: number
         }
@@ -160,7 +172,17 @@ export type Database = {
           grade_1_3d?: number
           grade_3_7d?: number
           grade_7_15d?: number
+          grade_bo_1000_1400?: number
+          grade_bo_400_700?: number
+          grade_bo_700_1000?: number
+          grade_bo_over_1400?: number
+          grade_bo_under_400?: number
           grade_over_15d?: number
+          grade_pressure_1_2?: number
+          grade_pressure_2_4?: number
+          grade_pressure_4_6?: number
+          grade_pressure_over_6?: number
+          grade_pressure_under_1?: number
           grade_under_1d?: number
           id?: string
           threshold_excellent?: number
@@ -168,6 +190,8 @@ export type Database = {
           threshold_poor?: number
           threshold_warning?: number
           updated_at?: string
+          weight_backoffice?: number
+          weight_pressure?: number
           weight_quality?: number
           weight_treatment?: number
         }
@@ -177,7 +201,17 @@ export type Database = {
           grade_1_3d?: number
           grade_3_7d?: number
           grade_7_15d?: number
+          grade_bo_1000_1400?: number
+          grade_bo_400_700?: number
+          grade_bo_700_1000?: number
+          grade_bo_over_1400?: number
+          grade_bo_under_400?: number
           grade_over_15d?: number
+          grade_pressure_1_2?: number
+          grade_pressure_2_4?: number
+          grade_pressure_4_6?: number
+          grade_pressure_over_6?: number
+          grade_pressure_under_1?: number
           grade_under_1d?: number
           id?: string
           threshold_excellent?: number
@@ -185,6 +219,8 @@ export type Database = {
           threshold_poor?: number
           threshold_warning?: number
           updated_at?: string
+          weight_backoffice?: number
+          weight_pressure?: number
           weight_quality?: number
           weight_treatment?: number
         }
