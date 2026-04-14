@@ -15,6 +15,9 @@ import {
 import esforcoEmpresa from "@/data/qualidade-ponto/esforco-tratativa-por-empresa.json";
 import esforcoUnNegocio from "@/data/qualidade-ponto/esforco-tratativa-por-un-negocio.json";
 import esforcoArea from "@/data/qualidade-ponto/esforco-tratativa-por-area.json";
+import hcEmpresaJson from "@/data/qualidade-ponto/headcount-por-empresa.json";
+import hcUnNegocioJson from "@/data/qualidade-ponto/headcount-por-un-negocio.json";
+import hcAreaJson from "@/data/qualidade-ponto/headcount-por-area.json";
 import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary, getSidebarItems } from "@/lib/ajustesData";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 import { useAbsenteismoScoreConfig, computeAbsCompositeScore, getAbsScoreClassification } from "@/contexts/AbsenteismoScoreConfigContext";
@@ -872,12 +875,40 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
 
-  // Headcount por mês (mesma base do Turnover)
-  const headcountMap: Record<string, number> = {
-    "abr/25": 250, "mai/25": 257, "jun/25": 251, "jul/25": 254, "ago/25": 255,
-    "set/25": 446, "out/25": 447, "nov/25": 437, "dez/25": 440, "jan/26": 441,
-    "fev/26": 450, "mar/26": 449,
+  // Headcount por mês – filtrado por entidade selecionada
+  const MONTH_LABEL_MAP: Record<string, string> = {
+    "2025-04": "abr/25", "2025-05": "mai/25", "2025-06": "jun/25",
+    "2025-07": "jul/25", "2025-08": "ago/25", "2025-09": "set/25",
+    "2025-10": "out/25", "2025-11": "nov/25", "2025-12": "dez/25",
+    "2026-01": "jan/26", "2026-02": "fev/26", "2026-03": "mar/26",
   };
+  const normHcName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
+  const headcountMap = useMemo<Record<string, number>>(() => {
+    const hcSources: Record<string, any[]> = {
+      empresa: hcEmpresaJson,
+      unidade: hcUnNegocioJson,
+      area: hcAreaJson,
+    };
+    const raw = hcSources[groupBy] ?? hcEmpresaJson;
+    const nameField = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
+    const idField = groupBy === "empresa" ? "company_id" : groupBy === "unidade" ? "business_unit_id" : "area_id";
+
+    let filtered = raw;
+    if (selectedRegional) {
+      const selNorm = normHcName(selectedRegional);
+      filtered = raw.filter((r: any) =>
+        String(r[idField]) === selectedRegional || normHcName(r[nameField] ?? "") === selNorm
+      );
+    }
+
+    // Aggregate by month
+    const byMonth: Record<string, number> = {};
+    filtered.forEach((r: any) => {
+      const label = MONTH_LABEL_MAP[r.competencia] || r.competencia;
+      byMonth[label] = (byMonth[label] || 0) + r.headcount;
+    });
+    return byMonth;
+  }, [groupBy, selectedRegional]);
 
   const mesLabelToReferenceMonth = useMemo(() => new Map(ajustesMeses.map((month) => [formatMesLabel(month), month])), []);
   const selectedReferenceMonth = useMemo(
@@ -903,7 +934,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   );
   const qualidadeComHeadcount = useMemo(
     () => qualidadeDetalhado.map(d => ({ ...d, headcount: headcountMap[d.mes] ?? 0 })),
-    [qualidadeDetalhado]
+    [qualidadeDetalhado, headcountMap]
   );
   const maxHeadcount = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.headcount), 1), [qualidadeComHeadcount]);
   const maxBarTotal = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.registradas + d.justificadas), 1), [qualidadeComHeadcount]);

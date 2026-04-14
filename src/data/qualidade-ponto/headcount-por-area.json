@@ -1,0 +1,218 @@
+[
+  {
+    "competencia": "2025-04",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 181
+  },
+  {
+    "competencia": "2025-05",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 186
+  },
+  {
+    "competencia": "2025-06",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 182
+  },
+  {
+    "competencia": "2025-07",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 184
+  },
+  {
+    "competencia": "2025-08",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 184
+  },
+  {
+    "competencia": "2025-09",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 323
+  },
+  {
+    "competencia": "2025-10",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 324
+  },
+  {
+    "competencia": "2025-11",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 317
+  },
+  {
+    "competencia": "2025-12",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 319
+  },
+  {
+    "competencia": "2026-01",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 319
+  },
+  {
+    "competencia": "2026-02",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 325
+  },
+  {
+    "competencia": "2026-03",
+    "area_id": 1,
+    "area_name": "SOROCABA",
+    "headcount": 325
+  },
+  {
+    "competencia": "2025-04",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 55
+  },
+  {
+    "competencia": "2025-05",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 56
+  },
+  {
+    "competencia": "2025-06",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 55
+  },
+  {
+    "competencia": "2025-07",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 56
+  },
+  {
+    "competencia": "2025-08",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 56
+  },
+  {
+    "competencia": "2025-09",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 98
+  },
+  {
+    "competencia": "2025-10",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 100
+  },
+  {
+    "competencia": "2025-11",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 97
+  },
+  {
+    "competencia": "2025-12",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 98
+  },
+  {
+    "competencia": "2026-01",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 96
+  },
+  {
+    "competencia": "2026-02",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 98
+  },
+  {
+    "competencia": "2026-03",
+    "area_id": 2,
+    "area_name": "SAO PAULO",
+    "headcount": 98
+  },
+  {
+    "competencia": "2025-04",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 14
+  },
+  {
+    "competencia": "2025-05",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 15
+  },
+  {
+    "competencia": "2025-06",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 14
+  },
+  {
+    "competencia": "2025-07",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 14
+  },
+  {
+    "competencia": "2025-08",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 14
+  },
+  {
+    "competencia": "2025-09",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 25
+  },
+  {
+    "competencia": "2025-10",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 27
+  },
+  {
+    "competencia": "2025-11",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 26
+  },
+  {
+    "competencia": "2025-12",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 26
+  },
+  {
+    "competencia": "2026-01",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 25
+  },
+  {
+    "competencia": "2026-02",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 25
+  },
+  {
+    "competencia": "2026-03",
+    "area_id": 3,
+    "area_name": "PIRACICABA",
+    "headcount": 25
+  }
+]
