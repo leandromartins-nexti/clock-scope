@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Search, ArrowUpDown, PanelRightClose, PanelRightOpen, Building2, Network, LayoutGrid } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 
 // ── Types ──
 export type GroupBy = "unidade" | "empresa" | "area";
