@@ -1249,6 +1249,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <h4 className="text-sm font-semibold">Evolução da Qualidade e Headcount</h4>
                 <p className="text-[10px] text-muted-foreground mb-2">Registradas vs Justificadas (barras) · Headcount Ativo (área) · clique para filtrar</p>
               </div>
+              <button onClick={() => setChartDataModal("evoQualidade")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <ResponsiveContainer width="100%" height={280}>
               <ComposedChart data={qualidadeComHeadcount} onClick={(e: any) => {
