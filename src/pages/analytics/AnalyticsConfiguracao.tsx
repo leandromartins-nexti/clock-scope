@@ -71,6 +71,12 @@ const dataRegistry: MenuEntry[] = [
               { label: "Fonte: Evolução do Tempo de Tratativa", source: evolucaoTempoTratativaSource, columns: evolucaoTempoTratativaColumns },
             ],
           },
+          {
+            id: "sobrecarga-backoffice",
+            chartName: "Sobrecarga do Back-office",
+            columns: sobrecargaBackofficeColumns,
+            source: sobrecargaBackofficeSource,
+          },
         ],
       },
     ],
