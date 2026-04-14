@@ -122,6 +122,15 @@ function drawTable(doc: jsPDF, headers: string[], rows: string[][], y: number, o
   return y + 4;
 }
 
+function truncateText(doc: jsPDF, text: string, maxWidth: number): string {
+  if (doc.getTextWidth(text) <= maxWidth) return text;
+  let truncated = text;
+  while (truncated.length > 0 && doc.getTextWidth(truncated + "…") > maxWidth) {
+    truncated = truncated.slice(0, -1);
+  }
+  return truncated + "…";
+}
+
 function drawKpiCards(doc: jsPDF, kpis: { label: string; value: string }[], y: number): number {
   const pageW = doc.internal.pageSize.getWidth();
   const count = kpis.length;
@@ -141,7 +150,9 @@ function drawKpiCards(doc: jsPDF, kpis: { label: string; value: string }[], y: n
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(33, 33, 33);
-    doc.text(kpi.value, x + 4, y + 17);
+    const maxValW = cardW - 8;
+    const displayVal = truncateText(doc, kpi.value, maxValW);
+    doc.text(displayVal, x + 4, y + 17);
   });
 
   return y + 28;
