@@ -400,10 +400,18 @@ function drawScatterChart(
     const bx = chartX + ((d.x - xMin) / xRange) * chartW;
     const by = chartY + chartH - ((d.y - yMin) / yRange) * chartH;
     const radius = Math.max(2, Math.min(5, Math.sqrt(d.size) * 0.4));
-    doc.setFillColor(...d.color);
-    doc.setGState(new doc.GState({ opacity: 0.7 }));
+    // Use slightly lighter color for transparency effect
+    const [cr, cg, cb] = d.color;
+    doc.setFillColor(
+      Math.min(255, cr + 60),
+      Math.min(255, cg + 60),
+      Math.min(255, cb + 60)
+    );
     doc.circle(bx, by, radius, "F");
-    doc.setGState(new doc.GState({ opacity: 1 }));
+    // Border
+    doc.setDrawColor(...d.color);
+    doc.setLineWidth(0.4);
+    doc.circle(bx, by, radius, "S");
 
     // Label
     doc.setFontSize(5);
