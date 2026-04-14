@@ -1544,9 +1544,20 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const d = payload[0].payload;
                   const tempoClass = d.tempoMedioDias <= 3 ? "Rápido" : d.tempoMedioDias <= 7 ? "Moderado" : "Lento";
                   const tempoColor = d.tempoMedioDias <= 3 ? "text-green-600" : d.tempoMedioDias <= 7 ? "text-amber-600" : "text-red-600";
-                  const isHighVol = d.volume >= medianVolume;
-                  const isHighQual = d.qualidade >= 70;
-                  const quadrante = isHighVol && isHighQual ? "Escala excelente" : !isHighVol && isHighQual ? "Pequena excelente" : isHighVol && !isHighQual ? "Alto risco" : "Requer atenção";
+                   const isHighVol = d.volume >= medianVolume;
+                   const isHighQual = d.qualidade >= 70;
+                   const isFast = d.tempoMedioDias <= 3;
+                   const isSlow = d.tempoMedioDias > 7;
+                   let quadrante: string;
+                   if (isHighQual && isHighVol) {
+                     quadrante = isFast ? "Escala excelente" : "Escala com atenção";
+                   } else if (isHighQual && !isHighVol) {
+                     quadrante = isFast ? "Pequena excelente" : "Pequena com atenção";
+                   } else if (!isHighQual && isHighVol) {
+                     quadrante = "Alto risco";
+                   } else {
+                     quadrante = "Requer atenção";
+                   }
                   return (
                     <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                       <p className="font-semibold text-sm">{d.regional}</p>
