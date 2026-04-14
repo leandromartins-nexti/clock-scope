@@ -1660,7 +1660,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                             <span className="font-medium text-foreground">{d.operadores}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "#8b5cf6" }} />
+                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "#3b82f6" }} />
                             <span className="text-muted-foreground">Horas extras do time:</span>
                             <span className="font-medium text-foreground">{d.he.toLocaleString("pt-BR")}h</span>
                           </div>
@@ -1700,7 +1700,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         );
                       }} />
                     </Bar>
-                    <Line yAxisId="right" type="monotone" dataKey="he" name="Horas extras" stroke="#8b5cf6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#8b5cf6" }} />
+                    <Line yAxisId="right" type="monotone" dataKey="he" name="Horas extras" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }} />
                   </ComposedChart>
                 </ResponsiveContainer>
                 {/* Legend */}
@@ -1708,7 +1708,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#22c55e", opacity: 0.75 }} /> Saudável (≤P50×1.5)</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#f59e0b", opacity: 0.75 }} /> Acima do baseline</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 inline-block" style={{ backgroundColor: "#ef4444", opacity: 0.75 }} /> Pico crítico (&gt;P90)</span>
-                  <span className="flex items-center gap-1"><span className="w-1.5 h-0 inline-block border-t-2 border-dashed" style={{ borderColor: "#8b5cf6", width: 12 }} /> HE do time</span>
+                  <span className="flex items-center gap-1"><span className="w-1.5 h-0 inline-block border-t-2 border-dashed" style={{ borderColor: "#3b82f6", width: 12 }} /> HE do time</span>
                 </div>
               </div>
             );
