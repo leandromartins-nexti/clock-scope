@@ -66,26 +66,122 @@ function getTempoCasaDataset(groupBy: GroupBy, selectedRegional: string | null) 
   return entry || tempoCasaData.consolidado;
 }
 
-// Chart 3: Decomposição do Turnover
-const decomposicaoData = [
-  { mes: "abr/25", voluntario: 5, involuntario: 2, fimContrato: 1 },
-  { mes: "mai/25", voluntario: 7, involuntario: 3, fimContrato: 0 },
-  { mes: "jun/25", voluntario: 6, involuntario: 2, fimContrato: 1 },
-  { mes: "jul/25", voluntario: 8, involuntario: 3, fimContrato: 1 },
-  { mes: "ago/25", voluntario: 5, involuntario: 4, fimContrato: 1 },
-  { mes: "set/25", voluntario: 4, involuntario: 3, fimContrato: 2 },
-  { mes: "out/25", voluntario: 9, involuntario: 5, fimContrato: 2 },
-  { mes: "nov/25", voluntario: 12, involuntario: 6, fimContrato: 3 },
-  { mes: "dez/25", voluntario: 14, involuntario: 7, fimContrato: 2 },
-  { mes: "jan/26", voluntario: 8, involuntario: 5, fimContrato: 3 },
-  { mes: "fev/26", voluntario: 11, involuntario: 6, fimContrato: 3 },
-  { mes: "mar/26", voluntario: 9, involuntario: 5, fimContrato: 4 },
-];
-const DECOMP_SERIES = [
-  { key: "voluntario", name: "Voluntário", color: "#22c55e", rgba: "34,197,94" },
-  { key: "involuntario", name: "Involuntário", color: "#ef4444", rgba: "239,68,68" },
-  { key: "fimContrato", name: "Fim de Contrato", color: "#eab308", rgba: "234,179,8" },
-];
+// Ranking Clientes data mapping
+interface RankingClienteRow {
+  customer_id: number;
+  client_id: number;
+  client_name: string;
+  headcount_atual: number;
+  saidas_periodo: number;
+  turnover_pct: number;
+  avg_tenure_days: number;
+  company_name?: string;
+  business_unit_name?: string;
+  area_name?: string;
+  company_id?: number;
+  business_unit_id?: number;
+  area_id?: number;
+}
+
+const RANKING_JSON_MAP: Record<GroupBy, RankingClienteRow[]> = {
+  empresa: rankingEmpresa as RankingClienteRow[],
+  unidade: rankingUnidade as RankingClienteRow[],
+  area: rankingArea as RankingClienteRow[],
+};
+
+function getGroupLabel(row: RankingClienteRow, groupBy: GroupBy): string {
+  if (groupBy === "empresa") {
+    const name = row.company_name || "";
+    if (name.includes("PORTARIA")) return "POR";
+    if (name.includes("SEGURANCA")) return "SEG";
+    if (name.includes("TERCEIRIZACAO")) return "TER";
+    return name.slice(0, 3).toUpperCase();
+  }
+  if (groupBy === "unidade") {
+    const name = row.business_unit_name || "";
+    if (name.includes("PORTARIA")) return "POR";
+    if (name.includes("SEGURANCA")) return "SEG";
+    if (name.includes("TERCEIRIZACAO")) return "TER";
+    return name.slice(0, 3).toUpperCase();
+  }
+  return (row.area_name || "S/Área").slice(0, 3).toUpperCase();
+}
+
+function getGroupId(row: RankingClienteRow, groupBy: GroupBy): string | number {
+  if (groupBy === "empresa") return row.company_id || 0;
+  if (groupBy === "unidade") return row.business_unit_id || 0;
+  return row.area_id || "null";
+}
+
+function getGroupName(row: RankingClienteRow, groupBy: GroupBy): string {
+  if (groupBy === "empresa") return row.company_name || "";
+  if (groupBy === "unidade") return row.business_unit_name || "";
+  return row.area_name || "Sem área";
+}
+
+function getRankingTop10(groupBy: GroupBy, selectedRegional: string | null): { data: RankingClienteRow[]; totalWithExits: number } {
+  const raw = RANKING_JSON_MAP[groupBy];
+
+  // Filter by selected regional if any
+  let filtered = raw;
+  if (selectedRegional) {
+    filtered = raw.filter(r => {
+      const name = getGroupName(r, groupBy);
+      return name.toUpperCase().includes(selectedRegional.toUpperCase());
+    });
+  }
+
+  // Aggregate by client_id
+  const byClient = new Map<number, { client_name: string; headcount_atual: number; saidas_periodo: number; avg_tenure_days_sum: number; avg_tenure_count: number; groups: Set<string> }>();
+  for (const r of filtered) {
+    const existing = byClient.get(r.client_id);
+    const label = getGroupLabel(r, groupBy);
+    if (existing) {
+      existing.headcount_atual += r.headcount_atual;
+      existing.saidas_periodo += r.saidas_periodo;
+      if (r.avg_tenure_days) { existing.avg_tenure_days_sum += r.avg_tenure_days * r.saidas_periodo; existing.avg_tenure_count += r.saidas_periodo; }
+      existing.groups.add(label);
+    } else {
+      byClient.set(r.client_id, {
+        client_name: r.client_name,
+        headcount_atual: r.headcount_atual,
+        saidas_periodo: r.saidas_periodo,
+        avg_tenure_days_sum: r.avg_tenure_days ? r.avg_tenure_days * r.saidas_periodo : 0,
+        avg_tenure_count: r.avg_tenure_days ? r.saidas_periodo : 0,
+        groups: new Set([label]),
+      });
+    }
+  }
+
+  const aggregated: (RankingClienteRow & { chipLabel: string })[] = [];
+  for (const [clientId, v] of byClient) {
+    const totalPeople = v.headcount_atual + v.saidas_periodo;
+    aggregated.push({
+      customer_id: 642,
+      client_id: clientId,
+      client_name: v.client_name,
+      headcount_atual: v.headcount_atual,
+      saidas_periodo: v.saidas_periodo,
+      turnover_pct: totalPeople > 0 ? Math.round(v.saidas_periodo * 1000 / totalPeople) / 10 : 0,
+      avg_tenure_days: v.avg_tenure_count > 0 ? Math.round(v.avg_tenure_days_sum / v.avg_tenure_count) : 0,
+      chipLabel: Array.from(v.groups).sort().join(" · "),
+    } as any);
+  }
+
+  // Exclude headcount_atual = 0 and saidas < 1
+  const valid = aggregated.filter(r => r.headcount_atual > 0 && r.saidas_periodo >= 1);
+  const totalWithExits = valid.length;
+
+  // Sort by saidas_periodo DESC, take top 10
+  valid.sort((a, b) => b.saidas_periodo - a.saidas_periodo);
+  return { data: valid.slice(0, 10), totalWithExits };
+}
+
+function getTurnoverBarColor(pct: number): string {
+  if (pct > 40) return "#ef4444";
+  if (pct >= 20) return "#eab308";
+  return "#22c55e";
+}
 
 // Chart 4: Movimentação Mensal (migrated from Absenteísmo)
 const movimentacaoData = [
