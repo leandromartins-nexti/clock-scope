@@ -34,14 +34,18 @@ export function KPIBoard({
   tooltip,
   value,
   valueColor = "text-foreground",
+  valueStyle,
   subtitle,
+  subtitleStyle,
   icon,
 }: {
   title: string;
   tooltip: string;
   value: string;
   valueColor?: string;
+  valueStyle?: React.CSSProperties;
   subtitle?: string;
+  subtitleStyle?: React.CSSProperties;
   icon?: ReactNode;
 }) {
   return (
@@ -53,9 +57,9 @@ export function KPIBoard({
         </p>
         <InfoTip text={tooltip} />
       </div>
-      <p className={`text-xl font-bold mt-0.5 truncate ${valueColor}`}>{value}</p>
+      <p className={`text-xl font-bold mt-0.5 truncate ${valueColor}`} style={valueStyle}>{value}</p>
       {subtitle && (
-        <p className="text-[11px] text-muted-foreground mt-1 truncate">{subtitle}</p>
+        <p className="text-[11px] text-muted-foreground mt-1 truncate" style={subtitleStyle}>{subtitle}</p>
       )}
     </div>
   );
