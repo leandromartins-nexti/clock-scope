@@ -1,0 +1,20 @@
+[
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 102,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 102
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 205,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 205
+  }
+]
