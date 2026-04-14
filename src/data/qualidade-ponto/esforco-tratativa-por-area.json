@@ -1,20 +1,236 @@
 [
   {
     "customer_id": 642,
+    "competencia": "2025-04",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 627,
+    "operadores_ativos": 2,
+    "ajustes_por_operador": 314
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 596,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 199
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 628,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 209
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 590,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 148
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 445,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 111
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 456,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 91
+  },
+  {
+    "customer_id": 642,
     "competencia": "2025-10",
     "area_id": 11043,
     "area_name": "SAO PAULO",
-    "qtd_ajustes": 102,
-    "operadores_ativos": 1,
-    "ajustes_por_operador": 102
+    "qtd_ajustes": 554,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 111
   },
   {
     "customer_id": 642,
     "competencia": "2025-11",
     "area_id": 11043,
     "area_name": "SAO PAULO",
-    "qtd_ajustes": 205,
+    "qtd_ajustes": 664,
+    "operadores_ativos": 7,
+    "ajustes_por_operador": 95
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 573,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 143
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 529,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 176
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 568,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 189
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "qtd_ajustes": 422,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 106
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-04",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 2,
     "operadores_ativos": 1,
-    "ajustes_por_operador": 205
+    "ajustes_por_operador": 2
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-05",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 5,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 5
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-06",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 10,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 10
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 9,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 9
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 5,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 5
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-09",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 252,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 50
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-10",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 305,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 76
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-11",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 200,
+    "operadores_ativos": 4,
+    "ajustes_por_operador": 50
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-12",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 51,
+    "operadores_ativos": 5,
+    "ajustes_por_operador": 10
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-01",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 38,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 13
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-02",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 21,
+    "operadores_ativos": 3,
+    "ajustes_por_operador": 7
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2026-03",
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "qtd_ajustes": 9,
+    "operadores_ativos": 2,
+    "ajustes_por_operador": 5
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-07",
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "qtd_ajustes": 1,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 1
+  },
+  {
+    "customer_id": 642,
+    "competencia": "2025-08",
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "qtd_ajustes": 1,
+    "operadores_ativos": 1,
+    "ajustes_por_operador": 1
   }
 ]
