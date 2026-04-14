@@ -190,12 +190,12 @@ export const mockInsights: Insight[] = [
     severity: "critical",
     tabOrigin: "Qualidade do Ponto · Esforço de Tratativa",
     timestamp: "há 1h",
-    title: "Back-office processou 9x o volume normal em set/25 sem aumentar a equipe",
+    title: "Back-office processou 14x o volume normal em set/25 sem aumentar a equipe",
     narrative:
-      "Em setembro de 2025, com a entrada do contrato POR (+193 colaboradores), o volume de ajustes saltou de 1.670 para 15.301 em um mês. A equipe de back-office se manteve em 8 operadores, resultando em 1.913 ajustes por pessoa (6x a carga normal de 300 ajustes). A operação levou 4 meses para normalizar o backlog e hoje opera com baseline 2x maior que o anterior, ainda com o mesmo time.",
+      "Em setembro de 2025, com a entrada do contrato POR (+193 colaboradores), o volume de ajustes saltou de 532 para 7.350 em um mês. A equipe de back-office se manteve em 6 operadores, resultando em 1.225 ajustes por pessoa (14x a carga normal de 89 ajustes). A operação levou 4 meses para normalizar o backlog e hoje opera com baseline 2x maior que o anterior, ainda com o mesmo time.",
     evidence: {
-      before: { label: "Baseline ago/25", value: "209 ajustes/pessoa" },
-      after: { label: "Pico set/25", value: "1.913 ajustes/pessoa" },
+      before: { label: "Baseline ago/25", value: "89 ajustes/pessoa" },
+      after: { label: "Pico set/25", value: "1.225 ajustes/pessoa" },
     },
     actionFilter: null,
   },
