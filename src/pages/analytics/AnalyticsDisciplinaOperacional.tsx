@@ -1620,12 +1620,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           </div>
 
           {(() => {
-            const esforcoSources: Record<string, any[]> = {
-              empresa: esforcoEmpresa,
-              unidade: esforcoUnNegocio,
-              area: esforcoArea,
+            const sobrecargaSources: Record<string, any[]> = {
+              empresa: sobrecargaEmpresaJson,
+              unidade: sobrecargaUnidadeJson,
+              area: sobrecargaAreaJson,
             };
-            const rawEsforco = esforcoSources[groupBy] ?? esforcoEmpresa;
+            const rawEsforco = sobrecargaSources[groupBy] ?? sobrecargaEmpresaJson;
 
             // Check area insufficiency
             const areaInsufficient = groupBy === "area" && (rawEsforco.length < 6 || new Set(rawEsforco.map((r: any) => r.area_name)).size < 3);
