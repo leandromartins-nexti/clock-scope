@@ -273,46 +273,8 @@ export default function TurnoverTab() {
             </ResponsiveContainer>
           </div>
 
-          {/* Chart 2: Curva de Sobrevivência */}
-          <div className={`bg-card border rounded-xl p-4 border-border/50`}>
-            <div className="flex items-center justify-between mb-0.5">
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <h4 className="text-sm font-semibold">Curva de Sobrevivência por Coorte</h4>
-                  <InfoTip text="Cada linha representa um grupo de pessoas admitidas no mesmo mês, mostrando que percentual ainda está na empresa após N meses. Identifica em que ponto da jornada perdemos mais gente." />
-                </div>
-                <p className="text-[10px] text-muted-foreground mb-2">% de colaboradores ativos por meses desde admissão</p>
-              </div>
-              <button onClick={() => setChartDataModal("survival")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
-            </div>
-            <ResponsiveContainer width="100%" height={280}>
-              <LineChart data={survivalData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="meses" tick={{ fontSize: 10 }} label={{ value: "Meses desde admissão", position: "insideBottom", offset: -5, fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} domain={[0, 100]} />
-                <RechartsTooltip content={({ active, payload, label }) => {
-                  if (!active || !payload?.length) return null;
-                  return (
-                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
-                      <p className="font-semibold text-foreground">{label} meses</p>
-                      {payload.filter(p => p.value != null).map((p: any) => (
-                        <div key={p.dataKey} className="flex items-center gap-1.5">
-                          <span className="w-2.5 h-2.5" style={{ backgroundColor: p.stroke }} />
-                          <span className="text-muted-foreground">{p.dataKey}:</span>
-                          <span className="font-medium text-foreground">{p.value}% ativos</span>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                }} />
-                <ReferenceLine y={70} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" label={{ value: "Benchmark 90d", position: "right", fontSize: 9, fill: "#C8860A" }} />
-                {survivalCohorts.map(c => (
-                  <Line key={c.key} type="monotone" dataKey={c.key} stroke={c.color} strokeWidth={c.key === "Set/25" ? 3 : 2} dot={{ r: 4, fill: c.color, stroke: "#fff", strokeWidth: 2 }} connectNulls name={c.label} />
-                ))}
-                <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          {/* Chart 2: Tempo de Casa dos Desligados */}
+          <TempoCasaChart groupBy={groupBy} selectedRegional={selectedRegional} onOpenData={() => setChartDataModal("tempoCasa")} />
         </div>
 
         {/* Row 3: 2 charts */}
@@ -454,7 +416,7 @@ export default function TurnoverTab() {
 
       {/* Data Modals */}
       <ChartDataModal open={chartDataModal === "evoHeadcount"} onClose={() => setChartDataModal(null)} title="Evolução do Turnover e Headcount" data={turnoverHeadcountData} columns={[{ key: "mes", label: "Competência" }, { key: "turnover", label: "Turnover (%)" }, { key: "headcount", label: "Headcount" }]} sqlQuery={`SELECT DATE_FORMAT(reference_month, '%b/%y') AS mes, ROUND(turnover_percentage, 1) AS turnover_pct, avg_headcount FROM vw_turnover_mensal WHERE reference_month BETWEEN '2025-04-01' AND '2026-03-31' ORDER BY reference_month;`} />
-      <ChartDataModal open={chartDataModal === "survival"} onClose={() => setChartDataModal(null)} title="Curva de Sobrevivência por Coorte" data={survivalData.map(d => ({ meses: d.meses, ...Object.fromEntries(survivalCohorts.map(c => [c.key, (d as any)[c.key]])) }))} columns={[{ key: "meses", label: "Meses" }, ...survivalCohorts.map(c => ({ key: c.key, label: c.key }))]} sqlQuery={`SELECT cohort_month, months_since_hire, ROUND(retention_pct, 1) AS retention FROM vw_cohort_survival WHERE customer_id = 642 ORDER BY cohort_month, months_since_hire;`} />
+      <ChartDataModal open={chartDataModal === "tempoCasa"} onClose={() => setChartDataModal(null)} title="Tempo de Casa dos Desligados" data={getTempoCasaDataset(groupBy, selectedRegional).faixas} columns={[{ key: "label", label: "Faixa" }, { key: "count", label: "Desligamentos" }, { key: "pct", label: "%" , format: (v: number) => `${v}%` }, { key: "avg_days", label: "Média (dias)" }]} sqlQuery={`SELECT tenure_bucket, COUNT(*) AS desligamentos_count, ROUND(AVG(DATEDIFF(demission_date, admission_date)),0) AS avg_tenure_days, ROUND(COUNT(*)*100.0/SUM(COUNT(*)) OVER(),1) AS pct FROM vw_turnover_detail WHERE customer_id = 642 AND demission_date BETWEEN '2025-04-01' AND '2026-03-31' GROUP BY tenure_bucket ORDER BY bucket_order;`} />
       <ChartDataModal open={chartDataModal === "decomposicao"} onClose={() => setChartDataModal(null)} title="Decomposição do Turnover" data={decomposicaoData.map(d => ({ ...d, total: d.voluntario + d.involuntario + d.fimContrato }))} columns={[{ key: "mes", label: "Competência" }, { key: "voluntario", label: "Voluntário" }, { key: "involuntario", label: "Involuntário" }, { key: "fimContrato", label: "Fim Contrato" }, { key: "total", label: "Total" }]} sqlQuery={`SELECT DATE_FORMAT(demission_date, '%b/%y') AS mes, SUM(CASE WHEN reason = 'voluntary' THEN 1 ELSE 0 END) AS voluntario, SUM(CASE WHEN reason = 'involuntary' THEN 1 ELSE 0 END) AS involuntario, SUM(CASE WHEN reason = 'end_contract' THEN 1 ELSE 0 END) AS fim_contrato FROM vw_turnover_detail WHERE customer_id = 642 GROUP BY mes ORDER BY demission_date;`} />
       <ChartDataModal open={chartDataModal === "movimentacao"} onClose={() => setChartDataModal(null)} title="Movimentação Mensal" data={movimentacaoData.map(d => ({ ...d, demissoes_abs: Math.abs(d.demissoes), saldo: d.admissoes + d.demissoes }))} columns={[{ key: "mes", label: "Competência" }, { key: "admissoes", label: "Admissões" }, { key: "demissoes_abs", label: "Demissões" }, { key: "saldo", label: "Saldo" }]} sqlQuery={`SELECT DATE_FORMAT(reference_month, '%b/%y') AS mes, SUM(CASE WHEN tipo = 'admissao' THEN 1 ELSE 0 END) AS admissoes, SUM(CASE WHEN tipo = 'demissao' THEN 1 ELSE 0 END) AS demissoes FROM vw_movimentacoes WHERE customer_id = 642 AND reference_month BETWEEN '2025-04-01' AND '2026-03-31' GROUP BY reference_month ORDER BY reference_month;`} />
     </div>
