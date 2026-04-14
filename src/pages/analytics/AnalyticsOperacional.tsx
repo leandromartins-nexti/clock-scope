@@ -36,11 +36,9 @@ export default function AnalyticsOperacional() {
     switch (activeTab) {
       case "qualidade": return <QualidadeTab />;
       case "absenteismo": return <AbsenteismoTab />;
+      case "turnover": return <TurnoverTab />;
       case "movimentacoes": return <MovimentacoesTab />;
       case "coberturas": return <AnalyticsCoberturasContinuidade embedded />;
-      case "violacoes": return <AnalyticsViolacoesTrabalhistas embedded />;
-      case "bancoHoras": return <AnalyticsBancoHoras embedded />;
-      case "operacoes": return <AnalyticsOperacoesEstruturas embedded />;
       default: return <QualidadeTab />;
     }
   };
