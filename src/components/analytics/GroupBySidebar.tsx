@@ -39,6 +39,7 @@ export default function GroupBySidebar({
   onPagedItemsChange,
   pageSize = 25,
 }: GroupBySidebarProps) {
+  const { config: scoreConfig } = useScoreConfig();
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
