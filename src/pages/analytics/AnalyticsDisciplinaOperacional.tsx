@@ -1539,7 +1539,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
       const composite = computeAbsCompositeScore(absenteismoMedia, turnoverMedia * 12, absConfig);
       const classif = getAbsScoreClassification(composite.score, absConfig);
       return {
-        score: Math.round(composite.score), taxa: absenteismoMedia, faixa: classif.label,
+        score: Math.round(composite.score), taxa: absenteismoMedia, faixa: classif.label, scoreColor: classif.color,
         melhorOperacao: { nome: "—", score: 0 },
         maiorRisco: { nome: "—", score: 0, indicador: "—" },
         turnover: `${(turnoverMedia * 12).toFixed(1)}%`,
@@ -1550,7 +1550,7 @@ function AbsenteismoContent({ selectedRegional, onRegionalClick, onItemDetail, g
     const classif = getAbsScoreClassification(composite.score, absConfig);
     return {
       score: Math.round(composite.score), taxa: r.absenteismo,
-      faixa: classif.label,
+      faixa: classif.label, scoreColor: classif.color,
       melhorOperacao: { nome: selectedLabel ?? r.regional, score: Math.round(composite.score) },
       maiorRisco: { nome: selectedLabel ?? r.regional, score: Math.round(composite.score), indicador: `${r.absenteismo}% taxa` },
       turnover: `${turnoverAnual}%`,
