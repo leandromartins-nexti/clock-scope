@@ -10,8 +10,11 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import {
   ResponsiveContainer, LineChart, Line, BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine,
-  ScatterChart, Scatter, ZAxis, Cell,
+  ScatterChart, Scatter, ZAxis, Cell, ComposedChart, LabelList,
 } from "recharts";
+import esforcoEmpresa from "@/data/qualidade-ponto/esforco-tratativa-por-empresa.json";
+import esforcoUnNegocio from "@/data/qualidade-ponto/esforco-tratativa-por-un-negocio.json";
+import esforcoArea from "@/data/qualidade-ponto/esforco-tratativa-por-area.json";
 import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary, getSidebarItems } from "@/lib/ajustesData";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 import { useAbsenteismoScoreConfig, computeAbsCompositeScore, getAbsScoreClassification } from "@/contexts/AbsenteismoScoreConfigContext";
@@ -1525,48 +1528,130 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             </ResponsiveContainer>
           </div>
 
-          <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <h4 className="text-sm font-semibold">Tempo de Tratativa vs Volume</h4>
-              <InfoTip text="Operações com alto volume e alto tempo de tratativa precisam de atenção prioritária. Dados reais agregados por unidade de negócio." />
-            </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Por operação · tamanho = headcount{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
-            <ResponsiveContainer width="100%" height={280}>
-              <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" dataKey="volume" name="Volume" domain={[tratDomain.xMin, tratDomain.xMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${(v / 1000).toFixed(0)}K`} label={{ value: "Volume de marcações", position: "insideBottom", offset: -5, fontSize: 10 }} />
-                <YAxis type="number" dataKey="dias" name="Tempo" domain={[tratDomain.yMin, tratDomain.yMax]} tick={{ fontSize: 10 }} tickFormatter={v => `${v}d`} label={{ value: "Tempo tratativa (dias)", angle: -90, position: "insideLeft", fontSize: 10 }} />
-                <ZAxis type="number" dataKey="headcount" range={[200, 800]} />
-                <ReferenceLine y={avgTratDias} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                <ReferenceLine x={avgTratVolume} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" />
-                <RechartsTooltip content={({ active, payload }) => {
-                  if (!active || !payload?.length) return null;
-                  const d = payload[0].payload;
-                  return (
-                    <div className="bg-white border rounded-lg p-2 shadow-md text-xs">
-                      <p className="font-semibold">{d.regional}</p>
-                      <p>Volume: {(d.volume / 1000).toFixed(0)}K marcações</p>
-                      <p>Tempo: {d.dias} dias</p>
-                      <p>Headcount: {d.headcount}</p>
+          {(() => {
+            const Y_CAP = 6000;
+            const esforcoSources: Record<string, any[]> = {
+              empresa: esforcoEmpresa,
+              unidade: esforcoUnNegocio,
+              area: esforcoArea,
+            };
+            const rawEsforco = esforcoSources[groupBy] ?? esforcoEmpresa;
+
+            // Check area insufficiency
+            const areaInsufficient = groupBy === "area" && (rawEsforco.length < 6 || new Set(rawEsforco.map((r: any) => r.area_name)).size < 3);
+
+            // Aggregate by competencia (optionally filtered by sidebar selection)
+            const filtered = selectedRegional
+              ? rawEsforco.filter((r: any) => {
+                  if (groupBy === "empresa") return String(r.company_id) === selectedRegional || r.company_name === selectedRegional;
+                  if (groupBy === "unidade") return String(r.business_unit_id) === selectedRegional || r.business_unit_name === selectedRegional;
+                  return String(r.area_id) === selectedRegional || r.area_name === selectedRegional;
+                })
+              : rawEsforco;
+
+            const byMonth = new Map<string, { ajustes: number; operadores: Set<number> }>();
+            filtered.forEach((r: any) => {
+              const m = r.competencia;
+              if (!byMonth.has(m)) byMonth.set(m, { ajustes: 0, operadores: new Set() });
+              const entry = byMonth.get(m)!;
+              entry.ajustes += r.qtd_ajustes;
+              entry.operadores.add(r.operadores_ativos);
+            });
+
+            const MONTH_LABELS: Record<string, string> = {
+              "2025-04": "abr/25", "2025-05": "mai/25", "2025-06": "jun/25",
+              "2025-07": "jul/25", "2025-08": "ago/25", "2025-09": "set/25",
+              "2025-10": "out/25", "2025-11": "nov/25", "2025-12": "dez/25",
+              "2026-01": "jan/26", "2026-02": "fev/26", "2026-03": "mar/26",
+            };
+
+            const esforcoData = Array.from(byMonth.entries())
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([m, d]) => {
+                // For consolidated view, sum distinct operators across groups
+                const opAtivos = selectedRegional
+                  ? filtered.filter((r: any) => r.competencia === m).reduce((s: number, r: any) => s + r.operadores_ativos, 0)
+                  : filtered.filter((r: any) => r.competencia === m).reduce((max: number, r: any) => max + r.operadores_ativos, 0);
+                const produtividade = opAtivos > 0 ? Math.round(d.ajustes / opAtivos) : 0;
+                return {
+                  mes: MONTH_LABELS[m] || m,
+                  ajustes: d.ajustes,
+                  ajustesCapped: Math.min(d.ajustes, Y_CAP),
+                  operadores: opAtivos,
+                  produtividade,
+                  isTruncated: d.ajustes > Y_CAP,
+                  labelTruncated: d.ajustes > Y_CAP ? `+${d.ajustes.toLocaleString("pt-BR")}` : undefined,
+                };
+              });
+
+            if (areaInsufficient) {
+              return (
+                <div className="bg-card border border-border/50 rounded-xl p-4 flex flex-col items-center justify-center" style={{ minHeight: 340 }}>
+                  <p className="text-sm font-semibold text-muted-foreground">Dados de área não disponíveis para esta operação no período.</p>
+                  <p className="text-[10px] text-muted-foreground mt-1 max-w-xs text-center">A dimensão Área depende do cadastro completo de area_workplace. Consulte o time de configuração para habilitar esse recorte.</p>
+                </div>
+              );
+            }
+
+            return (
+              <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
+                <div className="flex items-center justify-between mb-0.5">
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="text-sm font-semibold">Esforço de Tratativa de Ponto</h4>
+                      <InfoTip text="Mostra a carga mensal de tratativas do back-office, quantos operadores estão envolvidos e a produtividade individual média no período." />
                     </div>
-                  );
-                }} />
-                <Scatter data={chartScatterTrat} shape={(props: any) => {
-                  const { cx, cy, payload } = props;
-                  const r = Math.max(8, Math.sqrt(payload.headcount) * 0.8);
-                  const fill = payload.dias < 5 ? "#22c55e" : payload.dias <= 7 ? "#f97316" : "#ef4444";
-                  const isSelected = selectedRegional === payload.regional;
-                  const isDimmed = selectedRegional && !isSelected;
-                  return (
-                    <g opacity={isDimmed ? 0.25 : 1} style={{ cursor: "pointer" }} onClick={() => onRegionalClick(payload.regional)}>
-                      <circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={isSelected ? 0.9 : 0.7} stroke={fill} strokeWidth={isSelected ? 2.5 : 1.5} />
-                      <text x={cx} y={cy - r - 3} textAnchor="middle" fontSize={8} fontWeight={600} fill="#374151">{payload.regional.replace("", "").split(/\s+/)[0]?.slice(0, 3).toUpperCase() || abreviar(payload.regional)}</text>
-                    </g>
-                  );
-                }} />
-              </ScatterChart>
-            </ResponsiveContainer>
-          </div>
+                    <p className="text-[10px] text-muted-foreground mb-2">Volume de ajustes, operadores ativos e produtividade por mês</p>
+                  </div>
+                </div>
+                <ResponsiveContainer width="100%" height={280}>
+                  <ComposedChart data={esforcoData} margin={{ top: 20, right: 10, bottom: 0, left: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="mes" tick={{ fontSize: 10 }} />
+                    <YAxis yAxisId="left" domain={[0, Y_CAP]} tick={{ fontSize: 10 }} tickFormatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}K` : `${v}`} />
+                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
+                    <RechartsTooltip content={({ active, payload, label }) => {
+                      if (!active || !payload?.length) return null;
+                      const d = payload[0]?.payload;
+                      if (!d) return null;
+                      return (
+                        <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                          <p className="font-semibold text-foreground">{label}</p>
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "hsl(var(--muted-foreground))" }} />
+                            <span className="text-muted-foreground">Volume de ajustes:</span>
+                            <span className="font-medium text-foreground">{d.ajustes.toLocaleString("pt-BR")}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "#3b82f6" }} />
+                            <span className="text-muted-foreground">Operadores ativos:</span>
+                            <span className="font-medium text-foreground">{d.operadores}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5" style={{ backgroundColor: "#f97316" }} />
+                            <span className="text-muted-foreground">Produtividade:</span>
+                            <span className="font-medium text-foreground">
+                              {d.produtividade.toLocaleString("pt-BR")} ajustes/pessoa
+                              {d.produtividade > 1000 && " ⚠"}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    }} />
+                    <Bar yAxisId="left" dataKey="ajustesCapped" fill="hsl(var(--muted-foreground))" fillOpacity={0.35} radius={[4, 4, 0, 0]} name="Volume de ajustes">
+                      {esforcoData.map((entry, idx) => (
+                        <Cell key={idx} fill={entry.isTruncated ? "hsl(var(--muted-foreground))" : "hsl(var(--muted-foreground))"} fillOpacity={entry.isTruncated ? 0.5 : 0.35} />
+                      ))}
+                      <LabelList dataKey="labelTruncated" position="top" fontSize={9} fontWeight={700} fill="#ef4444" formatter={(v: any) => v || ""} />
+                    </Bar>
+                    <Line yAxisId="right" type="monotone" dataKey="operadores" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: "#3b82f6", stroke: "#fff", strokeWidth: 2 }} name="Operadores ativos" />
+                    <Line yAxisId="right" type="monotone" dataKey="produtividade" stroke="#f97316" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#f97316", stroke: "#fff", strokeWidth: 2 }} name="Produtividade (ajustes/pessoa)" />
+                    <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
