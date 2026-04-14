@@ -64,9 +64,9 @@ const decomposicaoData = [
   { mes: "mar/26", voluntario: 9, involuntario: 5, fimContrato: 4 },
 ];
 const DECOMP_SERIES = [
-  { key: "voluntario", name: "Voluntário", color: "#22c55e" },
-  { key: "involuntario", name: "Involuntário", color: "#ef4444" },
-  { key: "fimContrato", name: "Fim de Contrato", color: "#eab308" },
+  { key: "voluntario", name: "Voluntário", color: "#22c55e", rgba: "34,197,94" },
+  { key: "involuntario", name: "Involuntário", color: "#ef4444", rgba: "239,68,68" },
+  { key: "fimContrato", name: "Fim de Contrato", color: "#eab308", rgba: "234,179,8" },
 ];
 
 // Chart 4: Movimentação Mensal (migrated from Absenteísmo)
@@ -353,9 +353,9 @@ export default function TurnoverTab() {
                 }} />
                 {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                 {DECOMP_SERIES.map((s, i) => (
-                  <Bar key={s.key} dataKey={s.key} stackId="decomp" fill={s.color} name={s.name} radius={i === DECOMP_SERIES.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}>
+                  <Bar key={s.key} dataKey={s.key} stackId="decomp" stroke={`rgba(${s.rgba},0.5)`} strokeWidth={1} name={s.name} radius={i === DECOMP_SERIES.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}>
                     {decomposicaoData.map((entry, idx) => (
-                      <Cell key={idx} fill={s.color} fillOpacity={selectedMes && selectedMes !== entry.mes ? 0.25 : 0.85} />
+                      <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? `rgba(${s.rgba},0.25)` : `rgba(${s.rgba},0.65)`} />
                     ))}
                   </Bar>
                 ))}
