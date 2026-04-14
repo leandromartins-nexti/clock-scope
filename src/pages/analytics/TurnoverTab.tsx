@@ -7,6 +7,7 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
+import tempoCasaData from "@/data/turnover/tempo-casa-desligados.json";
 import {
   ResponsiveContainer, ComposedChart, LineChart, Line, BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine, Cell,
