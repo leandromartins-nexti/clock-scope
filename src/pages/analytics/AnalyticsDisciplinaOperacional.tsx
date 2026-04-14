@@ -975,10 +975,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max };
   }, [chartScatterTrat]);
 
-  const qualColor = activeData.qualidadePct >= 85 ? "text-green-600" : activeData.qualidadePct >= 70 ? "text-orange-500" : "text-red-600";
+  const qualClassif = getScoreClassification(Math.round(activeData.qualidadePct), scoreConfig);
   const tempoColor = activeData.tempoMedioDias < 3 ? "text-green-600" : activeData.tempoMedioDias <= 7 ? "text-orange-500" : "text-red-600";
   const ate1dColor = activeData.ate1DiaPct >= 50 ? "text-green-600" : activeData.ate1DiaPct >= 30 ? "text-orange-500" : "text-red-600";
   const mais15dColor = activeData.mais15DiaPct <= 10 ? "text-green-600" : activeData.mais15DiaPct <= 25 ? "text-orange-500" : "text-red-600";
+  const melhorClassif = getScoreClassification(activeData.melhorOperacao.score, scoreConfig);
+  const riscoClassif = getScoreClassification(activeData.maiorRisco.score, scoreConfig);
 
   return (
     <div className="flex">
