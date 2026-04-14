@@ -1,0 +1,697 @@
+{
+  "consolidado": {
+    "total": 149,
+    "faixas": [
+      {
+        "id": "lt30",
+        "label": "Menos de 30 dias",
+        "min_days": 0,
+        "max_days": 29,
+        "count": 22,
+        "pct": 14.8,
+        "avg_days": 10
+      },
+      {
+        "id": "30_90",
+        "label": "30 a 90 dias",
+        "min_days": 30,
+        "max_days": 89,
+        "count": 48,
+        "pct": 32.2,
+        "avg_days": 65
+      },
+      {
+        "id": "3_6m",
+        "label": "3 a 6 meses",
+        "min_days": 90,
+        "max_days": 179,
+        "count": 21,
+        "pct": 14.1,
+        "avg_days": 127
+      },
+      {
+        "id": "6_12m",
+        "label": "6 a 12 meses",
+        "min_days": 180,
+        "max_days": 364,
+        "count": 15,
+        "pct": 10.1,
+        "avg_days": 287
+      },
+      {
+        "id": "1_2a",
+        "label": "1 a 2 anos",
+        "min_days": 365,
+        "max_days": 729,
+        "count": 17,
+        "pct": 11.4,
+        "avg_days": 503
+      },
+      {
+        "id": "2_5a",
+        "label": "2 a 5 anos",
+        "min_days": 730,
+        "max_days": 1824,
+        "count": 26,
+        "pct": 17.4,
+        "avg_days": 930
+      },
+      {
+        "id": "5plus",
+        "label": "Mais de 5 anos",
+        "min_days": 1825,
+        "max_days": null,
+        "count": 0,
+        "pct": 0.0,
+        "avg_days": 0
+      }
+    ]
+  },
+  "por_empresa": {
+    "9380": {
+      "label": "PORTARIA E LIMPEZA",
+      "total": 135,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 22,
+          "pct": 16.3,
+          "avg_days": 10
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 44,
+          "pct": 32.6,
+          "avg_days": 65
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 19,
+          "pct": 14.1,
+          "avg_days": 129
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 13,
+          "pct": 9.6,
+          "avg_days": 281
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 14,
+          "pct": 10.4,
+          "avg_days": 505
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 23,
+          "pct": 17.0,
+          "avg_days": 925
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    },
+    "9381": {
+      "label": "SEGURANCA PATRIMONIAL",
+      "total": 3,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 1,
+          "pct": 33.3,
+          "avg_days": 662
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 2,
+          "pct": 66.7,
+          "avg_days": 995
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    },
+    "9379": {
+      "label": "TERCEIRIZACAO",
+      "total": 11,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 4,
+          "pct": 36.4,
+          "avg_days": 66
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 2,
+          "pct": 18.2,
+          "avg_days": 106
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 2,
+          "pct": 18.2,
+          "avg_days": 326
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 2,
+          "pct": 18.2,
+          "avg_days": 411
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 1,
+          "pct": 9.1,
+          "avg_days": 922
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    }
+  },
+  "por_un_negocio": {
+    "17518": {
+      "label": "PORTARIA E LIMPEZA",
+      "total": 122,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 21,
+          "pct": 17.2,
+          "avg_days": 10
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 38,
+          "pct": 31.1,
+          "avg_days": 66
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 17,
+          "pct": 13.9,
+          "avg_days": 126
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 11,
+          "pct": 9.0,
+          "avg_days": 286
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 15,
+          "pct": 12.3,
+          "avg_days": 515
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 20,
+          "pct": 16.4,
+          "avg_days": 907
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    },
+    "17519": {
+      "label": "SEGURANCA PATRIMONIAL",
+      "total": 16,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 8,
+          "pct": 50.0,
+          "avg_days": 66
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 2,
+          "pct": 12.5,
+          "avg_days": 120
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 3,
+          "pct": 18.8,
+          "avg_days": 267
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 3,
+          "pct": 18.8,
+          "avg_days": 1101
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    },
+    "17517": {
+      "label": "TERCEIRIZACAO",
+      "total": 11,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 1,
+          "pct": 9.1,
+          "avg_days": 16
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 2,
+          "pct": 18.2,
+          "avg_days": 36
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 2,
+          "pct": 18.2,
+          "avg_days": 134
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 1,
+          "pct": 9.1,
+          "avg_days": 354
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 2,
+          "pct": 18.2,
+          "avg_days": 411
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 3,
+          "pct": 27.3,
+          "avg_days": 916
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    }
+  },
+  "por_area": {
+    "null": {
+      "label": "SEM AREA",
+      "total": 109,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 20,
+          "pct": 18.3,
+          "avg_days": 10
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 29,
+          "pct": 26.6,
+          "avg_days": 68
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 18,
+          "pct": 16.5,
+          "avg_days": 129
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 10,
+          "pct": 9.2,
+          "avg_days": 299
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 13,
+          "pct": 11.9,
+          "avg_days": 490
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 19,
+          "pct": 17.4,
+          "avg_days": 877
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    },
+    "11043": {
+      "label": "SAO PAULO",
+      "total": 33,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 2,
+          "pct": 6.1,
+          "avg_days": 10
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 14,
+          "pct": 42.4,
+          "avg_days": 65
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 3,
+          "pct": 9.1,
+          "avg_days": 112
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 4,
+          "pct": 12.1,
+          "avg_days": 274
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 4,
+          "pct": 12.1,
+          "avg_days": 546
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 6,
+          "pct": 18.2,
+          "avg_days": 1087
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    },
+    "11045": {
+      "label": "SOROCABA",
+      "total": 7,
+      "faixas": [
+        {
+          "id": "lt30",
+          "label": "Menos de 30 dias",
+          "min_days": 0,
+          "max_days": 29,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "30_90",
+          "label": "30 a 90 dias",
+          "min_days": 30,
+          "max_days": 89,
+          "count": 5,
+          "pct": 71.4,
+          "avg_days": 50
+        },
+        {
+          "id": "3_6m",
+          "label": "3 a 6 meses",
+          "min_days": 90,
+          "max_days": 179,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "6_12m",
+          "label": "6 a 12 meses",
+          "min_days": 180,
+          "max_days": 364,
+          "count": 1,
+          "pct": 14.3,
+          "avg_days": 216
+        },
+        {
+          "id": "1_2a",
+          "label": "1 a 2 anos",
+          "min_days": 365,
+          "max_days": 729,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        },
+        {
+          "id": "2_5a",
+          "label": "2 a 5 anos",
+          "min_days": 730,
+          "max_days": 1824,
+          "count": 1,
+          "pct": 14.3,
+          "avg_days": 1005
+        },
+        {
+          "id": "5plus",
+          "label": "Mais de 5 anos",
+          "min_days": 1825,
+          "max_days": null,
+          "count": 0,
+          "pct": 0.0,
+          "avg_days": 0
+        }
+      ]
+    }
+  }
+}
