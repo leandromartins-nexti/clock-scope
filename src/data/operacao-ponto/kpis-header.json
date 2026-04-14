@@ -1,0 +1,62 @@
+{
+  "customer_id": 642,
+  "periodo_atual": { "inicio": "2025-04-01", "fim": "2026-04-01" },
+  "periodo_anterior": { "inicio": "2024-04-01", "fim": "2025-04-01" },
+  "kpis": {
+    "pessoas_ativas": 12,
+    "cargos_envolvidos": 7,
+    "total_ajustes": 56892,
+    "ajustes_por_pessoa": 4741,
+    "concentracao_max_pct": 24.7
+  },
+  "kpis_anterior": {
+    "pessoas_ativas": 10,
+    "concentracao_max_pct": 28.5,
+    "score_aba": 42
+  },
+  "melhor_operacao": {
+    "atual": "SEGURANCA PATRIMONIAL",
+    "anterior": "SEGURANCA PATRIMONIAL",
+    "score": 72,
+    "mudou": false,
+    "mudanca_label": ""
+  },
+  "maior_risco": {
+    "atual": "PORTARIA E LIMPEZA",
+    "anterior": "TERCEIRIZACAO",
+    "score": 35,
+    "mudou": true,
+    "mudanca_label": "Passou a liderar o risco"
+  },
+  "score_composto": 48,
+  "score_label": "Ruim",
+  "componentes": [
+    {
+      "metrica": "Concentração Máxima",
+      "valor_atual": 24.7,
+      "unidade": "%",
+      "nota": 30,
+      "peso": 40,
+      "contribuicao": 12,
+      "cor_semantica": "critical"
+    },
+    {
+      "metrica": "Diversidade de Cargos",
+      "valor_atual": 63,
+      "unidade": "% operacionais",
+      "nota": 40,
+      "peso": 30,
+      "contribuicao": 12,
+      "cor_semantica": "warning"
+    },
+    {
+      "metrica": "Dimensionamento (ratio)",
+      "valor_atual": 4741,
+      "unidade": " ajustes/op",
+      "nota": 80,
+      "peso": 30,
+      "contribuicao": 24,
+      "cor_semantica": "success"
+    }
+  ]
+}
