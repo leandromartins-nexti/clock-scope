@@ -1714,8 +1714,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       const { x, y } = viewBox || {};
                       return (
                         <g>
-                          <text x={(x ?? 0) + 4} y={(y ?? 0) - 6} fontSize={9} fill="#22c55e" fontWeight={500}>Limite saudável</text>
-                          <text x={(x ?? 0) + 4} y={(y ?? 0) + 6} fontSize={9} fill="#22c55e" fontWeight={500}>{limiteSaudavel} aj/operador</text>
+                          <text x={(x ?? 0) + 2} y={(y ?? 0) - 8} fontSize={8} fill="#22c55e" fontWeight={500}>Limite</text>
+                          <text x={(x ?? 0) + 2} y={(y ?? 0) + 2} fontSize={8} fill="#22c55e" fontWeight={500}>saudável</text>
                         </g>
                       );
                     }} />
