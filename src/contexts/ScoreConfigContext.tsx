@@ -126,7 +126,7 @@ export function ScoreConfigProvider({ children }: { children: ReactNode }) {
   const [loading] = useState(false);
 
   // Keep a ref so saveConfig always writes the latest value
-  const configRef = React.useRef(config);
+  const configRef = useRef(config);
   configRef.current = config;
 
   const setConfig = useCallback((newConfig: ScoreConfig) => {
