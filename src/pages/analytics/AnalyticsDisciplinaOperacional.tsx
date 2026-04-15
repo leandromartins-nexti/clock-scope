@@ -1348,7 +1348,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <XAxis type="number" dataKey="headcount" name="Headcount" domain={[mapaDomain.xMin, mapaDomain.xMax]} tick={{ fontSize: 10 }} label={{ value: "Headcount", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="score" name="Score" domain={[mapaDomain.yMin, mapaDomain.yMax]} tick={{ fontSize: 10 }} label={{ value: "Score Operacional", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" range={[250, 250]} />
-                <ReferenceLine y={70} stroke="#22c55e" strokeWidth={1} strokeDasharray="5 3" label={({ viewBox }: any) => {
+                <ReferenceLine y={70} stroke="#C8860A99" strokeWidth={1.5} strokeDasharray="8 4" label={({ viewBox }: any) => {
                   const { y, width, x } = viewBox || {};
                   const rightEdge = (x ?? 0) + (width ?? 0);
                   return (
