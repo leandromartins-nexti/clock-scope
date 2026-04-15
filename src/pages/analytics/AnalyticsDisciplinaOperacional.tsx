@@ -1866,13 +1866,14 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             const normName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
             const nameField = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
             const idField = groupBy === "empresa" ? "company_id" : groupBy === "unidade" ? "business_unit_id" : "area_id";
-            const filtered = selectedRegional
+            let filtered = selectedRegional
               ? rawEsforco.filter((r: any) => {
                   const selNorm = normName(selectedRegional);
                   return String(r[idField]) === selectedRegional || normName(r[nameField] ?? "") === selNorm;
                 })
               : rawEsforco;
-            console.log("[Sobrecarga] groupBy:", groupBy, "selectedRegional:", selectedRegional, "rawEsforco length:", rawEsforco.length, "filtered length:", filtered.length, "sample names:", rawEsforco.slice(0, 3).map((r: any) => r[nameField]));
+            const sobrecargaFallback = selectedRegional && filtered.length === 0 && rawEsforco.length > 0;
+            if (sobrecargaFallback) filtered = rawEsforco;
 
             const MONTH_LABELS: Record<string, string> = {
               "2025-04": "abr/25", "2025-05": "mai/25", "2025-06": "jun/25",
