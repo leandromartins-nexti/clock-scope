@@ -885,6 +885,7 @@ type ContentProps = { selectedRegional: string | null; onRegionalClick: (n: stri
 // ══════════════════════════════════════════════════════════════
 function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
   const { config: scoreConfig } = useScoreConfig();
+  const { data: customerData, loading: customerDataLoading } = useQualidadePontoData();
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
