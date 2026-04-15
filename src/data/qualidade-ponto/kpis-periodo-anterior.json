@@ -6,6 +6,7 @@
     "score_aba": { "atual": 69, "anterior": 64, "delta": 5, "direcao": "up" },
     "qualidade_pct": { "atual": 76.6, "anterior": 73.2, "delta": 3.4, "direcao": "up" },
     "tempo_medio_dias": { "atual": 6.1, "anterior": 7.8, "delta": -1.7, "direcao": "down" },
+    "sobrecarga_bo": { "atual": 260, "anterior": 553, "delta": -293, "direcao": "down" },
     "melhor_operacao": { "atual": "SEGURANCA PATRIMONIAL", "anterior": "SEGURANCA PATRIMONIAL", "mudou": false, "mudanca_label": "" },
     "maior_risco": { "atual": "TERCEIRIZACAO", "anterior": "PORTARIA E LIMPEZA", "mudou": true, "mudanca_label": "Passou a liderar o risco" }
   }
