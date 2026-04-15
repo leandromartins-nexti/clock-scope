@@ -1201,7 +1201,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       const breakdown = computeFullBreakdown(s.regional, groupBy as any, scoreConfig, undefined, dataSources);
       const score = Math.round(breakdown.compositeScore);
       const classif = getScoreClassification(score, scoreConfig);
-      const bubbleColor = score >= 70 ? "#22c55e" : score >= 55 ? "#f59e0b" : "#ef4444";
+      const bubbleColor = score >= scoreConfig.threshold_good ? "#22c55e" : score >= scoreConfig.threshold_warning ? "#f59e0b" : "#ef4444";
       return {
         regional: s.regional,
         headcount: s.headcount,
