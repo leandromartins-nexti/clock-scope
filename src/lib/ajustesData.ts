@@ -919,7 +919,7 @@ export function getQualidadeKpiSummary(
   let melhor = { nome: "-", score: 0 };
   let pior = { nome: "-", score: 100, indicador: "" };
   for (const name of entityNames) {
-    const cs = Math.round(computeCompositeScore(name, groupBy, fullConfig));
+    const cs = Math.round(computeCompositeScore(name, groupBy, fullConfig, undefined, sources));
     if (cs > melhor.score) melhor = { nome: name, score: cs };
     if (cs < pior.score) pior = { nome: name, score: cs, indicador: "Baixa qualidade" };
   }
@@ -953,7 +953,8 @@ export function getQualidadeKpiSummary(
 
 export function getSidebarItems(
   groupBy: "empresa" | "unidade" | "area",
-  scoreConfig?: { weight_quality: number; weight_treatment: number; grade_under_1d: number; grade_1_3d: number; grade_3_7d: number; grade_7_15d: number; grade_over_15d: number }
+  scoreConfig?: { weight_quality: number; weight_treatment: number; grade_under_1d: number; grade_1_3d: number; grade_3_7d: number; grade_7_15d: number; grade_over_15d: number },
+  sources?: QualidadeDataSources
 ): { nome: string; score: number }[] {
   const fullConfig: ScoreConfig = scoreConfig
     ? { ...DEFAULT_CONFIG, ...scoreConfig }
@@ -963,16 +964,19 @@ export function getSidebarItems(
   type QRow = { name: string };
   let qRows: QRow[];
   if (groupBy === "unidade") {
-    qRows = qualidadeUnidadeData.map(r => ({ name: r.business_unit_name }));
+    const base = sources ? sources.qualidade.unidade : qualidadeUnidadeData;
+    qRows = base.map((r: any) => ({ name: r.business_unit_name }));
   } else if (groupBy === "area") {
-    qRows = qualidadeAreaData.map(r => ({ name: r.area_name }));
+    const base = sources ? sources.qualidade.area : qualidadeAreaData;
+    qRows = base.map((r: any) => ({ name: r.area_name }));
   } else {
-    qRows = qualidadeEmpresaData.map(r => ({ name: r.company_name }));
+    const base = sources ? sources.qualidade.empresa : qualidadeEmpresaData;
+    qRows = base.map((r: any) => ({ name: r.company_name }));
   }
 
   const uniqueNames = [...new Set(qRows.map(r => r.name))];
 
   return uniqueNames
-    .map(nome => ({ nome, score: Math.round(computeCompositeScore(nome, groupBy, fullConfig)) }))
+    .map(nome => ({ nome, score: Math.round(computeCompositeScore(nome, groupBy, fullConfig, undefined, sources)) }))
     .sort((a, b) => b.score - a.score);
 }
