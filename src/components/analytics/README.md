@@ -121,11 +121,12 @@ Adicionar entrada em `AnalyticsOperacional.tsx` (array `tabs`) e `renderTab()`.
 ## Regras Imutáveis
 
 1. **KPIRow** sempre tem **exatamente 6 items** (placeholders se necessário)
-2. **OperationMap** é sempre o **primeiro gráfico** abaixo do KPIRow
+2. **Mapa de Operação** (ScatterChart Headcount × Score) é sempre o **primeiro componente** abaixo do KPIRow — obrigatório em todas as abas
 3. **Filtro lateral** é sempre sticky à direita via `AnalyticsTab sidebar={...}`
 4. **InsightsSection** é sempre o **último componente** da aba
-5. Gráficos contextuais ficam **entre OperationMap e InsightsSection**
+5. Gráficos contextuais ficam **entre Mapa de Operação e InsightsSection**
 6. Usar tokens de design existentes — nunca inventar cores/espaçamentos
+7. **Score Composto**: click no BigNumber do Score abre **Dialog** (painel de detalhamento), não Popover. Hover mostra apenas resumo curto.
 
 ## Tipos Compartilhados
 
@@ -145,3 +146,5 @@ Importar de `@/components/analytics/types`:
 - Data layer separado em `src/hooks/analytics/`
 - Filtros locais de gráfico são efêmeros (não persistem em localStorage)
 - Filtro lateral (GroupBySidebar) é a fonte da verdade para todos os gráficos
+- Mapa de Operação lê dimensões automaticamente dos dados (empresa/un-negocio/área) e calcula o Score usando o scoreCalculator da aba
+- Para omitir o Mapa de Operação (exceção), declarar `hideHierarchyMap: true` no registry
