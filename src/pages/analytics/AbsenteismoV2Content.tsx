@@ -758,19 +758,31 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       </div>
                     );
                   }} />
-                  {CATEGORIES_ORDER.filter(cat => composicaoChartData.some(d => (d as any)[cat] > 0)).map(cat => (
-                    <Area
+                  {CATEGORIES_ORDER.filter(cat => composicaoChartData.some(d => (d as any)[cat] > 0)).map((cat, catIdx, arr) => (
+                    <Bar
                       key={cat}
-                      type="monotone"
                       dataKey={cat}
                       stackId="1"
-                      fill={CATEGORY_COLORS[cat]}
-                      stroke={CATEGORY_COLORS[cat]}
-                      fillOpacity={0.35}
-                      strokeWidth={0.5}
-                      strokeOpacity={0.5}
+                      radius={catIdx === arr.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
                       name={CATEGORY_LABELS[cat]}
-                    />
+                    >
+                      {composicaoChartData.map((entry, idx) => {
+                        const isActive = selectedMes && selectedMes === (entry as any).mes;
+                        const dimmed = selectedMes && selectedMes !== (entry as any).mes;
+                        return <Cell key={idx} fill={dimmed ? `${CATEGORY_COLORS[cat]}73` : `${CATEGORY_COLORS[cat]}BF`} stroke={isActive ? "#FF5722" : CATEGORY_COLORS[cat]} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
+                      })}
+                      <LabelList content={({ x, y, width, height, index }: any) => {
+                        const d = composicaoChartData[index];
+                        if (!d) return null;
+                        const val = (d as any)[cat] ?? 0;
+                        if (val < 5 || (height ?? 0) < 14) return null;
+                        return (
+                          <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
+                            {`${val.toFixed(0)}%`}
+                          </text>
+                        );
+                      }} />
+                    </Bar>
                   ))}
                   <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={
                     CATEGORIES_ORDER.filter(cat => composicaoChartData.some(d => (d as any)[cat] > 0)).map(cat => ({
@@ -824,8 +836,34 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                     </div>
                   );
                 }} />
-                <Area type="monotone" dataKey="1_planejado" stackId="1" fill={MATURIDADE_COLORS["1_planejado"]} stroke={MATURIDADE_COLORS["1_planejado"]} fillOpacity={0.35} strokeWidth={0.5} name="Planejado" />
-                <Area type="monotone" dataKey="2_reativo" stackId="1" fill={MATURIDADE_COLORS["2_reativo"]} stroke={MATURIDADE_COLORS["2_reativo"]} fillOpacity={0.35} strokeWidth={0.5} name="Reativo" />
+                <Bar dataKey="1_planejado" stackId="1" radius={[0, 0, 0, 0]} name="Planejado">
+                  {maturidadeChartData.map((entry, idx) => {
+                    const isActive = selectedMes && selectedMes === (entry as any).mes;
+                    const dimmed = selectedMes && selectedMes !== (entry as any).mes;
+                    return <Cell key={idx} fill={dimmed ? "rgba(34,197,94,0.45)" : "rgba(34,197,94,0.75)"} stroke={isActive ? "#FF5722" : "#22c55e"} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
+                  })}
+                  <LabelList content={({ x, y, width, height, index }: any) => {
+                    const d = maturidadeChartData[index];
+                    if (!d) return null;
+                    const val = (d as any)["1_planejado"] ?? 0;
+                    if (val < 5 || (height ?? 0) < 14) return null;
+                    return <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>{`${val.toFixed(0)}%`}</text>;
+                  }} />
+                </Bar>
+                <Bar dataKey="2_reativo" stackId="1" radius={[4, 4, 0, 0]} name="Reativo">
+                  {maturidadeChartData.map((entry, idx) => {
+                    const isActive = selectedMes && selectedMes === (entry as any).mes;
+                    const dimmed = selectedMes && selectedMes !== (entry as any).mes;
+                    return <Cell key={idx} fill={dimmed ? "rgba(239,68,68,0.45)" : "rgba(239,68,68,0.75)"} stroke={isActive ? "#FF5722" : "#ef4444"} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
+                  })}
+                  <LabelList content={({ x, y, width, height, index }: any) => {
+                    const d = maturidadeChartData[index];
+                    if (!d) return null;
+                    const val = (d as any)["2_reativo"] ?? 0;
+                    if (val < 5 || (height ?? 0) < 14) return null;
+                    return <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>{`${val.toFixed(0)}%`}</text>;
+                  }} />
+                </Bar>
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: `Planejado ${maturidadeDistribuicao.planejado}%`, type: "square" as const, color: MATURIDADE_COLORS["1_planejado"] },
                   { value: `Reativo ${maturidadeDistribuicao.reativo}%`, type: "square" as const, color: MATURIDADE_COLORS["2_reativo"] },
