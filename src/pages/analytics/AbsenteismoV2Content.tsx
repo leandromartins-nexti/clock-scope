@@ -80,8 +80,8 @@ const CATEGORY_MAP: Record<number, string> = {
 
 const CATEGORY_COLORS: Record<string, string> = {
   planejada: "#22c55e",
-  saude: "#3b82f6",
-  operacional: "#8b5cf6",
+  saude: "#f59e0b",
+  operacional: "#f97316",
   falta: "#ef4444",
   nao_categorizada: "#9ca3af",
 };
