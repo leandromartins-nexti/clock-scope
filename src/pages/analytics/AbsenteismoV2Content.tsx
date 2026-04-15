@@ -525,7 +525,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   // CATEGORIES_ORDER moved to module level
 
   return (
-    <div className="flex -mx-6 -my-4" style={{ width: "calc(100% + 3rem)" }}>
+    <div className="flex">
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-2 py-4">
         {/* ── BigNumbers (6 cards) ── */}
         <div className="grid grid-cols-6 gap-3">
