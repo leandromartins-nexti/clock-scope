@@ -215,13 +215,16 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
       const filtered = volumeByDim.filter(d => d[nameField] === selectedRegional);
       return Object.keys(MESES_LABELS).map(date => {
         const row = filtered.find(d => d.reference_date === date);
+        const horas = row?.horas_ausencia ?? 0;
+        const pessoas = row?.pessoas_ausentes ?? 0;
+        const taxa = pessoas > 0 ? +((horas / (pessoas * 200)) * 100).toFixed(2) : 0;
         return {
           mes: MESES_LABELS[date],
-          horas: row?.horas_ausencia ?? 0,
+          horas,
           eventos: row?.qtd_eventos ?? 0,
-          pessoas: row?.pessoas_ausentes ?? 0,
-          taxa: 0,
-          hcMes: row?.pessoas_ausentes ?? 0,
+          pessoas,
+          taxa,
+          hcMes: pessoas,
         };
       });
     }
