@@ -103,43 +103,21 @@ export function useAbsenteismoScoreConfig() {
   return useContext(AbsenteismoScoreConfigContext);
 }
 
-export function AbsenteismoScoreConfigProvider({ children }: { children: ReactNode }) {
-  const [config, setConfig] = useState<AbsenteismoScoreConfig>(DEFAULT_ABS_CONFIG);
-  const [loading, setLoading] = useState(true);
+const ABS_STORAGE_KEY = "score_config_absenteismo";
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await (supabase as any).from("absenteismo_score_config").select("*").eq("config_key", "absenteismo").single();
-        if (data) {
-          setConfig({
-            profile_type: data.profile_type || "vigilancia",
-            weight_absenteeism: data.weight_absenteeism,
-            weight_turnover: data.weight_turnover,
-            absenteeism_excellent_threshold: Number(data.absenteeism_excellent_threshold),
-            absenteeism_critical_threshold: Number(data.absenteeism_critical_threshold),
-            turnover_excellent_threshold: Number(data.turnover_excellent_threshold),
-            turnover_critical_threshold: Number(data.turnover_critical_threshold),
-            score_excellent: data.score_excellent,
-            score_good: data.score_good,
-            score_warning: data.score_warning,
-            score_poor: data.score_poor,
-          });
-        }
-      } catch (e) {
-        console.error("Failed to load absenteismo score config:", e);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+export function AbsenteismoScoreConfigProvider({ children }: { children: ReactNode }) {
+  const [config, setConfig] = useState<AbsenteismoScoreConfig>(() => {
+    try {
+      const stored = localStorage.getItem(ABS_STORAGE_KEY);
+      if (stored) return { ...DEFAULT_ABS_CONFIG, ...JSON.parse(stored) };
+    } catch {}
+    return DEFAULT_ABS_CONFIG;
+  });
+  const [loading] = useState(false);
 
   const saveConfig = useCallback(async () => {
     try {
-      await (supabase as any).from("absenteismo_score_config").update({
-        ...config,
-        updated_at: new Date().toISOString(),
-      }).eq("config_key", "absenteismo");
+      localStorage.setItem(ABS_STORAGE_KEY, JSON.stringify(config));
     } catch (e) {
       console.error("Failed to save absenteismo score config:", e);
     }
@@ -149,6 +127,7 @@ export function AbsenteismoScoreConfigProvider({ children }: { children: ReactNo
     const p = profile || "vigilancia";
     const vals = PROFILES[p] || PROFILES.vigilancia;
     setConfig({ profile_type: p as any, ...vals });
+    localStorage.removeItem(ABS_STORAGE_KEY);
   }, []);
 
   return (

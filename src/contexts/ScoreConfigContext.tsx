@@ -78,49 +78,21 @@ export function useScoreConfig() {
   return useContext(ScoreConfigContext);
 }
 
-export function ScoreConfigProvider({ children }: { children: ReactNode }) {
-  const [config, setConfig] = useState<ScoreConfig>(DEFAULT_CONFIG);
-  const [loading, setLoading] = useState(true);
+const STORAGE_KEY = "score_config_qualidade_ponto";
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await (supabase as any).from("score_config").select("*").eq("config_key", "qualidade_ponto").single();
-        if (data) {
-          setConfig({
-            weight_quality: data.weight_quality ?? DEFAULT_CONFIG.weight_quality,
-            weight_treatment: data.weight_treatment ?? DEFAULT_CONFIG.weight_treatment,
-            weight_backoffice: data.weight_backoffice ?? DEFAULT_CONFIG.weight_backoffice,
-            grade_under_1d: data.grade_under_1d,
-            grade_1_3d: data.grade_1_3d,
-            grade_3_7d: data.grade_3_7d,
-            grade_7_15d: data.grade_7_15d,
-            grade_over_15d: data.grade_over_15d,
-            grade_bo_under_400: data.grade_bo_under_400 ?? DEFAULT_CONFIG.grade_bo_under_400,
-            grade_bo_400_700: data.grade_bo_400_700 ?? DEFAULT_CONFIG.grade_bo_400_700,
-            grade_bo_700_1000: data.grade_bo_700_1000 ?? DEFAULT_CONFIG.grade_bo_700_1000,
-            grade_bo_1000_1400: data.grade_bo_1000_1400 ?? DEFAULT_CONFIG.grade_bo_1000_1400,
-            grade_bo_over_1400: data.grade_bo_over_1400 ?? DEFAULT_CONFIG.grade_bo_over_1400,
-            threshold_excellent: data.threshold_excellent,
-            threshold_good: data.threshold_good,
-            threshold_warning: data.threshold_warning,
-            threshold_poor: data.threshold_poor,
-          });
-        }
-      } catch (e) {
-        console.error("Failed to load score config:", e);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+export function ScoreConfigProvider({ children }: { children: ReactNode }) {
+  const [config, setConfig] = useState<ScoreConfig>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) return { ...DEFAULT_CONFIG, ...JSON.parse(stored) };
+    } catch {}
+    return DEFAULT_CONFIG;
+  });
+  const [loading] = useState(false);
 
   const saveConfig = useCallback(async () => {
     try {
-      await (supabase as any).from("score_config").update({
-        ...config,
-        updated_at: new Date().toISOString(),
-      }).eq("config_key", "qualidade_ponto");
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     } catch (e) {
       console.error("Failed to save score config:", e);
     }
@@ -128,6 +100,7 @@ export function ScoreConfigProvider({ children }: { children: ReactNode }) {
 
   const resetToDefault = useCallback(() => {
     setConfig(DEFAULT_CONFIG);
+    localStorage.removeItem(STORAGE_KEY);
   }, []);
 
   return (
