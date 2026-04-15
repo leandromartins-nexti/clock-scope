@@ -211,34 +211,34 @@ export default function AnalyticsResumoExecutivo() {
           {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
           <div className="grid grid-cols-5 gap-3">
             <div data-onboarding="score-operacional">
-              <ScoreBoard title="Score Operacional" tooltip="Índice de saúde da operação calculado a partir de 3 componentes: qualidade do ponto, velocidade de tratativa e saúde do back-office.">
+              <ScoreBoard title="Score Operacional" tooltip="Score composto calculado pela média dos últimos 3 meses, combinando qualidade das marcações, velocidade de tratativa e saúde do back-office.">
                 <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={scoreClassif.label} color={scoreClassif.color} />
               </ScoreBoard>
             </div>
             <KPIBoard
               title="Melhor Operação"
-              tooltip="Operação com maior score composto no período"
+              tooltip="Operação com maior score composto (média dos últimos 3 meses) no período selecionado"
               value={kpiSummary.melhorOperacao.nome}
               valueColor="text-green-600"
               subtitle={`Score ${kpiSummary.melhorOperacao.score}`}
             />
             <KPIBoard
               title="Maior Risco"
-              tooltip="Operação com menor score composto no período"
+              tooltip="Operação com menor score composto (média dos últimos 3 meses) no período selecionado"
               value={kpiSummary.maiorRisco.nome}
               valueColor="text-red-600"
               subtitle={`Score ${kpiSummary.maiorRisco.score} · ${kpiSummary.maiorRisco.indicador}`}
             />
             <KPIBoard
               title="Principal Melhora"
-              tooltip="Operação com maior evolução de score no período"
+              tooltip="Operação que mais evoluiu comparando o score dos últimos 3 meses com o trimestre anterior"
               value={principalMelhora.nome}
               valueColor="text-green-600"
               subtitle={principalMelhora.detalhe}
             />
             <KPIBoard
               title="Principal Piora"
-              tooltip="Operação com maior queda de score no período"
+              tooltip="Operação com maior queda de score comparando os últimos 3 meses com o trimestre anterior"
               value={principalPiora.nome}
               valueColor="text-red-600"
               subtitle={principalPiora.detalhe}
