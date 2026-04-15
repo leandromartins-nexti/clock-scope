@@ -84,8 +84,9 @@ export default function ScoreQualidadeConfig() {
 
   const handleReset = () => {
     setLocal(DEFAULT_CONFIG);
-    setConfig(DEFAULT_CONFIG);
-    setDirty(true);
+    resetToDefault();
+    setDirty(false);
+    toast.success("Configuração restaurada para o padrão Nexti");
   };
 
   const handleDownloadJson = () => {
