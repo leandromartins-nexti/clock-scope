@@ -1187,7 +1187,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   <p className="text-sm font-semibold">Como o Score {compositeScore} foi calculado</p>
                 </div>
                 <div className="p-3 space-y-3">
-                  {customerData.decomposicaoScore.componentes.map((comp) => {
+                  {(customerData.decomposicaoScore?.componentes ?? []).map((comp) => {
                     const COMP_COLORS: Record<string, string> = { success: "#22c55e", warning: "#eab308", critical: "#ef4444" };
                     const barColor = COMP_COLORS[comp.cor_semantica] || "#6b7280";
                     const barWidth = Math.max(comp.contribuicao / customerData.decomposicaoScore.score_composto * 100, 4);
