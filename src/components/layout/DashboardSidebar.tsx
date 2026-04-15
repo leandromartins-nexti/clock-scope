@@ -14,24 +14,15 @@ import {
 } from "@/components/ui/sidebar";
 import { SidebarToggleButton } from "./SidebarToggleButton";
 
-// ─── Analytics submenu items (2 levels only) ────────────────────
+// ─── Analytics submenu items derived from registry ────────────────────
+import { getSidebarMenuTabs } from "@/config/analytics-tabs";
 
-interface AnalyticsMenuItem {
-  label: string;
-  icon: React.ElementType;
-  route: string;
-  locked?: boolean;
-}
-
-const analyticsSubmenus: AnalyticsMenuItem[] = [
-  { label: "Resumo Executivo", icon: LayoutDashboard, route: "/analytics" },
-  { label: "Operacional", icon: ClipboardList, route: "/analytics/operacional" },
-  { label: "Financeiro", icon: DollarSign, route: "/analytics/financeiro", locked: true },
-  { label: "Estratégico", icon: Target, route: "/analytics/estrategico", locked: true },
-  { label: "Compliance Avançado", icon: Gavel, route: "/analytics/compliance", locked: true },
-  { label: "Inteligência", icon: Brain, route: "/analytics/inteligencia", locked: true },
-  { label: "Configuração", icon: Settings, route: "/analytics/configuracao" },
-];
+const analyticsSubmenus = getSidebarMenuTabs().map(tab => ({
+  label: tab.label,
+  icon: tab.icon,
+  route: tab.route,
+  locked: tab.category === "locked",
+}));
 
 // ─── Legacy menu items (non-Analytics) ──────────────────────────
 

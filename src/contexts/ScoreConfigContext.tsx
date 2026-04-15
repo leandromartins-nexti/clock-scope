@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from "react";
+import { classifyWithMeta } from "@/utils/scores";
 
 export interface ScoreConfig {
   weight_quality: number;
@@ -75,12 +76,12 @@ function migrateConfig(raw: any): ScoreConfig {
   return cfg;
 }
 
+/**
+ * @deprecated Use classifyWithMeta from '@/utils/scores' instead.
+ * Kept for backwards compatibility — delegates to the canonical classify function.
+ */
 export function getScoreClassification(score: number, config: ScoreConfig) {
-  if (score >= config.threshold_excellent) return { label: "Excelente", color: "#22c55e", bg: "bg-green-100", text: "text-green-600" };
-  if (score >= config.threshold_good) return { label: "Bom", color: "#84cc16", bg: "bg-lime-100", text: "text-lime-600" };
-  if (score >= config.threshold_warning) return { label: "Atenção", color: "#f97316", bg: "bg-orange-100", text: "text-orange-600" };
-  if (score >= config.threshold_poor) return { label: "Ruim", color: "#f87171", bg: "bg-red-100", text: "text-red-500" };
-  return { label: "Crítico", color: "#ef4444", bg: "bg-red-200", text: "text-red-600" };
+  return classifyWithMeta(score, config);
 }
 
 // Re-export computation functions from the dedicated module
