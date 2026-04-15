@@ -1391,26 +1391,27 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const r = 20;
                   const isFixed = fixedBubble === payload.regional;
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
-                  const opacity = isFixed ? 0.85 : isSelected ? 0.7 : 0.15;
-                  const strokeW = isFixed ? 2.5 : isSelected ? 1.5 : 0.5;
-                  // 3-letter abbreviation like sidebar
-                  const clean = payload.regional.replace(/^VIG\s*EYES\s*/i, "").trim();
-                  const abbr = clean ? clean.slice(0, 3).toUpperCase() : payload.regional.slice(0, 3).toUpperCase();
-                  return (
-                    <g
-                      onClick={() => {
-                        setFixedBubble(prev => prev === payload.regional ? null : payload.regional);
-                        onRegionalClick(payload.regional);
-                      }}
-                      onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }}
-                      className="cursor-pointer"
-                    >
-                      <circle cx={cx} cy={cy} r={r} fill={payload.bubbleColor} fillOpacity={opacity} stroke={isFixed ? "#1e293b" : payload.bubbleColor} strokeWidth={strokeW} />
-                      <text x={cx} y={cy - 5} textAnchor="middle" fontSize={11} fontWeight={700} fill="#1e293b" dominantBaseline="middle">
-                        {abbr}
-                      </text>
-                      <text x={cx} y={cy + 8} textAnchor="middle" fontSize={10} fontWeight={600} fill="#1e293b" dominantBaseline="middle">
-                        {payload.score}
+                   const opacity = isFixed ? 0.85 : isSelected ? 0.7 : 0.15;
+                   const strokeW = isFixed ? 1.5 : isSelected ? 1.5 : 0.5;
+                   const textColor = isSelected ? "#fff" : "#1e293b";
+                   // 3-letter abbreviation like sidebar
+                   const clean = payload.regional.replace(/^VIG\s*EYES\s*/i, "").trim();
+                   const abbr = clean ? clean.slice(0, 3).toUpperCase() : payload.regional.slice(0, 3).toUpperCase();
+                   return (
+                     <g
+                       onClick={() => {
+                         setFixedBubble(prev => prev === payload.regional ? null : payload.regional);
+                         onRegionalClick(payload.regional);
+                       }}
+                       onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }}
+                       className="cursor-pointer"
+                     >
+                       <circle cx={cx} cy={cy} r={r} fill={payload.bubbleColor} fillOpacity={opacity} stroke={payload.bubbleColor} strokeWidth={strokeW} />
+                       <text x={cx} y={cy - 5} textAnchor="middle" fontSize={11} fontWeight={700} fill={textColor} dominantBaseline="middle">
+                         {abbr}
+                       </text>
+                       <text x={cx} y={cy + 8} textAnchor="middle" fontSize={10} fontWeight={600} fill={textColor} dominantBaseline="middle">
+                         {payload.score}
                       </text>
                     </g>
                   );
