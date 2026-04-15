@@ -1559,7 +1559,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                   );
                 }} />
-                <Scatter data={mapaOperacoesData} shape={(props: any) => {
+                <Scatter data={mapaOperacoesData.filter((d: any) => {
+                  const cat = d.score >= 70 ? "green" : d.score >= 55 ? "orange" : "red";
+                  return mapaScoreFilter.has(cat);
+                })} shape={(props: any) => {
                   const { cx, cy, payload } = props;
                   const r = 14;
                   const isFixed = fixedBubble === payload.regional;
