@@ -8,11 +8,12 @@
  */
 
 import type { ScoreConfig } from "@/contexts/ScoreConfigContext";
+import type { QualidadeDataSources } from "@/lib/qualidadeDataSources";
 import {
   composicaoEmpresaData, composicaoUnidadeData, composicaoAreaData,
 } from "@/lib/ajustesData";
 
-// ── Import JSON data sources ──
+// ── Import JSON data sources (defaults for customer 642) ──
 import hcEmpresa from "@/data/qualidade-ponto/headcount-por-empresa.json";
 import hcUnidade from "@/data/qualidade-ponto/headcount-por-un-negocio.json";
 import hcArea from "@/data/qualidade-ponto/headcount-por-area.json";
@@ -42,7 +43,12 @@ function nameMatches(jsonName: string, selectedName: string): boolean {
 // ── Headcount data accessor ──
 type HcRow = { reference_month: string; registered_count: number; clocking_count: number; justified_count: number; active_headcount: number; [k: string]: any };
 
-function getHcSource(groupBy: "empresa" | "unidade" | "area"): { data: HcRow[]; nameField: string } {
+function getHcSource(groupBy: "empresa" | "unidade" | "area", sources?: QualidadeDataSources): { data: HcRow[]; nameField: string } {
+  if (sources) {
+    const data = sources.hc[groupBy] as HcRow[];
+    const nameField = groupBy === "area" ? "area_name" : groupBy === "unidade" ? "business_unit_name" : "company_name";
+    return { data, nameField };
+  }
   if (groupBy === "area") return { data: hcArea as HcRow[], nameField: "area_name" };
   if (groupBy === "unidade") return { data: hcUnidade as HcRow[], nameField: "business_unit_name" };
   return { data: hcEmpresa as HcRow[], nameField: "company_name" };
@@ -51,7 +57,12 @@ function getHcSource(groupBy: "empresa" | "unidade" | "area"): { data: HcRow[]; 
 // ── Esforço-tratativa data accessor ──
 type EfRow = { competencia: string; qtd_ajustes: number; operadores_ativos: number; horas_extras_rateadas: number; [k: string]: any };
 
-function getEfSource(groupBy: "empresa" | "unidade" | "area"): { data: EfRow[]; nameField: string } {
+function getEfSource(groupBy: "empresa" | "unidade" | "area", sources?: QualidadeDataSources): { data: EfRow[]; nameField: string } {
+  if (sources) {
+    const data = sources.esforco[groupBy] as EfRow[];
+    const nameField = groupBy === "area" ? "area_name" : groupBy === "unidade" ? "business_unit_name" : "company_name";
+    return { data, nameField };
+  }
   if (groupBy === "area") return { data: efArea as EfRow[], nameField: "area_name" };
   if (groupBy === "unidade") return { data: efUnidade as EfRow[], nameField: "business_unit_name" };
   return { data: efEmpresa as EfRow[], nameField: "company_name" };
@@ -64,9 +75,10 @@ function getEfSource(groupBy: "empresa" | "unidade" | "area"): { data: EfRow[]; 
 export function computeQualityPercentage(
   selectedName: string | null,
   groupBy: "empresa" | "unidade" | "area",
-  window: string[] = LAST_3_MONTHS
+  window: string[] = LAST_3_MONTHS,
+  sources?: QualidadeDataSources
 ): number {
-  const { data, nameField } = getHcSource(groupBy);
+  const { data, nameField } = getHcSource(groupBy, sources);
   const rows = data.filter(r => window.includes(r.reference_month));
   const filtered = selectedName ? rows.filter(r => nameMatches(r[nameField], selectedName)) : rows;
 
@@ -87,11 +99,14 @@ export function computeTreatmentScore(
   selectedName: string | null,
   groupBy: "empresa" | "unidade" | "area",
   config: ScoreConfig,
-  window: string[] = LAST_3_MONTHS
+  window: string[] = LAST_3_MONTHS,
+  sources?: QualidadeDataSources
 ): { score: number; pctUnder1d: number; pct1_3d: number; pct3_7d: number; pct7_15d: number; pctOver15d: number } {
-  const source = groupBy === "unidade" ? composicaoUnidadeData : groupBy === "area" ? composicaoAreaData : composicaoEmpresaData;
-  const rows = source.filter(r => window.includes(r.reference_month));
-  const filtered = selectedName ? rows.filter(r => nameMatches(r.company_name, selectedName)) : rows;
+  const source = sources
+    ? sources.composicao[groupBy]
+    : (groupBy === "unidade" ? composicaoUnidadeData : groupBy === "area" ? composicaoAreaData : composicaoEmpresaData);
+  const rows = source.filter((r: any) => window.includes(r.reference_month));
+  const filtered = selectedName ? rows.filter((r: any) => nameMatches(r.company_name, selectedName)) : rows;
 
   let totalF1 = 0, totalF2 = 0, totalF3 = 0, totalF4 = 0, totalF5 = 0;
   for (const r of filtered) {
@@ -137,9 +152,10 @@ export function computeBackofficeScore(
   selectedName: string | null,
   groupBy: "empresa" | "unidade" | "area",
   config: ScoreConfig,
-  window: string[] = LAST_3_MONTHS
+  window: string[] = LAST_3_MONTHS,
+  sources?: QualidadeDataSources
 ): { score: number; ajustesPerOp: number; hePerOp: number; notaAjustes: number; notaHE: number } {
-  const { data, nameField } = getEfSource(groupBy);
+  const { data, nameField } = getEfSource(groupBy, sources);
 
   // Normalize window dates to match competencia format
   const windowNorm = window.map(w => w.substring(0, 7)); // "2026-01-01" → "2026-01"
@@ -184,11 +200,12 @@ export function computeCompositeScore(
   selectedName: string | null,
   groupBy: "empresa" | "unidade" | "area",
   config: ScoreConfig,
-  window: string[] = LAST_3_MONTHS
+  window: string[] = LAST_3_MONTHS,
+  sources?: QualidadeDataSources
 ): number {
-  const qualPct = computeQualityPercentage(selectedName, groupBy, window);
-  const treat = computeTreatmentScore(selectedName, groupBy, config, window);
-  const bo = computeBackofficeScore(selectedName, groupBy, config, window);
+  const qualPct = computeQualityPercentage(selectedName, groupBy, window, sources);
+  const treat = computeTreatmentScore(selectedName, groupBy, config, window, sources);
+  const bo = computeBackofficeScore(selectedName, groupBy, config, window, sources);
   return Math.round((qualPct * config.weight_quality / 100) +
            (treat.score * config.weight_treatment / 100) +
            (bo.score * config.weight_backoffice / 100));
@@ -198,11 +215,12 @@ export function computeFullBreakdown(
   selectedName: string | null,
   groupBy: "empresa" | "unidade" | "area",
   config: ScoreConfig,
-  window: string[] = LAST_3_MONTHS
+  window: string[] = LAST_3_MONTHS,
+  sources?: QualidadeDataSources
 ) {
-  const qualPct = computeQualityPercentage(selectedName, groupBy, window);
-  const treat = computeTreatmentScore(selectedName, groupBy, config, window);
-  const bo = computeBackofficeScore(selectedName, groupBy, config, window);
+  const qualPct = computeQualityPercentage(selectedName, groupBy, window, sources);
+  const treat = computeTreatmentScore(selectedName, groupBy, config, window, sources);
+  const bo = computeBackofficeScore(selectedName, groupBy, config, window, sources);
 
   const qualContrib = Math.round(qualPct * config.weight_quality / 100);
   const treatContrib = Math.round(treat.score * config.weight_treatment / 100);
@@ -221,7 +239,8 @@ export function computeFullBreakdown(
 export function computePrevTriScore(
   selectedName: string | null,
   groupBy: "empresa" | "unidade" | "area",
-  config: ScoreConfig
+  config: ScoreConfig,
+  sources?: QualidadeDataSources
 ): number {
-  return computeCompositeScore(selectedName, groupBy, config, PREV_3_MONTHS);
+  return computeCompositeScore(selectedName, groupBy, config, PREV_3_MONTHS, sources);
 }
