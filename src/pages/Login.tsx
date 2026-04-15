@@ -60,7 +60,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardHeader className="text-center space-y-3 pb-2">
           <div className="flex justify-center">
@@ -145,7 +145,7 @@ export default function Login() {
                       ) : (
                         <AlertCircle className="h-3.5 w-3.5 text-muted-foreground" />
                       )}
-                      <span className={check.ok ? "text-emerald-600" : "text-muted-foreground"}>
+                      <span className={check.ok ? "text-primary" : "text-muted-foreground"}>
                         {check.label}
                       </span>
                     </div>
