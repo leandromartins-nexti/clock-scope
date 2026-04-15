@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from "react";
-import { AlertTriangle, Trophy, Lightbulb, Activity, ArrowRight, Link2, RotateCcw } from "lucide-react";
+import { AlertTriangle, Trophy, Lightbulb, Activity, ArrowRight, Link2, RotateCcw, ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { getInsightsForCustomer, categoryConfig, type QualidadeInsight } from "@/data/qualidadeInsightsData";
 import { useDismissedInsights } from "@/hooks/useDismissedInsights";
 import { useCustomer } from "@/contexts/CustomerContext";
@@ -22,9 +22,10 @@ export default function QualidadeInsightsSection() {
   const [fadingOut, setFadingOut] = useState<string | null>(null);
   const [selectedInsight, setSelectedInsight] = useState<QualidadeInsight | null>(null);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({});
+  const [showDismissed, setShowDismissed] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Clear highlight after 2s
   useEffect(() => {
     if (!highlightedId) return;
     const t = setTimeout(() => setHighlightedId(null), 2000);
@@ -33,19 +34,19 @@ export default function QualidadeInsightsSection() {
 
   const activeInsights = useMemo(
     () => qualidadeInsights.filter((i) => !dismissed.includes(i.id)),
-    [dismissed]
+    [qualidadeInsights, dismissed]
   );
 
   const dismissedInsights = useMemo(
     () => qualidadeInsights.filter((i) => dismissed.includes(i.id)),
-    [dismissed]
+    [qualidadeInsights, dismissed]
   );
 
   const byCategory = useMemo(() => {
     const m: Record<string, QualidadeInsight[]> = {};
     for (const cat of categories) m[cat] = [];
     for (const ins of activeInsights) {
-      m[ins.category].push(ins);
+      m[ins.category]?.push(ins);
     }
     for (const cat of categories) {
       m[cat].sort((a, b) => (severityOrder[a.severity] ?? 5) - (severityOrder[b.severity] ?? 5));
@@ -55,30 +56,26 @@ export default function QualidadeInsightsSection() {
 
   const handleDismiss = useCallback((id: string) => {
     setFadingOut(id);
-    setTimeout(() => { dismiss(id); setFadingOut(null); }, 200);
+    setTimeout(() => { dismiss(id); setFadingOut(null); }, 250);
   }, [dismiss]);
 
   const handleCrossRef = useCallback((targetId: string) => {
     setHighlightedId(targetId);
-    // Scroll to card if visible
     const el = cardRefs.current[targetId];
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);
 
   const handleRestoreOne = useCallback((id: string) => {
-    // Restore all then re-dismiss others — simpler: just manipulate localStorage directly
-    const key = "dismissed_insights_642_qualidade";
+    const key = `dismissed_insights_${customerId}_qualidade`;
     const current = dismissed.filter(d => d !== id);
     localStorage.setItem(key, JSON.stringify(current));
-    // Force re-render by calling restore then re-dismiss
     restore();
-    // Re-dismiss the others after restore
-    setTimeout(() => {
-      current.forEach(d => dismiss(d));
-    }, 0);
-  }, [dismissed, restore, dismiss]);
+    setTimeout(() => { current.forEach(d => dismiss(d)); }, 0);
+  }, [dismissed, restore, dismiss, customerId]);
+
+  const toggleCat = useCallback((cat: string) => {
+    setExpandedCats(prev => ({ ...prev, [cat]: !prev[cat] }));
+  }, []);
 
   if (qualidadeInsights.length === 0) {
     return (
@@ -92,100 +89,161 @@ export default function QualidadeInsightsSection() {
 
   if (activeInsights.length === 0 && dismissedInsights.length === 0) return null;
 
+  // Max visible cards per category before "show more"
+  const MAX_VISIBLE = 2;
+
   return (
     <div className="mt-6 mb-2">
-      <div className="flex items-center gap-2 mb-3">
-        <Lightbulb size={16} className="text-[#FF5722]" />
-        <span className="text-sm font-semibold text-foreground">Insights da Qualidade do Ponto</span>
-        <span className="text-[11px] text-muted-foreground">· {activeInsights.length} ativos</span>
+      {/* Header */}
+      <div className="flex items-center gap-2.5 mb-4">
+        <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[#FF5722]/10">
+          <Lightbulb size={14} className="text-[#FF5722]" />
+        </div>
+        <span className="text-sm font-semibold text-foreground tracking-tight">Insights da Qualidade do Ponto</span>
+        <div className="flex items-center gap-1.5 ml-1">
+          <span className="text-[11px] font-medium text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full">
+            {activeInsights.length} ativo{activeInsights.length !== 1 ? "s" : ""}
+          </span>
+        </div>
+        {dismissedInsights.length > 0 && (
+          <button
+            onClick={() => setShowDismissed(!showDismissed)}
+            className="ml-auto text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+          >
+            <RotateCcw size={10} />
+            {dismissedInsights.length} dispensado{dismissedInsights.length > 1 ? "s" : ""}
+          </button>
+        )}
       </div>
 
-      <div className="grid grid-cols-4 gap-3 items-stretch">
+      {/* Category columns */}
+      <div className="grid grid-cols-4 gap-4">
         {categories.map((cat) => {
           const cfg = categoryConfig[cat];
           const items = byCategory[cat];
           const Icon = iconMap[cfg.icon];
+          const isExpanded = expandedCats[cat] ?? false;
+          const visibleItems = isExpanded ? items : items.slice(0, MAX_VISIBLE);
+          const hasMore = items.length > MAX_VISIBLE;
 
           return (
-            <div
-              key={cat}
-              className="rounded-lg border bg-white flex flex-col"
-              style={{ borderColor: cfg.borderColor + "40", borderTop: `3px solid ${cfg.borderColor}` }}
-            >
-              {/* Header */}
-              <div className="px-3 py-2.5 flex items-center gap-2" style={{ backgroundColor: cfg.bgColor }}>
-                <Icon size={14} style={{ color: cfg.textColor }} />
-                <span className="text-xs font-semibold" style={{ color: cfg.textColor }}>{cfg.label}</span>
+            <div key={cat} className="flex flex-col">
+              {/* Category header */}
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded-t-lg"
+                style={{ backgroundColor: cfg.bgColor, borderBottom: `2px solid ${cfg.borderColor}` }}
+              >
+                <Icon size={13} style={{ color: cfg.textColor }} />
+                <span className="text-[11px] font-semibold tracking-wide" style={{ color: cfg.textColor }}>
+                  {cfg.label}
+                </span>
                 <span
-                  className="ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: cfg.badgeBg, color: cfg.textColor }}
+                  className="ml-auto text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
+                  style={{ backgroundColor: cfg.borderColor + "18", color: cfg.textColor }}
                 >
                   {items.length}
                 </span>
               </div>
 
-              {/* Body */}
-              <div className="p-2 flex flex-col gap-2 flex-1">
+              {/* Cards area */}
+              <div className="bg-muted/15 rounded-b-lg border border-t-0 border-border/30 flex-1 flex flex-col">
                 {items.length === 0 ? (
-                  <p className="text-[11px] text-muted-foreground text-center py-4">Nenhum insight ativo</p>
+                  <div className="flex-1 flex items-center justify-center py-8">
+                    <p className="text-[11px] text-muted-foreground/60 italic">Nenhum insight nesta categoria</p>
+                  </div>
                 ) : (
-                  items.map((ins) => {
-                    const isFading = fadingOut === ins.id;
-                    const isHighlighted = highlightedId === ins.id;
-                    return (
-                      <div
-                        key={ins.id}
-                        ref={(el) => { cardRefs.current[ins.id] = el; }}
-                        className="rounded border border-border/60 p-2.5 bg-white transition-all cursor-pointer hover:shadow-sm"
-                        style={{
-                          opacity: isFading ? 0 : 1,
-                          transform: isFading ? "translateY(4px)" : "translateY(0)",
-                          transition: "opacity 200ms, transform 200ms, box-shadow 300ms",
-                          boxShadow: isHighlighted ? `0 0 0 2px ${cfg.borderColor}` : undefined,
-                          animation: isHighlighted ? "insightPulse 1s ease-in-out" : undefined,
-                        }}
-                        onClick={() => setSelectedInsight(ins)}
-                      >
-                        <p className="text-[12px] font-medium leading-tight text-foreground mb-1">{ins.title}</p>
-                        <p className="text-[11px] leading-relaxed text-muted-foreground mb-1.5 line-clamp-3">{ins.narrative}</p>
-
-                        {ins.crossRef && (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleCrossRef(ins.crossRef!.targetId); }}
-                            className="text-[10px] text-blue-600 hover:text-blue-800 flex items-center gap-1 mb-1.5 transition-colors"
-                          >
-                            <Link2 size={10} />
-                            {ins.crossRef.label}
-                          </button>
-                        )}
-
-                        {ins.evidence && (
-                          <div className="flex items-center gap-1.5 mb-1.5 bg-muted/40 rounded p-1.5 text-[11px]">
-                            <div>
-                              <span className="text-[9px] text-muted-foreground block">{ins.evidence.before.label}</span>
-                              <span className="font-semibold text-foreground">{ins.evidence.before.value}</span>
-                            </div>
-                            <ArrowRight size={10} className="text-muted-foreground/50 flex-shrink-0" />
-                            <div>
-                              <span className="text-[9px] text-muted-foreground block">{ins.evidence.after.label}</span>
-                              <span className="font-semibold text-foreground">{ins.evidence.after.value}</span>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex items-start gap-1 mb-1.5">
-                          <span className="text-[10px] text-muted-foreground italic">💡 {ins.action}</span>
-                        </div>
-
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleDismiss(ins.id); }}
-                          className="text-[10px] text-muted-foreground hover:text-foreground border border-border/50 px-2 py-0.5 rounded transition-colors"
+                  <div className="p-2 flex flex-col gap-2">
+                    {visibleItems.map((ins) => {
+                      const isFading = fadingOut === ins.id;
+                      const isHighlighted = highlightedId === ins.id;
+                      return (
+                        <div
+                          key={ins.id}
+                          ref={(el) => { cardRefs.current[ins.id] = el; }}
+                          className="group rounded-lg bg-background border border-border/40 hover:border-border/80 p-3 transition-all cursor-pointer hover:shadow-md"
+                          style={{
+                            opacity: isFading ? 0 : 1,
+                            transform: isFading ? "scale(0.96) translateY(4px)" : "scale(1) translateY(0)",
+                            transition: "all 250ms cubic-bezier(0.4,0,0.2,1)",
+                            boxShadow: isHighlighted ? `0 0 0 2px ${cfg.borderColor}, 0 4px 12px ${cfg.borderColor}30` : undefined,
+                          }}
+                          onClick={() => setSelectedInsight(ins)}
                         >
-                          Dispensar
-                        </button>
-                      </div>
-                    );
-                  })
+                          {/* Title */}
+                          <p className="text-[12px] font-semibold leading-snug text-foreground mb-1.5 line-clamp-2 group-hover:text-foreground/90">
+                            {ins.title}
+                          </p>
+
+                          {/* Narrative */}
+                          <p className="text-[11px] leading-relaxed text-muted-foreground mb-2 line-clamp-3">
+                            {ins.narrative}
+                          </p>
+
+                          {/* Cross-ref */}
+                          {ins.crossRef && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleCrossRef(ins.crossRef!.targetId); }}
+                              className="text-[10px] text-blue-600 hover:text-blue-700 flex items-center gap-1 mb-2 font-medium transition-colors"
+                            >
+                              <Link2 size={9} />
+                              {ins.crossRef.label}
+                            </button>
+                          )}
+
+                          {/* Evidence pill */}
+                          {ins.evidence && (
+                            <div className="flex items-center gap-2 mb-2 rounded-md p-2" style={{ backgroundColor: cfg.bgColor + "80" }}>
+                              <div className="flex-1 min-w-0">
+                                <span className="text-[9px] text-muted-foreground block leading-tight truncate">{ins.evidence.before.label}</span>
+                                <span className="text-[12px] font-bold text-foreground">{ins.evidence.before.value}</span>
+                              </div>
+                              <ArrowRight size={10} className="text-muted-foreground/40 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <span className="text-[9px] text-muted-foreground block leading-tight truncate">{ins.evidence.after.label}</span>
+                                <span className="text-[12px] font-bold text-foreground">{ins.evidence.after.value}</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Action */}
+                          <p className="text-[10px] text-muted-foreground italic leading-snug mb-2">
+                            <span className="not-italic">💡</span> {ins.action}
+                          </p>
+
+                          {/* Footer actions */}
+                          <div className="flex items-center justify-between pt-1.5 border-t border-border/20">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setSelectedInsight(ins); }}
+                              className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+                            >
+                              <Eye size={10} />
+                              Detalhes
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDismiss(ins.id); }}
+                              className="text-[10px] text-muted-foreground/60 hover:text-destructive transition-colors"
+                            >
+                              Dispensar
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Show more/less */}
+                    {hasMore && (
+                      <button
+                        onClick={() => toggleCat(cat)}
+                        className="text-[10px] text-muted-foreground hover:text-foreground flex items-center justify-center gap-1 py-1.5 transition-colors"
+                      >
+                        {isExpanded ? (
+                          <><ChevronUp size={11} /> Mostrar menos</>
+                        ) : (
+                          <><ChevronDown size={11} /> +{items.length - MAX_VISIBLE} mais</>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -193,17 +251,15 @@ export default function QualidadeInsightsSection() {
         })}
       </div>
 
-      {/* Dismissed footer */}
-      {dismissedInsights.length > 0 && (
-        <div className="mt-3 border border-border/40 rounded-lg bg-muted/20 p-3">
-          <div className="flex items-center gap-2 mb-2">
-            <RotateCcw size={12} className="text-muted-foreground" />
-            <span className="text-[11px] font-medium text-muted-foreground">
-              {dismissedInsights.length} insight{dismissedInsights.length > 1 ? "s" : ""} dispensado{dismissedInsights.length > 1 ? "s" : ""}
-            </span>
+      {/* Dismissed drawer */}
+      {showDismissed && dismissedInsights.length > 0 && (
+        <div className="mt-3 border border-border/30 rounded-lg bg-muted/10 p-3 animate-in slide-in-from-top-2 duration-200">
+          <div className="flex items-center gap-2 mb-2.5">
+            <RotateCcw size={11} className="text-muted-foreground" />
+            <span className="text-[11px] font-medium text-muted-foreground">Insights dispensados</span>
             <button
-              onClick={restore}
-              className="ml-auto text-[10px] text-[#FF5722] hover:underline"
+              onClick={() => { restore(); setShowDismissed(false); }}
+              className="ml-auto text-[10px] text-[#FF5722] hover:text-[#FF5722]/80 font-medium transition-colors"
             >
               Restaurar todos
             </button>
@@ -215,10 +271,10 @@ export default function QualidadeInsightsSection() {
                 <button
                   key={ins.id}
                   onClick={() => handleRestoreOne(ins.id)}
-                  className="text-[10px] px-2 py-1 rounded border border-border/50 bg-white hover:bg-muted/40 text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                  className="text-[10px] px-2.5 py-1 rounded-full border border-border/40 bg-background hover:bg-muted/40 text-muted-foreground hover:text-foreground transition-all flex items-center gap-1.5 hover:shadow-sm"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cfg.borderColor }} />
-                  {ins.title.length > 40 ? ins.title.slice(0, 40) + "…" : ins.title}
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: cfg.borderColor }} />
+                  <span className="truncate max-w-[200px]">{ins.title}</span>
                 </button>
               );
             })}
