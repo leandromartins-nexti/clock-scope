@@ -132,8 +132,8 @@ export default function AnalyticsResumoExecutivo() {
     };
   }, [selectedRegional, groupBy, scoreConfig, sources, allMonths]);
 
-  // Score for gauge
-  const activeScore = kpiSummary.score;
+  // Score for gauge — use same value as sparkline last point
+  const activeScore = qualidadeCard.score;
   const scoreClassif = getScoreClassification(activeScore, scoreConfig);
 
   // Previous period score for trend
