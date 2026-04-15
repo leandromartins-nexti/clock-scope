@@ -560,7 +560,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
           );
         }} activeDot={{ r: 6, stroke: color, strokeWidth: 2, fill: "#fff" }} name="Taxa" />
         {data[0]?.hcMes !== undefined && (
-          <Line yAxisId="right" type="monotone" dataKey="hcMes" stroke="#9ca3af" strokeWidth={1.5} strokeDasharray="6 3" dot={false} name="HC Operacional" />
+          <Area yAxisId="right" type="monotone" dataKey="hcMes" fill="#D3D1C7" fillOpacity={0.4} stroke="#D3D1C7" strokeWidth={0} name="HC Operacional" />
         )}
       </ComposedChart>
     );
@@ -867,18 +867,18 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       {composicaoChartData.map((entry, idx) => {
                         const isActive = selectedMes && selectedMes === (entry as any).mes;
                         const dimmed = selectedMes && selectedMes !== (entry as any).mes;
-                        return <Cell key={idx} fill={dimmed ? `${CATEGORY_COLORS[cat]}73` : `${CATEGORY_COLORS[cat]}BF`} stroke={isActive ? "#FF5722" : CATEGORY_COLORS[cat]} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
+                        return <Cell key={idx} fill={CATEGORY_COLORS[cat]} fillOpacity={dimmed ? 0.25 : 0.65} stroke={isActive ? "#FF5722" : CATEGORY_COLORS[cat]} strokeOpacity={0.5} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
                       })}
                     </Bar>
                   ))}
-                  <Line yAxisId="right" type="monotone" dataKey="volumeTotal" stroke="#6b7280" strokeWidth={1.5} strokeDasharray="6 3" dot={false} name="Volume Total (h)" />
+                  <Line yAxisId="right" type="monotone" dataKey="volumeTotal" stroke="#3b82f6" strokeWidth={1.5} strokeDasharray="6 3" dot={false} name="Volume Total (h)" />
                   <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                     ...CATEGORIES_ORDER.filter(cat => composicaoChartData.some(d => (d as any)[cat] > 0)).map(cat => ({
                       value: `${CATEGORY_LABELS[cat]} ${composicaoDistribuicao[cat as keyof typeof composicaoDistribuicao] ?? 0}%`,
                       type: "square" as const,
                       color: CATEGORY_COLORS[cat],
                     })),
-                    { value: "Volume Total", type: "line" as const, color: "#6b7280" },
+                    { value: "Volume Total", type: "line" as const, color: "#3b82f6" },
                   ]} />
                 </ComposedChart>
               </ResponsiveContainer>
@@ -937,14 +937,14 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                   {maturidadeChartData.map((entry, idx) => {
                     const isActive = selectedMes && selectedMes === (entry as any).mes;
                     const dimmed = selectedMes && selectedMes !== (entry as any).mes;
-                    return <Cell key={idx} fill={dimmed ? "rgba(34,197,94,0.45)" : "rgba(34,197,94,0.75)"} stroke={isActive ? "#FF5722" : "#22c55e"} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
+                    return <Cell key={idx} fill="#22c55e" fillOpacity={dimmed ? 0.25 : 0.65} stroke={isActive ? "#FF5722" : "#22c55e"} strokeOpacity={0.5} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
                   })}
                 </Bar>
                 <Bar dataKey="2_reativo" stackId="1" radius={[4, 4, 0, 0]} name="Reativo">
                   {maturidadeChartData.map((entry, idx) => {
                     const isActive = selectedMes && selectedMes === (entry as any).mes;
                     const dimmed = selectedMes && selectedMes !== (entry as any).mes;
-                    return <Cell key={idx} fill={dimmed ? "rgba(239,68,68,0.45)" : "rgba(239,68,68,0.75)"} stroke={isActive ? "#FF5722" : "#ef4444"} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
+                    return <Cell key={idx} fill="#ef4444" fillOpacity={dimmed ? 0.25 : 0.65} stroke={isActive ? "#FF5722" : "#ef4444"} strokeOpacity={0.5} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
                   })}
                 </Bar>
                 <Line type="monotone" dataKey="pctFalta" stroke="#dc2626" strokeWidth={1.5} strokeDasharray="6 3" dot={{ r: 3, fill: "#dc2626", stroke: "#fff", strokeWidth: 1 }} name="% Falta crua" />
