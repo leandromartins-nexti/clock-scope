@@ -252,7 +252,6 @@ export default function AnalyticsResumoExecutivo() {
               <div className="w-2" />
               <span className="min-w-[140px]">Indicador</span>
               <span className="min-w-[45px] text-center">Score</span>
-              <span className="min-w-[70px]">Atual</span>
               <span className="min-w-[65px] text-center">Variação</span>
               <div className="flex-1 min-w-[120px]" />
             </div>
