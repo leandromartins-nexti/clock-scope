@@ -999,24 +999,110 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
           </div>
         </div>
 
-        {/* G1: Evolução da Taxa de Absenteísmo */}
+        {/* G1: Composição do Absenteísmo (v5 — stacked bars + taxa line) */}
         <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
           <div className="flex items-center justify-between mb-0.5">
             <div>
               <div className="flex items-center gap-1.5">
-                <h4 className="text-sm font-semibold">Evolução da Taxa de Absenteísmo</h4>
-                <InfoTip text="Quanto a operação está perdendo para ausência. Taxa = horas não-planejadas / (HC × jornada mensal)." />
+                <h4 className="text-sm font-semibold">Composição do Absenteísmo</h4>
+                <InfoTip text={`Mix ponderado por peso. Sub-Score Composição: ${compV5Score.subScore} (peso médio ${compV5Score.pesoMedio}). Cada categoria tem um peso operacional — quanto maior, mais grave.`} />
               </div>
-              <p className="text-[10px] text-muted-foreground mb-2">Taxa mensal · linha cinza = HC operacional · clique para filtrar competência</p>
+              <p className="text-[10px] text-muted-foreground mb-2">Barras = horas por categoria · linha = taxa operacional · clique para filtrar competência</p>
             </div>
             <div className="flex items-center gap-1">
-              <button onClick={() => setChartDataModal("volume")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
-              <ChartModeToggle dataMode={volumeDataMode} onDataModeChange={setVolumeDataMode} chartMode={volumeChartMode} onChartModeChange={setVolumeChartMode} />
+              <button
+                onClick={() => setShowExcluded(prev => !prev)}
+                className={`text-[10px] px-2 py-1 rounded-md border transition-colors ${showExcluded ? "bg-muted border-border text-foreground" : "border-border/40 text-muted-foreground hover:bg-muted/50"}`}
+                title={showExcluded ? "Ocultar ausências não computadas" : "Mostrar ausências não computadas (férias, abono)"}
+              >
+                {showExcluded ? "Ocultar excluídas" : "Mostrar excluídas"}
+              </button>
+              <button onClick={() => setChartDataModal("compV5")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={280}>
-            {renderVolumeChart()}
-          </ResponsiveContainer>
+          {compV5ChartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <ComposedChart data={compV5ChartData} onClick={handleChartClick}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={xTick} />
+                <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={v => `${v}h`} label={{ value: "Horas", angle: -90, position: "insideLeft", fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} tickFormatter={v => `${v}%`} label={{ value: "Taxa Operacional (%)", angle: 90, position: "insideRight", fontSize: 10, fill: "#9ca3af" }} />
+                {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                <RechartsTooltip content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+                  const d = payload[0]?.payload;
+                  return (
+                    <div className="bg-card border border-border rounded-lg p-2.5 shadow-md text-xs space-y-1 max-w-xs">
+                      <p className="font-semibold text-foreground">{label}</p>
+                      {activeV5Cats.map(cat => {
+                        const v = Number(d?.[cat.key]) || 0;
+                        if (v === 0) return null;
+                        return (
+                          <div key={cat.key} className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: cat.color }} />
+                            <span className="text-muted-foreground truncate">{cat.label}:</span>
+                            <span className="font-medium text-foreground">{v.toLocaleString("pt-BR")}h</span>
+                            <span className="text-muted-foreground/60 text-[10px]">(peso {cat.peso})</span>
+                          </div>
+                        );
+                      })}
+                      {showExcluded && activeV5ExcludedCats.map(cat => {
+                        const v = Number(d?.[cat.key]) || 0;
+                        if (v === 0) return null;
+                        return (
+                          <div key={cat.key} className="flex items-center gap-1.5 opacity-50">
+                            <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: cat.color }} />
+                            <span className="text-muted-foreground truncate">{cat.label}:</span>
+                            <span className="font-medium text-foreground">{v.toLocaleString("pt-BR")}h</span>
+                            <span className="text-muted-foreground/60 text-[10px]">(fora do score)</span>
+                          </div>
+                        );
+                      })}
+                      <div className="border-t border-border/30 pt-1 mt-1 flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: "#6366f1" }} />
+                        <span className="text-muted-foreground">Taxa operacional:</span>
+                        <span className="font-medium text-foreground">{d?.taxaOperacional}%</span>
+                      </div>
+                    </div>
+                  );
+                }} />
+                {/* Stacked bars for operational categories */}
+                {activeV5Cats.map((cat, catIdx) => (
+                  <Bar key={cat.key} dataKey={cat.key} stackId="op" yAxisId="left"
+                    radius={catIdx === activeV5Cats.length - 1 && !showExcluded ? [4, 4, 0, 0] : [0, 0, 0, 0]}
+                    name={cat.label}
+                  >
+                    {compV5ChartData.map((entry, idx) => {
+                      const dimmed = selectedMes && selectedMes !== entry.mes;
+                      const isActive = selectedMes && selectedMes === entry.mes;
+                      return <Cell key={idx} fill={cat.color} fillOpacity={dimmed ? 0.2 : 0.65} stroke={isActive ? "#FF5722" : cat.color} strokeOpacity={0.4} strokeWidth={isActive ? 2 : 0.5} strokeDasharray={isActive ? "4 3" : "none"} />;
+                    })}
+                  </Bar>
+                ))}
+                {/* Excluded categories (if toggled on) */}
+                {showExcluded && activeV5ExcludedCats.map((cat, catIdx) => (
+                  <Bar key={cat.key} dataKey={cat.key} stackId="op" yAxisId="left"
+                    radius={catIdx === activeV5ExcludedCats.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
+                    name={cat.label}
+                  >
+                    {compV5ChartData.map((entry, idx) => {
+                      const dimmed = selectedMes && selectedMes !== entry.mes;
+                      return <Cell key={idx} fill={cat.color} fillOpacity={dimmed ? 0.15 : 0.35} stroke={cat.color} strokeOpacity={0.3} strokeWidth={0.5} />;
+                    })}
+                  </Bar>
+                ))}
+                {/* Taxa operacional line */}
+                <Line yAxisId="right" type="monotone" dataKey="taxaOperacional" stroke="#6366f1" strokeWidth={2} dot={{ r: 3, fill: "#6366f1", stroke: "#fff", strokeWidth: 1 }} name="Taxa Operacional (%)" />
+                <Legend iconType="square" iconSize={8} wrapperStyle={{ fontSize: 9, paddingTop: 8 }} payload={[
+                  ...activeV5Cats.map(cat => ({ value: cat.label, type: "square" as const, color: cat.color })),
+                  ...(showExcluded ? activeV5ExcludedCats.map(cat => ({ value: `${cat.label} ⊘`, type: "square" as const, color: cat.color })) : []),
+                  { value: "Taxa Operacional", type: "line" as const, color: "#6366f1" },
+                ]} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[280px] flex items-center justify-center text-sm text-muted-foreground">Sem dados de composição</div>
+          )}
         </div>
         </div>{/* close grid-cols-2 row 1 */}
 
