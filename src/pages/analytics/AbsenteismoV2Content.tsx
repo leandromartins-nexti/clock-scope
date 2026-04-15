@@ -136,16 +136,21 @@ const MATURIDADE_LABELS: Record<string, string> = {
 const CATEGORIES_ORDER = ["planejada", "saude", "operacional", "nao_categorizada", "falta"];
 
 // ── V5 Composição operational categories (10) with default weights ──
+// Colors follow the same semantic palette as "Composição das Ausências por Tipo":
+//   Reds (#ef4444, #dc2626) → pesos 100 (faltas/disciplinar)
+//   Orange (#f97316, #ea580c) → pesos 60-70 (parciais, saídas, atrasos)
+//   Amber (#f59e0b, #eab308) → pesos 40-50 (atestado, parcial genérica)
+//   Green (#22c55e, #14b8a6, #06b6d4) → pesos 20-30 (licenças, acidentes, INSS)
 const V5_OPERATIONAL_CATS = [
-  { key: "falta_nao_justificada_h", label: "Falta não justificada", peso: 100, color: "#dc2626" },
-  { key: "disciplinar_h", label: "Disciplinar", peso: 100, color: "#ef4444" },
-  { key: "saida_meio_h", label: "Saída intermediária", peso: 70, color: "#ea580c" },
-  { key: "saida_antecipada_h", label: "Saída antecipada", peso: 65, color: "#f97316" },
-  { key: "atraso_h", label: "Atraso", peso: 60, color: "#f59e0b" },
-  { key: "parcial_generico_h", label: "Parcial genérica", peso: 50, color: "#eab308" },
-  { key: "atestado_h", label: "Atestado médico", peso: 40, color: "#3b82f6" },
-  { key: "inss_h", label: "INSS (afastamento)", peso: 30, color: "#06b6d4" },
-  { key: "acidente_h", label: "Acidente de trabalho", peso: 20, color: "#14b8a6" },
+  { key: "falta_nao_justificada_h", label: "Falta não justificada", peso: 100, color: "#ef4444" },
+  { key: "disciplinar_h", label: "Disciplinar", peso: 100, color: "#dc2626" },
+  { key: "saida_meio_h", label: "Saída intermediária", peso: 70, color: "#f97316" },
+  { key: "saida_antecipada_h", label: "Saída antecipada", peso: 65, color: "#ea580c" },
+  { key: "atraso_h", label: "Atraso", peso: 60, color: "#fb923c" },
+  { key: "parcial_generico_h", label: "Parcial genérica", peso: 50, color: "#f59e0b" },
+  { key: "atestado_h", label: "Atestado médico", peso: 40, color: "#eab308" },
+  { key: "inss_h", label: "INSS (afastamento)", peso: 30, color: "#14b8a6" },
+  { key: "acidente_h", label: "Acidente de trabalho", peso: 20, color: "#06b6d4" },
   { key: "licenca_legal_h", label: "Licença legal", peso: 20, color: "#22c55e" },
 ] as const;
 
