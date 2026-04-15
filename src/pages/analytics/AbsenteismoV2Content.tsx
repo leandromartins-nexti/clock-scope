@@ -143,15 +143,15 @@ const CATEGORIES_ORDER = ["planejada", "saude", "operacional", "nao_categorizada
 //   Green (#22c55e, #14b8a6, #06b6d4) → pesos 20-30 (licenças, acidentes, INSS)
 const V5_OPERATIONAL_CATS = [
   { key: "licenca_legal_h", label: "Licença legal", peso: 20, color: "#4caf50" },
-  { key: "acidente_h", label: "Acidente de trabalho", peso: 20, color: "#66bb6a" },
-  { key: "inss_h", label: "INSS (afastamento)", peso: 30, color: "#81c784" },
-  { key: "atestado_h", label: "Atestado médico", peso: 40, color: "#8bc34a" },
-  { key: "parcial_generico_h", label: "Parcial genérica", peso: 50, color: "#aed581" },
-  { key: "atraso_h", label: "Atraso", peso: 60, color: "#ff9800" },
-  { key: "saida_antecipada_h", label: "Saída antecipada", peso: 65, color: "#ff7043" },
+  { key: "acidente_h", label: "Acidente de trabalho", peso: 20, color: "#4caf50" },
+  { key: "inss_h", label: "INSS (afastamento)", peso: 30, color: "#8bc34a" },
+  { key: "atestado_h", label: "Atestado médico", peso: 40, color: "#ff9800" },
+  { key: "parcial_generico_h", label: "Parcial genérica", peso: 50, color: "#ff5722" },
+  { key: "atraso_h", label: "Atraso", peso: 60, color: "#ff5722" },
+  { key: "saida_antecipada_h", label: "Saída antecipada", peso: 65, color: "#ff5722" },
   { key: "saida_meio_h", label: "Saída intermediária", peso: 70, color: "#ff5722" },
   { key: "disciplinar_h", label: "Disciplinar", peso: 100, color: "#f44336" },
-  { key: "falta_nao_justificada_h", label: "Falta não justificada", peso: 100, color: "#e53935" },
+  { key: "falta_nao_justificada_h", label: "Falta não justificada", peso: 100, color: "#f44336" },
 ] as const;
 
 const V5_EXCLUDED_CATS = [
