@@ -23,8 +23,20 @@ export interface QualidadeInsight {
   modal?: InsightModal;
 }
 
-import insightsJson from "@/data/customers/642/qualidade-ponto/insights.json";
-export const qualidadeInsights: QualidadeInsight[] = insightsJson as QualidadeInsight[];
+import insights642 from "@/data/customers/642/qualidade-ponto/insights.json";
+import insights2 from "@/data/customers/2/insights.json";
+
+const insightsByCustomer: Record<number, QualidadeInsight[]> = {
+  642: insights642 as QualidadeInsight[],
+  2: insights2 as QualidadeInsight[],
+};
+
+export function getInsightsForCustomer(customerId: number): QualidadeInsight[] {
+  return insightsByCustomer[customerId] ?? [];
+}
+
+// Legacy export for backward compat
+export const qualidadeInsights: QualidadeInsight[] = insights642 as QualidadeInsight[];
 
 export const categoryConfig = {
   risk: {
