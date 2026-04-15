@@ -1864,14 +1864,15 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             // Aggregate by competencia (optionally filtered by sidebar selection)
             // Normalize: strip "VIG EYES " prefix for comparison
             const normName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
+            const nameField = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
+            const idField = groupBy === "empresa" ? "company_id" : groupBy === "unidade" ? "business_unit_id" : "area_id";
             const filtered = selectedRegional
               ? rawEsforco.filter((r: any) => {
                   const selNorm = normName(selectedRegional);
-                  if (groupBy === "empresa") return String(r.company_id) === selectedRegional || normName(r.company_name ?? "") === selNorm;
-                  if (groupBy === "unidade") return String(r.business_unit_id) === selectedRegional || normName(r.business_unit_name ?? "") === selNorm;
-                  return String(r.area_id) === selectedRegional || normName(r.area_name ?? "") === selNorm;
+                  return String(r[idField]) === selectedRegional || normName(r[nameField] ?? "") === selNorm;
                 })
               : rawEsforco;
+            console.log("[Sobrecarga] groupBy:", groupBy, "selectedRegional:", selectedRegional, "rawEsforco length:", rawEsforco.length, "filtered length:", filtered.length, "sample names:", rawEsforco.slice(0, 3).map((r: any) => r[nameField]));
 
             const MONTH_LABELS: Record<string, string> = {
               "2025-04": "abr/25", "2025-05": "mai/25", "2025-06": "jun/25",
