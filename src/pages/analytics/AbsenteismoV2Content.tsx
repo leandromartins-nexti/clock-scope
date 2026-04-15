@@ -13,7 +13,7 @@ import { useState, useMemo, useCallback } from "react";
 import {
   ResponsiveContainer, LineChart, Line, AreaChart, Area, ComposedChart,
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ReferenceLine,
-  Cell, Bar, ScatterChart, Scatter, ZAxis, ReferenceArea,
+  Cell, Bar, ScatterChart, Scatter, ZAxis, ReferenceArea, LabelList,
 } from "recharts";
 import { Database } from "lucide-react";
 import ChartModeToggle from "@/components/analytics/ChartModeToggle";
