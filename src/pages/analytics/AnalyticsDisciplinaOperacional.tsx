@@ -1019,7 +1019,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     return scatterQualidade;
   }, [groupBy, selectedReferenceMonth, dataSources]);
 
-  const allScatterTratativa = useMemo(() => aggregateAjustes(selectedReferenceMonth, groupBy), [selectedReferenceMonth, groupBy]);
+  const allScatterTratativa = useMemo(() => aggregateAjustes(selectedReferenceMonth, groupBy, dataSources), [selectedReferenceMonth, groupBy, dataSources]);
 
   // Compute tempo_medio_dias per operation from tratativa-tempo JSONs
   const tempoMedioPorOperacao = useMemo(() => {
