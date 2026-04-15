@@ -1520,6 +1520,78 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         {/* Row 2: Evolução do Tempo de Tratativa + Sobrecarga do Back-office */}
         <div className="grid grid-cols-2 gap-3">
 
+          {/* Evolução do Tempo de Tratativa */}
+          <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
+            <div className="flex items-center justify-between mb-0.5">
+              <div>
+                <h4 className="text-sm font-semibold">Evolução do Tempo de Tratativa</h4>
+                <p className="text-[10px] text-muted-foreground mb-2">Distribuição por faixa (%) · Tempo médio (dias) · clique para filtrar</p>
+              </div>
+              <button onClick={() => setChartDataModal("evoTratativa")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
+            </div>
+            <ResponsiveContainer width="100%" height={280}>
+              <ComposedChart data={(() => {
+                const faixas = tratativaFaixasFiltrada;
+                return faixas.map(d => {
+                  const total = d.total || 1;
+                  return {
+                    mes: d.mes,
+                    ate1d: Math.round((d.ate1d / total) * 100),
+                    de1a3d: Math.round((d.de1a3d / total) * 100),
+                    de3a7d: Math.round((d.de3a7d / total) * 100),
+                    de7a15d: Math.round((d.de7a15d / total) * 100),
+                    mais15d: Math.round((d.mais15d / total) * 100),
+                    tempoMedio: tratativaMediaTotal > 0 ? Math.round(d.total / (tratativaFaixasFiltrada.length || 1) * 10) / 10 : 0,
+                  };
+                });
+              })()} onClick={(e: any) => {
+                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+              }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" tick={(props: any) => {
+                  const { x, y, payload } = props;
+                  const isActive = selectedMes === payload.value;
+                  return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                }} />
+                <YAxis yAxisId="left" tick={{ fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} label={{ value: "Distribuição por faixa (%)", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} label={{ value: "Tempo médio (dias)", angle: 90, position: "insideRight", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
+                {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                <RechartsTooltip content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+                  const faixaColors: Record<string, string> = { ate1d: "#22c55e", de1a3d: "#84cc16", de3a7d: "#f59e0b", de7a15d: "#f97316", mais15d: "#ef4444" };
+                  const faixaLabels: Record<string, string> = { ate1d: "≤1 dia", de1a3d: "1-3 dias", de3a7d: "3-7 dias", de7a15d: "7-15 dias", mais15d: ">15 dias" };
+                  return (
+                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                      <p className="font-semibold text-foreground">{label}</p>
+                      {["ate1d", "de1a3d", "de3a7d", "de7a15d", "mais15d"].map(k => {
+                        const val = payload.find(p => p.dataKey === k)?.value ?? 0;
+                        return (
+                          <div key={k} className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5" style={{ backgroundColor: faixaColors[k] }} />
+                            <span className="text-muted-foreground">{faixaLabels[k]}:</span>
+                            <span className="font-medium text-foreground">{val}%</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                }} />
+                <Area yAxisId="left" type="monotone" dataKey="ate1d" stackId="faixa" fill="#22c55e" fillOpacity={0.65} stroke="#22c55e" strokeWidth={0} name="≤1 dia" />
+                <Area yAxisId="left" type="monotone" dataKey="de1a3d" stackId="faixa" fill="#84cc16" fillOpacity={0.65} stroke="#84cc16" strokeWidth={0} name="1-3 dias" />
+                <Area yAxisId="left" type="monotone" dataKey="de3a7d" stackId="faixa" fill="#f59e0b" fillOpacity={0.65} stroke="#f59e0b" strokeWidth={0} name="3-7 dias" />
+                <Area yAxisId="left" type="monotone" dataKey="de7a15d" stackId="faixa" fill="#f97316" fillOpacity={0.65} stroke="#f97316" strokeWidth={0} name="7-15 dias" />
+                <Area yAxisId="left" type="monotone" dataKey="mais15d" stackId="faixa" fill="#ef4444" fillOpacity={0.65} stroke="#ef4444" strokeWidth={0} name=">15 dias" />
+                <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
+                  { value: "≤1 dia", type: "square" as const, color: "#22c55e" },
+                  { value: "1-3 dias", type: "square" as const, color: "#84cc16" },
+                  { value: "3-7 dias", type: "square" as const, color: "#f59e0b" },
+                  { value: "7-15 dias", type: "square" as const, color: "#f97316" },
+                  { value: ">15 dias", type: "square" as const, color: "#ef4444" },
+                ]} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+
           {(() => {
             const sobrecargaSources: Record<string, any[]> = {
               empresa: sobrecargaEmpresaJson,
