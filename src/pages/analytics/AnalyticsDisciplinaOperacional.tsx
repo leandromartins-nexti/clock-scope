@@ -1114,14 +1114,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     return { min: paddedMin, max: paddedMax };
   };
 
-  const qualDomain = useMemo(() => {
-    if (!chartScatterQual.length) return { xMin: 0, xMax: 300000, yMin: 70, yMax: 100 };
-    const xs = chartScatterQual.map(d => d.volume);
-    const ys = chartScatterQual.map(d => d.qualidade);
-    const x = padDomain(Math.min(...xs), Math.max(...xs), true);
-    const y = padDomain(Math.min(...ys), Math.max(...ys));
-    return { xMin: x.min, xMax: x.max, yMin: y.min, yMax: y.max };
-  }, [chartScatterQual]);
+  // fixedBubble for Mapa de Operações click-to-label
+  const [fixedBubble, setFixedBubble] = useState<string | null>(null);
 
   const tratDomain = useMemo(() => {
     if (!chartScatterTrat.length) return { xMin: 0, xMax: 300000, yMin: 1, yMax: 7 };
