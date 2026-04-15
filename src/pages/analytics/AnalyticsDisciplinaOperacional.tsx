@@ -1348,7 +1348,15 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <XAxis type="number" dataKey="headcount" name="Headcount" domain={[mapaDomain.xMin, mapaDomain.xMax]} tick={{ fontSize: 10 }} label={{ value: "Headcount", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="score" name="Score" domain={[mapaDomain.yMin, mapaDomain.yMax]} tick={{ fontSize: 10 }} label={{ value: "Score Operacional", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" range={[250, 250]} />
-                <ReferenceLine y={70} stroke="#22c55e" strokeWidth={1} strokeDasharray="5 3" label={{ value: "Limite de Score saudável: 70", position: "right", fontSize: 9, fill: "#22c55e" }} />
+                <ReferenceLine y={70} stroke="#22c55e" strokeWidth={1} strokeDasharray="5 3" label={({ viewBox }: any) => {
+                  const { y, width } = viewBox || {};
+                  return (
+                    <g>
+                      <text x={(width ?? 0) + 45} y={(y ?? 0) - 6} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">Limite</text>
+                      <text x={(width ?? 0) + 45} y={(y ?? 0) + 4} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">saudável</text>
+                    </g>
+                  );
+                }} />
                 <ReferenceArea x1={mapaDomain.xMax * 0.75} x2={mapaDomain.xMax} y1={95} y2={100} fill="transparent" strokeOpacity={0} label={{ value: "Escala produtiva", position: "insideTopRight", fontSize: 9, fontWeight: 500, fill: "rgba(34,197,94,0.6)" }} />
                 <ReferenceArea x1={mapaDomain.xMin} x2={mapaDomain.xMax * 0.25} y1={0} y2={5} fill="transparent" strokeOpacity={0} label={{ value: "Baixa performance", position: "insideBottomLeft", fontSize: 9, fontWeight: 500, fill: "rgba(239,68,68,0.6)" }} />
                 <RechartsTooltip content={({ active, payload }) => {
