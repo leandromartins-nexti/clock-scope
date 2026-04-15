@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 // TODO: REMOVER EM PRODUÇÃO — useCustomer é do modo de teste multi-cliente
 import { useCustomer } from "@/contexts/CustomerContext";
+import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
 import NoDataPlaceholder from "@/components/analytics/NoDataPlaceholder";
 import { Info, TrendingUp, TrendingDown, Minus as MinusIcon, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown, LineChartIcon, BarChart3, AreaChartIcon, Percent, Hash, Database, Lock, ArrowUp, ArrowDown } from "lucide-react";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
@@ -37,8 +38,7 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import QualidadeInsightsSection from "@/components/analytics/QualidadeInsightsSection";
 
-import qpDecomposicaoScore from "@/data/qualidade-ponto/decomposicao-score.json";
-import qpKpisPeriodoAnterior from "@/data/qualidade-ponto/kpis-periodo-anterior.json";
+// decomposicaoScore and kpisPeriodoAnterior now loaded dynamically via useQualidadePontoData hook
 import { evolucaoQualidadeHeadcountSource, evolucaoQualidadeHeadcountColumns } from "@/data/chart-sources/evolucao-qualidade-headcount";
 import { evolucaoTempoTratativaSource, evolucaoTempoTratativaColumns } from "@/data/chart-sources/evolucao-tempo-tratativa";
 import { sobrecargaBackofficeSource, sobrecargaBackofficeColumns } from "@/data/chart-sources/sobrecarga-backoffice";
@@ -884,6 +884,7 @@ type ContentProps = { selectedRegional: string | null; onRegionalClick: (n: stri
 // ══════════════════════════════════════════════════════════════
 function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
   const { config: scoreConfig } = useScoreConfig();
+  const { data: customerData, loading: customerDataLoading } = useQualidadePontoData();
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
@@ -899,11 +900,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const normHcName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
   const headcountMaps = useMemo<{ active: Record<string, number>; ponto: Record<string, number> }>(() => {
     const hcSources: Record<string, any[]> = {
-      empresa: hcEmpresaJson,
-      unidade: hcUnNegocioJson,
-      area: hcAreaJson,
+      empresa: customerData.hcEmpresa,
+      unidade: customerData.hcUnidade,
+      area: customerData.hcArea,
     };
-    const raw = hcSources[groupBy] ?? hcEmpresaJson;
+    const raw = hcSources[groupBy] ?? customerData.hcEmpresa;
     const nameField = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
     const idField = groupBy === "empresa" ? "company_id" : groupBy === "unidade" ? "business_unit_id" : "area_id";
 
@@ -1023,11 +1024,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   // Compute tempo_medio_dias per operation from tratativa-tempo JSONs
   const tempoMedioPorOperacao = useMemo(() => {
     const tratSources: Record<string, any[]> = {
-      empresa: tratTempoEmpresa,
-      unidade: tratTempoUnidade,
-      area: tratTempoArea,
+      empresa: customerData.tratTempoEmpresa,
+      unidade: customerData.tratTempoUnidade,
+      area: customerData.tratTempoArea,
     };
-    const raw = tratSources[groupBy] ?? tratTempoEmpresa;
+    const raw = tratSources[groupBy] ?? customerData.tratTempoEmpresa;
     const nameField = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
     const normName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
     
@@ -1186,10 +1187,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   <p className="text-sm font-semibold">Como o Score {compositeScore} foi calculado</p>
                 </div>
                 <div className="p-3 space-y-3">
-                  {qpDecomposicaoScore.componentes.map((comp) => {
+                  {customerData.decomposicaoScore.componentes.map((comp) => {
                     const COMP_COLORS: Record<string, string> = { success: "#22c55e", warning: "#eab308", critical: "#ef4444" };
                     const barColor = COMP_COLORS[comp.cor_semantica] || "#6b7280";
-                    const barWidth = Math.max(comp.contribuicao / qpDecomposicaoScore.score_composto * 100, 4);
+                    const barWidth = Math.max(comp.contribuicao / customerData.decomposicaoScore.score_composto * 100, 4);
                     return (
                       <div key={comp.metrica} className="space-y-1">
                         <div className="flex items-center justify-between">
@@ -1216,7 +1217,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               </PopoverContent>
             </Popover>
             {(() => {
-              const kpi = (qpKpisPeriodoAnterior.kpis as any).score_aba;
+              const kpi = (customerData.kpisPeriodoAnterior.kpis as any).score_aba;
               if (!kpi) return null;
               const delta = kpi.delta;
               const absDelta = Math.abs(delta);
@@ -1240,7 +1241,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             <p className="text-xl font-bold mt-0.5 truncate text-foreground">{Math.round(activeData.qualidadePct)}%</p>
             <p className={`text-[11px] mt-0.5 font-medium ${qualClassif.text}`}>{qualClassif.label}</p>
             {(() => {
-              const kpi = (qpKpisPeriodoAnterior.kpis as any).qualidade_pct;
+              const kpi = (customerData.kpisPeriodoAnterior.kpis as any).qualidade_pct;
               if (!kpi) return null;
               return renderVariation(kpi.delta, `${Math.round(kpi.anterior)}%`, "pp");
             })()}
@@ -1260,7 +1261,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               return <p className={`text-[11px] mt-0.5 font-medium ${tempoClassif.color}`}>{tempoClassif.label}</p>;
             })()}
             {(() => {
-              const kpi = (qpKpisPeriodoAnterior.kpis as any).tempo_medio_dias;
+              const kpi = (customerData.kpisPeriodoAnterior.kpis as any).tempo_medio_dias;
               if (!kpi) return null;
               return renderVariation(kpi.delta, `${Math.round(kpi.anterior)} dias`, " dias", true);
             })()}
@@ -1275,7 +1276,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             <p className="text-xl font-bold mt-0.5 truncate text-foreground">{sobrecargaValue}</p>
             <p className={`text-[11px] mt-0.5 font-medium ${sobrecargaClassif.color}`}>{sobrecargaClassif.label}</p>
             {(() => {
-              const kpi = (qpKpisPeriodoAnterior.kpis as any).sobrecarga_bo;
+              const kpi = (customerData.kpisPeriodoAnterior.kpis as any).sobrecarga_bo;
               if (!kpi) return null;
               const pctDelta = kpi.anterior > 0 ? Math.round(((kpi.atual - kpi.anterior) / kpi.anterior) * 100) : 0;
               const improved = pctDelta < 0;
@@ -1295,13 +1296,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
                 <div className="flex items-center gap-1 mb-2">
                   <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Melhor Operação</p>
-                  <InfoTip text={`Melhor Operação\n─────────────────\nA operação com maior Score de Ponto no período.\n\nJanela: média dos últimos 3 meses.\nGranularidade: depende do toggle (empresa, unidade de negócio ou área).\n\n${activeData.melhorOperacao.nome}: Score ${activeData.melhorOperacao.score} (${melhorClassif.label})\n${(qpKpisPeriodoAnterior.kpis as any).melhor_operacao?.mudou ? (qpKpisPeriodoAnterior.kpis as any).melhor_operacao.mudanca_label : "Mantém a posição vs trimestre anterior."}`} />
+                  <InfoTip text={`Melhor Operação\n─────────────────\nA operação com maior Score de Ponto no período.\n\nJanela: média dos últimos 3 meses.\nGranularidade: depende do toggle (empresa, unidade de negócio ou área).\n\n${activeData.melhorOperacao.nome}: Score ${activeData.melhorOperacao.score} (${melhorClassif.label})\n${(customerData.kpisPeriodoAnterior.kpis as any).melhor_operacao?.mudou ? (customerData.kpisPeriodoAnterior.kpis as any).melhor_operacao.mudanca_label : "Mantém a posição vs trimestre anterior."}`} />
                 </div>
                 <p className="text-lg font-bold mt-0.5 truncate text-foreground">{activeData.melhorOperacao.nome}</p>
                 <p className={`text-[11px] mt-0.5 truncate ${melhorClassif.text}`}>Score {activeData.melhorOperacao.score} · {melhorClassif.label}</p>
                 <span className="text-[10px] text-muted-foreground mt-0.5">
-                  {(qpKpisPeriodoAnterior.kpis as any).melhor_operacao?.mudou
-                    ? (qpKpisPeriodoAnterior.kpis as any).melhor_operacao.mudanca_label
+                  {(customerData.kpisPeriodoAnterior.kpis as any).melhor_operacao?.mudou
+                    ? (customerData.kpisPeriodoAnterior.kpis as any).melhor_operacao.mudanca_label
                     : "Mantém posição"}
                 </span>
               </div>
@@ -1317,13 +1318,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
                 <div className="flex items-center gap-1 mb-2">
                   <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maior Risco</p>
-                  <InfoTip text={`Maior Risco\n─────────────────\nA operação com menor Score de Ponto no período.\nPrioridade alta de ação.\n\nJanela: média dos últimos 3 meses.\nGranularidade: depende do toggle (empresa, unidade de negócio ou área).\n\n${activeData.maiorRisco.nome}: Score ${activeData.maiorRisco.score} (${riscoClassif.label})\n${(qpKpisPeriodoAnterior.kpis as any).maior_risco?.mudou ? (qpKpisPeriodoAnterior.kpis as any).maior_risco.mudanca_label : "Mantém a posição vs trimestre anterior."}`} />
+                  <InfoTip text={`Maior Risco\n─────────────────\nA operação com menor Score de Ponto no período.\nPrioridade alta de ação.\n\nJanela: média dos últimos 3 meses.\nGranularidade: depende do toggle (empresa, unidade de negócio ou área).\n\n${activeData.maiorRisco.nome}: Score ${activeData.maiorRisco.score} (${riscoClassif.label})\n${(customerData.kpisPeriodoAnterior.kpis as any).maior_risco?.mudou ? (customerData.kpisPeriodoAnterior.kpis as any).maior_risco.mudanca_label : "Mantém a posição vs trimestre anterior."}`} />
                 </div>
                 <p className="text-lg font-bold mt-0.5 truncate text-foreground">{activeData.maiorRisco.nome}</p>
                 <p className={`text-[11px] mt-0.5 truncate ${riscoClassif.text}`}>Score {activeData.maiorRisco.score} · {riscoClassif.label}</p>
                 <span className="text-[10px] text-muted-foreground mt-0.5">
-                  {(qpKpisPeriodoAnterior.kpis as any).maior_risco?.mudou
-                    ? (qpKpisPeriodoAnterior.kpis as any).maior_risco.mudanca_label
+                  {(customerData.kpisPeriodoAnterior.kpis as any).maior_risco?.mudou
+                    ? (customerData.kpisPeriodoAnterior.kpis as any).maior_risco.mudanca_label
                     : "Mantém posição"}
                 </span>
               </div>
@@ -1652,11 +1653,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
           {(() => {
             const sobrecargaSources: Record<string, any[]> = {
-              empresa: sobrecargaEmpresaJson,
-              unidade: sobrecargaUnidadeJson,
-              area: sobrecargaAreaJson,
+              empresa: customerData.sobrecargaEmpresa,
+              unidade: customerData.sobrecargaUnidade,
+              area: customerData.sobrecargaArea,
             };
-            const rawEsforco = sobrecargaSources[groupBy] ?? sobrecargaEmpresaJson;
+            const rawEsforco = sobrecargaSources[groupBy] ?? customerData.sobrecargaEmpresa;
 
             // Check area insufficiency
             const areaInsufficient = groupBy === "area" && (rawEsforco.length < 6 || new Set(rawEsforco.map((r: any) => r.area_name)).size < 3);
