@@ -1,8 +1,6 @@
 import { useState } from "react";
-// TODO: REMOVER EM PRODUÇÃO — TestModeSelector é do modo de teste multi-cliente
-import TestModeSelector from "@/components/analytics/TestModeSelector";
-import CustomerZipImporter from "@/components/analytics/CustomerZipImporter";
-import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Wrench } from "lucide-react";
+import ClientManagement from "@/components/analytics/ClientManagement";
+import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Users } from "lucide-react";
 import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
 import ScoreAbsenteismoConfig from "./ScoreAbsenteismoConfig";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
