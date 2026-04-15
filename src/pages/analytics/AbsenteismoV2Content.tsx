@@ -80,10 +80,10 @@ const CATEGORY_MAP: Record<number, string> = {
 
 const CATEGORY_COLORS: Record<string, string> = {
   planejada: "#22c55e",
-  saude: "#84cc16",
-  operacional: "#f59e0b",
+  saude: "#3b82f6",
+  operacional: "#8b5cf6",
   falta: "#ef4444",
-  nao_categorizada: "#f97316",
+  nao_categorizada: "#9ca3af",
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -529,19 +529,17 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
       <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
         {/* ── BigNumbers (6 cards) ── */}
         <div className="grid grid-cols-6 gap-3">
-          {/* 1. Score — Convention 2: click opens Dialog, not Popover */}
+          {/* 1. Score Operacional Absenteísmo */}
           <ScoreBoard title="Score Absenteísmo" tooltip="Score composto: Volume (50%) + Composição (30%) + Maturidade (20%). Clique para detalhes.">
             <button className="cursor-pointer" onClick={() => setScoreDetailOpen(true)} title="Ver decomposição do score">
               <ScoreGauge score={compositeScore} label={`${compositeScore}`} faixa={scoreLabel} color={scoreColor} />
             </button>
             {(() => {
-              // Variation vs anterior (mock: previous period score was ~25)
               const anterior = 25;
               const delta = compositeScore - anterior;
               const absDelta = Math.abs(delta);
-              const improved = delta > 0;
-              const arrow = delta > 0 ? "↑" : delta < 0 ? "↓" : "—";
-              const dColor = absDelta < 1 ? "text-muted-foreground" : improved ? "text-green-600" : "text-red-600";
+              const arrow = delta > 0 ? "↑" : delta < 0 ? "↓" : "→";
+              const dColor = absDelta < 1 ? "text-muted-foreground" : delta > 0 ? "text-green-600" : "text-red-600";
               return (
                 <span className={`text-[9px] flex items-center gap-0.5 -mt-0.5 ${dColor}`}>
                   {arrow} {Math.round(absDelta)}pp vs {anterior} (ant.)
@@ -550,7 +548,18 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
             })()}
           </ScoreBoard>
 
-          {/* 2. Volume Mensal (taxa) */}
+          {/* 2. Headcount Operacional */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">HC Operacional</p>
+              <InfoTip text="Headcount operacional ativo no período. Crônicos = afastados > 180 dias." />
+            </div>
+            <p className="text-xl font-bold mt-0.5 truncate text-foreground">{MOCK.hcOperacional} <span className="text-sm font-normal text-muted-foreground">/ {MOCK.hcTotalAtivo}</span></p>
+            <p className="text-[11px] mt-0.5 font-medium text-orange-500">{MOCK.cronicos.length} crônico{MOCK.cronicos.length !== 1 ? "s" : ""}</p>
+            <span className="text-[10px] flex items-center gap-0.5 mt-1 text-muted-foreground">→ vs 480 (ant.)</span>
+          </div>
+
+          {/* 3. Taxa de Absenteísmo Operacional */}
           <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
             <div className="flex items-center gap-1 mb-2">
               <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Taxa Absenteísmo</p>
@@ -558,74 +567,62 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
             </div>
             <p className={`text-xl font-bold mt-0.5 truncate ${latestTaxa <= 2.5 ? "text-green-600" : latestTaxa <= 6.0 ? "text-orange-500" : "text-red-600"}`}>{latestTaxa}%</p>
             <p className={`text-[11px] mt-0.5 font-medium ${latestTaxa <= 2.5 ? "text-green-600" : latestTaxa <= 6.0 ? "text-orange-500" : "text-red-600"}`}>
-              {latestTaxa <= 2.5 ? "Excelente" : latestTaxa <= 4.0 ? "Bom" : latestTaxa <= 6.0 ? "Atenção" : latestTaxa <= 8.0 ? "Ruim" : "Crítico"}
+              {volScore.label}
             </p>
-            <span className="text-[10px] flex items-center gap-0.5 mt-1 text-muted-foreground">Mar/2026</span>
+            {(() => {
+              const prevTaxa = (() => {
+                const prev = volumeConsolidado[volumeConsolidado.length - 2];
+                return prev && prev.pessoas_ausentes > 0 ? +((prev.horas_ausencia_nao_planejada / (prev.pessoas_ausentes * 200)) * 100).toFixed(2) : null;
+              })();
+              if (prevTaxa === null) return <span className="text-[10px] mt-1 text-muted-foreground">sem histórico</span>;
+              const d = +(latestTaxa - prevTaxa).toFixed(1);
+              const arrow = d > 0 ? "↑" : d < 0 ? "↓" : "→";
+              const dColor = Math.abs(d) < 0.1 ? "text-muted-foreground" : d > 0 ? "text-red-600" : "text-green-600";
+              return <span className={`text-[10px] flex items-center gap-0.5 mt-1 ${dColor}`}>{arrow} {Math.abs(d).toFixed(1)}pp vs {prevTaxa}% (ant.)</span>;
+            })()}
           </div>
 
-          {/* 3. Composição (% planejada) */}
+          {/* 4. % Faltas Injustificadas */}
           <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
             <div className="flex items-center gap-1 mb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Composição</p>
-              <InfoTip text="Percentual de ausências planejadas sobre o total. Mais planejadas = melhor." />
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">% Faltas Injustif.</p>
+              <InfoTip text="Percentual de horas de falta injustificada sobre o total de ausências." />
             </div>
-            <p className={`text-xl font-bold mt-0.5 truncate ${compScore >= 75 ? "text-green-600" : compScore >= 50 ? "text-orange-500" : "text-red-600"}`}>{composicaoDistribuicao.planejada}%</p>
-            <p className={`text-[11px] mt-0.5 font-medium ${compScore >= 75 ? "text-green-600" : compScore >= 50 ? "text-orange-500" : "text-red-600"}`}>
-              {getScoreLabel(compScore)}
+            <p className={`text-xl font-bold mt-0.5 truncate ${pctFaltasInjustificadas >= 15 ? "text-red-600" : pctFaltasInjustificadas >= 10 ? "text-orange-500" : "text-green-600"}`}>{pctFaltasInjustificadas}%</p>
+            <p className={`text-[11px] mt-0.5 font-medium ${pctFaltasInjustificadas >= 15 ? "text-red-600" : pctFaltasInjustificadas >= 10 ? "text-orange-500" : "text-green-600"}`}>
+              {pctFaltasInjustificadas >= 15 ? "Crítico" : pctFaltasInjustificadas >= 10 ? "Atenção" : "Bom"}
             </p>
-            <span className="text-[10px] flex items-center gap-0.5 mt-1 text-muted-foreground">planejadas</span>
+            <span className="text-[10px] flex items-center gap-0.5 mt-1 text-red-600">↑ 2pp vs 15% (ant.)</span>
           </div>
 
-          {/* 4. Maturidade (% planejado) */}
+          {/* 5. % Afastados Crônicos */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col cursor-pointer" onClick={() => setScoreDetailOpen(true)}>
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">% Crônicos</p>
+              <InfoTip text="Percentual de colaboradores com afastamento > 180 dias. Clique para ver lista." />
+            </div>
+            <p className={`text-xl font-bold mt-0.5 truncate ${pctCronicos >= 1 ? "text-red-600" : "text-green-600"}`}>{pctCronicos}%</p>
+            <p className="text-[11px] mt-0.5 font-medium text-muted-foreground">{MOCK.cronicos.length} colaborador{MOCK.cronicos.length !== 1 ? "es" : ""}</p>
+            <span className="text-[10px] flex items-center gap-0.5 mt-1 text-muted-foreground">→ vs 0.4% (ant.)</span>
+          </div>
+
+          {/* 6. Horas Perdidas/Mês */}
           <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
             <div className="flex items-center gap-1 mb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maturidade</p>
-              <InfoTip text="Proporção de ausências planejadas vs reativas. Mais planejado = mais maduro." />
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Horas Perdidas/Mês</p>
+              <InfoTip text="Horas de ausência não-planejada na última competência. Subtítulo = acumulado 12 meses." />
             </div>
-            <p className={`text-xl font-bold mt-0.5 truncate ${matScore.score >= 75 ? "text-green-600" : matScore.score >= 50 ? "text-orange-500" : "text-red-600"}`}>{maturidadeDistribuicao.planejado}%</p>
-            <p className={`text-[11px] mt-0.5 font-medium ${matScore.score >= 75 ? "text-green-600" : matScore.score >= 50 ? "text-orange-500" : "text-red-600"}`}>
-              {matScore.label}
-            </p>
-            <span className="text-[10px] flex items-center gap-0.5 mt-1 text-muted-foreground">planejado vs reativo</span>
+            <p className="text-xl font-bold mt-0.5 truncate text-red-600">{formatHoursCompact(horasPerdidaMes)}</p>
+            <p className="text-[11px] mt-0.5 font-medium text-muted-foreground">{formatHoursCompact(MOCK.horasPerdidas12meses)} em 12m</p>
+            {(() => {
+              const prevHoras = volumeConsolidado.length >= 2 ? volumeConsolidado[volumeConsolidado.length - 2].horas_ausencia_nao_planejada : null;
+              if (prevHoras === null) return <span className="text-[10px] mt-1 text-muted-foreground">sem histórico</span>;
+              const d = horasPerdidaMes - prevHoras;
+              const arrow = d > 0 ? "↑" : d < 0 ? "↓" : "→";
+              const dColor = Math.abs(d) < 50 ? "text-muted-foreground" : d > 0 ? "text-red-600" : "text-green-600";
+              return <span className={`text-[10px] flex items-center gap-0.5 mt-1 ${dColor}`}>{arrow} {Math.abs(d).toLocaleString("pt-BR")}h vs {formatHoursCompact(prevHoras)} (ant.)</span>;
+            })()}
           </div>
-
-          {/* 5. Melhor Operação */}
-          {(() => {
-            const bestEntity = sidebarItems.length > 0 ? sidebarItems[0] : null;
-            const bestScore = bestEntity?.score ?? 0;
-            const bestLabel = getScoreLabel(bestScore);
-            const bestColor = bestScore >= 70 ? "text-green-600" : bestScore >= 50 ? "text-orange-500" : "text-red-600";
-            return (
-              <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-                <div className="flex items-center gap-1 mb-2">
-                  <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Melhor Operação</p>
-                  <InfoTip text="A operação com menor taxa de absenteísmo (melhor score) no período." />
-                </div>
-                <p className="text-lg font-bold mt-0.5 truncate text-foreground">{bestEntity?.nome ?? "—"}</p>
-                <p className={`text-[11px] mt-0.5 truncate ${bestColor}`}>Score {bestScore} · {bestLabel}</p>
-                <span className="text-[10px] text-muted-foreground mt-0.5">Mantém posição</span>
-              </div>
-            );
-          })()}
-
-          {/* 6. Maior Risco */}
-          {(() => {
-            const worstEntity = sidebarItems.length > 0 ? sidebarItems[sidebarItems.length - 1] : null;
-            const worstScore = worstEntity?.score ?? 0;
-            const worstLabel = getScoreLabel(worstScore);
-            const worstColor = worstScore >= 70 ? "text-green-600" : worstScore >= 50 ? "text-orange-500" : "text-red-600";
-            return (
-              <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-                <div className="flex items-center gap-1 mb-2">
-                  <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maior Risco</p>
-                  <InfoTip text="A operação com maior taxa de absenteísmo (pior score). Prioridade alta de ação." />
-                </div>
-                <p className="text-lg font-bold mt-0.5 truncate text-foreground">{worstEntity?.nome ?? "—"}</p>
-                <p className={`text-[11px] mt-0.5 truncate ${worstColor}`}>Score {worstScore} · {worstLabel}</p>
-                <span className="text-[10px] text-muted-foreground mt-0.5">Mantém posição</span>
-              </div>
-            );
-          })()}
         </div>
 
         {/* ── Row 1: Mapa de Operações + Volume Mensal (grid 2 colunas) ── */}
