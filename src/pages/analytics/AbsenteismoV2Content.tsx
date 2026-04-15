@@ -732,19 +732,26 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
             <p className="text-[10px] text-muted-foreground mb-2">Mar/2026 · % sobre total de horas</p>
             {composicaoChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
-                <AreaChart data={composicaoChartData} stackOffset="expand">
+                <ComposedChart data={composicaoChartData} onClick={(e: any) => {
+                  if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+                }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="mes" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                  <YAxis tickFormatter={v => `${Math.round(v * 100)}%`} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                  <XAxis dataKey="mes" tick={(props: any) => {
+                    const { x, y, payload } = props;
+                    const isActive = selectedMes === payload.value;
+                    return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                  }} />
+                  <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} label={{ value: "Distribuição (%)", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
+                  {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                   <RechartsTooltip content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
                     return (
-                      <div className="bg-card border border-border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                      <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                         <p className="font-semibold text-foreground">{label}</p>
-                        {payload.map((p: any) => (
+                        {payload.filter((p: any) => p.dataKey && CATEGORY_LABELS[p.dataKey]).map((p: any) => (
                           <div key={p.dataKey} className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: CATEGORY_COLORS[p.dataKey] }} />
-                            <span className="text-muted-foreground">{CATEGORY_LABELS[p.dataKey] ?? p.dataKey}:</span>
+                            <span className="w-2.5 h-2.5" style={{ backgroundColor: CATEGORY_COLORS[p.dataKey] }} />
+                            <span className="text-muted-foreground">{CATEGORY_LABELS[p.dataKey]}:</span>
                             <span className="font-medium text-foreground">{typeof p.value === "number" ? `${p.value.toFixed(1)}%` : p.value}</span>
                           </div>
                         ))}
@@ -759,25 +766,24 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       stackId="1"
                       fill={CATEGORY_COLORS[cat]}
                       stroke={CATEGORY_COLORS[cat]}
-                      fillOpacity={0.65}
+                      fillOpacity={0.35}
+                      strokeWidth={0.5}
                       name={CATEGORY_LABELS[cat]}
                     />
                   ))}
-                </AreaChart>
+                  <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={
+                    CATEGORIES_ORDER.filter(cat => composicaoChartData.some(d => (d as any)[cat] > 0)).map(cat => ({
+                      value: `${CATEGORY_LABELS[cat]} ${composicaoDistribuicao[cat as keyof typeof composicaoDistribuicao] ?? 0}%`,
+                      type: "square" as const,
+                      color: CATEGORY_COLORS[cat],
+                    }))
+                  } />
+                </ComposedChart>
               </ResponsiveContainer>
             ) : (
               <div className="h-[280px] flex items-center justify-center text-sm text-muted-foreground">Sem dados de composição</div>
             )}
-            {/* Legend */}
-            <div className="flex flex-wrap gap-3 mt-2 justify-center">
-              {CATEGORIES_ORDER.filter(cat => composicaoDistribuicao[cat as keyof typeof composicaoDistribuicao] > 0).map(cat => (
-                <div key={cat} className="flex items-center gap-1.5 text-[10px]">
-                  <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: CATEGORY_COLORS[cat] }} />
-                  <span className="text-muted-foreground">{CATEGORY_LABELS[cat]}</span>
-                  <span className="font-medium">{composicaoDistribuicao[cat as keyof typeof composicaoDistribuicao]}%</span>
-                </div>
-              ))}
-            </div>
+
           </div>
 
           {/* G3: Maturidade */}
@@ -791,18 +797,25 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">{maturidadeChartData.length > 1 ? "Evolução mensal" : "Mar/2026"} · % sobre total</p>
             <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={maturidadeChartData} stackOffset="expand">
+              <ComposedChart data={maturidadeChartData} onClick={(e: any) => {
+                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+              }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                <YAxis tickFormatter={v => `${Math.round(v * 100)}%`} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                <XAxis dataKey="mes" tick={(props: any) => {
+                  const { x, y, payload } = props;
+                  const isActive = selectedMes === payload.value;
+                  return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
+                }} />
+                <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} label={{ value: "Distribuição (%)", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
+                {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                 <RechartsTooltip content={({ active, payload, label }) => {
                   if (!active || !payload?.length) return null;
                   return (
-                    <div className="bg-card border border-border rounded-lg p-2.5 shadow-md text-xs space-y-1">
+                    <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                       <p className="font-semibold text-foreground">{label}</p>
-                      {payload.map((p: any) => (
+                      {payload.filter((p: any) => p.dataKey && MATURIDADE_LABELS[p.dataKey]).map((p: any) => (
                         <div key={p.dataKey} className="flex items-center gap-1.5">
-                          <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: MATURIDADE_COLORS[p.dataKey] }} />
+                          <span className="w-2.5 h-2.5" style={{ backgroundColor: MATURIDADE_COLORS[p.dataKey] }} />
                           <span className="text-muted-foreground">{MATURIDADE_LABELS[p.dataKey]}:</span>
                           <span className="font-medium text-foreground">{typeof p.value === "number" ? `${p.value.toFixed(1)}%` : p.value}</span>
                         </div>
@@ -810,23 +823,14 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                     </div>
                   );
                 }} />
-                <Area type="monotone" dataKey="1_planejado" stackId="1" fill={MATURIDADE_COLORS["1_planejado"]} stroke={MATURIDADE_COLORS["1_planejado"]} fillOpacity={0.65} name="Planejado" />
-                <Area type="monotone" dataKey="2_reativo" stackId="1" fill={MATURIDADE_COLORS["2_reativo"]} stroke={MATURIDADE_COLORS["2_reativo"]} fillOpacity={0.65} name="Reativo" />
-              </AreaChart>
+                <Area type="monotone" dataKey="1_planejado" stackId="1" fill={MATURIDADE_COLORS["1_planejado"]} stroke={MATURIDADE_COLORS["1_planejado"]} fillOpacity={0.35} strokeWidth={0.5} name="Planejado" />
+                <Area type="monotone" dataKey="2_reativo" stackId="1" fill={MATURIDADE_COLORS["2_reativo"]} stroke={MATURIDADE_COLORS["2_reativo"]} fillOpacity={0.35} strokeWidth={0.5} name="Reativo" />
+                <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
+                  { value: `Planejado ${maturidadeDistribuicao.planejado}%`, type: "square" as const, color: MATURIDADE_COLORS["1_planejado"] },
+                  { value: `Reativo ${maturidadeDistribuicao.reativo}%`, type: "square" as const, color: MATURIDADE_COLORS["2_reativo"] },
+                ]} />
+              </ComposedChart>
             </ResponsiveContainer>
-            {/* Legend */}
-            <div className="flex gap-4 mt-2 justify-center">
-              <div className="flex items-center gap-1.5 text-[10px]">
-                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: MATURIDADE_COLORS["1_planejado"] }} />
-                <span className="text-muted-foreground">Planejado</span>
-                <span className="font-medium">{maturidadeDistribuicao.planejado}%</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px]">
-                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: MATURIDADE_COLORS["2_reativo"] }} />
-                <span className="text-muted-foreground">Reativo</span>
-                <span className="font-medium">{maturidadeDistribuicao.reativo}%</span>
-              </div>
-            </div>
           </div>
         </div>
 
