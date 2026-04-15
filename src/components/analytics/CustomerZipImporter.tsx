@@ -446,7 +446,7 @@ export default function CustomerZipImporter() {
                                     <Database className="w-3 h-3" />
                                     <span className="text-foreground/70">{chart.chartLabel}</span>
                                     <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded">{dims.length} dims · {totalRecords} reg</span>
-                                    {chart.sql && <FileText className="w-3 h-3 text-blue-400" title="SQL disponível" />}
+                                    {chart.sql && <FileText className="w-3 h-3 text-blue-400" />}
                                   </div>
                                 );
                               })}
