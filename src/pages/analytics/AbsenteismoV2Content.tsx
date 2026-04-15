@@ -766,8 +766,9 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       stackId="1"
                       fill={CATEGORY_COLORS[cat]}
                       stroke={CATEGORY_COLORS[cat]}
-                      fillOpacity={0.65}
-                      strokeWidth={0.8}
+                      fillOpacity={0.35}
+                      strokeWidth={0.5}
+                      strokeOpacity={0.5}
                       name={CATEGORY_LABELS[cat]}
                     />
                   ))}
@@ -823,8 +824,8 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                     </div>
                   );
                 }} />
-                <Area type="monotone" dataKey="1_planejado" stackId="1" fill={MATURIDADE_COLORS["1_planejado"]} stroke={MATURIDADE_COLORS["1_planejado"]} fillOpacity={0.65} strokeWidth={0.8} name="Planejado" />
-                <Area type="monotone" dataKey="2_reativo" stackId="1" fill={MATURIDADE_COLORS["2_reativo"]} stroke={MATURIDADE_COLORS["2_reativo"]} fillOpacity={0.65} strokeWidth={0.8} name="Reativo" />
+                <Area type="monotone" dataKey="1_planejado" stackId="1" fill={MATURIDADE_COLORS["1_planejado"]} stroke={MATURIDADE_COLORS["1_planejado"]} fillOpacity={0.35} strokeWidth={0.5} name="Planejado" />
+                <Area type="monotone" dataKey="2_reativo" stackId="1" fill={MATURIDADE_COLORS["2_reativo"]} stroke={MATURIDADE_COLORS["2_reativo"]} fillOpacity={0.35} strokeWidth={0.5} name="Reativo" />
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: `Planejado ${maturidadeDistribuicao.planejado}%`, type: "square" as const, color: MATURIDADE_COLORS["1_planejado"] },
                   { value: `Reativo ${maturidadeDistribuicao.reativo}%`, type: "square" as const, color: MATURIDADE_COLORS["2_reativo"] },
