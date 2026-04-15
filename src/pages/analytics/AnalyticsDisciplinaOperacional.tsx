@@ -937,20 +937,20 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   );
 
   const activeData = useMemo(() => {
-    return getQualidadeKpiSummary(selectedRegional, groupBy as any, scoreConfig, selectedReferenceMonth);
-  }, [selectedRegional, groupBy, scoreConfig, selectedReferenceMonth]);
+    return getQualidadeKpiSummary(selectedRegional, groupBy as any, scoreConfig, selectedReferenceMonth, dataSources);
+  }, [selectedRegional, groupBy, scoreConfig, selectedReferenceMonth, dataSources]);
 
   const qualidadeEvolucaoReal = useMemo(
-    () => aggregateQualidadeEvolucao(selectedRegional, groupBy as any),
-    [selectedRegional, groupBy]
+    () => aggregateQualidadeEvolucao(selectedRegional, groupBy as any, dataSources),
+    [selectedRegional, groupBy, dataSources]
   );
   const qualidadeMedia = useMemo(
     () => qualidadeEvolucaoReal.length ? +(qualidadeEvolucaoReal.reduce((s, d) => s + d.value, 0) / qualidadeEvolucaoReal.length).toFixed(1) : 85,
     [qualidadeEvolucaoReal]
   );
   const qualidadeDetalhado = useMemo(
-    () => aggregateQualidadeEvolucaoDetalhado(selectedRegional, groupBy as any),
-    [selectedRegional, groupBy]
+    () => aggregateQualidadeEvolucaoDetalhado(selectedRegional, groupBy as any, dataSources),
+    [selectedRegional, groupBy, dataSources]
   );
   const qualidadeComHeadcount = useMemo(
     () => qualidadeDetalhado.map(d => ({
