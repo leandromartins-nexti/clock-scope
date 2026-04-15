@@ -38,8 +38,7 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import QualidadeInsightsSection from "@/components/analytics/QualidadeInsightsSection";
 
-import customerData.decomposicaoScore from "@/data/qualidade-ponto/decomposicao-score.json";
-import customerData.kpisPeriodoAnterior from "@/data/qualidade-ponto/kpis-periodo-anterior.json";
+// decomposicaoScore and kpisPeriodoAnterior now loaded dynamically via useQualidadePontoData hook
 import { evolucaoQualidadeHeadcountSource, evolucaoQualidadeHeadcountColumns } from "@/data/chart-sources/evolucao-qualidade-headcount";
 import { evolucaoTempoTratativaSource, evolucaoTempoTratativaColumns } from "@/data/chart-sources/evolucao-tempo-tratativa";
 import { sobrecargaBackofficeSource, sobrecargaBackofficeColumns } from "@/data/chart-sources/sobrecarga-backoffice";
