@@ -1025,11 +1025,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   // Compute tempo_medio_dias per operation from tratativa-tempo JSONs
   const tempoMedioPorOperacao = useMemo(() => {
     const tratSources: Record<string, any[]> = {
-      empresa: tratTempoEmpresa,
-      unidade: tratTempoUnidade,
-      area: tratTempoArea,
+      empresa: customerData.tratTempoEmpresa,
+      unidade: customerData.tratTempoUnidade,
+      area: customerData.tratTempoArea,
     };
-    const raw = tratSources[groupBy] ?? tratTempoEmpresa;
+    const raw = tratSources[groupBy] ?? customerData.tratTempoEmpresa;
     const nameField = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
     const normName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
     
@@ -1654,11 +1654,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
           {(() => {
             const sobrecargaSources: Record<string, any[]> = {
-              empresa: sobrecargaEmpresaJson,
-              unidade: sobrecargaUnidadeJson,
-              area: sobrecargaAreaJson,
+              empresa: customerData.sobrecargaEmpresa,
+              unidade: customerData.sobrecargaUnidade,
+              area: customerData.sobrecargaArea,
             };
-            const rawEsforco = sobrecargaSources[groupBy] ?? sobrecargaEmpresaJson;
+            const rawEsforco = sobrecargaSources[groupBy] ?? customerData.sobrecargaEmpresa;
 
             // Check area insufficiency
             const areaInsufficient = groupBy === "area" && (rawEsforco.length < 6 || new Set(rawEsforco.map((r: any) => r.area_name)).size < 3);
