@@ -1777,7 +1777,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         </div>
                       );
                     }} />
-                    <Bar yAxisId="left" dataKey="produtividade" radius={[4, 4, 0, 0]} name="Carga por operador">
+                    <Bar yAxisId="left" dataKey="produtividade" radius={[4, 4, 0, 0]} name="Carga por operador" strokeWidth={1}>
                       {sobrecargaData.map((entry, idx) => {
                         const dimmed = selectedMes && selectedMes !== entry.mes;
                         const baseColor = entry.barColor;
@@ -1788,7 +1788,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           const b = parseInt(hex.slice(5, 7), 16);
                           return `${r},${g},${b}`;
                         };
-                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.25)` : `rgba(${hexToRgb(baseColor)},0.75)`} />;
+                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.25)` : `rgba(${hexToRgb(baseColor)},0.75)`} stroke={baseColor} />;
                       })}
                       <LabelList content={({ x, y, width: w, height: h, index }: any) => {
                         const d = sobrecargaData[index];
