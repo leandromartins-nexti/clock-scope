@@ -89,7 +89,7 @@ const dataRegistry: MenuEntry[] = [
 // ── Score sidebar items ──
 const scoreMenuItems = [
   { id: "qualidade", label: "Qualidade do Ponto", icon: "🎯" },
-  { id: "absenteismo", label: "Absenteísmo + Turnover", icon: "📉" },
+  { id: "absenteismo", label: "Absenteísmo", icon: "📉" },
 ];
 
 // ── Chart row in Base de Dados ──
@@ -287,9 +287,9 @@ export default function AnalyticsConfiguracao() {
               {activeScore === "absenteismo" && (
                 <>
                   <div className="mb-4">
-                    <h2 className="text-lg font-bold text-foreground">Score de Absenteísmo + Turnover</h2>
+                    <h2 className="text-lg font-bold text-foreground">Score de Absenteísmo</h2>
                     <p className="text-xs text-muted-foreground">
-                      Configure os pesos e limites para classificar absenteísmo e turnover
+                      Configure os 3 sub-scores (Volume, Composição, Maturidade), as faixas e os limites de classificação
                     </p>
                   </div>
                   <ScoreAbsenteismoConfig />
