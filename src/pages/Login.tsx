@@ -141,7 +141,7 @@ export default function Login() {
                   {passwordChecks.map((check) => (
                     <div key={check.label} className="flex items-center gap-2 text-xs">
                       {check.ok ? (
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                        <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                       ) : (
                         <AlertCircle className="h-3.5 w-3.5 text-muted-foreground" />
                       )}
