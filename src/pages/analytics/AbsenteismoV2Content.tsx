@@ -526,7 +526,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
 
   return (
     <div className="flex">
-      <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
+      <div className="flex-1 min-w-0 space-y-3 pl-6 pr-2 py-4">
         {/* ── BigNumbers (6 cards) ── */}
         <div className="grid grid-cols-6 gap-3">
           {/* 1. Score — Convention 2: click opens Dialog, not Popover */}
