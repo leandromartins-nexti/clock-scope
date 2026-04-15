@@ -1388,11 +1388,14 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 }} />
                 <Scatter data={mapaOperacoesData} shape={(props: any) => {
                   const { cx, cy, payload } = props;
-                  const r = 16;
+                  const r = 20;
                   const isFixed = fixedBubble === payload.regional;
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                   const opacity = isFixed ? 0.85 : isSelected ? 0.7 : 0.15;
                   const strokeW = isFixed ? 2.5 : isSelected ? 1.5 : 0.5;
+                  // 3-letter abbreviation like sidebar
+                  const clean = payload.regional.replace(/^VIG\s*EYES\s*/i, "").trim();
+                  const abbr = clean ? clean.slice(0, 3).toUpperCase() : payload.regional.slice(0, 3).toUpperCase();
                   return (
                     <g
                       onClick={() => {
@@ -1403,11 +1406,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       className="cursor-pointer"
                     >
                       <circle cx={cx} cy={cy} r={r} fill={payload.bubbleColor} fillOpacity={opacity} stroke={isFixed ? "#1e293b" : payload.bubbleColor} strokeWidth={strokeW} />
-                      {isFixed && (
-                        <text x={cx} y={cy - r - 4} textAnchor="middle" fontSize={9} fontWeight={700} fill="#374151">
-                          {payload.regional.split(/\s+/)[0]?.slice(0, 8) || abreviar(payload.regional)}
-                        </text>
-                      )}
+                      <text x={cx} y={cy + 1} textAnchor="middle" fontSize={9} fontWeight={700} fill="#fff" dominantBaseline="middle">
+                        {abbr}
+                      </text>
+                      <text x={cx} y={cy + r + 12} textAnchor="middle" fontSize={9} fontWeight={600} fill={payload.bubbleColor}>
+                        {payload.score}
+                      </text>
                     </g>
                   );
                 }} />
