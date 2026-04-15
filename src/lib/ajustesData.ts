@@ -742,9 +742,10 @@ export function aggregateQualidadeVolume(
   }
 
   if (groupBy === "area") {
+    const baseData = sources ? sources.qualidade.area : qualidadeAreaData;
     const filtered = selectedMonth
-      ? qualidadeAreaData.filter(r => r.reference_month === selectedMonth)
-      : qualidadeAreaData;
+      ? baseData.filter((r: any) => r.reference_month === selectedMonth)
+      : baseData;
 
     const map = new Map<string, { volume: number; qualWeighted: number; headcount: number }>();
     for (const r of filtered) {
@@ -770,9 +771,10 @@ export function aggregateQualidadeVolume(
   }
 
   // Default: empresa
+  const baseEmpData = sources ? sources.volume.empresa : qualidadeVolumeEmpresaData;
   const filtered = selectedMonth
-    ? qualidadeVolumeEmpresaData.filter(r => r.reference_month === selectedMonth)
-    : qualidadeVolumeEmpresaData;
+    ? baseEmpData.filter((r: any) => r.reference_month === selectedMonth)
+    : baseEmpData;
 
   const map = new Map<string, { volume: number; qualWeighted: number; headcount: number }>();
 
