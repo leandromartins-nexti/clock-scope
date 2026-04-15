@@ -33,7 +33,7 @@ import hcUnNegocioJson from "@/data/qualidade-ponto/headcount-por-un-negocio.jso
 import hcAreaJson from "@/data/qualidade-ponto/headcount-por-area.json";
 import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary, getSidebarItems } from "@/lib/ajustesData";
 import { useScoreConfig, getScoreClassification, computeBackofficeScore, computeCompositeScore, computeFullBreakdown, computePrevTriScore, computeQualityPercentage } from "@/contexts/ScoreConfigContext";
-import { useAbsenteismoScoreConfig, computeAbsCompositeScore, getAbsScoreClassification } from "@/contexts/AbsenteismoScoreConfigContext";
+import { useAbsenteismoScoreConfig, computeVolumeScore, computeTurnoverScore, getAbsScoreClassification } from "@/contexts/AbsenteismoScoreConfigContext";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
