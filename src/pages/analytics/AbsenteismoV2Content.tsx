@@ -520,7 +520,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
     );
   };
 
-  const CATEGORIES_ORDER = ["planejada", "saude", "operacional", "nao_categorizada", "falta"];
+  // CATEGORIES_ORDER moved to module level
 
   return (
     <div className="flex">
