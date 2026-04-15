@@ -1744,7 +1744,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         </g>
                       );
                     }} />
-                    {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                     <RechartsTooltip content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
                       const d = payload[0]?.payload;
@@ -1790,7 +1789,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           const b = parseInt(hex.slice(5, 7), 16);
                           return `${r},${g},${b}`;
                         };
-                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.45)` : `rgba(${hexToRgb(baseColor)},0.75)`} stroke={baseColor} />;
+                        const isActive = selectedMes && selectedMes === entry.mes;
+                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.45)` : `rgba(${hexToRgb(baseColor)},0.75)`} stroke={isActive ? "#FF5722" : baseColor} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
                       })}
                       <LabelList content={({ x, y, width: w, height: h, index }: any) => {
                         const d = sobrecargaData[index];
