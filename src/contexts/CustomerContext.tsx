@@ -38,7 +38,16 @@ function getAllCustomers(): CustomerEntry[] {
   const imported = getImportedCustomersIndex();
   const map = new Map<number, CustomerEntry>();
   for (const c of builtin) map.set(c.customer_id, c);
-  for (const c of imported) map.set(c.customer_id, c);
+  // Merge imported on top of builtin, unifying tabs_available
+  for (const c of imported) {
+    const existing = map.get(c.customer_id);
+    if (existing) {
+      const mergedTabs = Array.from(new Set([...(existing.tabs_available ?? []), ...(c.tabs_available ?? [])]));
+      map.set(c.customer_id, { ...existing, ...c, tabs_available: mergedTabs });
+    } else {
+      map.set(c.customer_id, c);
+    }
+  }
   return Array.from(map.values()).sort((a, b) => a.customer_id - b.customer_id);
 }
 
