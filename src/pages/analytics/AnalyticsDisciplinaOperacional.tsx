@@ -1397,7 +1397,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const isFixed = fixedBubble === payload.regional;
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                    const hasFilter = !!selectedRegional;
-                   const opacity = isFixed ? 0.9 : isSelected ? 0.75 : 0.25;
+                   const opacity = isFixed ? 0.85 : isSelected ? 0.75 : 0.30;
                    const textColor = "#fff";
                    // 3-letter abbreviation like sidebar
                    const clean = payload.regional.replace(/^VIG\s*EYES\s*/i, "").trim();
