@@ -118,7 +118,7 @@ export function computeTreatmentScore(
     (pct7_15d * config.grade_7_15d / 100) +
     (pctOver15d * config.grade_over_15d / 100);
 
-  return { score: +score.toFixed(1), pctUnder1d, pct1_3d, pct3_7d, pct7_15d, pctOver15d };
+  return { score: Math.round(score), pctUnder1d, pct1_3d, pct3_7d, pct7_15d, pctOver15d };
 }
 
 // ═══════════════════════════════════════════════════════
@@ -171,9 +171,9 @@ export function computeBackofficeScore(
 
   const notaAjustes = boAjustesToGrade(ajustesPerOp, config);
   const notaHE = Math.max(0, 100 - (hePerOp * 2));
-  const score = +(notaAjustes * 0.5 + notaHE * 0.5).toFixed(1);
+  const score = Math.round(notaAjustes * 0.5 + notaHE * 0.5);
 
-  return { score, ajustesPerOp: +ajustesPerOp.toFixed(0), hePerOp: +hePerOp.toFixed(1), notaAjustes, notaHE: +notaHE.toFixed(0) };
+  return { score, ajustesPerOp: +ajustesPerOp.toFixed(0), hePerOp: +hePerOp.toFixed(1), notaAjustes: Math.round(notaAjustes), notaHE: Math.round(notaHE) };
 }
 
 // ═══════════════════════════════════════════════════════
@@ -189,9 +189,9 @@ export function computeCompositeScore(
   const qualPct = computeQualityPercentage(selectedName, groupBy, window);
   const treat = computeTreatmentScore(selectedName, groupBy, config, window);
   const bo = computeBackofficeScore(selectedName, groupBy, config, window);
-  return +((qualPct * config.weight_quality / 100) +
+  return Math.round((qualPct * config.weight_quality / 100) +
            (treat.score * config.weight_treatment / 100) +
-           (bo.score * config.weight_backoffice / 100)).toFixed(1);
+           (bo.score * config.weight_backoffice / 100));
 }
 
 export function computeFullBreakdown(
@@ -204,10 +204,10 @@ export function computeFullBreakdown(
   const treat = computeTreatmentScore(selectedName, groupBy, config, window);
   const bo = computeBackofficeScore(selectedName, groupBy, config, window);
 
-  const qualContrib = +(qualPct * config.weight_quality / 100).toFixed(1);
-  const treatContrib = +(treat.score * config.weight_treatment / 100).toFixed(1);
-  const boContrib = +(bo.score * config.weight_backoffice / 100).toFixed(1);
-  const compositeScore = +(qualContrib + treatContrib + boContrib).toFixed(1);
+  const qualContrib = Math.round(qualPct * config.weight_quality / 100);
+  const treatContrib = Math.round(treat.score * config.weight_treatment / 100);
+  const boContrib = Math.round(bo.score * config.weight_backoffice / 100);
+  const compositeScore = Math.round(qualContrib + treatContrib + boContrib);
 
   return {
     qualPct, qualContrib,
