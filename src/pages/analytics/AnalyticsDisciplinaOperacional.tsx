@@ -1788,7 +1788,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           const b = parseInt(hex.slice(5, 7), 16);
                           return `${r},${g},${b}`;
                         };
-                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.25)` : `rgba(${hexToRgb(baseColor)},0.75)`} />;
+                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.25)` : `rgba(${hexToRgb(baseColor)},0.75)`} stroke={baseColor} />;
                       })}
                       <LabelList content={({ x, y, width: w, height: h, index }: any) => {
                         const d = sobrecargaData[index];
