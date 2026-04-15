@@ -1493,12 +1493,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                   );
                 }} />
-                {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                 <Area yAxisId="right" type="monotone" dataKey="activeHeadcount" fill="#D3D1C7" fillOpacity={0.4} stroke="#D3D1C7" strokeWidth={0} name="Headcount" />
-                <Bar yAxisId="left" dataKey="registradas" stackId="qual" stroke="#22c55e" strokeWidth={1} radius={[0, 0, 0, 0]} name="Registradas">
-                  {qualidadeComHeadcount.map((entry, idx) => (
-                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.45)" : "rgba(34,197,94,0.75)"} />
-                  ))}
+                <Bar yAxisId="left" dataKey="registradas" stackId="qual" radius={[0, 0, 0, 0]} name="Registradas">
+                  {qualidadeComHeadcount.map((entry, idx) => {
+                    const isActive = selectedMes && selectedMes === entry.mes;
+                    const dimmed = selectedMes && selectedMes !== entry.mes;
+                    return <Cell key={idx} fill={dimmed ? "rgba(34,197,94,0.45)" : "rgba(34,197,94,0.75)"} stroke={isActive ? "#FF5722" : "#22c55e"} strokeWidth={isActive ? 2 : 1} />;
+                  })}
                   <LabelList dataKey="registradas" position="center" fontSize={9} fill="#fff" fontWeight={600} formatter={(v: number) => {
                     return `${v.toLocaleString("pt-BR")}`;
                   }} content={({ x, y, width, height, index }: any) => {
@@ -1513,10 +1514,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     );
                   }} />
                 </Bar>
-                <Bar yAxisId="left" dataKey="justificadas" stackId="qual" stroke="#ef4444" strokeWidth={1} radius={[4, 4, 0, 0]} name="Justificadas">
-                  {qualidadeComHeadcount.map((entry, idx) => (
-                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.45)" : "rgba(239,68,68,0.75)"} />
-                  ))}
+                <Bar yAxisId="left" dataKey="justificadas" stackId="qual" radius={[4, 4, 0, 0]} name="Justificadas">
+                  {qualidadeComHeadcount.map((entry, idx) => {
+                    const isActive = selectedMes && selectedMes === entry.mes;
+                    const dimmed = selectedMes && selectedMes !== entry.mes;
+                    return <Cell key={idx} fill={dimmed ? "rgba(239,68,68,0.45)" : "rgba(239,68,68,0.75)"} stroke={isActive ? "#FF5722" : "#ef4444"} strokeWidth={isActive ? 2 : 1} />;
+                  })}
                   <LabelList content={({ x, y, width, height, index }: any) => {
                     const d = qualidadeComHeadcount[index];
                     if (!d) return null;
