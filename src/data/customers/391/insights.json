@@ -1,0 +1,333 @@
+[
+  {
+    "id": "risk_001",
+    "category": "risk",
+    "severity": "critical",
+    "title": "ATITUDE PARAIBA: 2.210 ajustes por operador no pico (jan/26)",
+    "narrative": "A empresa Atitude Paraíba operava com apenas 2-3 operadores BO para volume crescente de ajustes. Em jan/26 chegou a 2.210 aj/operador (pico crítico). Em mar/26, o volume caiu drasticamente para 643 ajustes (vs 6.630 em jan/26), o que merece investigação: melhoria real ou subnotificação?",
+    "evidence": {
+      "before": { "label": "Aj/operador jan/26", "value": "2.210" },
+      "after": { "label": "Volume mar/26", "value": "643 aj (-90%)" }
+    },
+    "action": "Investigar causa da queda abrupta de volume em mar/26",
+    "modal": {
+      "diagnosis": "ATITUDE PARAIBA é o caso mais crítico do grupo. Score 56.4 (Atenção, próximo do limite Ruim). O comportamento histórico mostra equipe BO subdimensionada (apenas 2-4 operadores) lidando com volume crescente de ajustes (3.5k a 6.6k/mês). A queda abrupta para 643 ajustes em mar/26 é a mudança mais significativa do período — pode ser melhoria operacional real ou pode indicar que ajustes deixaram de ser registrados/processados.",
+      "evidence": [
+        { "label": "Colaboradores ativos", "value": "387" },
+        { "label": "Operadores BO", "value": "2 a 5 (atualmente 3)" },
+        { "label": "Aj/operador pico", "value": "2.210 (jan/26)" },
+        { "label": "Qualidade", "value": "72.8%", "context": "Única empresa com qualidade <80%" },
+        { "label": "Score", "value": "56.4", "context": "Atenção — mais baixo do grupo" },
+        { "label": "Acumulado >15 dias", "value": "26.8%" }
+      ],
+      "action_plan": [
+        "Investigar URGENTE em até 7 dias: o que aconteceu em mar/26 com Atitude Paraíba?",
+        "Verificar se houve mudança de gestor, processo, sistema ou perda de cliente",
+        "Validar se os 643 ajustes representam volume real ou se há fila de pendências não processadas",
+        "Se houve melhoria genuína: documentar e replicar",
+        "Se houve subnotificação: ação corretiva e backfill de tratativa"
+      ],
+      "related_cards": ["risk_003"]
+    }
+  },
+  {
+    "id": "risk_002",
+    "category": "risk",
+    "severity": "high",
+    "title": "ATITUDE TERCEIRIZACAO PATRIMONIAL: tempo médio chegou a 76 DIAS em set/25",
+    "narrative": "A empresa registrou tempo médio de tratativa de 76 dias em set/25 (mais de 2 meses para resolver um ajuste). Em mar/26, despencou para 3 dias — recuperação dramática que precisa ser entendida e protegida.",
+    "evidence": {
+      "before": { "label": "Tempo médio set/25", "value": "76 dias" },
+      "after": { "label": "Tempo médio mar/26", "value": "3 dias (-96%)" }
+    },
+    "action": "Documentar ações tomadas que reduziram tempo de 76d para 3d e proteger o resultado",
+    "modal": {
+      "diagnosis": "A história de ATITUDE TERCEIRIZACAO PATRIMONIAL no período é dramática. De abr/25 a out/25, a empresa teve tempos médios oscilando entre 14 e 76 dias — situação claramente fora de qualquer padrão saudável. A partir de fev/26, houve melhoria abrupta: 12 dias (fev) → 3 dias (mar). Essa transformação merece análise: o que mudou e como garantir que se sustenta?",
+      "evidence": [
+        { "label": "Colaboradores ativos", "value": "423" },
+        { "label": "Tempo médio pico", "value": "76 dias (set/25)" },
+        { "label": "Tempo médio atual", "value": "3.0 dias (mar/26)" },
+        { "label": "Acumulado >15d set/25", "value": "49.8%", "context": "Quase metade dos ajustes ficavam mais de 15 dias" },
+        { "label": "Acumulado >15d mar/26", "value": "0.2%", "context": "Queda dramática" },
+        { "label": "Score consolidado", "value": "61.6", "context": "Atenção" }
+      ],
+      "action_plan": [
+        "Entrevistar gestor da empresa: o que mudou entre dez/25 e mar/26?",
+        "Documentar formalmente as ações que produziram a melhoria de 76d → 3d",
+        "Definir SLA formal para sustentar a melhoria (ex: <5d como teto)",
+        "Replicar práticas em outras empresas do grupo Atitude com tempos altos",
+        "Acompanhamento mensal: alertar se tempo subir acima de 7 dias"
+      ],
+      "related_cards": ["ach_001", "opp_002"]
+    }
+  },
+  {
+    "id": "risk_003",
+    "category": "risk",
+    "severity": "high",
+    "title": "4 das 9 empresas em zona Atenção (Score abaixo de 70)",
+    "narrative": "Quase metade do grupo Atitude opera em zona Atenção: ATD LOCAÇÃO (Score 67.9), ATITUDE TERCEIRIZACAO CEARA (63.6), ATITUDE TERCEIRIZACAO PATRIMONIAL (61.6) e ATITUDE PARAIBA (56.4). Todas têm aj/operador acima de 800, sintoma claro de back-office subdimensionado.",
+    "evidence": {
+      "before": { "label": "Empresas em Atenção", "value": "4 de 9" },
+      "after": { "label": "Aj/operador comum", "value": "850-2.210" }
+    },
+    "action": "Plano coordenado de reforço de BO nas 4 empresas (não individual)",
+    "modal": {
+      "diagnosis": "Não é problema isolado de uma empresa, é padrão consistente em 4 das 9 empresas: BO sistematicamente subdimensionado. ATD LOCAÇÃO tem 991 colaboradores e aj/operador 853. ATITUDE CEARA tem 753 e 1.128. Padrão sugere que o dimensionamento do BO não está acompanhando o crescimento da operação no grupo.",
+      "evidence": [
+        { "label": "ATD LOCAÇÃO", "value": "Score 67.9", "context": "991 HC, aj/op 853, qualidade 88.3%" },
+        { "label": "ATITUDE CEARA", "value": "Score 63.6", "context": "753 HC, aj/op 1.128, qualidade 89.8%" },
+        { "label": "ATITUDE PATRIMONIAL", "value": "Score 61.6", "context": "423 HC, aj/op 1.868, qualidade 89.0%" },
+        { "label": "ATITUDE PARAIBA", "value": "Score 56.4", "context": "387 HC, aj/op 2.210, qualidade 72.8%" },
+        { "label": "HC nas 4 empresas", "value": "2.554", "context": "76% do HC total da Atitude" }
+      ],
+      "action_plan": [
+        "Análise consolidada: definir aj/operador máximo aceitável para o grupo (ex: 600)",
+        "Reforço coordenado: contratar 5-8 operadores adicionais distribuídos pelas 4 empresas",
+        "Avaliar centralização de BO (mesa única para várias empresas) para ganho de escala",
+        "Workshop com gestores das 4 empresas para alinhamento de processo",
+        "Meta: nenhuma empresa do grupo com aj/operador acima de 700 em 90 dias"
+      ],
+      "related_cards": ["opp_001"]
+    }
+  },
+  {
+    "id": "risk_004",
+    "category": "risk",
+    "severity": "high",
+    "title": "Risco trabalhista: ~38.000 ajustes >15 dias/ano nas empresas em Atenção",
+    "narrative": "Somando as 4 empresas em zona Atenção, há cerca de 38.000 ajustes/ano com tempo de tratativa acima de 15 dias (zona crítica trabalhista). Exposição estimada conservadora: R$ 7.6M a R$ 19M/ano.",
+    "evidence": {
+      "before": { "label": "Ajustes >15d/ano", "value": "~38.000" },
+      "after": { "label": "Exposição estimada", "value": "R$ 7.6M-19M/ano" }
+    },
+    "action": "Auditoria nos ajustes >15d para classificar por impacto financeiro",
+    "modal": {
+      "diagnosis": "Os números absolutos são significativos. ATD LOCAÇÃO tem 19.5% de ajustes >15d. ATITUDE CEARA tem 23.7%. ATITUDE TERCEIRIZACAO PATRIMONIAL tem 36.9%. ATITUDE PARAIBA tem 26.8%. Pela jurisprudência TST 2023-2024, cada caso pode gerar exposição de R$ 200-500.",
+      "evidence": [
+        { "label": "ATD LOCAÇÃO", "value": "~2.900 aj/ano >15d", "context": "19.5% sobre ~15.000 ajustes/ano" },
+        { "label": "ATITUDE CEARA", "value": "~2.850 aj/ano >15d", "context": "23.7% sobre ~12.000 ajustes/ano" },
+        { "label": "ATITUDE PATRIMONIAL", "value": "~12.200 aj/ano >15d", "context": "36.9% sobre ~33.000 ajustes/ano" },
+        { "label": "ATITUDE PARAIBA", "value": "~11.300 aj/ano >15d", "context": "26.8% sobre ~42.000 ajustes/ano" },
+        { "label": "Exposição R$ 200/risco", "value": "R$ 5.8M/ano" },
+        { "label": "Exposição R$ 500/risco", "value": "R$ 14.5M/ano" }
+      ],
+      "action_plan": [
+        "Auditoria nos ajustes >15d em até 30 dias para classificar por impacto financeiro real",
+        "Priorizar tratativa nos casos com impacto em folha já paga",
+        "Reunião com jurídico para alinhar posição em eventuais ações trabalhistas",
+        "Implementar workflow de alerta automático em D+10 para evitar acumulação futura",
+        "Meta: reduzir % >15d para máximo 5% em todas as empresas em 6 meses"
+      ],
+      "related_cards": ["risk_003", "opp_001"]
+    }
+  },
+  {
+    "id": "ach_001",
+    "category": "achievement",
+    "severity": "success",
+    "title": "Tempo médio de tratativa caiu de 14d para 4d nos últimos 12 meses",
+    "narrative": "A operação consolidada da Atitude tinha tempo médio de 14.4 dias em abr/25. Em mar/26 está em 4.0 dias. Queda de 72% em 12 meses. É a maior melhoria operacional registrada no período entre os 3 clientes Nexti analisados.",
+    "evidence": {
+      "before": { "label": "Tempo médio abr/25", "value": "14.4 dias" },
+      "after": { "label": "Tempo médio mar/26", "value": "4.0 dias (-72%)" }
+    },
+    "action": "Documentar essa transformação como case interno e proteger o resultado",
+    "modal": {
+      "diagnosis": "Em 12 meses, a operação Atitude promoveu uma transformação dramática no tempo de tratativa. O tempo médio caiu de 14 dias (abr/25) para 4 dias (mar/26), uma melhoria de 72%. Mais notável: o pico negativo de 28.5 dias em mai/25 foi resolvido — em mar/26 está em 4 dias, redução de 86%.",
+      "evidence": [
+        { "label": "Tempo médio abr/25", "value": "14.4 dias" },
+        { "label": "Pico negativo mai/25", "value": "28.5 dias" },
+        { "label": "Tempo médio mar/26", "value": "4.0 dias" },
+        { "label": "% <1 dia", "value": "12.6% → 28.4%", "context": "Melhoria na faixa mais rápida" },
+        { "label": "% >15 dias", "value": "30.2% → 4.7%", "context": "Queda expressiva na faixa crítica" }
+      ],
+      "action_plan": [
+        "Sessão de retrospectiva com gestores: o que funcionou nos últimos 6 meses?",
+        "Documentar as 3-5 práticas que sustentaram a melhoria",
+        "Criar runbook formal para sustentar o ganho",
+        "Acompanhamento mensal: alarme se tempo médio voltar acima de 7d",
+        "Apresentar resultado em comitê executivo como case de transformação"
+      ],
+      "related_cards": ["opp_002"]
+    }
+  },
+  {
+    "id": "ach_002",
+    "category": "achievement",
+    "severity": "success",
+    "title": "Qualidade subiu de 81.7% para 95.7% em 12 meses",
+    "narrative": "A qualidade das marcações da Atitude saiu de 81.7% (abr/25) para 95.7% (mar/26). Em paralelo, headcount caiu 29% (de 2.884 para 2.033). Operação ficou menor mas mais qualificada.",
+    "evidence": {
+      "before": { "label": "Qualidade abr/25", "value": "81.7%" },
+      "after": { "label": "Qualidade mar/26", "value": "95.7%" }
+    },
+    "action": "Confirmar se a qualidade alta é sustentável ou se reflete redução de complexidade",
+    "modal": {
+      "diagnosis": "A qualidade das marcações da Atitude melhorou consistentemente em 12 meses, atingindo 95.7% em mar/26. Esse é o maior número de qualidade registrado entre os 3 clientes Nexti analisados nesse mês. Cuidado: como o HC caiu 29% no mesmo período, parte da melhoria pode vir da redução da complexidade operacional, não apenas de melhoria de processo.",
+      "evidence": [
+        { "label": "Qualidade abr/25", "value": "81.7%" },
+        { "label": "Qualidade mar/26", "value": "95.7%" },
+        { "label": "HC abr/25", "value": "2.884" },
+        { "label": "HC mar/26", "value": "2.033 (-29%)" },
+        { "label": "Volume marcações", "value": "102.609 → 66.653", "context": "Queda proporcional ao HC" },
+        { "label": "Ajustes", "value": "25.422 → 6.458", "context": "Queda mais acentuada — investigar" }
+      ],
+      "action_plan": [
+        "Validar se a qualidade 95.7% é representativa ou outlier de 1 mês",
+        "Verificar com gestão a causa da redução de HC (perda de contratos? Saída voluntária?)",
+        "Acompanhar abr/26 e mai/26: se qualidade se mantiver acima de 92%, é melhoria estrutural",
+        "Comparar qualidade por empresa: se está bem distribuída, é processo. Se vem de poucas, é mix de portfolio",
+        "Documentar como case de melhoria contínua"
+      ],
+      "related_cards": ["event_001"]
+    }
+  },
+  {
+    "id": "ach_003",
+    "category": "achievement",
+    "severity": "success",
+    "title": "ATITUDE PREMIER e FORTAL SERVICOS são as 2 líderes (Score 84+)",
+    "narrative": "Duas empresas do grupo operam com Score acima de 84: ATITUDE PREMIER CONDOMINIOS (84.7) e FORTAL SERVICOS CONDOMINIAIS (84.4). Ambas atendem o segmento de condomínios. São referência interna para as outras 7 empresas.",
+    "evidence": {
+      "before": { "label": "ATITUDE PREMIER", "value": "Score 84.7" },
+      "after": { "label": "FORTAL SERVICOS", "value": "Score 84.4" }
+    },
+    "action": "Workshop entre as 2 líderes e as 4 empresas em Atenção",
+    "modal": {
+      "diagnosis": "Em um grupo onde 4 empresas estão em zona Atenção, 2 conseguem operar perto de Excelente. ATITUDE PREMIER CONDOMINIOS e FORTAL SERVICOS estão no mesmo segmento (condomínios), o que pode indicar que esse vertical opera de forma diferente das terceirizações.",
+      "evidence": [
+        { "label": "ATITUDE PREMIER", "value": "Score 84.7", "context": "83 HC, qualidade 85.9%, tempo 3.3d, aj/op 141" },
+        { "label": "FORTAL SERVICOS", "value": "Score 84.4", "context": "10 HC, qualidade 92.5%, tempo 9.3d" },
+        { "label": "ATITUDE ADMINISTRADORA", "value": "Score 83.7", "context": "Terceira empresa do segmento condomínios" },
+        { "label": "Score médio condomínios", "value": "84.3", "context": "vs Score médio terceirização: 67.6" }
+      ],
+      "action_plan": [
+        "Workshop de 1 dia com gestores das 3 empresas do segmento condomínios",
+        "Documentar 5 práticas-chave que diferenciam o segmento",
+        "Avaliar quais práticas são adaptáveis ao segmento terceirização",
+        "Aplicar em ATD LOCAÇÃO (a melhor das em Atenção, Score 67.9) por 90 dias",
+        "Reconhecimento das duas empresas líderes em comunicação interna"
+      ],
+      "related_cards": ["opp_001"]
+    }
+  },
+  {
+    "id": "opp_001",
+    "category": "opportunity",
+    "severity": "medium",
+    "title": "Reforço do BO nas 4 empresas em Atenção (~5-8 operadores adicionais)",
+    "narrative": "As 4 empresas em zona Atenção têm o mesmo problema estrutural: BO subdimensionado. Adicionar 5-8 operadores no total traz aj/operador para faixa saudável e deve elevar o Score consolidado em 5-8 pontos. Custo estimado: R$ 22-36k/mês.",
+    "evidence": {
+      "before": { "label": "Operadores adicionais", "value": "5-8 necessários" },
+      "after": { "label": "Custo estimado", "value": "R$ 22-36k/mês" }
+    },
+    "action": "Submeter business case integrado para Diretoria Operacional",
+    "crossRef": { "targetId": "risk_003", "label": "Ver risco: 4 empresas em Atenção" },
+    "modal": {
+      "diagnosis": "O reforço estrutural é o caminho mais direto. As 4 empresas têm padrão similar de subdimensionamento de BO. Tratá-las isoladamente exige 4 processos seletivos, 4 onboardings, 4 negociações — caro e demorado. Tratamento sistêmico é mais eficiente.",
+      "evidence": [
+        { "label": "ATD LOCAÇÃO", "value": "+1 operador", "context": "aj/op 853 → meta 500" },
+        { "label": "ATITUDE CEARA", "value": "+1 operador", "context": "aj/op 1.128 → meta 600" },
+        { "label": "ATITUDE PATRIMONIAL", "value": "+2 operadores", "context": "aj/op 1.868 → meta 700" },
+        { "label": "ATITUDE PARAIBA", "value": "+1 operador", "context": "aj/op 2.210 → meta 700" },
+        { "label": "Custo por operador", "value": "R$ 4.500/mês", "context": "Com encargos" },
+        { "label": "Risco evitado", "value": "R$ 7.6M-19M/ano" }
+      ],
+      "action_plan": [
+        "Business case integrado para diretoria operacional",
+        "Aprovação e processo seletivo único em até 60 dias",
+        "Onboarding coordenado com mentoria das empresas líderes",
+        "Acompanhamento mensal por 6 meses",
+        "Meta: zerar empresas em zona Atenção em 6 meses"
+      ],
+      "related_cards": ["risk_003", "risk_004"]
+    }
+  },
+  {
+    "id": "opp_002",
+    "category": "opportunity",
+    "severity": "medium",
+    "title": "Investigar e formalizar práticas que reduziram tempo em 72%",
+    "narrative": "A operação consolidada melhorou tempo médio de tratativa de 14d para 4d em 12 meses. ATITUDE TERCEIRIZACAO PATRIMONIAL especificamente saiu de 76d para 3d. Capturar formalmente o que mudou pode acelerar a melhoria nas demais.",
+    "evidence": {
+      "before": { "label": "Tempo consolidado", "value": "14d → 4d (12 meses)" },
+      "after": { "label": "PATRIMONIAL", "value": "76d → 3d (set/25→mar/26)" }
+    },
+    "action": "Sessão de retrospectiva e documentação formal do que mudou",
+    "crossRef": { "targetId": "ach_001", "label": "Ver conquista: Tempo caiu de 14d para 4d" },
+    "modal": {
+      "diagnosis": "Quando uma operação melhora 72% em 12 meses, há aprendizado a capturar. A maior parte das transformações operacionais não é documentada e se perde quando os gestores envolvidos saem ou mudam de função.",
+      "evidence": [
+        { "label": "Operação consolidada", "value": "-72% em 12 meses" },
+        { "label": "PATRIMONIAL", "value": "-96%", "context": "De 76d para 3d" },
+        { "label": "Empresas ainda altas", "value": "PARAIBA, CEARA, ATD LOCAÇÃO", "context": "12-15d de tempo médio" }
+      ],
+      "action_plan": [
+        "Workshop de 4h com gestores das 3 empresas com maior melhoria",
+        "Documentar 5 práticas-chave que produziram a melhoria",
+        "Criar manual interno de 'Aceleração de tratativa'",
+        "Aplicar nas empresas em Atenção por 90 dias",
+        "Acompanhar evolução mensal"
+      ],
+      "related_cards": ["ach_001", "risk_002"]
+    }
+  },
+  {
+    "id": "opp_003",
+    "category": "opportunity",
+    "severity": "medium",
+    "title": "Padronizar SLA formal de 7 dias para todas as empresas",
+    "narrative": "Algumas empresas do grupo já operam com tempo médio abaixo de 7 dias (ATITUDE PREMIER 2.9d, ATITUDE ADMINISTRADORA 3.9d). Outras estão em 12-15 dias. Estabelecer SLA formal de 7 dias como padrão do grupo cria pressão organizacional pelo cumprimento.",
+    "evidence": {
+      "before": { "label": "Melhores empresas", "value": "2.9-3.9 dias" },
+      "after": { "label": "SLA proposto", "value": "7 dias (gap: 5-8d)" }
+    },
+    "action": "Implementar SLA formal de 7 dias com alarme em D+5",
+    "modal": {
+      "diagnosis": "SLA formal não é tecnologia, é decisão organizacional. Algumas empresas do grupo já cumprem o que seria SLA implícito de 7 dias. Tornar isso explícito alinha expectativas, cria accountability e dá ferramenta para os gestores cobrarem evolução. Custo zero, ROI imediato.",
+      "evidence": [
+        { "label": "Empresas que cumprem <7d", "value": "4 empresas", "context": "PREMIER (2.9d), ADMINISTRADORA (3.9d), PATRIMONIAL (3.0d), FORTAL (9.3d)" },
+        { "label": "Empresas >7d", "value": "5 empresas", "context": "QUANTA (13.8d), ATENTE (13.4d), ATD LOCAÇÃO (12.0d), CEARA (15.5d), PARAIBA (13.6d)" }
+      ],
+      "action_plan": [
+        "Comunicar SLA formal de 7 dias para gestores das 9 empresas",
+        "Configurar alarme automático no Nexti Direct: ajustes em D+5 destacados, em D+7 escalonados",
+        "Reunião semanal de 30 min entre gestores para revisar fila >5d",
+        "Acompanhamento mensal: % de ajustes que cumpriram SLA por empresa",
+        "Meta: 90% dos ajustes cumprindo SLA de 7d em 6 meses"
+      ],
+      "related_cards": ["ach_001"]
+    }
+  },
+  {
+    "id": "event_001",
+    "category": "event",
+    "severity": "info",
+    "title": "Headcount caiu 29% em 12 meses (de 2.884 para 2.033)",
+    "narrative": "A operação Atitude perdeu 851 colaboradores em 12 meses (-29%). Volume de marcações caiu proporcionalmente. Pode indicar perda de contratos, racionalização ou estratégia de focar em verticais específicos.",
+    "evidence": {
+      "before": { "label": "HC abr/25", "value": "2.884" },
+      "after": { "label": "HC mar/26", "value": "2.033 (-29%)" }
+    },
+    "action": "Confirmar com gestão a causa da redução para projetar próximos 6 meses",
+    "modal": {
+      "diagnosis": "Mudança estrutural de headcount em 29% em 12 meses não acontece sem evento. Pode ser perda de contrato grande, mudança de estratégia, reestruturação ou cenário externo. Independente da causa, a operação precisa ser reorganizada para o novo tamanho — o BO atual pode estar superdimensionado se foi mantido para o tamanho anterior.",
+      "evidence": [
+        { "label": "HC abr/25", "value": "2.884" },
+        { "label": "HC mar/26", "value": "2.033" },
+        { "label": "Queda", "value": "-851 colaboradores (-29%)" },
+        { "label": "Volume marcações", "value": "102.609 → 66.653 (-35%)" },
+        { "label": "Ajustes", "value": "25.422 → 6.458", "context": "Queda mais acentuada que volume" }
+      ],
+      "action_plan": [
+        "Reunião com diretoria comercial: o que aconteceu nos últimos 12 meses?",
+        "Mapear quais empresas/UNs perderam HC mais drasticamente",
+        "Reavaliar dimensionamento do BO em função do novo volume",
+        "Se a tendência for revertida: preparar plano de absorção de novos contratos",
+        "Se for permanente: ajustar estrutura de BO para evitar ociosidade"
+      ],
+      "related_cards": ["ach_002"]
+    }
+  }
+]
