@@ -61,7 +61,7 @@ function parseChartFolder(name: string): { index: number; chartSlug: string; cha
   return { index: parseInt(match[1], 10), chartSlug: slug, chartLabel: label };
 }
 
-/** Parse JSON filename like "JSON Evolução da Qualidade e Headcount Por Empresa.json" */
+/** Parse JSON filename like "JSON Evolução da Qualidade e Headcount Por Empresa.json" or "...Por Área Novo.json" */
 function parseDimensionFromFilename(filename: string): string | null {
   const normed = norm(filename);
   // Try to find a known dimension key anywhere after "por "
@@ -69,9 +69,12 @@ function parseDimensionFromFilename(filename: string): string | null {
   if (porIdx < 0) return null;
   const afterPor = normed.slice(porIdx + 4).replace(/\.json$/, "").trim();
   // Check each known dimension key — longest match first to avoid partial hits
+  // Use includes-start check to tolerate trailing words (e.g. "area novo" → matches "area")
   const keys = Object.keys(DIMENSION_MAP).sort((a, b) => b.length - a.length);
   for (const key of keys) {
-    if (afterPor.startsWith(key)) return DIMENSION_MAP[key];
+    if (afterPor === key || afterPor.startsWith(key + " ") || afterPor.startsWith(key)) {
+      return DIMENSION_MAP[key];
+    }
   }
   return null;
 }

@@ -93,24 +93,8 @@ function computeTempoMedioDiasByWindow(
 // ── Re-export GroupBy from shared component ──
 import GroupBySidebar, { type GroupBy, groupByOptions } from "@/components/analytics/GroupBySidebar";
 
-// ── Sidebar data from real JSON ──
-const empresaData = getSidebarItems("empresa").map(e => ({
-  ...e,
-  qualidade: e.score,
-  tendencia: e.score >= 88 ? "melhorando" as const : e.score >= 75 ? "estavel" as const : "piorando" as const,
-}));
-
-const areaData = getSidebarItems("area").map(e => ({
-  ...e,
-  qualidade: e.score,
-  tendencia: e.score >= 88 ? "melhorando" as const : e.score >= 85 ? "estavel" as const : "piorando" as const,
-}));
-
-const unidadeData = getSidebarItems("unidade").map(e => ({
-  ...e,
-  qualidade: e.score,
-  tendencia: e.score >= 88 ? "melhorando" as const : e.score >= 85 ? "estavel" as const : "piorando" as const,
-}));
+// ── Sidebar data is now computed dynamically inside components via dataSources ──
+// (removed static module-level getSidebarItems calls that always fell back to customer 642)
 
 // ── Generate scatter-compatible data from any entity list ──
 function toScatterData(items: { nome: string; qualidade: number; score: number }[]) {
@@ -137,8 +121,7 @@ function toScatterData(items: { nome: string; qualidade: number; score: number }
     };
   });
 }
-const empresaScatter = toScatterData(empresaData);
-const areaScatter = toScatterData(areaData);
+// empresaScatter and areaScatter are now computed dynamically inside components
 
 // ── Scatter data (source of truth for all 30 regionals) ──
 const scatterQualidade = [
@@ -2664,6 +2647,9 @@ ORDER BY a.reference_month, a.headcount DESC;`;
 // ══════════════════════════════════════════════════════════════
 function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
   const { config: scoreConfig } = useScoreConfig();
+  const { data: customerData } = useQualidadePontoData();
+  const dataSources = useMemo(() => buildDataSources(customerData), [customerData]);
+
   const activeData = useMemo(() => {
     if (!selectedRegional) return { total: "23.0K", diff: "-18.3%", escala: "14.8K", posto: "8.2K" };
     const r = movimentacoesRegionais.find(x => x.nome === selectedRegional);
@@ -2679,11 +2665,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
   const maxTotal = Math.max(...movimentacoesRegionais.map(r => r.total));
 
   const getMovScore = (total: number) => Math.round(Math.max(0, 100 - (total / maxTotal) * 100));
-  const sidebarItems = useMemo(() => {
-    if (groupBy === "empresa") return [...empresaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
-    if (groupBy === "area") return [...areaData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
-    return [...unidadeData].sort((a, b) => b.qualidade - a.qualidade).map(e => ({ nome: e.nome, score: Math.round(e.qualidade) }));
-  }, [groupBy, maxTotal]);
+  const sidebarItems = useMemo(() => getSidebarItems(groupBy, scoreConfig, dataSources), [groupBy, scoreConfig, dataSources]);
 
   return (
     <div className="flex">

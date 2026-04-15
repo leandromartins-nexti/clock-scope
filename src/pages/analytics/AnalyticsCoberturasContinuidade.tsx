@@ -4,6 +4,8 @@ import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySide
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { coberturas } from "@/lib/analytics-mock-data";
 import { getSidebarItems } from "@/lib/ajustesData";
+import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
+import { buildDataSources } from "@/lib/qualidadeDataSources";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid,
@@ -64,7 +66,9 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
   };
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
-  const sidebarItems = useMemo(() => getSidebarItems(groupBy), [groupBy]);
+  const { data: customerData } = useQualidadePontoData();
+  const dataSources = useMemo(() => buildDataSources(customerData), [customerData]);
+  const sidebarItems = useMemo(() => getSidebarItems(groupBy, undefined, dataSources), [groupBy, dataSources]);
 
   const content = (
     <div className="flex flex-1 min-h-0">
