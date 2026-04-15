@@ -1590,11 +1590,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                   );
                 }} />
-                <Area yAxisId="left" type="monotone" dataKey="ate1d" stackId="faixa" fill="#22c55e" fillOpacity={0.65} stroke="#22c55e" strokeWidth={0} name="Até 1 dia" />
-                <Area yAxisId="left" type="monotone" dataKey="de1a3d" stackId="faixa" fill="#84cc16" fillOpacity={0.65} stroke="#84cc16" strokeWidth={0} name="1-3 dias" />
-                <Area yAxisId="left" type="monotone" dataKey="de3a7d" stackId="faixa" fill="#f59e0b" fillOpacity={0.65} stroke="#f59e0b" strokeWidth={0} name="3-7 dias" />
-                <Area yAxisId="left" type="monotone" dataKey="de7a15d" stackId="faixa" fill="#f97316" fillOpacity={0.65} stroke="#f97316" strokeWidth={0} name="7-15 dias" />
-                <Area yAxisId="left" type="monotone" dataKey="mais15d" stackId="faixa" fill="#ef4444" fillOpacity={0.65} stroke="#ef4444" strokeWidth={0} name="+15 dias" />
+                <Area yAxisId="left" type="monotone" dataKey="ate1d" stackId="faixa" fill="#22c55e" fillOpacity={0.35} stroke="#22c55e" strokeWidth={0.5} name="Até 1 dia" />
+                <Area yAxisId="left" type="monotone" dataKey="de1a3d" stackId="faixa" fill="#84cc16" fillOpacity={0.35} stroke="#84cc16" strokeWidth={0.5} name="1-3 dias" />
+                <Area yAxisId="left" type="monotone" dataKey="de3a7d" stackId="faixa" fill="#f59e0b" fillOpacity={0.35} stroke="#f59e0b" strokeWidth={0.5} name="3-7 dias" />
+                <Area yAxisId="left" type="monotone" dataKey="de7a15d" stackId="faixa" fill="#f97316" fillOpacity={0.35} stroke="#f97316" strokeWidth={0.5} name="7-15 dias" />
+                <Area yAxisId="left" type="monotone" dataKey="mais15d" stackId="faixa" fill="#ef4444" fillOpacity={0.35} stroke="#ef4444" strokeWidth={0.5} name="+15 dias" />
                 <Line yAxisId="right" type="monotone" dataKey="tempoMedio" name="Tempo médio (dias)" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }} />
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: "Até 1 dia", type: "square" as const, color: "#22c55e" },
