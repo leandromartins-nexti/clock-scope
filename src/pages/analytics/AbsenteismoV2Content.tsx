@@ -24,6 +24,19 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  useAbsenteismoScoreConfig,
+  computeVolumeScore as computeVolumeScoreCtx,
+  computeComposicaoScore as computeComposicaoScoreCtx,
+  computeMaturidadeScore as computeMaturidadeScoreCtx,
+  computeAbsCompositeScore,
+  getAbsScoreClassification,
+  getAbsScoreColor,
+  getAbsScoreLabel,
+  getVolumeScoreLabel,
+  getMaturidadeScoreLabel,
+  type AbsenteismoScoreConfig,
+} from "@/contexts/AbsenteismoScoreConfigContext";
 
 // ── Static JSON imports ──
 import volumeEmpresa from "@/data/customers/642/absenteismo/volume-mensal-por-empresa.json";
