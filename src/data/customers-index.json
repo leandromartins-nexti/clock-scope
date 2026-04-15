@@ -13,7 +13,7 @@
     {
       "customer_id": 642,
       "label": "Vig Eyes",
-      "tabs_available": ["qualidade-ponto"]
+      "tabs_available": ["qualidade-ponto", "absenteismo"]
     }
   ]
 }
