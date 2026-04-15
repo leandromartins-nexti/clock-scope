@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "./pages/DashboardLayout";
 import NextiAnalytics from "./pages/NextiAnalytics";
 import StrategyPrime from "./pages/StrategyPrime";
@@ -13,10 +13,11 @@ import AnalyticsV3 from "./pages/AnalyticsV3";
 import ROIConfig from "./pages/ROIConfig";
 import ROIConfigV3 from "./pages/ROIConfigV3";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
 import { ScoreConfigProvider } from "./contexts/ScoreConfigContext";
 import { AbsenteismoScoreConfigProvider } from "./contexts/AbsenteismoScoreConfigContext";
-// TODO: REMOVER EM PRODUÇÃO — CustomerProvider é do modo de teste multi-cliente
 import { CustomerProvider } from "./contexts/CustomerContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 // Analytics V1 pages
 import AnalyticsResumoExecutivo from "./pages/analytics/AnalyticsResumoExecutivo";
@@ -30,16 +31,14 @@ import GaugeShowcase from "./pages/analytics/GaugeShowcase";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    {/* TODO: REMOVER EM PRODUÇÃO — CustomerProvider é do modo de teste */}
+function ProtectedRoutes() {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  return (
     <CustomerProvider>
-    <ScoreConfigProvider>
-    <AbsenteismoScoreConfigProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+      <ScoreConfigProvider>
+        <AbsenteismoScoreConfigProvider>
           <Routes>
             <Route element={<DashboardLayout />}>
               <Route path="/" element={<AnalyticsResumoExecutivo />} />
@@ -64,12 +63,33 @@ const App = () => (
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
+        </AbsenteismoScoreConfigProvider>
+      </ScoreConfigProvider>
+    </CustomerProvider>
+  );
+}
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginGuard />} />
+            <Route path="/*" element={<ProtectedRoutes />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </AbsenteismoScoreConfigProvider>
-    </ScoreConfigProvider>
-    </CustomerProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
+
+function LoginGuard() {
+  const { isAuthenticated } = useAuth();
+  if (isAuthenticated) return <Navigate to="/" replace />;
+  return <Login />;
+}
 
 export default App;

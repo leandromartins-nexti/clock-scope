@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "Admin@123",
+      "client": "nexti",
+      "name": "Administrador Nexti",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "username": "orsegups",
+      "password": "Orseg@123",
+      "client": "orsegups",
+      "name": "Operador Orsegups",
+      "role": "user"
+    },
+    {
+      "id": 3,
+      "username": "atitude",
+      "password": "Atitude@123",
+      "client": "atitudeservicos",
+      "name": "Operador Atitude",
+      "role": "user"
+    },
+    {
+      "id": 4,
+      "username": "vigeyes",
+      "password": "Vigeyes@123",
+      "client": "vigeyes",
+      "name": "Operador VigEyes",
+      "role": "user"
+    }
+  ]
+}
