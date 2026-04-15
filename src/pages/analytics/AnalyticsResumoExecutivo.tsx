@@ -116,7 +116,7 @@ export default function AnalyticsResumoExecutivo() {
       const score = computeCompositeScore(selectedRegional, groupBy as any, scoreConfig, [month], sources);
       return { competencia: formatMesLabel(month), valor: score };
     });
-    const lastScore = evolucao[evolucao.length - 1]?.valor ?? 0;
+    const lastScore = kpiSummary.score;
     const firstScore = evolucao[0]?.valor ?? 0;
     const diff = lastScore - firstScore;
     const variacao = diff >= 0 ? `+${diff} pts` : `${diff} pts`;
@@ -130,10 +130,10 @@ export default function AnalyticsResumoExecutivo() {
       evolucao,
       perPointColors: true,
     };
-  }, [selectedRegional, groupBy, scoreConfig, sources, allMonths]);
+  }, [selectedRegional, groupBy, scoreConfig, sources, allMonths, kpiSummary.score]);
 
-  // Score for gauge — use same value as sparkline last point
-  const activeScore = qualidadeCard.score;
+  // Score for gauge — uses the 3-month rolling composite score (same as Operacional tab)
+  const activeScore = kpiSummary.score;
   const scoreClassif = getScoreClassification(activeScore, scoreConfig);
 
   // Previous period score for trend
