@@ -147,15 +147,7 @@ export default function InsightDetailModal({ insight, open, onClose, onDismiss, 
           )}
         </div>
 
-        <DialogFooter className="px-6 py-3 border-t border-border/30 bg-muted/10 flex justify-between sm:justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={() => { onDismiss(insight.id); onClose(); }}
-          >
-            Dispensar insight
-          </Button>
+        <DialogFooter className="px-6 py-3 border-t border-border/30 bg-muted/10 flex justify-end">
           <Button variant="outline" size="sm" className="text-xs" onClick={onClose}>
             Fechar
           </Button>

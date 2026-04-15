@@ -211,19 +211,13 @@ export default function QualidadeInsightsSection() {
                           </p>
 
                           {/* Footer actions */}
-                          <div className="flex items-center justify-between pt-1.5 border-t border-border/20">
+                          <div className="flex items-center pt-1.5 border-t border-border/20">
                             <button
                               onClick={(e) => { e.stopPropagation(); setSelectedInsight(ins); }}
                               className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
                             >
                               <Eye size={10} />
                               Detalhes
-                            </button>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); handleDismiss(ins.id); }}
-                              className="text-[10px] text-muted-foreground/60 hover:text-destructive transition-colors"
-                            >
-                              Dispensar
                             </button>
                           </div>
                         </div>
