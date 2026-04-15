@@ -312,15 +312,16 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
       return Object.keys(MESES_LABELS).map(date => {
         const row = filtered.find(d => d.reference_date === date);
         const horas = row?.horas_ausencia ?? 0;
-        const pessoas = row?.pessoas_ausentes ?? 0;
-        const taxa = pessoas > 0 ? +((horas / (pessoas * 200)) * 100).toFixed(2) : 0;
+        const entityNorm = normalizeEntityName(selectedRegional);
+        const entityHc = HC_BY_ENTITY[entityNorm] ?? row?.pessoas_ausentes ?? 0;
+        const taxa = entityHc > 0 ? +((horas / (entityHc * absConfig.horas_previstas_mes)) * 100).toFixed(2) : 0;
         return {
           mes: MESES_LABELS[date],
           horas,
           eventos: row?.qtd_eventos ?? 0,
-          pessoas,
+          pessoas: row?.pessoas_ausentes ?? 0,
           taxa,
-          hcMes: pessoas,
+          hcMes: entityHc,
         };
       });
     }
@@ -328,10 +329,10 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
       mes: MESES_LABELS[d.reference_date],
       horas: d.horas_ausencia_nao_planejada,
       horasTotal: d.horas_ausencia_total,
-      taxa: d.pessoas_ausentes > 0 ? +((d.horas_ausencia_nao_planejada / (d.pessoas_ausentes * 200)) * 100).toFixed(2) : 0,
-      hcMes: d.pessoas_ausentes,
+      taxa: d.hcMes > 0 ? +((d.horas_ausencia_nao_planejada / (d.hcMes * absConfig.horas_previstas_mes)) * 100).toFixed(2) : 0,
+      hcMes: d.hcMes,
     }));
-  }, [selectedRegional, volumeByDim, nameField]);
+  }, [selectedRegional, volumeByDim, nameField, absConfig.horas_previstas_mes]);
 
   // ── Composição chart data (stacked area 100%) ──
   const composicaoChartData = useMemo(() => {
@@ -420,8 +421,9 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   }, [groupBy, selectedRegional, nameField]);
 
   // ── Score computation ──
+  const hPrev = absConfig.horas_previstas_mes;
   const lastEntry = volumeConsolidado[volumeConsolidado.length - 1];
-  const latestTaxa = lastEntry.pessoas_ausentes > 0 ? +((lastEntry.horas_ausencia_nao_planejada / (lastEntry.pessoas_ausentes * 200)) * 100).toFixed(2) : 0;
+  const latestTaxa = lastEntry.hcMes > 0 ? +((lastEntry.horas_ausencia_nao_planejada / (lastEntry.hcMes * hPrev)) * 100).toFixed(2) : 0;
   const volScore = computeVolumeScoreCtx(latestTaxa, absConfig);
   const compScore = computeComposicaoScoreCtx(composicaoDistribuicao, absConfig);
   const matScoreVal = computeMaturidadeScoreCtx(maturidadeDistribuicao.planejado, absConfig);
