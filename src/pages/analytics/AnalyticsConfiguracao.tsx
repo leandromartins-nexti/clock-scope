@@ -1,4 +1,6 @@
 import { useState } from "react";
+// TODO: REMOVER EM PRODUÇÃO — TestModeSelector é do modo de teste multi-cliente
+import TestModeSelector from "@/components/analytics/TestModeSelector";
 import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info } from "lucide-react";
 import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
 import ScoreAbsenteismoConfig from "./ScoreAbsenteismoConfig";
@@ -202,6 +204,10 @@ export default function AnalyticsConfiguracao() {
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
+      {/* TODO: REMOVER EM PRODUÇÃO — Seção "Modo de Teste" */}
+      <div className="px-6 pt-5">
+        <TestModeSelector />
+      </div>
       {/* Tab bar */}
       <div className="bg-white border-b border-border px-6">
         <div className="flex gap-6">
