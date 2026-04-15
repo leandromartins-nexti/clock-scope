@@ -1391,8 +1391,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const r = 20;
                   const isFixed = fixedBubble === payload.regional;
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
+                   const hasFilter = !!selectedRegional;
                    const opacity = isFixed ? 0.9 : isSelected ? 0.7 : 0.25;
-                   const strokeW = isFixed ? 1.5 : isSelected ? 1.5 : 0.5;
                    const textColor = "#1e293b";
                    // 3-letter abbreviation like sidebar
                    const clean = payload.regional.replace(/^VIG\s*EYES\s*/i, "").trim();
@@ -1406,7 +1406,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                        onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }}
                        className="cursor-pointer"
                      >
-                       <circle cx={cx} cy={cy} r={r} fill={payload.bubbleColor} fillOpacity={opacity} stroke={payload.bubbleColor} strokeWidth={strokeW} />
+                       <circle cx={cx} cy={cy} r={r} fill={payload.bubbleColor} fillOpacity={opacity}
+                         stroke={isFixed && hasFilter ? "#C8860A" : payload.bubbleColor}
+                         strokeWidth={isFixed && hasFilter ? 2 : 0.5}
+                         strokeDasharray={isFixed && hasFilter ? "4 3" : "none"}
+                       />
                        <text x={cx} y={cy - 5} textAnchor="middle" fontSize={11} fontWeight={700} fill={textColor} dominantBaseline="middle">
                          {abbr}
                        </text>
