@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 // TODO: REMOVER EM PRODUÇÃO — useCustomer é do modo de teste multi-cliente
 import { useCustomer } from "@/contexts/CustomerContext";
+import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
 import NoDataPlaceholder from "@/components/analytics/NoDataPlaceholder";
 import { Info, TrendingUp, TrendingDown, Minus as MinusIcon, Eraser, AlertTriangle, ArrowUpRight, ArrowDownRight, X, ExternalLink, Search, ArrowUpDown, LineChartIcon, BarChart3, AreaChartIcon, Percent, Hash, Database, Lock, ArrowUp, ArrowDown } from "lucide-react";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
