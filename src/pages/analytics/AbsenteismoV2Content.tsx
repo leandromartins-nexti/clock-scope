@@ -252,6 +252,7 @@ type ContentProps = {
 };
 
 export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
+  const { config: absConfig } = useAbsenteismoScoreConfig();
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [volumeChartMode, setVolumeChartMode] = useState<ChartMode>("line");
   const [volumeDataMode, setVolumeDataMode] = useState<DataMode>("percent");
@@ -260,6 +261,19 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   const [scoreDetailOpen, setScoreDetailOpen] = useState(false);
   const [fixedBubble, setFixedBubble] = useState<string | null>(null);
   const [mapaScoreFilter, setMapaScoreFilter] = useState<Set<string>>(() => new Set(["green", "orange", "red"]));
+
+  // Config-aware score helpers (closures over absConfig)
+  const computeEntityScore = useCallback((entityName: string, gb: GroupBy, nf: string): number => {
+    const normalizedEntity = normalizeEntityName(entityName);
+    const taxaEntry = Object.entries(REAL_TAXA_BY_GROUP[gb]).find(([label]) => normalizeEntityName(label) === normalizedEntity);
+    const taxa = taxaEntry?.[1] ?? 0;
+    const volScore = computeVolumeScoreCtx(taxa, absConfig);
+    const composicao = computeEntityComposicaoDistribution(entityName, gb, nf);
+    const maturidade = computeEntityMaturidadeDistribution(entityName, gb, nf);
+    const compScore = computeComposicaoScoreCtx(composicao, absConfig);
+    const matScore = computeMaturidadeScoreCtx(maturidade.planejado, absConfig);
+    return computeAbsCompositeScore(volScore, compScore, matScore, absConfig);
+  }, [absConfig]);
 
   const toggleMapaScoreFilter = useCallback((cat: string) => {
     setMapaScoreFilter(prev => {
