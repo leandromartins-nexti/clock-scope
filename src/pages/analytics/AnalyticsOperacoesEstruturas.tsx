@@ -5,6 +5,8 @@ import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo } from "@/lib/analytics-mock-data";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
 import { getSidebarItems } from "@/lib/ajustesData";
+import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
+import { buildDataSources } from "@/lib/qualidadeDataSources";
 
 export default function AnalyticsOperacoesEstruturas({ embedded }: { embedded?: boolean }) {
   const navigate = useNavigate();
@@ -14,7 +16,9 @@ export default function AnalyticsOperacoesEstruturas({ embedded }: { embedded?: 
 
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
-  const sidebarItems = useMemo(() => getSidebarItems(groupBy), [groupBy]);
+  const { data: customerData } = useQualidadePontoData();
+  const dataSources = useMemo(() => buildDataSources(customerData), [customerData]);
+  const sidebarItems = useMemo(() => getSidebarItems(groupBy, undefined, dataSources), [groupBy, dataSources]);
 
   const content = (
     <div className="flex flex-1 min-h-0">
