@@ -1,0 +1,480 @@
+// TODO: REMOVER EM PRODUÇÃO
+// Importador de ZIP de dados de clientes para fase de testes.
+
+import { useState, useCallback } from "react";
+import JSZip from "jszip";
+import { Upload, FileArchive, Check, AlertTriangle, Trash2, ChevronDown, ChevronRight, Database, FileText } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCustomer, type CustomerEntry } from "@/contexts/CustomerContext";
+import { toast } from "sonner";
+
+// ── Mapping from ZIP folder/file names to internal slugs ──
+
+const DIMENSION_MAP: Record<string, string> = {
+  "empresa": "empresa",
+  "unidade de negócio": "unidade",
+  "unidade de negocio": "unidade",
+  "área": "area",
+  "area": "area",
+};
+
+const CHART_SLUG_MAP: Record<string, string> = {
+  "evolução da qualidade e headcount": "evolucao-qualidade-headcount",
+  "evolucao da qualidade e headcount": "evolucao-qualidade-headcount",
+  "evolução do tempo de tratativa": "evolucao-tempo-tratativa",
+  "evolucao do tempo de tratativa": "evolucao-tempo-tratativa",
+  "matriz de saúde operacional": "matriz-de-saude-operacional",
+  "matriz de saude operacional": "matriz-de-saude-operacional",
+  "sobrecarga do back-office": "sobrecarga-backoffice",
+  "sobrecarga do backoffice": "sobrecarga-backoffice",
+};
+
+const TAB_SLUG_MAP: Record<string, string> = {
+  "qualidade do ponto": "qualidade-ponto",
+};
+
+const MENU_SLUG_MAP: Record<string, string> = {
+  "operacional": "operacional",
+  "resumo executivo": "resumo-executivo",
+};
+
+/** Normalize unicode combining chars and lowercase */
+function norm(s: string): string {
+  return s.normalize("NFC").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+
+/** Parse root folder name like "642 - Vig Eyes" */
+function parseRootFolder(name: string): { customerId: number; label: string } | null {
+  const match = name.match(/^(\d+)\s*-\s*(.+)$/);
+  if (!match) return null;
+  return { customerId: parseInt(match[1], 10), label: match[2].trim() };
+}
+
+/** Parse chart folder name like "1. Evolução da Qualidade e Headcount" */
+function parseChartFolder(name: string): { index: number; chartSlug: string; chartLabel: string } | null {
+  const match = name.match(/^(\d+)\.\s*(.+)$/);
+  if (!match) return null;
+  const label = match[2].trim();
+  const slug = CHART_SLUG_MAP[norm(label)];
+  if (!slug) return null;
+  return { index: parseInt(match[1], 10), chartSlug: slug, chartLabel: label };
+}
+
+/** Parse JSON filename like "JSON Evolução da Qualidade e Headcount Por Empresa.json" */
+function parseDimensionFromFilename(filename: string): string | null {
+  const normed = norm(filename);
+  const match = normed.match(/por\s+(.+?)\.json$/);
+  if (!match) return null;
+  return DIMENSION_MAP[match[1]] ?? null;
+}
+
+export interface ImportedChart {
+  chartSlug: string;
+  chartLabel: string;
+  index: number;
+  sql?: string;
+  dimensions: Record<string, any[]>; // empresa/unidade/area → JSON data
+}
+
+export interface ImportedTab {
+  tabSlug: string;
+  tabLabel: string;
+  charts: ImportedChart[];
+}
+
+export interface ImportedCustomer {
+  customerId: number;
+  label: string;
+  menus: {
+    menuSlug: string;
+    menuLabel: string;
+    tabs: ImportedTab[];
+  }[];
+}
+
+const STORAGE_KEY_PREFIX = "nexti_customer_data_";
+const STORAGE_INDEX_KEY = "nexti_imported_customers";
+
+/** Save imported customer data to localStorage */
+export function saveCustomerToStorage(customer: ImportedCustomer) {
+  // Save data
+  localStorage.setItem(
+    `${STORAGE_KEY_PREFIX}${customer.customerId}`,
+    JSON.stringify(customer)
+  );
+
+  // Update index
+  const index = getImportedCustomersIndex();
+  const existing = index.findIndex(c => c.customer_id === customer.customerId);
+  const entry: CustomerEntry = {
+    customer_id: customer.customerId,
+    label: customer.label,
+    tabs_available: customer.menus.flatMap(m => m.tabs.map(t => t.tabSlug)),
+  };
+  if (existing >= 0) {
+    index[existing] = entry;
+  } else {
+    index.push(entry);
+  }
+  localStorage.setItem(STORAGE_INDEX_KEY, JSON.stringify(index));
+}
+
+/** Get list of imported customers from localStorage */
+export function getImportedCustomersIndex(): CustomerEntry[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_INDEX_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Load full customer data from localStorage */
+export function loadCustomerFromStorage(customerId: number): ImportedCustomer | null {
+  try {
+    const raw = localStorage.getItem(`${STORAGE_KEY_PREFIX}${customerId}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Load specific chart data from localStorage */
+export function loadChartDataFromStorage(
+  customerId: number,
+  tabSlug: string,
+  chartSlug: string,
+  dimension: string
+): any[] | null {
+  const customer = loadCustomerFromStorage(customerId);
+  if (!customer) return null;
+
+  for (const menu of customer.menus) {
+    for (const tab of menu.tabs) {
+      if (tab.tabSlug !== tabSlug) continue;
+      for (const chart of tab.charts) {
+        if (chart.chartSlug !== chartSlug) continue;
+        return chart.dimensions[dimension] ?? null;
+      }
+    }
+  }
+  return null;
+}
+
+/** Remove imported customer from localStorage */
+export function removeCustomerFromStorage(customerId: number) {
+  localStorage.removeItem(`${STORAGE_KEY_PREFIX}${customerId}`);
+  const index = getImportedCustomersIndex().filter(c => c.customer_id !== customerId);
+  localStorage.setItem(STORAGE_INDEX_KEY, JSON.stringify(index));
+}
+
+/** Parse a ZIP file and extract customer data */
+export async function parseCustomerZip(file: File): Promise<ImportedCustomer> {
+  const zip = await JSZip.loadAsync(file);
+  const paths = Object.keys(zip.files).filter(
+    p => !p.startsWith("__MACOSX") && !p.endsWith(".DS_Store") && !zip.files[p].dir
+  );
+
+  // Find root folder
+  const allParts = paths.map(p => p.split("/"));
+  const rootName = allParts[0]?.[0] ?? "";
+  const parsed = parseRootFolder(rootName);
+  if (!parsed) throw new Error(`Pasta raiz inválida: "${rootName}". Esperado formato "ID - Nome" (ex: "642 - Vig Eyes")`);
+
+  const { customerId, label } = parsed;
+
+  // Build menu → tab → chart → files tree
+  const menusMap = new Map<string, { label: string; tabs: Map<string, { label: string; charts: Map<string, ImportedChart> }> }>();
+
+  for (const path of paths) {
+    const parts = path.split("/").filter(Boolean);
+    // Expected: root / menu / tab / chart / file
+    if (parts.length < 5) continue;
+
+    const [, menuPart, tabPart, chartPart, fileName] = parts;
+    const menuSlug = MENU_SLUG_MAP[norm(menuPart)] ?? norm(menuPart).replace(/\s+/g, "-");
+    const tabSlug = TAB_SLUG_MAP[norm(tabPart)] ?? norm(tabPart).replace(/\s+/g, "-");
+    const chartInfo = parseChartFolder(chartPart);
+    if (!chartInfo) continue;
+
+    // Get or create menu
+    if (!menusMap.has(menuSlug)) {
+      menusMap.set(menuSlug, { label: menuPart, tabs: new Map() });
+    }
+    const menu = menusMap.get(menuSlug)!;
+
+    // Get or create tab
+    if (!menu.tabs.has(tabSlug)) {
+      menu.tabs.set(tabSlug, { label: tabPart, charts: new Map() });
+    }
+    const tab = menu.tabs.get(tabSlug)!;
+
+    // Get or create chart
+    if (!tab.charts.has(chartInfo.chartSlug)) {
+      tab.charts.set(chartInfo.chartSlug, {
+        chartSlug: chartInfo.chartSlug,
+        chartLabel: chartInfo.chartLabel,
+        index: chartInfo.index,
+        dimensions: {},
+      });
+    }
+    const chart = tab.charts.get(chartInfo.chartSlug)!;
+
+    // Parse file content
+    const zipFile = zip.files[path];
+    if (fileName.endsWith(".sql")) {
+      chart.sql = await zipFile.async("string");
+    } else if (fileName.endsWith(".json")) {
+      const dimension = parseDimensionFromFilename(fileName);
+      if (dimension) {
+        try {
+          const content = await zipFile.async("string");
+          chart.dimensions[dimension] = JSON.parse(content);
+        } catch (e) {
+          console.warn(`Failed to parse JSON: ${path}`, e);
+        }
+      }
+    }
+  }
+
+  // Convert maps to arrays
+  const menus = Array.from(menusMap.entries()).map(([menuSlug, menu]) => ({
+    menuSlug,
+    menuLabel: menu.label,
+    tabs: Array.from(menu.tabs.entries()).map(([tabSlug, tab]) => ({
+      tabSlug,
+      tabLabel: tab.label,
+      charts: Array.from(tab.charts.values()).sort((a, b) => a.index - b.index),
+    })),
+  }));
+
+  return { customerId, label, menus };
+}
+
+// ── UI Component ──
+
+export default function CustomerZipImporter() {
+  const { customers, setCustomerId, refreshCustomers } = useCustomer();
+  const [dragOver, setDragOver] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [lastResult, setLastResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [importedCustomers, setImportedCustomers] = useState<CustomerEntry[]>(() => getImportedCustomersIndex());
+  const [expandedCustomer, setExpandedCustomer] = useState<number | null>(null);
+  const [customerDetails, setCustomerDetails] = useState<ImportedCustomer | null>(null);
+
+  const handleFile = useCallback(async (file: File) => {
+    if (!file.name.endsWith(".zip")) {
+      toast.error("Arquivo deve ser .zip");
+      return;
+    }
+
+    setImporting(true);
+    setLastResult(null);
+
+    try {
+      const customer = await parseCustomerZip(file);
+
+      // Count data points
+      const totalJsons = customer.menus.reduce((acc, m) =>
+        acc + m.tabs.reduce((a, t) =>
+          a + t.charts.reduce((c, ch) => c + Object.keys(ch.dimensions).length, 0), 0), 0);
+      const totalSqls = customer.menus.reduce((acc, m) =>
+        acc + m.tabs.reduce((a, t) =>
+          a + t.charts.filter(ch => ch.sql).length, 0), 0);
+
+      saveCustomerToStorage(customer);
+      refreshCustomers();
+      setImportedCustomers(getImportedCustomersIndex());
+
+      setLastResult({
+        success: true,
+        message: `Cliente ${customer.customerId} (${customer.label}) importado com sucesso. ${totalJsons} datasets, ${totalSqls} queries SQL.`,
+      });
+
+      toast.success(`Cliente ${customer.label} importado!`);
+    } catch (e: any) {
+      setLastResult({ success: false, message: e.message || "Erro ao processar ZIP" });
+      toast.error("Erro na importação");
+    } finally {
+      setImporting(false);
+    }
+  }, [refreshCustomers]);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  }, [handleFile]);
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFile(file);
+    e.target.value = "";
+  }, [handleFile]);
+
+  const handleRemove = useCallback((customerId: number) => {
+    removeCustomerFromStorage(customerId);
+    refreshCustomers();
+    setImportedCustomers(getImportedCustomersIndex());
+    if (expandedCustomer === customerId) {
+      setExpandedCustomer(null);
+      setCustomerDetails(null);
+    }
+    toast.success("Cliente removido");
+  }, [expandedCustomer, refreshCustomers]);
+
+  const toggleExpand = useCallback((customerId: number) => {
+    if (expandedCustomer === customerId) {
+      setExpandedCustomer(null);
+      setCustomerDetails(null);
+    } else {
+      setExpandedCustomer(customerId);
+      setCustomerDetails(loadCustomerFromStorage(customerId));
+    }
+  }, [expandedCustomer]);
+
+  return (
+    <div className="space-y-6">
+      {/* Drop zone */}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+        className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
+          dragOver
+            ? "border-[#FF5722] bg-orange-50/50"
+            : "border-border hover:border-muted-foreground/40 hover:bg-muted/20"
+        }`}
+        onClick={() => document.getElementById("zip-input")?.click()}
+      >
+        <input
+          id="zip-input"
+          type="file"
+          accept=".zip"
+          className="hidden"
+          onChange={handleInputChange}
+        />
+        <div className="flex flex-col items-center gap-3">
+          {importing ? (
+            <>
+              <div className="w-8 h-8 border-2 border-[#FF5722] border-t-transparent rounded-full animate-spin" />
+              <p className="text-sm text-muted-foreground">Processando ZIP...</p>
+            </>
+          ) : (
+            <>
+              <div className="w-12 h-12 rounded-xl bg-muted/50 flex items-center justify-center">
+                <Upload className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Arraste um ZIP aqui ou clique para selecionar</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Formato esperado: <code className="bg-muted px-1 py-0.5 rounded text-[10px]">ID - Nome / Menu / Aba / N. Gráfico / arquivos</code>
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Result */}
+      {lastResult && (
+        <div className={`flex items-start gap-2 px-4 py-3 rounded-lg text-sm ${
+          lastResult.success
+            ? "bg-green-50 text-green-800 border border-green-200"
+            : "bg-red-50 text-red-800 border border-red-200"
+        }`}>
+          {lastResult.success ? <Check className="w-4 h-4 mt-0.5 shrink-0" /> : <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />}
+          <span>{lastResult.message}</span>
+        </div>
+      )}
+
+      {/* Imported customers list */}
+      {importedCustomers.length > 0 && (
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold text-foreground">Clientes Importados</h4>
+          <div className="space-y-1.5">
+            {importedCustomers.map((c) => (
+              <div key={c.customer_id} className="border border-border rounded-lg overflow-hidden bg-card">
+                <div className="flex items-center gap-3 px-4 py-2.5">
+                  <button
+                    onClick={() => toggleExpand(c.customer_id)}
+                    className="flex items-center gap-2 flex-1 text-left"
+                  >
+                    {expandedCustomer === c.customer_id
+                      ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                      : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
+                    <FileArchive className="w-4 h-4 text-[#FF5722]" />
+                    <span className="text-sm font-medium text-foreground">{c.label}</span>
+                    <span className="text-[10px] text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">ID: {c.customer_id}</span>
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-xs text-[#FF5722]"
+                      onClick={() => { setCustomerId(c.customer_id); toast.success(`Cliente ativo: ${c.label}`); }}
+                    >
+                      Ativar
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-xs text-red-500 hover:text-red-600 hover:bg-red-50"
+                      onClick={() => handleRemove(c.customer_id)}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Expanded detail */}
+                {expandedCustomer === c.customer_id && customerDetails && (
+                  <div className="border-t border-border/40 px-4 py-3 bg-muted/10 space-y-2">
+                    {customerDetails.menus.map((menu) => (
+                      <div key={menu.menuSlug}>
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{menu.menuLabel}</p>
+                        {menu.tabs.map((tab) => (
+                          <div key={tab.tabSlug} className="ml-3 mt-1">
+                            <p className="text-xs font-medium text-foreground/80">{tab.tabLabel}</p>
+                            <div className="ml-3 mt-1 space-y-1">
+                              {tab.charts.map((chart) => {
+                                const dims = Object.keys(chart.dimensions);
+                                const totalRecords = Object.values(chart.dimensions).reduce((a, d) => a + (Array.isArray(d) ? d.length : 0), 0);
+                                return (
+                                  <div key={chart.chartSlug} className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                                    <Database className="w-3 h-3" />
+                                    <span className="text-foreground/70">{chart.chartLabel}</span>
+                                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded">{dims.length} dims · {totalRecords} reg</span>
+                                    {chart.sql && <FileText className="w-3 h-3 text-blue-400" title="SQL disponível" />}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Template info */}
+      <div className="bg-muted/30 border border-border/40 rounded-lg px-4 py-3 space-y-2">
+        <h4 className="text-xs font-semibold text-foreground/80">Estrutura esperada do ZIP</h4>
+        <pre className="text-[10px] text-muted-foreground leading-relaxed font-mono">{`{ID} - {Nome do Cliente}/
+  {Menu}/                              (ex: Operacional)
+    {Aba}/                             (ex: Qualidade do Ponto)
+      {N}. {Nome do Gráfico}/          (ex: 1. Evolução da Qualidade e Headcount)
+        {slug}.sql                     (query de referência)
+        JSON {Nome} Por Empresa.json
+        JSON {Nome} Por Unidade de Negócio.json
+        JSON {Nome} Por Área.json`}</pre>
+      </div>
+    </div>
+  );
+}
