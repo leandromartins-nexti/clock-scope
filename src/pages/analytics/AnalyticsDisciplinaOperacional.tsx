@@ -993,9 +993,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const tratativaFaixasFiltrada = useMemo(
     () => {
       const nameFilter = selectedRegional || null;
-      return aggregateComposicaoFaixas(nameFilter, groupBy as any);
+      return aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
     },
-    [groupBy, selectedRegional]
+    [groupBy, selectedRegional, dataSources]
   );
   const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
@@ -1003,25 +1003,21 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   
   // Use 4-component composite score (3-month window) instead of the 2-component one from getQualidadeKpiSummary
-  const compositeScore = useMemo(() => computeCompositeScore(selectedRegional, groupBy as any, scoreConfig), [selectedRegional, groupBy, scoreConfig]);
+  const compositeScore = useMemo(() => computeCompositeScore(selectedRegional, groupBy as any, scoreConfig, undefined, dataSources), [selectedRegional, groupBy, scoreConfig, dataSources]);
   const scoreClassif = getScoreClassification(compositeScore, scoreConfig);
   const scoreColor = scoreClassif.text;
   const scoreFaixa = scoreClassif.label;
 
   const sidebarItems = useMemo(() => {
-    const entities = groupBy === "empresa" ? empresaData : groupBy === "area" ? areaData : unidadeData;
-    return entities.map(e => {
-      const score = computeCompositeScore(e.nome, groupBy as any, scoreConfig);
-      return { nome: e.nome, score };
-    }).sort((a, b) => b.score - a.score);
-  }, [groupBy, scoreConfig]);
+    return getSidebarItems(groupBy as any, scoreConfig, dataSources);
+  }, [groupBy, scoreConfig, dataSources]);
 
   const allScatter = useMemo(() => {
-    if (groupBy === "empresa") return aggregateQualidadeVolume(selectedReferenceMonth, "empresa");
-    if (groupBy === "unidade") return aggregateQualidadeVolume(selectedReferenceMonth, "unidade");
-    if (groupBy === "area") return aggregateQualidadeVolume(selectedReferenceMonth, "area");
+    if (groupBy === "empresa") return aggregateQualidadeVolume(selectedReferenceMonth, "empresa", dataSources);
+    if (groupBy === "unidade") return aggregateQualidadeVolume(selectedReferenceMonth, "unidade", dataSources);
+    if (groupBy === "area") return aggregateQualidadeVolume(selectedReferenceMonth, "area", dataSources);
     return scatterQualidade;
-  }, [groupBy, selectedReferenceMonth]);
+  }, [groupBy, selectedReferenceMonth, dataSources]);
 
   const allScatterTratativa = useMemo(() => aggregateAjustes(selectedReferenceMonth, groupBy), [selectedReferenceMonth, groupBy]);
 
