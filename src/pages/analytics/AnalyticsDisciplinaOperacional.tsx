@@ -1801,11 +1801,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                             <text x={(x ?? 0) + (w ?? 0) / 2} y={(y ?? 0) + barH / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
                               {d.operadores}
                             </text>
-                            {isPeak && (
-                              <text x={(x ?? 0) + (w ?? 0) / 2} y={(y ?? 0) - 3} textAnchor="middle" fontSize={8} fill="#ef4444" fontWeight={700}>
-                                ({d.produtividade.toLocaleString("pt-BR")})
-                              </text>
-                            )}
                           </g>
                         );
                       }} />
