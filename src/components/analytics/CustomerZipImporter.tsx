@@ -64,9 +64,16 @@ function parseChartFolder(name: string): { index: number; chartSlug: string; cha
 /** Parse JSON filename like "JSON Evolução da Qualidade e Headcount Por Empresa.json" */
 function parseDimensionFromFilename(filename: string): string | null {
   const normed = norm(filename);
-  const match = normed.match(/por\s+(.+?)\.json$/);
-  if (!match) return null;
-  return DIMENSION_MAP[match[1]] ?? null;
+  // Try to find a known dimension key anywhere after "por "
+  const porIdx = normed.lastIndexOf("por ");
+  if (porIdx < 0) return null;
+  const afterPor = normed.slice(porIdx + 4).replace(/\.json$/, "").trim();
+  // Check each known dimension key — longest match first to avoid partial hits
+  const keys = Object.keys(DIMENSION_MAP).sort((a, b) => b.length - a.length);
+  for (const key of keys) {
+    if (afterPor.startsWith(key)) return DIMENSION_MAP[key];
+  }
+  return null;
 }
 
 function normalizeImportedJsonData(value: unknown): any {
