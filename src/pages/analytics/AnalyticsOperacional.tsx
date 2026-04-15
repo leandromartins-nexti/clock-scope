@@ -84,7 +84,9 @@ export default function AnalyticsOperacional() {
       </div>
 
       <div className="flex-1 flex min-h-0">
-        {renderTab()}
+        <div className="flex flex-1 min-w-0">
+          {renderTab()}
+        </div>
       </div>
 
       <FilterPanel open={filterOpen} onClose={() => setFilterOpen(false)} />
