@@ -741,15 +741,15 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
           </div>
         </div>
 
-        {/* G1: Volume Mensal */}
+        {/* G1: Evolução da Taxa de Absenteísmo */}
         <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
           <div className="flex items-center justify-between mb-0.5">
             <div>
               <div className="flex items-center gap-1.5">
-                <h4 className="text-sm font-semibold">Volume Mensal</h4>
+                <h4 className="text-sm font-semibold">Evolução da Taxa de Absenteísmo</h4>
                 <InfoTip text="Quanto a operação está perdendo para ausência. Taxa = horas não-planejadas / (HC × jornada mensal)." />
               </div>
-              <p className="text-[10px] text-muted-foreground mb-2">Por competência · clique para filtrar</p>
+              <p className="text-[10px] text-muted-foreground mb-2">Taxa mensal · linha cinza = HC operacional · clique para filtrar competência</p>
             </div>
             <div className="flex items-center gap-1">
               <button onClick={() => setChartDataModal("volume")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
@@ -764,16 +764,16 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
 
         {/* ── G2 + G3: Composição + Maturidade side by side ── */}
         <div className="grid grid-cols-2 gap-3">
-          {/* G2: Composição */}
+          {/* G2: Composição das Ausências por Tipo */}
           <div className="bg-card border border-border/50 rounded-xl p-4">
             <div className="flex items-center justify-between mb-0.5">
               <div className="flex items-center gap-1.5">
-                <h4 className="text-sm font-semibold">Composição</h4>
+                <h4 className="text-sm font-semibold">Composição das Ausências por Tipo</h4>
                 <InfoTip text="Por que estão faltando. Distribuição de horas de ausência por categoria semântica." />
               </div>
               <button onClick={() => setChartDataModal("composicao")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">Mar/2026 · % sobre total de horas</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal · % sobre total de horas · linha = volume absoluto</p>
             {composicaoChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
                 <ComposedChart data={composicaoChartData} onClick={(e: any) => {
@@ -843,16 +843,16 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
 
           </div>
 
-          {/* G3: Maturidade */}
+          {/* G3: Maturidade da Gestão (Planejado vs Reativo) */}
           <div className="bg-card border border-border/50 rounded-xl p-4">
             <div className="flex items-center justify-between mb-0.5">
               <div className="flex items-center gap-1.5">
-                <h4 className="text-sm font-semibold">Maturidade</h4>
+                <h4 className="text-sm font-semibold">Maturidade da Gestão</h4>
                 <InfoTip text="Como tratam as ausências. Planejado = férias, licenças, abonos. Reativo = faltas, atestados de última hora." />
               </div>
               <button onClick={() => setChartDataModal("maturidade")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
             </div>
-            <p className="text-[10px] text-muted-foreground mb-2">{maturidadeChartData.length > 1 ? "Evolução mensal" : "Mar/2026"} · % sobre total</p>
+            <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal · % planejado vs reativo · linha vermelha = % falta crua</p>
             <ResponsiveContainer width="100%" height={280}>
               <ComposedChart data={maturidadeChartData} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
