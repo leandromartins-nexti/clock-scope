@@ -24,6 +24,19 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  useAbsenteismoScoreConfig,
+  computeVolumeScore as computeVolumeScoreCtx,
+  computeComposicaoScore as computeComposicaoScoreCtx,
+  computeMaturidadeScore as computeMaturidadeScoreCtx,
+  computeAbsCompositeScore,
+  getAbsScoreClassification,
+  getAbsScoreColor,
+  getAbsScoreLabel,
+  getVolumeScoreLabel,
+  getMaturidadeScoreLabel,
+  type AbsenteismoScoreConfig,
+} from "@/contexts/AbsenteismoScoreConfigContext";
 
 // ── Static JSON imports ──
 import volumeEmpresa from "@/data/customers/642/absenteismo/volume-mensal-por-empresa.json";
@@ -213,63 +226,9 @@ function computeEntityMaturidadeDistribution(
   };
 }
 
-// ── Score computation (spec section 2 & 5) ──
-function computeVolumeScore(taxa: number): { score: number; label: string } {
-  if (taxa <= 2.5) return { score: 100, label: "Excelente" };
-  if (taxa <= 4.0) return { score: 75, label: "Bom" };
-  if (taxa <= 6.0) return { score: 50, label: "Atenção" };
-  if (taxa <= 8.0) return { score: 25, label: "Ruim" };
-  return { score: 0, label: "Crítico" };
-}
-
-function computeComposicaoScore(dist: typeof composicaoDistribuicao): number {
-  const weights: Record<string, number> = { planejada: 100, saude: 80, operacional: 60, nao_categorizada: 50, falta: 0 };
-  const total = Object.values(dist).reduce((a, b) => a + b, 0);
-  if (total === 0) return 0;
-  let weighted = 0;
-  for (const [cat, pct] of Object.entries(dist)) {
-    weighted += (pct / total) * (weights[cat] ?? 50);
-  }
-  return Math.round(weighted);
-}
-
-function computeMaturidadeScore(dist: typeof maturidadeDistribuicao): { score: number; label: string } {
-  const pctPlanejado = dist.planejado;
-  if (pctPlanejado >= 95) return { score: 100, label: "Excelente" };
-  if (pctPlanejado >= 85) return { score: 75, label: "Bom" };
-  if (pctPlanejado >= 70) return { score: 50, label: "Atenção" };
-  if (pctPlanejado >= 50) return { score: 25, label: "Ruim" };
-  return { score: 0, label: "Crítico" };
-}
-
-/** Compute entity-level absenteísmo score using the same formula as the tab */
-function computeEntityScore(entityName: string, groupBy: GroupBy, nameField: string): number {
-  const normalizedEntity = normalizeEntityName(entityName);
-  const taxaEntry = Object.entries(REAL_TAXA_BY_GROUP[groupBy]).find(([label]) => normalizeEntityName(label) === normalizedEntity);
-  const taxa = taxaEntry?.[1] ?? 0;
-  const volScore = computeVolumeScore(taxa).score;
-  const composicao = computeEntityComposicaoDistribution(entityName, groupBy, nameField);
-  const maturidade = computeEntityMaturidadeDistribution(entityName, groupBy, nameField);
-  const compScore = computeComposicaoScore(composicao);
-  const matScore = computeMaturidadeScore(maturidade).score;
-  return Math.round(volScore * 0.5 + compScore * 0.3 + matScore * 0.2);
-}
-
-function getScoreColor(score: number): string {
-  if (score >= 85) return "#22c55e";
-  if (score >= 70) return "#84cc16";
-  if (score >= 50) return "#f97316";
-  if (score >= 25) return "#ef4444";
-  return "#dc2626";
-}
-
-function getScoreLabel(score: number): string {
-  if (score >= 85) return "Excelente";
-  if (score >= 70) return "Bom";
-  if (score >= 50) return "Atenção";
-  if (score >= 25) return "Ruim";
-  return "Crítico";
-}
+// Score functions now delegate to config-based context functions.
+// They are called inside the component with the config from useAbsenteismoScoreConfig().
+// See computeVolumeScoreCtx, computeComposicaoScoreCtx, computeMaturidadeScoreCtx in the context.
 
 // ── Helpers ──
 const MESES_LABELS: Record<string, string> = {
@@ -293,6 +252,7 @@ type ContentProps = {
 };
 
 export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick, onItemDetail, groupBy, onGroupByChange }: ContentProps) {
+  const { config: absConfig } = useAbsenteismoScoreConfig();
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [volumeChartMode, setVolumeChartMode] = useState<ChartMode>("line");
   const [volumeDataMode, setVolumeDataMode] = useState<DataMode>("percent");
@@ -301,6 +261,19 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   const [scoreDetailOpen, setScoreDetailOpen] = useState(false);
   const [fixedBubble, setFixedBubble] = useState<string | null>(null);
   const [mapaScoreFilter, setMapaScoreFilter] = useState<Set<string>>(() => new Set(["green", "orange", "red"]));
+
+  // Config-aware score helpers (closures over absConfig)
+  const computeEntityScore = useCallback((entityName: string, gb: GroupBy, nf: string): number => {
+    const normalizedEntity = normalizeEntityName(entityName);
+    const taxaEntry = Object.entries(REAL_TAXA_BY_GROUP[gb]).find(([label]) => normalizeEntityName(label) === normalizedEntity);
+    const taxa = taxaEntry?.[1] ?? 0;
+    const volScore = computeVolumeScoreCtx(taxa, absConfig);
+    const composicao = computeEntityComposicaoDistribution(entityName, gb, nf);
+    const maturidade = computeEntityMaturidadeDistribution(entityName, gb, nf);
+    const compScore = computeComposicaoScoreCtx(composicao, absConfig);
+    const matScore = computeMaturidadeScoreCtx(maturidade.planejado, absConfig);
+    return computeAbsCompositeScore(volScore, compScore, matScore, absConfig);
+  }, [absConfig]);
 
   const toggleMapaScoreFilter = useCallback((cat: string) => {
     setMapaScoreFilter(prev => {
@@ -435,19 +408,20 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   // ── Score computation ──
   const lastEntry = volumeConsolidado[volumeConsolidado.length - 1];
   const latestTaxa = lastEntry.pessoas_ausentes > 0 ? +((lastEntry.horas_ausencia_nao_planejada / (lastEntry.pessoas_ausentes * 200)) * 100).toFixed(2) : 0;
-  const volScore = computeVolumeScore(latestTaxa);
-  const compScore = computeComposicaoScore(composicaoDistribuicao);
-  const matScore = computeMaturidadeScore(maturidadeDistribuicao);
-  const compositeScore = Math.round(volScore.score * 0.5 + compScore * 0.3 + matScore.score * 0.2);
-  const scoreColor = getScoreColor(compositeScore);
-  const scoreLabel = getScoreLabel(compositeScore);
+  const volScore = computeVolumeScoreCtx(latestTaxa, absConfig);
+  const compScore = computeComposicaoScoreCtx(composicaoDistribuicao, absConfig);
+  const matScoreVal = computeMaturidadeScoreCtx(maturidadeDistribuicao.planejado, absConfig);
+  const compositeScore = computeAbsCompositeScore(volScore, compScore, matScoreVal, absConfig);
+  const scoreClassif = getAbsScoreClassification(compositeScore, absConfig);
+  const scoreColor = scoreClassif.color;
+  const scoreLabel = scoreClassif.label;
 
   // BigNumbers
   const pctFaltasInjustificadas = composicaoDistribuicao.falta;
   const pctCronicos = +((MOCK.cronicos.length / MOCK.hcOperacional) * 100).toFixed(1);
   const horasPerdidaMes = volumeConsolidado[volumeConsolidado.length - 1].horas_ausencia_nao_planejada;
   const pctMaturidade = maturidadeDistribuicao.planejado;
-  const matFaixa = computeMaturidadeScore(maturidadeDistribuicao);
+  const matFaixa = { score: matScoreVal, label: getMaturidadeScoreLabel(matScoreVal) };
 
   // ── Sidebar items ──
   const sidebarItems = useMemo(() => {
@@ -467,7 +441,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
         score,
       };
     }).sort((a, b) => b.score - a.score);
-  }, [groupBy, nameField]);
+  }, [groupBy, nameField, computeEntityScore]);
 
   // ── Mapa de Operações data (Convention 1) ──
   const visibleSet = useMemo(() => new Set(visibleNames), [visibleNames]);
@@ -493,11 +467,11 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
           regional: nome,
           headcount: data.headcount || 10,
           score,
-          classifLabel: getScoreLabel(score),
+          classifLabel: getAbsScoreClassification(score, absConfig).label,
           bubbleColor,
         };
       });
-  }, [groupBy, nameField, visibleSet]);
+  }, [groupBy, nameField, visibleSet, computeEntityScore, absConfig]);
 
   const medianHeadcount = useMemo(() => {
     if (!mapaOperacoesData.length) return 100;
@@ -538,35 +512,36 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   }, 0) / volumeConsolidado.length;
 
   // ── Score breakdown data for detail panel ──
+  const volScoreLabel = getVolumeScoreLabel(volScore);
   const scoreBreakdownComponents = [
     {
       metrica: "Volume",
-      peso: 50,
+      peso: absConfig.peso_volume,
       valor_atual: `${latestTaxa}%`,
-      nota: volScore.score,
-      faixa: volScore.label,
-      contribuicao: Math.round(volScore.score * 0.5),
-      cor_semantica: volScore.score >= 75 ? "success" : volScore.score >= 50 ? "warning" : "critical",
+      nota: volScore,
+      faixa: volScoreLabel,
+      contribuicao: Math.round(volScore * absConfig.peso_volume / 100),
+      cor_semantica: volScore >= 75 ? "success" : volScore >= 50 ? "warning" : "critical",
       descricao: "Taxa de absenteísmo operacional (excluindo planejadas). Quanto menor, melhor.",
     },
     {
       metrica: "Composição",
-      peso: 30,
+      peso: absConfig.peso_composicao,
       valor_atual: `${composicaoDistribuicao.planejada}% planej.`,
       nota: compScore,
-      faixa: getScoreLabel(compScore),
-      contribuicao: Math.round(compScore * 0.3),
+      faixa: getAbsScoreClassification(compScore, absConfig).label,
+      contribuicao: Math.round(compScore * absConfig.peso_composicao / 100),
       cor_semantica: compScore >= 75 ? "success" : compScore >= 50 ? "warning" : "critical",
       descricao: "Distribuição das ausências por categoria. Mais planejadas = melhor.",
     },
     {
       metrica: "Maturidade",
-      peso: 20,
+      peso: absConfig.peso_maturidade,
       valor_atual: `${maturidadeDistribuicao.planejado}% planej.`,
-      nota: matScore.score,
-      faixa: matScore.label,
-      contribuicao: Math.round(matScore.score * 0.2),
-      cor_semantica: matScore.score >= 75 ? "success" : matScore.score >= 50 ? "warning" : "critical",
+      nota: matScoreVal,
+      faixa: getMaturidadeScoreLabel(matScoreVal),
+      contribuicao: Math.round(matScoreVal * absConfig.peso_maturidade / 100),
+      cor_semantica: matScoreVal >= 75 ? "success" : matScoreVal >= 50 ? "warning" : "critical",
       descricao: "Proporção de ausências planejadas vs reativas. Mais planejado = mais maduro.",
     },
   ];
@@ -707,7 +682,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
             </div>
             <p className={`text-xl font-bold mt-0.5 truncate ${latestTaxa <= 2.5 ? "text-green-600" : latestTaxa <= 6.0 ? "text-orange-500" : "text-red-600"}`} title={`Horas perdidas no mês: ${formatHoursCompact(horasPerdidaMes)} · Acumulado 12m: ${formatHoursCompact(MOCK.horasPerdidas12meses)}`}>{latestTaxa}%</p>
             <p className={`text-[11px] mt-0.5 font-medium ${latestTaxa <= 2.5 ? "text-green-600" : latestTaxa <= 6.0 ? "text-orange-500" : "text-red-600"}`}>
-              {volScore.label}
+              {volScoreLabel}
             </p>
             {(() => {
               const prevTaxa = (() => {
