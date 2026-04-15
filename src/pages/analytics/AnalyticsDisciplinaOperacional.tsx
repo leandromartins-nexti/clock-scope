@@ -31,7 +31,7 @@ import hcEmpresaJson from "@/data/qualidade-ponto/headcount-por-empresa.json";
 import hcUnNegocioJson from "@/data/qualidade-ponto/headcount-por-un-negocio.json";
 import hcAreaJson from "@/data/qualidade-ponto/headcount-por-area.json";
 import { aggregateAjustes, ajustesMeses, formatMesLabel, ajustesUnidades, ajustesAreas, ajustesEmpresas, aggregateComposicaoFaixas, aggregateQualidadeEvolucao, aggregateQualidadeEvolucaoDetalhado, aggregateQualidadeVolume, getQualidadeKpiSummary, getSidebarItems } from "@/lib/ajustesData";
-import { useScoreConfig, getScoreClassification, computeCompositeScore, computeFullBreakdown } from "@/contexts/ScoreConfigContext";
+import { useScoreConfig, getScoreClassification, computeBackofficeScore, computeCompositeScore, computeFullBreakdown, computePrevTriScore, computeQualityPercentage } from "@/contexts/ScoreConfigContext";
 import { useAbsenteismoScoreConfig, computeAbsCompositeScore, getAbsScoreClassification } from "@/contexts/AbsenteismoScoreConfigContext";
 
 import ScoreGauge from "@/components/analytics/ScoreGauge";
@@ -47,6 +47,43 @@ function abreviar(nome: string): string {
   const words = nome.replace(/[-–]/g, " ").split(/\s+/).filter(w => w.length > 1);
   if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
   return nome.slice(0, 2).toUpperCase();
+}
+
+const CURRENT_TRI_WINDOW = ["2026-01-01", "2026-02-01", "2026-03-01"];
+const PREVIOUS_TRI_WINDOW = ["2025-10-01", "2025-11-01", "2025-12-01"];
+
+function normalizeAnalyticsEntityName(name: string): string {
+  return name.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
+}
+
+function matchesAnalyticsEntity(rawName: string, selectedName: string | null): boolean {
+  return !selectedName || normalizeAnalyticsEntityName(rawName) === normalizeAnalyticsEntityName(selectedName);
+}
+
+function computeTempoMedioDiasByWindow(
+  selectedName: string | null,
+  groupBy: "empresa" | "unidade" | "area",
+  window: string[],
+  dataSources: ReturnType<typeof buildDataSources>
+): number {
+  const rows = dataSources.ajustes[groupBy] ?? [];
+  const nameField = groupBy === "empresa" ? "company_name" : groupBy === "unidade" ? "business_unit_name" : "area_name";
+
+  const totals = rows
+    .filter((row: any) => window.includes(row.reference_month))
+    .filter((row: any) => matchesAnalyticsEntity(row[nameField] ?? "", selectedName))
+    .reduce(
+      (acc, row: any) => {
+        const volume = row.volume_marcacoes ?? 0;
+        const tempoMedio = row.tempo_medio_dias ?? 0;
+        acc.weightedTempo += tempoMedio * volume;
+        acc.totalVolume += volume;
+        return acc;
+      },
+      { weightedTempo: 0, totalVolume: 0 }
+    );
+
+  return totals.totalVolume > 0 ? +(totals.weightedTempo / totals.totalVolume).toFixed(1) : 0;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1005,13 +1042,113 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   
   // Use 4-component composite score (3-month window) instead of the 2-component one from getQualidadeKpiSummary
   const compositeScore = useMemo(() => computeCompositeScore(selectedRegional, groupBy as any, scoreConfig, undefined, dataSources), [selectedRegional, groupBy, scoreConfig, dataSources]);
+  const fullBreakdown = useMemo(() => computeFullBreakdown(selectedRegional, groupBy as any, scoreConfig, undefined, dataSources), [selectedRegional, groupBy, scoreConfig, dataSources]);
   const scoreClassif = getScoreClassification(compositeScore, scoreConfig);
   const scoreColor = scoreClassif.text;
   const scoreFaixa = scoreClassif.label;
 
+  const scoreBreakdownData = useMemo(() => ({
+    score_composto: compositeScore,
+    score_label: scoreFaixa,
+    componentes: [
+      {
+        metrica: "Qualidade das Marcações",
+        valor_atual: +fullBreakdown.qualPct.toFixed(1),
+        unidade: "%",
+        nota: +fullBreakdown.qualPct.toFixed(1),
+        peso: scoreConfig.weight_quality,
+        contribuicao: +fullBreakdown.qualContrib.toFixed(1),
+        cor_semantica: fullBreakdown.qualPct >= scoreConfig.threshold_good ? "success" : fullBreakdown.qualPct >= scoreConfig.threshold_warning ? "warning" : "critical",
+      },
+      {
+        metrica: "Velocidade de Tratativa",
+        valor_atual: +activeData.tempoMedioDias.toFixed(1),
+        unidade: " dias",
+        nota: +fullBreakdown.treatScore.toFixed(1),
+        peso: scoreConfig.weight_treatment,
+        contribuicao: +fullBreakdown.treatContrib.toFixed(1),
+        cor_semantica: fullBreakdown.treatScore >= scoreConfig.threshold_good ? "success" : fullBreakdown.treatScore >= scoreConfig.threshold_warning ? "warning" : "critical",
+      },
+      {
+        metrica: "Saúde do Back-office",
+        valor_atual: fullBreakdown.boData.ajustesPerOp,
+        unidade: " aj/op/mês",
+        nota: fullBreakdown.boScore,
+        peso: scoreConfig.weight_backoffice,
+        contribuicao: +fullBreakdown.boContrib.toFixed(1),
+        cor_semantica: fullBreakdown.boScore >= scoreConfig.threshold_good ? "success" : fullBreakdown.boScore >= scoreConfig.threshold_warning ? "warning" : "critical",
+      },
+    ],
+  }), [activeData.tempoMedioDias, compositeScore, fullBreakdown, scoreConfig, scoreFaixa]);
+
   const sidebarItems = useMemo(() => {
     return getSidebarItems(groupBy as any, scoreConfig, dataSources);
   }, [groupBy, scoreConfig, dataSources]);
+
+  const comparisonKpis = useMemo(() => {
+    const prevScore = computePrevTriScore(selectedRegional, groupBy as any, scoreConfig, dataSources);
+    const prevQuality = computeQualityPercentage(selectedRegional, groupBy as any, PREVIOUS_TRI_WINDOW, dataSources);
+    const prevTempo = computeTempoMedioDiasByWindow(selectedRegional, groupBy as any, PREVIOUS_TRI_WINDOW, dataSources);
+    const prevBackoffice = computeBackofficeScore(selectedRegional, groupBy as any, scoreConfig, PREVIOUS_TRI_WINDOW, dataSources).ajustesPerOp;
+
+    const entityNames = selectedRegional
+      ? [selectedRegional]
+      : sidebarItems.map((item) => item.nome).filter(Boolean);
+
+    const rankedCurrent = entityNames
+      .map((name) => ({ nome: name, score: Math.round(computeCompositeScore(name, groupBy as any, scoreConfig, CURRENT_TRI_WINDOW, dataSources)) }))
+      .sort((a, b) => b.score - a.score);
+
+    const rankedPrevious = entityNames
+      .map((name) => ({ nome: name, score: Math.round(computeCompositeScore(name, groupBy as any, scoreConfig, PREVIOUS_TRI_WINDOW, dataSources)) }))
+      .sort((a, b) => b.score - a.score);
+
+    const currentBest = rankedCurrent[0] ?? { nome: activeData.melhorOperacao.nome, score: activeData.melhorOperacao.score };
+    const previousBest = rankedPrevious[0] ?? currentBest;
+    const currentWorst = rankedCurrent[rankedCurrent.length - 1] ?? { nome: activeData.maiorRisco.nome, score: activeData.maiorRisco.score };
+    const previousWorst = rankedPrevious[rankedPrevious.length - 1] ?? currentWorst;
+
+    return {
+      kpis: {
+        score_aba: {
+          atual: compositeScore,
+          anterior: prevScore,
+          delta: +(compositeScore - prevScore).toFixed(1),
+          direcao: compositeScore >= prevScore ? "up" : "down",
+        },
+        qualidade_pct: {
+          atual: +activeData.qualidadePct.toFixed(1),
+          anterior: +prevQuality.toFixed(1),
+          delta: +(activeData.qualidadePct - prevQuality).toFixed(1),
+          direcao: activeData.qualidadePct >= prevQuality ? "up" : "down",
+        },
+        tempo_medio_dias: {
+          atual: +activeData.tempoMedioDias.toFixed(1),
+          anterior: +prevTempo.toFixed(1),
+          delta: +(activeData.tempoMedioDias - prevTempo).toFixed(1),
+          direcao: activeData.tempoMedioDias <= prevTempo ? "down" : "up",
+        },
+        sobrecarga_bo: {
+          atual: Math.round(fullBreakdown.boData.ajustesPerOp),
+          anterior: Math.round(prevBackoffice),
+          delta: Math.round(fullBreakdown.boData.ajustesPerOp - prevBackoffice),
+          direcao: fullBreakdown.boData.ajustesPerOp <= prevBackoffice ? "down" : "up",
+        },
+        melhor_operacao: {
+          atual: currentBest.nome,
+          anterior: previousBest.nome,
+          mudou: currentBest.nome !== previousBest.nome,
+          mudanca_label: currentBest.nome !== previousBest.nome ? `Substituiu ${previousBest.nome}` : "",
+        },
+        maior_risco: {
+          atual: currentWorst.nome,
+          anterior: previousWorst.nome,
+          mudou: currentWorst.nome !== previousWorst.nome,
+          mudanca_label: currentWorst.nome !== previousWorst.nome ? `Substituiu ${previousWorst.nome}` : "",
+        },
+      },
+    };
+  }, [activeData, compositeScore, dataSources, fullBreakdown.boData.ajustesPerOp, groupBy, scoreConfig, selectedRegional, sidebarItems]);
 
   const allScatter = useMemo(() => {
     if (groupBy === "empresa") return aggregateQualidadeVolume(selectedReferenceMonth, "empresa", dataSources);
@@ -1061,7 +1198,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     const normName = (n: string) => n.replace(/^VIG\s*EYES\s*/i, "").trim().toUpperCase();
     const base = allScatter.filter(s => visibleSet.size === 0 || visibleSet.has(s.regional));
     return base.map(s => {
-      const breakdown = computeFullBreakdown(s.regional, groupBy as any, scoreConfig);
+      const breakdown = computeFullBreakdown(s.regional, groupBy as any, scoreConfig, undefined, dataSources);
       const score = Math.round(breakdown.compositeScore);
       const classif = getScoreClassification(score, scoreConfig);
       const bubbleColor = score >= 70 ? "#22c55e" : score >= 55 ? "#f59e0b" : "#ef4444";
@@ -1076,7 +1213,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         bubbleColor,
       };
     });
-  }, [allScatter, visibleSet, groupBy, scoreConfig]);
+  }, [allScatter, visibleSet, groupBy, scoreConfig, dataSources]);
 
   const medianHeadcount = useMemo(() => {
     if (!mapaOperacoesData.length) return 100;
@@ -1140,8 +1277,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const melhorClassif = getScoreClassification(activeData.melhorOperacao.score, scoreConfig);
   const riscoClassif = getScoreClassification(activeData.maiorRisco.score, scoreConfig);
 
-  // Back-office data from full breakdown (3-month window)
-  const fullBreakdown = useMemo(() => computeFullBreakdown(selectedRegional, groupBy as any, scoreConfig), [selectedRegional, groupBy, scoreConfig]);
   const sobrecargaValue = Math.round(fullBreakdown.boData.ajustesPerOp);
   const sobrecargaClassif = sobrecargaValue <= 400 ? { label: "Saudável", color: "text-green-600" }
     : sobrecargaValue <= 1000 ? { label: "Atenção", color: "text-orange-500" }
@@ -1188,10 +1323,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   <p className="text-sm font-semibold">Como o Score {compositeScore} foi calculado</p>
                 </div>
                 <div className="p-3 space-y-3">
-                  {(customerData.decomposicaoScore?.componentes ?? []).map((comp) => {
+                  {scoreBreakdownData.componentes.map((comp) => {
                     const COMP_COLORS: Record<string, string> = { success: "#22c55e", warning: "#eab308", critical: "#ef4444" };
                     const barColor = COMP_COLORS[comp.cor_semantica] || "#6b7280";
-                    const barWidth = Math.max(comp.contribuicao / customerData.decomposicaoScore.score_composto * 100, 4);
+                     const barWidth = Math.max(comp.contribuicao / Math.max(scoreBreakdownData.score_composto, 1) * 100, 4);
                     return (
                       <div key={comp.metrica} className="space-y-1">
                         <div className="flex items-center justify-between">
@@ -1218,7 +1353,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               </PopoverContent>
             </Popover>
             {(() => {
-              const kpi = (customerData.kpisPeriodoAnterior.kpis as any).score_aba;
+              const kpi = comparisonKpis.kpis.score_aba as any;
               if (!kpi) return null;
               const delta = kpi.delta;
               const absDelta = Math.abs(delta);
@@ -1242,7 +1377,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             <p className="text-xl font-bold mt-0.5 truncate text-foreground">{Math.round(activeData.qualidadePct)}%</p>
             <p className={`text-[11px] mt-0.5 font-medium ${qualClassif.text}`}>{qualClassif.label}</p>
             {(() => {
-              const kpi = (customerData.kpisPeriodoAnterior.kpis as any).qualidade_pct;
+              const kpi = comparisonKpis.kpis.qualidade_pct as any;
               if (!kpi) return null;
               return renderVariation(kpi.delta, `${Math.round(kpi.anterior)}%`, "pp");
             })()}
@@ -1262,7 +1397,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               return <p className={`text-[11px] mt-0.5 font-medium ${tempoClassif.color}`}>{tempoClassif.label}</p>;
             })()}
             {(() => {
-              const kpi = (customerData.kpisPeriodoAnterior.kpis as any).tempo_medio_dias;
+              const kpi = comparisonKpis.kpis.tempo_medio_dias as any;
               if (!kpi) return null;
               return renderVariation(kpi.delta, `${Math.round(kpi.anterior)} dias`, " dias", true);
             })()}
@@ -1277,7 +1412,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             <p className="text-xl font-bold mt-0.5 truncate text-foreground">{sobrecargaValue}</p>
             <p className={`text-[11px] mt-0.5 font-medium ${sobrecargaClassif.color}`}>{sobrecargaClassif.label}</p>
             {(() => {
-              const kpi = (customerData.kpisPeriodoAnterior.kpis as any).sobrecarga_bo;
+              const kpi = comparisonKpis.kpis.sobrecarga_bo as any;
               if (!kpi) return null;
               const pctDelta = kpi.anterior > 0 ? Math.round(((kpi.atual - kpi.anterior) / kpi.anterior) * 100) : 0;
               const improved = pctDelta < 0;
@@ -1297,13 +1432,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
                 <div className="flex items-center gap-1 mb-2">
                   <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Melhor Operação</p>
-                  <InfoTip text={`Melhor Operação\n─────────────────\nA operação com maior Score de Ponto no período.\n\nJanela: média dos últimos 3 meses.\nGranularidade: depende do toggle (empresa, unidade de negócio ou área).\n\n${activeData.melhorOperacao.nome}: Score ${activeData.melhorOperacao.score} (${melhorClassif.label})\n${(customerData.kpisPeriodoAnterior.kpis as any).melhor_operacao?.mudou ? (customerData.kpisPeriodoAnterior.kpis as any).melhor_operacao.mudanca_label : "Mantém a posição vs trimestre anterior."}`} />
+                  <InfoTip text={`Melhor Operação\n─────────────────\nA operação com maior Score de Ponto no período.\n\nJanela: média dos últimos 3 meses.\nGranularidade: depende do toggle (empresa, unidade de negócio ou área).\n\n${activeData.melhorOperacao.nome}: Score ${activeData.melhorOperacao.score} (${melhorClassif.label})\n${comparisonKpis.kpis.melhor_operacao?.mudou ? comparisonKpis.kpis.melhor_operacao.mudanca_label : "Mantém a posição vs trimestre anterior."}`} />
                 </div>
                 <p className="text-lg font-bold mt-0.5 truncate text-foreground">{activeData.melhorOperacao.nome}</p>
                 <p className={`text-[11px] mt-0.5 truncate ${melhorClassif.text}`}>Score {activeData.melhorOperacao.score} · {melhorClassif.label}</p>
                 <span className="text-[10px] text-muted-foreground mt-0.5">
-                  {(customerData.kpisPeriodoAnterior.kpis as any).melhor_operacao?.mudou
-                    ? (customerData.kpisPeriodoAnterior.kpis as any).melhor_operacao.mudanca_label
+                  {comparisonKpis.kpis.melhor_operacao?.mudou
+                    ? comparisonKpis.kpis.melhor_operacao.mudanca_label
                     : "Mantém posição"}
                 </span>
               </div>
@@ -1319,13 +1454,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
                 <div className="flex items-center gap-1 mb-2">
                   <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maior Risco</p>
-                  <InfoTip text={`Maior Risco\n─────────────────\nA operação com menor Score de Ponto no período.\nPrioridade alta de ação.\n\nJanela: média dos últimos 3 meses.\nGranularidade: depende do toggle (empresa, unidade de negócio ou área).\n\n${activeData.maiorRisco.nome}: Score ${activeData.maiorRisco.score} (${riscoClassif.label})\n${(customerData.kpisPeriodoAnterior.kpis as any).maior_risco?.mudou ? (customerData.kpisPeriodoAnterior.kpis as any).maior_risco.mudanca_label : "Mantém a posição vs trimestre anterior."}`} />
+                  <InfoTip text={`Maior Risco\n─────────────────\nA operação com menor Score de Ponto no período.\nPrioridade alta de ação.\n\nJanela: média dos últimos 3 meses.\nGranularidade: depende do toggle (empresa, unidade de negócio ou área).\n\n${activeData.maiorRisco.nome}: Score ${activeData.maiorRisco.score} (${riscoClassif.label})\n${comparisonKpis.kpis.maior_risco?.mudou ? comparisonKpis.kpis.maior_risco.mudanca_label : "Mantém a posição vs trimestre anterior."}`} />
                 </div>
                 <p className="text-lg font-bold mt-0.5 truncate text-foreground">{activeData.maiorRisco.nome}</p>
                 <p className={`text-[11px] mt-0.5 truncate ${riscoClassif.text}`}>Score {activeData.maiorRisco.score} · {riscoClassif.label}</p>
                 <span className="text-[10px] text-muted-foreground mt-0.5">
-                  {(customerData.kpisPeriodoAnterior.kpis as any).maior_risco?.mudou
-                    ? (customerData.kpisPeriodoAnterior.kpis as any).maior_risco.mudanca_label
+                  {comparisonKpis.kpis.maior_risco?.mudou
+                    ? comparisonKpis.kpis.maior_risco.mudanca_label
                     : "Mantém posição"}
                 </span>
               </div>
