@@ -116,7 +116,7 @@ export function useScoreConfig() {
 const STORAGE_KEY = "score_config_qualidade_ponto";
 
 export function ScoreConfigProvider({ children }: { children: ReactNode }) {
-  const [config, setConfig] = useState<ScoreConfig>(() => {
+  const [config, setConfigState] = useState<ScoreConfig>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) return migrateConfig(JSON.parse(stored));
@@ -125,18 +125,29 @@ export function ScoreConfigProvider({ children }: { children: ReactNode }) {
   });
   const [loading] = useState(false);
 
+  // Keep a ref so saveConfig always writes the latest value
+  const configRef = React.useRef(config);
+  configRef.current = config;
+
+  const setConfig = useCallback((newConfig: ScoreConfig) => {
+    setConfigState(newConfig);
+    configRef.current = newConfig;
+  }, []);
+
   const saveConfig = useCallback(async () => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(configRef.current));
     } catch (e) {
       console.error("Failed to save score config:", e);
     }
-  }, [config]);
+  }, []);
 
   const resetToDefault = useCallback(() => {
     setConfig(DEFAULT_CONFIG);
-    localStorage.removeItem(STORAGE_KEY);
-  }, []);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_CONFIG));
+    } catch {}
+  }, [setConfig]);
 
   return (
     <ScoreConfigContext.Provider value={{ config, setConfig, saveConfig, resetToDefault, loading }}>
