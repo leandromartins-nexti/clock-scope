@@ -5,32 +5,18 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import { useNavigate } from "react-router-dom";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
-import { getSidebarItems, getQualidadeKpiSummary, ajustesMeses, formatMesLabel } from "@/lib/ajustesData";
+import { getSidebarItems, getQualidadeKpiSummary, formatMesLabel } from "@/lib/ajustesData";
 import { useScoreConfig, getScoreClassification, computeCompositeScore } from "@/contexts/ScoreConfigContext";
+import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
+import { buildDataSources } from "@/lib/qualidadeDataSources";
+import { computePrevTriScore } from "@/lib/scoreComputations";
 import {
-  ChevronRight, Filter, Eraser, TrendingUp, TrendingDown, Minus,
-  AlertTriangle, ArrowDownRight, ArrowUpRight, Info, DollarSign, CheckCircle,
+  Filter, Eraser, DollarSign, CheckCircle,
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import {
-  resumo, resumoComparativo, rankingOperacoes, sparklineData, dadosPorRegional,
-} from "@/lib/analytics-mock-data";
-import {
   ResponsiveContainer, LineChart, Line, Tooltip as RechartsTooltip,
 } from "recharts";
-import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-
-
-// ── Sparkline cards config (mock for non-qualidade indicators) ──
-const mockSparklineCards = [
-  sparklineData.absenteismo,
-  sparklineData.volumeHE,
-  sparklineData.movimentacoes,
-  sparklineData.coberturaEfetiva,
-];
-
-
-
 
 // ── Custom sparkline tooltip ────────────────────────────────
 function SparklineTooltip({ active, payload, cardData }: any) {
@@ -41,14 +27,8 @@ function SparklineTooltip({ active, payload, cardData }: any) {
   const idx = evolucao.findIndex((e) => e.competencia === comp);
   const prev = idx > 0 ? evolucao[idx - 1] : null;
   const next = idx < evolucao.length - 1 ? evolucao[idx + 1] : null;
-  const isScore = cardData.perPointColors;
-  const fmt = (v: number) => {
-    if (isScore) return `${v}`;
-    if (cardData.label === "Absenteísmo" || cardData.label === "Cobertura Efetiva") return `${v}%`;
-    return `${v}K`;
-  };
-  const pointColor = isScore ? getLineColor(valor) : getLineColor(cardData.score);
-  const pointScore = isScore ? valor : cardData.score;
+  const fmt = (v: number) => `${v}`;
+  const pointColor = getLineColor(valor);
   return (
     <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2.5 text-xs min-w-[180px] z-[9999] relative">
       <p className="font-semibold text-foreground mb-2">{comp}</p>
@@ -56,7 +36,7 @@ function SparklineTooltip({ active, payload, cardData }: any) {
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: pointColor }} />
         <span className="text-muted-foreground">{cardData.label}:</span>
         <span className="font-bold text-foreground">{fmt(valor)}</span>
-        <span className={`font-semibold px-1.5 py-0.5 rounded text-[10px] ${getScoreColor(pointScore)} ${getScoreBg(pointScore)}`}>Score {pointScore}</span>
+        <span className={`font-semibold px-1.5 py-0.5 rounded text-[10px] ${getScoreColor(valor)} ${getScoreBg(valor)}`}>Score {valor}</span>
       </div>
       <div className="border-t border-border/50 pt-2 space-y-1">
         {prev && (() => {
@@ -86,19 +66,13 @@ function SparklineTooltip({ active, payload, cardData }: any) {
   );
 }
 
-
-// ── Sidebar data from real JSON ──
-const resumoGroupData: Record<string, { nome: string; score: number }[]> = {
-  unidade: getSidebarItems("unidade"),
-  empresa: getSidebarItems("empresa"),
-  area: getSidebarItems("area"),
-};
-
-
 // ── Main Page ───────────────────────────────────────────────
 export default function AnalyticsResumoExecutivo() {
   const navigate = useNavigate();
   const { config: scoreConfig } = useScoreConfig();
+  const { data: customerData } = useQualidadePontoData();
+  const sources = useMemo(() => buildDataSources(customerData), [customerData]);
+
   const [filterOpen, setFilterOpen] = useState(false);
   const [rating, setRating] = useState<number | null>(null);
   const [feedbackComment, setFeedbackComment] = useState("");
@@ -106,17 +80,40 @@ export default function AnalyticsResumoExecutivo() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
 
-  const sidebarItems = resumoGroupData[groupBy] || resumoGroupData.unidade;
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
 
-  const regionalData = selectedRegional ? dadosPorRegional[selectedRegional] : null;
+  // Sidebar items from real JSON
+  const sidebarItems = useMemo(
+    () => getSidebarItems(groupBy, scoreConfig, sources),
+    [groupBy, scoreConfig, sources]
+  );
 
-  // Build real Qualidade do Ponto sparkline card — score per month
+  // KPI summary from real JSON
+  const kpiSummary = useMemo(
+    () => getQualidadeKpiSummary(selectedRegional, groupBy, scoreConfig, sources),
+    [selectedRegional, groupBy, scoreConfig, sources]
+  );
+
+  // KPIs from periodo anterior JSON
+  const kpisPeriodo = customerData.kpisPeriodoAnterior;
+  const periodoLabel = kpisPeriodo?.periodo_atual
+    ? `${formatMonthShort(kpisPeriodo.periodo_atual.inicio)} – ${formatMonthShort(kpisPeriodo.periodo_atual.fim)}`
+    : "abr/2025 – mar/2026";
+
+  // Compute months from real data
+  const allMonths = useMemo(() => {
+    const months = new Set<string>();
+    for (const r of sources.hc.empresa) months.add(r.reference_month);
+    for (const r of sources.hc.unidade) months.add(r.reference_month);
+    for (const r of sources.hc.area) months.add(r.reference_month);
+    return [...months].sort();
+  }, [sources]);
+
+  // Score sparkline per month from real data
   const qualidadeCard = useMemo(() => {
-    // Use 4-component composite score per month (single-month window)
-    const evolucao = ajustesMeses.map(month => {
-      const score = computeCompositeScore(selectedRegional, groupBy as any, scoreConfig, [month]);
+    const evolucao = allMonths.map(month => {
+      const score = computeCompositeScore(selectedRegional, groupBy as any, scoreConfig, [month], sources);
       return { competencia: formatMesLabel(month), valor: score };
     });
     const lastScore = evolucao[evolucao.length - 1]?.valor ?? 0;
@@ -129,49 +126,55 @@ export default function AnalyticsResumoExecutivo() {
       valor: `${lastScore}`,
       variacao,
       corVariacao,
-      corLinha: getLineColor(lastScore),
       score: lastScore,
-      peso: 0.25,
       evolucao,
-      perPointColors: true, // flag for gradient rendering
+      perPointColors: true,
     };
-  }, [selectedRegional, groupBy, scoreConfig]);
+  }, [selectedRegional, groupBy, scoreConfig, sources, allMonths]);
 
-  // Combine real qualidade + mock others
-  const sparklineCards = useMemo(() => [qualidadeCard, ...mockSparklineCards], [qualidadeCard]);
-
-  const activeScore = regionalData?.scoreOperacional ?? resumo.scoreOperacional;
-  const activeFaixa = regionalData?.scoreFaixa ?? resumo.scoreFaixa;
-  const activeDiff = regionalData?.scoreDiferenca ?? resumoComparativo.scoreDiferenca;
+  // Score for gauge
+  const activeScore = kpiSummary.score;
   const scoreClassif = getScoreClassification(activeScore, scoreConfig);
-  const scoreColor = scoreClassif.text;
 
-  // Filtered sparkline data
-  const filteredSparklines = useMemo(() => {
-    if (!regionalData) return sparklineCards;
-    return sparklineCards.map((card) => {
-      const mult = regionalData.sparklineMultipliers[card.label];
-      if (!mult) return card;
-      // For qualidade, the card is already filtered by selectedRegional, skip multiplier
-      if (card.label === "Qualidade do Ponto") return card;
+  // Previous period score for trend
+  const prevScore = useMemo(
+    () => computePrevTriScore(selectedRegional, groupBy as any, scoreConfig, sources),
+    [selectedRegional, groupBy, scoreConfig, sources]
+  );
+  const scoreDiff = activeScore - prevScore;
+
+  // Principal Melhora / Piora: entity with biggest positive/negative score change
+  const { principalMelhora, principalPiora } = useMemo(() => {
+    if (sidebarItems.length <= 1) {
       return {
-        ...card,
-        score: mult.scoreOverride,
-        variacao: mult.variacaoOverride,
-        corVariacao: mult.corVariacaoOverride,
-        evolucao: card.evolucao.map((e) => ({
-          ...e,
-          valor: Math.round(e.valor * mult.valorMultiplier * 10) / 10,
-        })),
+        principalMelhora: { nome: "-", detalhe: "" },
+        principalPiora: { nome: "-", detalhe: "" },
       };
-    });
-  }, [selectedRegional, sparklineCards]);
+    }
+
+    let bestDelta = -Infinity, bestName = "-", bestDetail = "";
+    let worstDelta = Infinity, worstName = "-", worstDetail = "";
+
+    for (const item of sidebarItems) {
+      const current = computeCompositeScore(item.nome, groupBy as any, scoreConfig, undefined, sources);
+      const prev = computePrevTriScore(item.nome, groupBy as any, scoreConfig, sources);
+      const delta = current - prev;
+      if (delta > bestDelta) { bestDelta = delta; bestName = item.nome; bestDetail = `${delta >= 0 ? '+' : ''}${delta} pts (${prev} → ${current})`; }
+      if (delta < worstDelta) { worstDelta = delta; worstName = item.nome; worstDetail = `${delta >= 0 ? '+' : ''}${delta} pts (${prev} → ${current})`; }
+    }
+
+    return {
+      principalMelhora: { nome: bestName, detalhe: bestDetail },
+      principalPiora: { nome: worstName, detalhe: worstDetail },
+    };
+  }, [sidebarItems, groupBy, scoreConfig, sources]);
 
   const handleFeedbackSubmit = () => {
     console.log({ page: "resumo_executivo", rating, comment: feedbackComment, timestamp: Date.now() });
     setFeedbackSubmitted(true);
   };
 
+  const sparklineCards = [qualidadeCard];
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
@@ -182,10 +185,10 @@ export default function AnalyticsResumoExecutivo() {
             <Filter className="w-4 h-4 text-[#FF5722]" />
             <span className="font-semibold text-foreground">Filtros Aplicados:</span>
           </div>
-          <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium">Período: {resumo.periodo}</span>
+          <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium">Período: {periodoLabel}</span>
           {selectedRegional && (
             <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium flex items-center gap-1">
-              Regional: {selectedRegional}
+              {groupBy === "empresa" ? "Empresa" : groupBy === "unidade" ? "Un. Negócio" : "Área"}: {selectedRegional}
               <button onClick={() => setSelectedRegional(null)} className="ml-1 hover:text-red-600">✕</button>
             </span>
           )}
@@ -202,40 +205,62 @@ export default function AnalyticsResumoExecutivo() {
 
       {/* Content: main + sidebar */}
       <div className="flex-1 flex min-h-0">
-          {/* Main content */}
-          <div className="flex-1 min-w-0 pl-6 pr-4 py-4 space-y-3 overflow-y-auto">
+        {/* Main content */}
+        <div className="flex-1 min-w-0 pl-6 pr-4 py-4 space-y-3 overflow-y-auto">
 
-            {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
-            <div className="grid grid-cols-5 gap-3">
-              <div data-onboarding="score-operacional"><ScoreBoard title="Score Operacional" tooltip="Índice de saúde da operação calculado a partir de 5 indicadores: qualidade do ponto, absenteísmo, volume de horas extras, movimentações e cobertura efetiva. Pesos configuráveis em Configuração.">
-                <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={activeFaixa} color={scoreClassif.color} />
-              </ScoreBoard></div>
-              <KPIBoard title="Melhor Operação" tooltip="Operação com maior score operacional no período" value={resumo.melhorOperacao.nome} valueColor="text-green-600" subtitle={`Score ${resumo.melhorOperacao.score} · Alta`} />
-              <KPIBoard title="Maior Risco" tooltip="Operação com menor score e maior concentração de risco" value={resumo.maiorRisco.nome} valueColor="text-red-600" subtitle={`Score ${resumo.maiorRisco.score} · ${resumo.maiorRisco.indicador}`} />
-              <KPIBoard title="Principal Melhora" tooltip="Indicador com maior evolução positiva no período" value={regionalData?.melhorIndicador ?? "Qualidade Ponto"} valueColor="text-green-600" subtitle={regionalData?.melhorIndicadorDetalhe ?? "+4.1 pp (83.2% → 87.3%)"} />
-              <KPIBoard title="Principal Piora" tooltip="Indicador com maior deterioração no período" value={regionalData?.piorIndicador ?? "Atrasos e Faltas"} valueColor="text-red-600" subtitle={regionalData?.piorIndicadorDetalhe ?? "+52.4% no período"} />
+          {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
+          <div className="grid grid-cols-5 gap-3">
+            <div data-onboarding="score-operacional">
+              <ScoreBoard title="Score Operacional" tooltip="Índice de saúde da operação calculado a partir de 3 componentes: qualidade do ponto, velocidade de tratativa e saúde do back-office.">
+                <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={scoreClassif.label} color={scoreClassif.color} />
+              </ScoreBoard>
             </div>
+            <KPIBoard
+              title="Melhor Operação"
+              tooltip="Operação com maior score composto no período"
+              value={kpiSummary.melhorOperacao.nome}
+              valueColor="text-green-600"
+              subtitle={`Score ${kpiSummary.melhorOperacao.score}`}
+            />
+            <KPIBoard
+              title="Maior Risco"
+              tooltip="Operação com menor score composto no período"
+              value={kpiSummary.maiorRisco.nome}
+              valueColor="text-red-600"
+              subtitle={`Score ${kpiSummary.maiorRisco.score} · ${kpiSummary.maiorRisco.indicador}`}
+            />
+            <KPIBoard
+              title="Principal Melhora"
+              tooltip="Operação com maior evolução de score no período"
+              value={principalMelhora.nome}
+              valueColor="text-green-600"
+              subtitle={principalMelhora.detalhe}
+            />
+            <KPIBoard
+              title="Principal Piora"
+              tooltip="Operação com maior queda de score no período"
+              value={principalPiora.nome}
+              valueColor="text-red-600"
+              subtitle={principalPiora.detalhe}
+            />
+          </div>
 
-            {/* ═══ Linha 2: Indicadores — lista vertical com sparklines inline ═══ */}
-            <div className="bg-card border border-border/50 rounded-xl" data-onboarding="sparkline-table">
-              {/* Header */}
-              <div className="flex items-center gap-4 px-4 py-2 border-b border-border/40 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                <div className="w-2" />
-                <span className="min-w-[140px]">Indicador</span>
-                <span className="min-w-[45px] text-center">Score</span>
-                <span className="min-w-[70px]">Atual</span>
-                <span className="min-w-[65px] text-center">Variação</span>
-                <div className="flex-1 min-w-[120px]" />
-              </div>
-              <div className="divide-y divide-border/40">
-              {filteredSparklines.map((card) => {
+          {/* ═══ Linha 2: Indicadores — lista vertical com sparklines inline ═══ */}
+          <div className="bg-card border border-border/50 rounded-xl" data-onboarding="sparkline-table">
+            {/* Header */}
+            <div className="flex items-center gap-4 px-4 py-2 border-b border-border/40 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              <div className="w-2" />
+              <span className="min-w-[140px]">Indicador</span>
+              <span className="min-w-[45px] text-center">Score</span>
+              <span className="min-w-[70px]">Atual</span>
+              <span className="min-w-[65px] text-center">Variação</span>
+              <div className="flex-1 min-w-[120px]" />
+            </div>
+            <div className="divide-y divide-border/40">
+              {sparklineCards.map((card) => {
                 const lastIdx = card.evolucao.length - 1;
                 const indicadorRouteMap: Record<string, string> = {
                   "Qualidade do Ponto": "/analytics/operacional",
-                  "Absenteísmo": "/analytics/operacional?tab=absenteismo",
-                  "Volume HE": "/analytics/operacional?tab=bancoHoras",
-                  "Movimentações": "/analytics/operacional?tab=movimentacoes",
-                  "Cobertura Efetiva": "/analytics/operacional?tab=coberturas",
                 };
                 const targetRoute = indicadorRouteMap[card.label];
                 return (
@@ -256,7 +281,7 @@ export default function AnalyticsResumoExecutivo() {
                     <div className="flex-1 h-[36px] min-w-[120px]">
                       <ResponsiveContainer width="100%" height={36}>
                         <LineChart data={card.evolucao}>
-                          {(card as any).perPointColors && (
+                          {card.perPointColors && (
                             <defs>
                               <linearGradient id={`grad-${card.label.replace(/\s/g,'')}`} x1="0" y1="0" x2="1" y2="0">
                                 {card.evolucao.map((pt, i) => {
@@ -274,10 +299,10 @@ export default function AnalyticsResumoExecutivo() {
                           <Line
                             type="monotone"
                             dataKey="valor"
-                            stroke={(card as any).perPointColors ? `url(#grad-${card.label.replace(/\s/g,'')})` : getLineColor(card.score)}
+                            stroke={card.perPointColors ? `url(#grad-${card.label.replace(/\s/g,'')})` : getLineColor(card.score)}
                             strokeWidth={3}
                             dot={(props: any) => {
-                              const ptColor = (card as any).perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
+                              const ptColor = card.perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
                               return (
                                 <circle
                                   key={props.index}
@@ -292,7 +317,7 @@ export default function AnalyticsResumoExecutivo() {
                               );
                             }}
                             activeDot={(props: any) => {
-                              const ptColor = (card as any).perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
+                              const ptColor = card.perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
                               return <circle cx={props.cx} cy={props.cy} r={4} fill={ptColor} stroke="white" strokeWidth={2} />;
                             }}
                           />
@@ -302,8 +327,9 @@ export default function AnalyticsResumoExecutivo() {
                   </div>
                 );
               })}
-              </div>
-              {/* Month legend footer */}
+            </div>
+            {/* Month legend footer */}
+            {sparklineCards[0]?.evolucao.length > 0 && (
               <div className="flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
                 <div className="w-2" />
                 <span className="min-w-[140px]" />
@@ -316,94 +342,124 @@ export default function AnalyticsResumoExecutivo() {
                   ))}
                 </div>
               </div>
+            )}
+          </div>
+
+          {/* ═══ KPIs detalhados ═══ */}
+          <div className="grid grid-cols-4 gap-3">
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Qualidade (%)</p>
+              <p className="text-xl font-bold text-foreground">{kpiSummary.qualidadePct}%</p>
+              <p className="text-[11px] text-muted-foreground mt-1">Registradas: {kpiSummary.registradasPct}% · Justificadas: {kpiSummary.ajustadasPct}%</p>
             </div>
-
-
-            {/* ═══ Linha 4: CTA Financeiro ═══ */}
-            <div className="bg-surface border border-border/50 rounded-xl p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
-                  <DollarSign size={20} className="text-[#FF5722]" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Visão Financeira em breve</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Prepare seus parâmetros agora para que a visão em R$ já esteja pronta quando liberada.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => navigate("/analytics/configuracao")}
-                className="bg-[#FF5722] text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition shrink-0"
-              >
-                Configurar parâmetros
-              </button>
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Tempo Médio Tratativa</p>
+              <p className="text-xl font-bold text-foreground">{kpiSummary.tempoMedioDias} dias</p>
+              <p className="text-[11px] text-muted-foreground mt-1">Até 1 dia: {kpiSummary.ate1DiaPct}% · +15 dias: {kpiSummary.mais15DiaPct}%</p>
             </div>
-
-            {/* ═══ Linha 5: Feedback inline ═══ */}
-            <div className="border-t border-border pt-4 mt-1">
-              {!feedbackSubmitted ? (
-                <>
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="text-sm text-muted-foreground">Como você avalia esta visualização?</span>
-                    <div className="flex gap-1.5">
-                      {[1, 2, 3, 4, 5].map((n) => (
-                        <button
-                          key={n}
-                          onClick={() => setRating(n)}
-                          className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
-                            rating === n
-                              ? "bg-[#FF5722] text-white"
-                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                          }`}
-                        >
-                          {n}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex justify-center gap-16 mt-1">
-                    <span className="text-[10px] text-muted-foreground">Ruim</span>
-                    <span className="text-[10px] text-muted-foreground">Excelente</span>
-                  </div>
-                  {rating && (
-                    <div className="mt-4 max-w-lg mx-auto">
-                      <textarea
-                        value={feedbackComment}
-                        onChange={(e) => setFeedbackComment(e.target.value)}
-                        placeholder="Quer compartilhar algo mais? (opcional)"
-                        className="w-full border border-border rounded-lg p-3 text-sm resize-none h-20 focus:ring-2 focus:ring-[#FF5722]/20 focus:border-[#FF5722] outline-none"
-                      />
-                      <div className="flex justify-end mt-2">
-                        <button
-                          onClick={handleFeedbackSubmit}
-                          className="bg-[#FF5722] text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:opacity-90 transition"
-                        >
-                          Enviar
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="flex items-center justify-center gap-2 mt-4">
-                  <CheckCircle size={16} className="text-green-500" />
-                  <span className="text-sm text-green-600">Obrigado pelo feedback!</span>
-                </div>
-              )}
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Registradas</p>
+              <p className="text-xl font-bold text-foreground">{kpiSummary.registradas}</p>
+            </div>
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Justificadas</p>
+              <p className="text-xl font-bold text-foreground">{kpiSummary.justificadas}</p>
             </div>
           </div>
-          {/* Sidebar */}
-          <GroupBySidebar
-            items={sidebarItems}
-            selectedRegional={selectedRegional}
-            onRegionalClick={handleRegionalClick}
-            groupBy={groupBy}
-            onGroupByChange={handleGroupByChange}
-          />
+
+          {/* ═══ CTA Financeiro ═══ */}
+          <div className="bg-surface border border-border/50 rounded-xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+                <DollarSign size={20} className="text-[#FF5722]" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">Visão Financeira em breve</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Prepare seus parâmetros agora para que a visão em R$ já esteja pronta quando liberada.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate("/analytics/configuracao")}
+              className="bg-[#FF5722] text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition shrink-0"
+            >
+              Configurar parâmetros
+            </button>
+          </div>
+
+          {/* ═══ Feedback inline ═══ */}
+          <div className="border-t border-border pt-4 mt-1">
+            {!feedbackSubmitted ? (
+              <>
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-sm text-muted-foreground">Como você avalia esta visualização?</span>
+                  <div className="flex gap-1.5">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <button
+                        key={n}
+                        onClick={() => setRating(n)}
+                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
+                          rating === n
+                            ? "bg-[#FF5722] text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        }`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex justify-center gap-16 mt-1">
+                  <span className="text-[10px] text-muted-foreground">Ruim</span>
+                  <span className="text-[10px] text-muted-foreground">Excelente</span>
+                </div>
+                {rating && (
+                  <div className="mt-4 max-w-lg mx-auto">
+                    <textarea
+                      value={feedbackComment}
+                      onChange={(e) => setFeedbackComment(e.target.value)}
+                      placeholder="Quer compartilhar algo mais? (opcional)"
+                      className="w-full border border-border rounded-lg p-3 text-sm resize-none h-20 focus:ring-2 focus:ring-[#FF5722]/20 focus:border-[#FF5722] outline-none"
+                    />
+                    <div className="flex justify-end mt-2">
+                      <button
+                        onClick={handleFeedbackSubmit}
+                        className="bg-[#FF5722] text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:opacity-90 transition"
+                      >
+                        Enviar
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="flex items-center justify-center gap-2 mt-4">
+                <CheckCircle size={16} className="text-green-500" />
+                <span className="text-sm text-green-600">Obrigado pelo feedback!</span>
+              </div>
+            )}
+          </div>
+        </div>
+        {/* Sidebar */}
+        <GroupBySidebar
+          items={sidebarItems}
+          selectedRegional={selectedRegional}
+          onRegionalClick={handleRegionalClick}
+          groupBy={groupBy}
+          onGroupByChange={handleGroupByChange}
+        />
       </div>
 
       <FilterPanel open={filterOpen} onClose={() => setFilterOpen(false)} />
     </div>
   );
+}
+
+/** Format "2025-04-01" → "abr/2025" */
+function formatMonthShort(dateStr: string): string {
+  const months = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const parts = dateStr.split("-");
+  const monthIdx = parseInt(parts[1], 10) - 1;
+  return `${months[monthIdx]}/${parts[0]}`;
 }
