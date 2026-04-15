@@ -967,6 +967,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   // headcount / rightMax = maxBarTotal * 1.1 / leftMax ≈ 1.1
   // → rightMax = headcount / 1.1 (so the area extends to 110% of bar height)
   const rightDomainMax = useMemo(() => {
+    if (!qualidadeComHeadcount.length) return 1;
+
     // Left axis auto-scales, maxBarTotal ≈ top of chart
     // We want headcount area to reach 10% above that
     // Since both axes share chart height: hc_fraction = hc / rightMax, bar_fraction = barTotal / leftMax
@@ -975,10 +977,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     // But headcount varies per month. Just ensure the area envelope sits above bars.
     // Simple: rightMax = minHeadcount / 1.1 would push all above, but let's use maxHeadcount
     // to keep nice ticks, and scale so area top = 10% above tallest bar visually
-    const minHC = Math.min(...qualidadeComHeadcount.map(d => d.activeHeadcount));
     const maxBarMonth = qualidadeComHeadcount.reduce((best, d) => 
       (d.registradas + d.justificadas) > (best.registradas + best.justificadas) ? d : best
-    );
+    , qualidadeComHeadcount[0]);
     const hcAtMaxBar = maxBarMonth.activeHeadcount;
     // rightMax so that hcAtMaxBar / rightMax ≈ 1.1 (i.e. 110% of chart = above top)
     // But can't go above chart. Instead: the left axis will auto-extend.
@@ -987,7 +988,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     // rightMax such that: (maxHeadcount / rightMax) = ((maxBarTotal * 1.1) / leftDomainMax)
     // leftDomainMax ≈ maxBarTotal (auto), so ratio = 1.1
     // → rightMax = maxHeadcount / 1.1
-    return Math.ceil(maxHeadcount / 1.1);
+    return Math.max(1, Math.ceil(Math.max(maxHeadcount, hcAtMaxBar) / 1.1));
   }, [maxHeadcount, qualidadeComHeadcount]);
 
   const tratativaFaixasFiltrada = useMemo(
