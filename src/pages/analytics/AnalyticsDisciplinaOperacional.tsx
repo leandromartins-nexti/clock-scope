@@ -1393,7 +1393,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                    const opacity = isFixed ? 0.85 : isSelected ? 0.7 : 0.15;
                    const strokeW = isFixed ? 1.5 : isSelected ? 1.5 : 0.5;
-                   const textColor = isSelected ? "#fff" : "#1e293b";
+                   const textColor = "#1e293b";
                    // 3-letter abbreviation like sidebar
                    const clean = payload.regional.replace(/^VIG\s*EYES\s*/i, "").trim();
                    const abbr = clean ? clean.slice(0, 3).toUpperCase() : payload.regional.slice(0, 3).toUpperCase();
