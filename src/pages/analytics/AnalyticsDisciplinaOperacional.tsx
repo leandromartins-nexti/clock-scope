@@ -1503,41 +1503,32 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
           {/* Mapa de Operações (scatter: Headcount × Score) */}
           <div data-onboarding="scatter-qualidade" className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-1">
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <h4 className="text-sm font-semibold">Mapa de Operações</h4>
-                  <InfoTip text="Cada bolha é uma operação. Posição horizontal mostra o headcount (escala da operação). Posição vertical mostra o Score Operacional (saúde). Cor da bolha reforça a classificação do score. Operações no canto superior direito têm alta escala e estão saudáveis. Operações no canto inferior direito têm alta escala mas estão com problemas, alta prioridade de ação." />
-                </div>
-                <p className="text-[10px] text-muted-foreground mt-0.5">Headcount × {activeDimConfig.yLabel} · uma bolha por {groupBy === "empresa" ? "empresa" : groupBy === "unidade" ? "un. negócio" : "área"}{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
+              <div className="flex items-center gap-1.5">
+                <h4 className="text-sm font-semibold">Mapa de Operações</h4>
+                <InfoTip text="Cada bolha é uma operação. Posição horizontal mostra o headcount (escala da operação). Posição vertical mostra o Score Operacional (saúde). Cor da bolha reforça a classificação do score." />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {criticalCount > 0 && mapaDimension === "score" && (
                   <span className="text-[10px] font-medium bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full">
                     {criticalCount} crítica{criticalCount > 1 ? "s" : ""}
                   </span>
                 )}
+                <select
+                  value={mapaDimension}
+                  onChange={(e) => setMapaDimension(e.target.value as MapaDimension)}
+                  className="h-7 pl-2 pr-6 text-[11px] font-medium rounded-md border border-border bg-card text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#FF5722] bg-[length:12px] bg-[right_4px_center] bg-no-repeat"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")` }}
+                >
+                  {(Object.entries(mapaDimensionConfig) as [MapaDimension, typeof activeDimConfig][]).map(([key, cfg]) => (
+                    <option key={key} value={key}>{cfg.label}</option>
+                  ))}
+                </select>
                 <button onClick={() => setChartDataModal("matrizSaude")} className="p-1 rounded hover:bg-muted/60 transition-colors" title="Ver dados">
                   <Database className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
               </div>
             </div>
-            {/* Dimension selector — compact inline pills */}
-            <div className="flex items-center gap-1.5 mb-2">
-              <span className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider mr-0.5">Analisar por</span>
-              {(Object.entries(mapaDimensionConfig) as [MapaDimension, typeof activeDimConfig][]).map(([key, cfg]) => (
-                <button
-                  key={key}
-                  onClick={() => setMapaDimension(key)}
-                  className={`px-2 py-[3px] rounded-full text-[10px] font-medium border transition-all ${
-                    mapaDimension === key
-                      ? "bg-foreground text-background border-foreground"
-                      : "bg-transparent text-muted-foreground border-border/60 hover:border-foreground/30 hover:text-foreground"
-                  }`}
-                >
-                  {cfg.label}
-                </button>
-              ))}
-            </div>
+            <p className="text-[10px] text-muted-foreground mb-2">Headcount × {activeDimConfig.yLabel} · uma bolha por {groupBy === "empresa" ? "empresa" : groupBy === "unidade" ? "un. negócio" : "área"}{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 5, right: 50, bottom: 10, left: 0 }}>
                 <defs>
