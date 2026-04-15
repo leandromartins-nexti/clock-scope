@@ -106,6 +106,113 @@ const MATURIDADE_LABELS: Record<string, string> = {
 
 const CATEGORIES_ORDER = ["planejada", "saude", "operacional", "nao_categorizada", "falta"];
 
+const REAL_TAXA_BY_GROUP: Record<GroupBy, Record<string, number>> = {
+  empresa: {
+    "SEGURANCA PATRIMONIAL": 12.87,
+    "PORTARIA E LIMPEZA": 15.27,
+    "TERCEIRIZACAO": 14.05,
+  },
+  unidade: {
+    "PORTARIA E LIMPEZA": 15.27,
+    "SEGURANCA PATRIMONIAL": 13.95,
+    "TERCEIRIZACAO": 14.17,
+  },
+  area: {
+    PIRACICABA: 16.83,
+    "SAO PAULO": 14.32,
+    SOROCABA: 15.88,
+  },
+};
+
+function normalizeEntityName(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/^VIG\s*EYES\s*/i, "")
+    .replace(/\s+TERCEIRIZACAO\s+DE\s+SERVICOS\s+LTDA$/i, " TERCEIRIZACAO")
+    .replace(/\s+SEGURANCA\s+PATRIMONIAL\s+LTDA$/i, " SEGURANCA PATRIMONIAL")
+    .replace(/\s+PORTARIA\s+E\s+LIMPEZA\s+LTDA$/i, " PORTARIA E LIMPEZA")
+    .replace(/\s+LTDA$/i, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toUpperCase();
+}
+
+function getLatestReferenceDate(rows: Array<Record<string, any>>): string | null {
+  if (!rows.length) return null;
+  return rows.reduce((latest, row) => (row.reference_date > latest ? row.reference_date : latest), rows[0].reference_date);
+}
+
+function computeEntityComposicaoDistribution(
+  entityName: string,
+  groupBy: GroupBy,
+  nameField: string,
+): typeof composicaoDistribuicao {
+  const raw = (groupBy === "empresa" ? composicaoEmpresa : groupBy === "area" ? composicaoArea : composicaoUnNegocio) as Array<Record<string, any>>;
+  const normalizedEntity = normalizeEntityName(entityName);
+  const filtered = raw.filter((row) => normalizeEntityName(String(row[nameField] ?? "")) === normalizedEntity);
+  const latestDate = getLatestReferenceDate(filtered);
+
+  if (!latestDate) {
+    return { planejada: 0, saude: 0, operacional: 0, falta: 0, nao_categorizada: 0 };
+  }
+
+  const latestRows = filtered.filter((row) => row.reference_date === latestDate);
+  const totals = { planejada: 0, saude: 0, operacional: 0, falta: 0, nao_categorizada: 0 };
+  let totalHoras = 0;
+
+  for (const row of latestRows) {
+    const category = CATEGORY_MAP[row.absence_situation_id] ?? "nao_categorizada";
+    const horas = row.horas_total ?? 0;
+    totals[category as keyof typeof totals] += horas;
+    totalHoras += horas;
+  }
+
+  if (totalHoras === 0) return totals;
+
+  return {
+    planejada: +((totals.planejada / totalHoras) * 100).toFixed(1),
+    saude: +((totals.saude / totalHoras) * 100).toFixed(1),
+    operacional: +((totals.operacional / totalHoras) * 100).toFixed(1),
+    falta: +((totals.falta / totalHoras) * 100).toFixed(1),
+    nao_categorizada: +((totals.nao_categorizada / totalHoras) * 100).toFixed(1),
+  };
+}
+
+function computeEntityMaturidadeDistribution(
+  entityName: string,
+  groupBy: GroupBy,
+  nameField: string,
+): typeof maturidadeDistribuicao {
+  const raw = (groupBy === "empresa" ? maturidadeEmpresa : groupBy === "area" ? maturidadeArea : maturidadeUnNegocio) as Array<Record<string, any>>;
+  const normalizedEntity = normalizeEntityName(entityName);
+  const filtered = raw.filter((row) => normalizeEntityName(String(row[nameField] ?? "")) === normalizedEntity);
+  const latestDate = getLatestReferenceDate(filtered);
+
+  if (!latestDate) {
+    return { planejado: 0, reativo: 0 };
+  }
+
+  const latestRows = filtered.filter((row) => row.reference_date === latestDate);
+  let planejadoHoras = 0;
+  let reativoHoras = 0;
+
+  for (const row of latestRows) {
+    const categoria = String(row.categoria ?? "").replace(/-/g, "_");
+    const horas = row.horas_total ?? 0;
+    if (categoria === "1_planejado") planejadoHoras += horas;
+    if (categoria === "2_reativo") reativoHoras += horas;
+  }
+
+  const totalHoras = planejadoHoras + reativoHoras;
+  if (totalHoras === 0) return { planejado: 0, reativo: 0 };
+
+  return {
+    planejado: +((planejadoHoras / totalHoras) * 100).toFixed(1),
+    reativo: +((reativoHoras / totalHoras) * 100).toFixed(1),
+  };
+}
+
 // ── Score computation (spec section 2 & 5) ──
 function computeVolumeScore(taxa: number): { score: number; label: string } {
   if (taxa <= 2.5) return { score: 100, label: "Excelente" };
@@ -135,15 +242,17 @@ function computeMaturidadeScore(dist: typeof maturidadeDistribuicao): { score: n
   return { score: 0, label: "Crítico" };
 }
 
-/** Compute entity-level absenteísmo score using the same formula as the composite */
-function computeEntityScore(entityRows: any[], nameField: string, entityName: string): number {
-  // Volume score from average taxa
-  const totalHoras = entityRows.reduce((s, r) => s + (r.horas_ausencia ?? 0), 0);
-  const totalHC = entityRows.reduce((s, r) => s + (r.headcount ?? r.hcMes ?? 0), 0);
-  const avgTaxa = totalHC > 0 ? (totalHoras / totalHC) * 100 : 0;
-  const volScore = computeVolumeScore(avgTaxa).score;
-  // Simplified: use 70% volume, 30% placeholder for composition/maturity
-  return Math.round(volScore * 0.7 + 50 * 0.3);
+/** Compute entity-level absenteísmo score using the same formula as the tab */
+function computeEntityScore(entityName: string, groupBy: GroupBy, nameField: string): number {
+  const normalizedEntity = normalizeEntityName(entityName);
+  const taxaEntry = Object.entries(REAL_TAXA_BY_GROUP[groupBy]).find(([label]) => normalizeEntityName(label) === normalizedEntity);
+  const taxa = taxaEntry?.[1] ?? 0;
+  const volScore = computeVolumeScore(taxa).score;
+  const composicao = computeEntityComposicaoDistribution(entityName, groupBy, nameField);
+  const maturidade = computeEntityMaturidadeDistribution(entityName, groupBy, nameField);
+  const compScore = computeComposicaoScore(composicao);
+  const matScore = computeMaturidadeScore(maturidade).score;
+  return Math.round(volScore * 0.5 + compScore * 0.3 + matScore * 0.2);
 }
 
 function getScoreColor(score: number): string {
@@ -344,22 +453,14 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   const sidebarItems = useMemo(() => {
     const raw = groupBy === "empresa" ? volumeEmpresa : groupBy === "area" ? volumeArea : volumeUnNegocio;
     const nf = nameField;
-    const entities = new Map<string, { horasTotal: number; pessoasMax: number; meses: Set<string> }>();
+    const entities = new Set<string>();
     
     for (const row of raw as any[]) {
-      const name = row[nf];
-      if (!entities.has(name)) entities.set(name, { horasTotal: 0, pessoasMax: 0, meses: new Set() });
-      const e = entities.get(name)!;
-      e.horasTotal += row.horas_ausencia ?? 0;
-      e.pessoasMax = Math.max(e.pessoasMax, row.pessoas_ausentes ?? 0);
-      e.meses.add(row.reference_date);
+      entities.add(row[nf]);
     }
     
-    return [...entities.entries()].map(([nome, data]) => {
-      // Average monthly taxa = totalHoras / (avgPessoas * 200 * numMeses)
-      const numMeses = data.meses.size || 1;
-      const avgTaxa = data.pessoasMax > 0 ? (data.horasTotal / (data.pessoasMax * 200 * numMeses)) * 100 : 0;
-      const score = computeVolumeScore(avgTaxa).score;
+    return [...entities].map((nome) => {
+      const score = computeEntityScore(nome, groupBy, nf);
       return {
         nome,
         value: nome,
@@ -374,24 +475,19 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   const mapaOperacoesData = useMemo(() => {
     const raw = groupBy === "empresa" ? volumeEmpresa : groupBy === "area" ? volumeArea : volumeUnNegocio;
     const nf = nameField;
-    const entities = new Map<string, { horasTotal: number; pessoasMax: number; headcount: number; meses: Set<string> }>();
+    const entities = new Map<string, { headcount: number }>();
 
     for (const row of raw as any[]) {
       const name = row[nf];
-      if (!entities.has(name)) entities.set(name, { horasTotal: 0, pessoasMax: 0, headcount: 0, meses: new Set() });
+      if (!entities.has(name)) entities.set(name, { headcount: 0 });
       const e = entities.get(name)!;
-      e.horasTotal += row.horas_ausencia ?? 0;
-      e.pessoasMax = Math.max(e.pessoasMax, row.pessoas_ausentes ?? 0);
       e.headcount = Math.max(e.headcount, row.pessoas_ausentes ?? row.headcount ?? 0);
-      e.meses.add(row.reference_date);
     }
 
     return [...entities.entries()]
       .filter(([nome]) => visibleSet.size === 0 || visibleSet.has(nome))
       .map(([nome, data]) => {
-        const numMeses = data.meses.size || 1;
-        const avgTaxa = data.pessoasMax > 0 ? (data.horasTotal / (data.pessoasMax * 200 * numMeses)) * 100 : 0;
-        const score = computeVolumeScore(avgTaxa).score;
+        const score = computeEntityScore(nome, groupBy, nf);
         const bubbleColor = score >= 70 ? "#22c55e" : score >= 50 ? "#f59e0b" : "#ef4444";
         return {
           regional: nome,
