@@ -25,11 +25,11 @@ interface CustomerContextType {
 
 const STORAGE_KEY = "nexti_active_customer_id";
 
-/** Map client slugs to customer_ids. All use 642 until client-specific data is imported */
+/** Map client slugs to customer_ids */
 const CLIENT_CUSTOMER_MAP: Record<string, number> = {
   nexti: 642,
-  orsegups: 642,
-  atitudeservicos: 642,
+  orsegups: 2,
+  atitudeservicos: 391,
   vigeyes: 642,
 };
 

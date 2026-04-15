@@ -12,8 +12,8 @@ import { LogOut, User } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const CLIENT_OPTIONS = [
-  { value: "orsegups", label: "Orsegups", customerId: 642 },
-  { value: "atitudeservicos", label: "Atitude Serviços", customerId: 642 },
+  { value: "orsegups", label: "Orsegups", customerId: 2 },
+  { value: "atitudeservicos", label: "Atitude Serviços", customerId: 391 },
   { value: "vigeyes", label: "VigEyes", customerId: 642 },
 ];
 

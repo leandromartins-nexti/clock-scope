@@ -1,8 +1,18 @@
 {
   "customers": [
     {
+      "customer_id": 2,
+      "label": "Orsegups",
+      "tabs_available": ["qualidade-ponto"]
+    },
+    {
+      "customer_id": 391,
+      "label": "Atitude",
+      "tabs_available": ["qualidade-ponto"]
+    },
+    {
       "customer_id": 642,
-      "label": "Cliente 642",
+      "label": "Vig Eyes",
       "tabs_available": ["qualidade-ponto"]
     }
   ]
