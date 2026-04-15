@@ -12,9 +12,9 @@ import { LogOut, User } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const CLIENT_OPTIONS = [
-  { value: "orsegups", label: "Orsegups", customerId: 643 },
-  { value: "atitudeservicos", label: "Atitude Serviços", customerId: 644 },
-  { value: "vigeyes", label: "VigEyes", customerId: 645 },
+  { value: "orsegups", label: "Orsegups", customerId: 642 },
+  { value: "atitudeservicos", label: "Atitude Serviços", customerId: 642 },
+  { value: "vigeyes", label: "VigEyes", customerId: 642 },
 ];
 
 const DashboardLayout = () => {
