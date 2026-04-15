@@ -1936,7 +1936,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                     <p className="text-[10px] text-muted-foreground mb-1">
                       Carga de ajustes e HE por operador. Linha tracejada azul = HE total do time.
-                      {sobrecargaFallback && <span className="ml-1 text-amber-600 font-medium">(dados consolidados — sem granularidade por {groupBy === "empresa" ? "empresa" : groupBy === "unidade" ? "unidade" : "área"})</span>}
                     </p>
                   </div>
                   <button onClick={() => setChartDataModal("sobrecarga")} className="text-muted-foreground hover:text-foreground transition-colors" title="Ver dados do gráfico">
