@@ -82,12 +82,9 @@ export default function Login() {
               <Input
                 value={client}
                 onChange={(e) => setClient(e.target.value)}
-                placeholder="Ex: nexti, orsegups, atitudeservicos, vigeyes"
+                placeholder="Nome da empresa"
                 autoComplete="organization"
               />
-              <p className="text-[10px] text-muted-foreground">
-                Digite o nome da empresa exatamente como cadastrado
-              </p>
             </div>
 
             {mode === "register" && (
