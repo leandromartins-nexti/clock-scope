@@ -1711,11 +1711,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     <YAxis yAxisId="left" tick={{ fontSize: 10 }} />
                     <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} label={{ value: "HE (h)", angle: 90, position: "insideRight", fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
                     <ReferenceLine yAxisId="left" y={limiteSaudavel} stroke="#22c55e" strokeDasharray="5 3" strokeWidth={1.2} label={({ viewBox }: any) => {
-                      const { x, y } = viewBox || {};
+                      const { y } = viewBox || {};
                       return (
                         <g>
-                          <text x={(x ?? 0) + 2} y={(y ?? 0) - 8} fontSize={8} fill="#22c55e" fontWeight={500}>Limite</text>
-                          <text x={(x ?? 0) + 2} y={(y ?? 0) + 2} fontSize={8} fill="#22c55e" fontWeight={500}>saudável</text>
+                          <text x={0} y={(y ?? 0) - 6} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">Limite</text>
+                          <text x={0} y={(y ?? 0) + 4} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">saudável</text>
                         </g>
                       );
                     }} />
