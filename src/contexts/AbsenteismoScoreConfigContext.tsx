@@ -65,7 +65,7 @@ const BASE_PROFILE: Omit<AbsenteismoScoreConfig, "profile_type"> = {
   cat_peso_operacional: 60,
   cat_peso_nao_categorizada: 50,
   cat_peso_falta: 0,
-  horas_previstas_mes: 200,
+  horas_previstas_mes: 220,
   limite_saudavel_mapa: 70,
   limite_critico_mapa: 50,
   score_excellent: 85,
