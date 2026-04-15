@@ -1237,7 +1237,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   }, [mapaOperacoesData]);
 
   // Critical zone: Score < 55 AND Headcount > median
-  const criticalCount = useMemo(() => mapaOperacoesData.filter(d => d.score < 55 && d.headcount > medianHeadcount).length, [mapaOperacoesData, medianHeadcount]);
+  const criticalCount = useMemo(() => mapaOperacoesData.filter(d => d.score < scoreConfig.threshold_warning && d.headcount > medianHeadcount).length, [mapaOperacoesData, medianHeadcount, scoreConfig.threshold_warning]);
 
   const chartScatterTrat = useMemo(() => {
     if (visibleSet.size > 0) return allScatterTratativa.filter(s => visibleSet.has(s.regional));
