@@ -1,0 +1,2614 @@
+{
+  "-- =====================================================\n-- POR UNIDADE DE NEGÓCIO\n-- =====================================================\nWITH he_types AS (\n  SELECT id \n  FROM time_tracking_type\n  WHERE (name LIKE '%OVERTIME%' OR name LIKE 'COMPTIME_CREDIT%')\n    AND name NOT LIKE '%BALANCE%'\n),\nhe_operador_mes AS (\n  SELECT \n    tt.person_id AS operador_person_id,\n    DATE_FORMAT(tt.reference_date, '%Y-%m') AS competencia,\n    SUM(tt.minutes) / 60.0 AS horas_extras\n  FROM time_tracking tt\n  INNER JOIN he_types ht ON ht.id = tt.time_tracking_type_id\n  WHERE tt.customer_id = 2\n    AND tt.reference_date >= '2025-04-01'\n    AND tt.reference_date < '2026-04-01'\n  GROUP BY tt.person_id, DATE_FORMAT(tt.reference_date, '%Y-%m')\n),\najustes_por_wp_op AS (\n  SELECT \n    ajuste.customer_id,\n    ajuste.workplace_id,\n    DATE_FORMAT(ajuste.reference_date, '%Y-%m') AS competencia,\n    ua.person_id AS operador_person_id,\n    ua.id AS user_account_id,\n    COUNT(*) AS qtd\n  FROM clocking ajuste\n  INNER JOIN user_account ua ON ua.id = ajuste.user_adjustment_id\n  WHERE ajuste.customer_id = 2\n    AND ajuste.removed = 0\n    AND ajuste.clocking_type_id = 3\n    AND ajuste.clocking_origin_id IS NOT NULL\n    AND ajuste.adjustment_date IS NOT NULL\n    AND ajuste.reference_date >= '2025-04-01'\n    AND ajuste.reference_date < '2026-04-01'\n  GROUP BY ajuste.customer_id, ajuste.workplace_id, DATE_FORMAT(ajuste.reference_date, '%Y-%m'), ua.person_id, ua.id\n),\najustes_por_un_op AS (\n  SELECT \n    awp.customer_id,\n    w.business_unit_id,\n    awp.competencia,\n    awp.operador_person_id,\n    awp.user_account_id,\n    SUM(awp.qtd) AS qtd\n  FROM ajustes_por_wp_op awp\n  INNER JOIN workplace w ON w.id = awp.workplace_id\n  WHERE w.business_unit_id IS NOT NULL\n  GROUP BY awp.customer_id, w.business_unit_id, awp.competencia, awp.operador_person_id, awp.user_account_id\n),\najustes_operador_total_mes AS (\n  SELECT \n    operador_person_id,\n    competencia,\n    SUM(qtd) AS total_ajustes_op\n  FROM ajustes_por_un_op\n  GROUP BY operador_person_id, competencia\n)\nSELECT \n  ag.customer_id,\n  ag.competencia,\n  ag.business_unit_id,\n  bu.name AS business_unit_name,\n  SUM(ag.qtd) AS qtd_ajustes,\n  COUNT(DISTINCT ag.user_account_id) AS operadores_ativos,\n  ROUND(\n    SUM(ag.qtd) * 1.0 / NULLIF(COUNT(DISTINCT ag.user_account_id), 0),\n    0\n  ) AS ajustes_por_operador,\n  ROUND(\n    SUM(\n      COALESCE(hom.horas_extras, 0)\n      * ag.qtd\n      / NULLIF(aotm.total_ajustes_op, 0)\n    ),\n    1\n  ) AS horas_extras_rateadas\nFROM ajustes_por_un_op ag\nLEFT JOIN business_unit bu ON bu.id = ag.business_unit_id\nLEFT JOIN he_operador_mes hom\n  ON hom.operador_person_id = ag.operador_person_id\n  AND hom.competencia = ag.competencia\nLEFT JOIN ajustes_operador_total_mes aotm\n  ON aotm.operador_person_id = ag.operador_person_id\n  AND aotm.competencia = ag.competencia\nGROUP BY ag.customer_id, ag.competencia, ag.business_unit_id, bu.name\nORDER BY ag.business_unit_id, ag.competencia": [
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 1448,
+      "operadores_ativos": 48,
+      "ajustes_por_operador": 30,
+      "horas_extras_rateadas": 279.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 375,
+      "operadores_ativos": 45,
+      "ajustes_por_operador": 8,
+      "horas_extras_rateadas": 310.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 2163,
+      "operadores_ativos": 55,
+      "ajustes_por_operador": 39,
+      "horas_extras_rateadas": 368.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 2640,
+      "operadores_ativos": 56,
+      "ajustes_por_operador": 47,
+      "horas_extras_rateadas": 485.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 2769,
+      "operadores_ativos": 57,
+      "ajustes_por_operador": 49,
+      "horas_extras_rateadas": 428.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 2936,
+      "operadores_ativos": 54,
+      "ajustes_por_operador": 54,
+      "horas_extras_rateadas": 306.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 2472,
+      "operadores_ativos": 47,
+      "ajustes_por_operador": 53,
+      "horas_extras_rateadas": 412.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 2604,
+      "operadores_ativos": 48,
+      "ajustes_por_operador": 54,
+      "horas_extras_rateadas": 398.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 2527,
+      "operadores_ativos": 51,
+      "ajustes_por_operador": 50,
+      "horas_extras_rateadas": 356.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 2877,
+      "operadores_ativos": 50,
+      "ajustes_por_operador": 58,
+      "horas_extras_rateadas": 414.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 3223,
+      "operadores_ativos": 48,
+      "ajustes_por_operador": 67,
+      "horas_extras_rateadas": 279.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 2,
+      "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+      "qtd_ajustes": 3535,
+      "operadores_ativos": 49,
+      "ajustes_por_operador": 72,
+      "horas_extras_rateadas": 292.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 7059,
+      "operadores_ativos": 35,
+      "ajustes_por_operador": 202,
+      "horas_extras_rateadas": 92.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 6410,
+      "operadores_ativos": 27,
+      "ajustes_por_operador": 237,
+      "horas_extras_rateadas": 95.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 5859,
+      "operadores_ativos": 31,
+      "ajustes_por_operador": 189,
+      "horas_extras_rateadas": 80.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 5528,
+      "operadores_ativos": 32,
+      "ajustes_por_operador": 173,
+      "horas_extras_rateadas": 85.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 4744,
+      "operadores_ativos": 35,
+      "ajustes_por_operador": 136,
+      "horas_extras_rateadas": 79.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 6830,
+      "operadores_ativos": 28,
+      "ajustes_por_operador": 244,
+      "horas_extras_rateadas": 107.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 4121,
+      "operadores_ativos": 28,
+      "ajustes_por_operador": 147,
+      "horas_extras_rateadas": 99.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 4188,
+      "operadores_ativos": 29,
+      "ajustes_por_operador": 144,
+      "horas_extras_rateadas": 89.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 5371,
+      "operadores_ativos": 37,
+      "ajustes_por_operador": 145,
+      "horas_extras_rateadas": 73.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 5113,
+      "operadores_ativos": 29,
+      "ajustes_por_operador": 176,
+      "horas_extras_rateadas": 112.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 4987,
+      "operadores_ativos": 28,
+      "ajustes_por_operador": 178,
+      "horas_extras_rateadas": 147.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 3,
+      "business_unit_name": "CAPITAL SEG",
+      "qtd_ajustes": 5199,
+      "operadores_ativos": 27,
+      "ajustes_por_operador": 193,
+      "horas_extras_rateadas": 83.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 8657,
+      "operadores_ativos": 33,
+      "ajustes_por_operador": 262,
+      "horas_extras_rateadas": 211.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 8702,
+      "operadores_ativos": 27,
+      "ajustes_por_operador": 322,
+      "horas_extras_rateadas": 162.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 7761,
+      "operadores_ativos": 25,
+      "ajustes_por_operador": 310,
+      "horas_extras_rateadas": 104.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 7177,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 326,
+      "horas_extras_rateadas": 142.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 5447,
+      "operadores_ativos": 21,
+      "ajustes_por_operador": 259,
+      "horas_extras_rateadas": 139.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 6786,
+      "operadores_ativos": 24,
+      "ajustes_por_operador": 283,
+      "horas_extras_rateadas": 127.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 5658,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 246,
+      "horas_extras_rateadas": 145.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 5752,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 261,
+      "horas_extras_rateadas": 159.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 7523,
+      "operadores_ativos": 24,
+      "ajustes_por_operador": 313,
+      "horas_extras_rateadas": 236.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 7482,
+      "operadores_ativos": 25,
+      "ajustes_por_operador": 299,
+      "horas_extras_rateadas": 206.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 6778,
+      "operadores_ativos": 25,
+      "ajustes_por_operador": 271,
+      "horas_extras_rateadas": 193.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 4,
+      "business_unit_name": "ITAJAÍ",
+      "qtd_ajustes": 7805,
+      "operadores_ativos": 27,
+      "ajustes_por_operador": 289,
+      "horas_extras_rateadas": 139.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 1178,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 51,
+      "horas_extras_rateadas": 19.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 1220,
+      "operadores_ativos": 26,
+      "ajustes_por_operador": 47,
+      "horas_extras_rateadas": 54.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 1054,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 75,
+      "horas_extras_rateadas": 33.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 740,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 39,
+      "horas_extras_rateadas": 12.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 724,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 40,
+      "horas_extras_rateadas": 18.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 742,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 57,
+      "horas_extras_rateadas": 16.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 662,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 44,
+      "horas_extras_rateadas": 25.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 689,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 38,
+      "horas_extras_rateadas": 39.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 767,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 40,
+      "horas_extras_rateadas": 30.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 705,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 39,
+      "horas_extras_rateadas": 18.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 693,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 46,
+      "horas_extras_rateadas": 18.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 5,
+      "business_unit_name": "BRUSQUE",
+      "qtd_ajustes": 834,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 42,
+      "horas_extras_rateadas": 22.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 2346,
+      "operadores_ativos": 24,
+      "ajustes_por_operador": 98,
+      "horas_extras_rateadas": 89.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 2303,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 105,
+      "horas_extras_rateadas": 26.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1496,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 75,
+      "horas_extras_rateadas": 86.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1525,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 76,
+      "horas_extras_rateadas": 55.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1447,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 72,
+      "horas_extras_rateadas": 35.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1701,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 77,
+      "horas_extras_rateadas": 28.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1557,
+      "operadores_ativos": 26,
+      "ajustes_por_operador": 60,
+      "horas_extras_rateadas": 80.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1637,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 82,
+      "horas_extras_rateadas": 42.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1790,
+      "operadores_ativos": 21,
+      "ajustes_por_operador": 85,
+      "horas_extras_rateadas": 55.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1623,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 81,
+      "horas_extras_rateadas": 63.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 1771,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 77,
+      "horas_extras_rateadas": 75.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 6,
+      "business_unit_name": "BLUMENAU",
+      "qtd_ajustes": 2081,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 95,
+      "horas_extras_rateadas": 46.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1572,
+      "operadores_ativos": 21,
+      "ajustes_por_operador": 75,
+      "horas_extras_rateadas": 20.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1452,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 91,
+      "horas_extras_rateadas": 14.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1695,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 85,
+      "horas_extras_rateadas": 17.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1786,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 89,
+      "horas_extras_rateadas": 46.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1367,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 76,
+      "horas_extras_rateadas": 27.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1317,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 66,
+      "horas_extras_rateadas": 20.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1145,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 60,
+      "horas_extras_rateadas": 17.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1133,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 71,
+      "horas_extras_rateadas": 26.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1290,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 68,
+      "horas_extras_rateadas": 32.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1369,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 86,
+      "horas_extras_rateadas": 36.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1393,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 70,
+      "horas_extras_rateadas": 46.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 7,
+      "business_unit_name": "JOINVILLE",
+      "qtd_ajustes": 1506,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 94,
+      "horas_extras_rateadas": 21.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1321,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 78,
+      "horas_extras_rateadas": 28.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1679,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 76,
+      "horas_extras_rateadas": 61.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1298,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 65,
+      "horas_extras_rateadas": 11.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1204,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 63,
+      "horas_extras_rateadas": 19.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 923,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 54,
+      "horas_extras_rateadas": 45.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1002,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 56,
+      "horas_extras_rateadas": 28.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1211,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 64,
+      "horas_extras_rateadas": 24.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1079,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 60,
+      "horas_extras_rateadas": 30.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1253,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 84,
+      "horas_extras_rateadas": 51.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1131,
+      "operadores_ativos": 12,
+      "ajustes_por_operador": 94,
+      "horas_extras_rateadas": 36.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1004,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 72,
+      "horas_extras_rateadas": 51.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 8,
+      "business_unit_name": "LAGES",
+      "qtd_ajustes": 1295,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 81,
+      "horas_extras_rateadas": 13.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 545,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 36,
+      "horas_extras_rateadas": 3.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 563,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 56,
+      "horas_extras_rateadas": 3.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 499,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 38,
+      "horas_extras_rateadas": 4.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 384,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 30,
+      "horas_extras_rateadas": 4.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 282,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 19,
+      "horas_extras_rateadas": 7.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 217,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 16,
+      "horas_extras_rateadas": 5.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 227,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 23,
+      "horas_extras_rateadas": 3.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 230,
+      "operadores_ativos": 11,
+      "ajustes_por_operador": 21,
+      "horas_extras_rateadas": 3.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 248,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 25,
+      "horas_extras_rateadas": 2.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 200,
+      "operadores_ativos": 11,
+      "ajustes_por_operador": 18,
+      "horas_extras_rateadas": 2.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 166,
+      "operadores_ativos": 9,
+      "ajustes_por_operador": 18,
+      "horas_extras_rateadas": 2.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 9,
+      "business_unit_name": "CRICIÚMA",
+      "qtd_ajustes": 163,
+      "operadores_ativos": 12,
+      "ajustes_por_operador": 14,
+      "horas_extras_rateadas": 10.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 8700,
+      "operadores_ativos": 28,
+      "ajustes_por_operador": 311,
+      "horas_extras_rateadas": 180.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 9028,
+      "operadores_ativos": 28,
+      "ajustes_por_operador": 322,
+      "horas_extras_rateadas": 209.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 9711,
+      "operadores_ativos": 28,
+      "ajustes_por_operador": 347,
+      "horas_extras_rateadas": 166.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 9449,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 411,
+      "horas_extras_rateadas": 139.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 6924,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 315,
+      "horas_extras_rateadas": 155.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 6476,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 405,
+      "horas_extras_rateadas": 109.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 7212,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 328,
+      "horas_extras_rateadas": 102.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 7485,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 340,
+      "horas_extras_rateadas": 99.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 9481,
+      "operadores_ativos": 25,
+      "ajustes_por_operador": 379,
+      "horas_extras_rateadas": 221.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 8854,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 443,
+      "horas_extras_rateadas": 226.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 8688,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 378,
+      "horas_extras_rateadas": 162.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 11,
+      "business_unit_name": "CAPITAL ACL",
+      "qtd_ajustes": 10100,
+      "operadores_ativos": 26,
+      "ajustes_por_operador": 388,
+      "horas_extras_rateadas": 167.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 508,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 27,
+      "horas_extras_rateadas": 6.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 549,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 37,
+      "horas_extras_rateadas": 5.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 371,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 23,
+      "horas_extras_rateadas": 4.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 388,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 22,
+      "horas_extras_rateadas": 9.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 349,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 21,
+      "horas_extras_rateadas": 7.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 342,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 18,
+      "horas_extras_rateadas": 11.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 350,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 18,
+      "horas_extras_rateadas": 5.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 332,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 26,
+      "horas_extras_rateadas": 9.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 384,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 27,
+      "horas_extras_rateadas": 12.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 446,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 34,
+      "horas_extras_rateadas": 11.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 320,
+      "operadores_ativos": 11,
+      "ajustes_por_operador": 29,
+      "horas_extras_rateadas": 9.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 12,
+      "business_unit_name": "CHAPECÓ",
+      "qtd_ajustes": 467,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 36,
+      "horas_extras_rateadas": 7.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 1557,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 82,
+      "horas_extras_rateadas": 27.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 1393,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 100,
+      "horas_extras_rateadas": 24.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 1372,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 72,
+      "horas_extras_rateadas": 30.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 1383,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 99,
+      "horas_extras_rateadas": 23.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 946,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 59,
+      "horas_extras_rateadas": 24.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 846,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 60,
+      "horas_extras_rateadas": 14.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 768,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 55,
+      "horas_extras_rateadas": 22.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 852,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 85,
+      "horas_extras_rateadas": 16.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 819,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 59,
+      "horas_extras_rateadas": 21.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 727,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 48,
+      "horas_extras_rateadas": 32.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 821,
+      "operadores_ativos": 12,
+      "ajustes_por_operador": 68,
+      "horas_extras_rateadas": 11.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 13,
+      "business_unit_name": "RIO DO SUL",
+      "qtd_ajustes": 917,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 71,
+      "horas_extras_rateadas": 16.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1910,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 87,
+      "horas_extras_rateadas": 28.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1766,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 77,
+      "horas_extras_rateadas": 33.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1598,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 80,
+      "horas_extras_rateadas": 19.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1826,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 91,
+      "horas_extras_rateadas": 27.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1475,
+      "operadores_ativos": 22,
+      "ajustes_por_operador": 67,
+      "horas_extras_rateadas": 28.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1349,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 90,
+      "horas_extras_rateadas": 14.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1370,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 72,
+      "horas_extras_rateadas": 25.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1472,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 92,
+      "horas_extras_rateadas": 24.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1643,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 103,
+      "horas_extras_rateadas": 16.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1524,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 102,
+      "horas_extras_rateadas": 24.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1378,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 98,
+      "horas_extras_rateadas": 49.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 14,
+      "business_unit_name": "JARAGUÁ DO SUL",
+      "qtd_ajustes": 1431,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 80,
+      "horas_extras_rateadas": 20.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 5058,
+      "operadores_ativos": 31,
+      "ajustes_por_operador": 163,
+      "horas_extras_rateadas": 167.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 5017,
+      "operadores_ativos": 30,
+      "ajustes_por_operador": 167,
+      "horas_extras_rateadas": 117.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 6077,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 264,
+      "horas_extras_rateadas": 86.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 5524,
+      "operadores_ativos": 27,
+      "ajustes_por_operador": 205,
+      "horas_extras_rateadas": 112.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 4769,
+      "operadores_ativos": 29,
+      "ajustes_por_operador": 164,
+      "horas_extras_rateadas": 152.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 5522,
+      "operadores_ativos": 27,
+      "ajustes_por_operador": 205,
+      "horas_extras_rateadas": 152.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 4368,
+      "operadores_ativos": 27,
+      "ajustes_por_operador": 162,
+      "horas_extras_rateadas": 274.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 4769,
+      "operadores_ativos": 25,
+      "ajustes_por_operador": 191,
+      "horas_extras_rateadas": 196.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 5366,
+      "operadores_ativos": 26,
+      "ajustes_por_operador": 206,
+      "horas_extras_rateadas": 214.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 4832,
+      "operadores_ativos": 25,
+      "ajustes_por_operador": 193,
+      "horas_extras_rateadas": 249.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 4694,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 204,
+      "horas_extras_rateadas": 133.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 15,
+      "business_unit_name": "CURITIBA NORTE",
+      "qtd_ajustes": 5710,
+      "operadores_ativos": 30,
+      "ajustes_por_operador": 190,
+      "horas_extras_rateadas": 259.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1131,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 60,
+      "horas_extras_rateadas": 16.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1204,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 67,
+      "horas_extras_rateadas": 31.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1287,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 76,
+      "horas_extras_rateadas": 8.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1348,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 75,
+      "horas_extras_rateadas": 28.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1055,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 56,
+      "horas_extras_rateadas": 25.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 916,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 57,
+      "horas_extras_rateadas": 34.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 903,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 53,
+      "horas_extras_rateadas": 26.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 914,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 57,
+      "horas_extras_rateadas": 21.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1005,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 59,
+      "horas_extras_rateadas": 21.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1148,
+      "operadores_ativos": 18,
+      "ajustes_por_operador": 64,
+      "horas_extras_rateadas": 34.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1083,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 68,
+      "horas_extras_rateadas": 12.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 16,
+      "business_unit_name": "CASCAVEL",
+      "qtd_ajustes": 1072,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 77,
+      "horas_extras_rateadas": 23.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 190,
+      "operadores_ativos": 9,
+      "ajustes_por_operador": 21,
+      "horas_extras_rateadas": 0.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 179,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 18,
+      "horas_extras_rateadas": 0.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 155,
+      "operadores_ativos": 9,
+      "ajustes_por_operador": 17,
+      "horas_extras_rateadas": 1.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 164,
+      "operadores_ativos": 12,
+      "ajustes_por_operador": 14,
+      "horas_extras_rateadas": 1.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 155,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 16,
+      "horas_extras_rateadas": 2.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 139,
+      "operadores_ativos": 11,
+      "ajustes_por_operador": 13,
+      "horas_extras_rateadas": 3.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 149,
+      "operadores_ativos": 6,
+      "ajustes_por_operador": 25,
+      "horas_extras_rateadas": 1.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 98,
+      "operadores_ativos": 8,
+      "ajustes_por_operador": 12,
+      "horas_extras_rateadas": 14.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 111,
+      "operadores_ativos": 8,
+      "ajustes_por_operador": 14,
+      "horas_extras_rateadas": 0.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 101,
+      "operadores_ativos": 8,
+      "ajustes_por_operador": 13,
+      "horas_extras_rateadas": 1.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 113,
+      "operadores_ativos": 9,
+      "ajustes_por_operador": 13,
+      "horas_extras_rateadas": 2.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 18,
+      "business_unit_name": "TUBARÃO",
+      "qtd_ajustes": 126,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 13,
+      "horas_extras_rateadas": 2.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 9,
+      "operadores_ativos": 4,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 0.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 10,
+      "operadores_ativos": 3,
+      "ajustes_por_operador": 3,
+      "horas_extras_rateadas": 14.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 6,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 3,
+      "horas_extras_rateadas": 1.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 7,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 4,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 12,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 6,
+      "horas_extras_rateadas": 1.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 9,
+      "operadores_ativos": 4,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 1.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 1,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 18,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 9,
+      "horas_extras_rateadas": 0.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 6,
+      "operadores_ativos": 3,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 17,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 9,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 23,
+      "operadores_ativos": 3,
+      "ajustes_por_operador": 8,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 22,
+      "business_unit_name": "TRAMANDAÍ",
+      "qtd_ajustes": 28,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 14,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 349,
+      "operadores_ativos": 20,
+      "ajustes_por_operador": 17,
+      "horas_extras_rateadas": 16.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 331,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 17,
+      "horas_extras_rateadas": 14.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 329,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 24,
+      "horas_extras_rateadas": 9.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 355,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 21,
+      "horas_extras_rateadas": 24.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 337,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 22,
+      "horas_extras_rateadas": 30.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 237,
+      "operadores_ativos": 14,
+      "ajustes_por_operador": 17,
+      "horas_extras_rateadas": 26.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 211,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 16,
+      "horas_extras_rateadas": 18.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 199,
+      "operadores_ativos": 12,
+      "ajustes_por_operador": 17,
+      "horas_extras_rateadas": 14.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 273,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 17,
+      "horas_extras_rateadas": 30.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 187,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 12,
+      "horas_extras_rateadas": 15.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 505,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 34,
+      "horas_extras_rateadas": 6.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 23,
+      "business_unit_name": "NOVO HAMBURGO",
+      "qtd_ajustes": 391,
+      "operadores_ativos": 15,
+      "ajustes_por_operador": 26,
+      "horas_extras_rateadas": 6.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1382,
+      "operadores_ativos": 25,
+      "ajustes_por_operador": 55,
+      "horas_extras_rateadas": 60.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1540,
+      "operadores_ativos": 21,
+      "ajustes_por_operador": 73,
+      "horas_extras_rateadas": 67.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1418,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 83,
+      "horas_extras_rateadas": 38.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1395,
+      "operadores_ativos": 21,
+      "ajustes_por_operador": 66,
+      "horas_extras_rateadas": 20.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1476,
+      "operadores_ativos": 23,
+      "ajustes_por_operador": 64,
+      "horas_extras_rateadas": 69.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1407,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 74,
+      "horas_extras_rateadas": 51.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1523,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 95,
+      "horas_extras_rateadas": 68.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1828,
+      "operadores_ativos": 13,
+      "ajustes_por_operador": 141,
+      "horas_extras_rateadas": 36.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1902,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 112,
+      "horas_extras_rateadas": 50.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1905,
+      "operadores_ativos": 17,
+      "ajustes_por_operador": 112,
+      "horas_extras_rateadas": 49.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1482,
+      "operadores_ativos": 16,
+      "ajustes_por_operador": 93,
+      "horas_extras_rateadas": 40.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 24,
+      "business_unit_name": "CAMPINAS",
+      "qtd_ajustes": 1813,
+      "operadores_ativos": 19,
+      "ajustes_por_operador": 95,
+      "horas_extras_rateadas": 44.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 19,
+      "operadores_ativos": 5,
+      "ajustes_por_operador": 4,
+      "horas_extras_rateadas": 12.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 6,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 6,
+      "horas_extras_rateadas": 0.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 4,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 8.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 2,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 2,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 7.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 1,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 25.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 4,
+      "operadores_ativos": 3,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 4.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 2,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 1,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 3.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 4,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 13.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 25,
+      "business_unit_name": "GOIANIA",
+      "qtd_ajustes": 2,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 95,
+      "operadores_ativos": 12,
+      "ajustes_por_operador": 8,
+      "horas_extras_rateadas": 26.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 26,
+      "operadores_ativos": 4,
+      "ajustes_por_operador": 7,
+      "horas_extras_rateadas": 0.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 19,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 10,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 25,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 13,
+      "horas_extras_rateadas": 0.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 10,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 5,
+      "horas_extras_rateadas": 0.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 4,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 3,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 0.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 5,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 3,
+      "horas_extras_rateadas": 0.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 7,
+      "operadores_ativos": 4,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 0.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 4,
+      "operadores_ativos": 4,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 3.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 2,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 0.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 26,
+      "business_unit_name": "PALMAS",
+      "qtd_ajustes": 2,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 125,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 13,
+      "horas_extras_rateadas": 13.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 102,
+      "operadores_ativos": 5,
+      "ajustes_por_operador": 20,
+      "horas_extras_rateadas": 5.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 42,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 21,
+      "horas_extras_rateadas": 8.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 97,
+      "operadores_ativos": 5,
+      "ajustes_por_operador": 19,
+      "horas_extras_rateadas": 1.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-08",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 54,
+      "operadores_ativos": 4,
+      "ajustes_por_operador": 14,
+      "horas_extras_rateadas": 1.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 27,
+      "operadores_ativos": 3,
+      "ajustes_por_operador": 9,
+      "horas_extras_rateadas": 0.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 62,
+      "operadores_ativos": 7,
+      "ajustes_por_operador": 9,
+      "horas_extras_rateadas": 0.7
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 66,
+      "operadores_ativos": 5,
+      "ajustes_por_operador": 13,
+      "horas_extras_rateadas": 1.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 69,
+      "operadores_ativos": 4,
+      "ajustes_por_operador": 17,
+      "horas_extras_rateadas": 1.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 58,
+      "operadores_ativos": 5,
+      "ajustes_por_operador": 12,
+      "horas_extras_rateadas": 3.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 86,
+      "operadores_ativos": 10,
+      "ajustes_por_operador": 9,
+      "horas_extras_rateadas": 2.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-03",
+      "business_unit_id": 27,
+      "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+      "qtd_ajustes": 58,
+      "operadores_ativos": 9,
+      "ajustes_por_operador": 6,
+      "horas_extras_rateadas": 1.1
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-04",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 3,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 3,
+      "horas_extras_rateadas": 0.3
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-05",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 1,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 0.0
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-06",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 5,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 5,
+      "horas_extras_rateadas": 1.8
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-07",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 6,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 6,
+      "horas_extras_rateadas": 2.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-09",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 2,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 2,
+      "horas_extras_rateadas": 0.9
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-10",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 3,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 3,
+      "horas_extras_rateadas": 1.4
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-11",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 1,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 1,
+      "horas_extras_rateadas": 0.2
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2025-12",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 7,
+      "operadores_ativos": 2,
+      "ajustes_por_operador": 4,
+      "horas_extras_rateadas": 0.5
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-01",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 3,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 3,
+      "horas_extras_rateadas": 0.6
+    },
+    {
+      "customer_id": 2,
+      "competencia": "2026-02",
+      "business_unit_id": 28,
+      "business_unit_name": "XANGRI-LA",
+      "qtd_ajustes": 3,
+      "operadores_ativos": 1,
+      "ajustes_por_operador": 3,
+      "horas_extras_rateadas": 0.0
+    }
+  ]
+}
