@@ -104,6 +104,8 @@ const MATURIDADE_LABELS: Record<string, string> = {
   "2_reativo": "Reativo",
 };
 
+const CATEGORIES_ORDER = ["planejada", "saude", "operacional", "nao_categorizada", "falta"];
+
 // ── Score computation (spec section 2 & 5) ──
 function computeVolumeScore(taxa: number): { score: number; label: string } {
   if (taxa <= 2.5) return { score: 100, label: "Excelente" };
