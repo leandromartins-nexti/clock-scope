@@ -62,20 +62,31 @@ const MOCK = {
 };
 
 // Consolidado computed from real JSON data (12 months)
+// hcMes = headcount operacional total do mês (denominador da taxa)
 const volumeConsolidado = [
-  { reference_date: "2025-04-01", horas_ausencia_total: 5122, horas_ausencia_nao_planejada: 3023, qtd_eventos: 493, pessoas_ausentes: 92 },
-  { reference_date: "2025-05-01", horas_ausencia_total: 5881, horas_ausencia_nao_planejada: 3514, qtd_eventos: 571, pessoas_ausentes: 99 },
-  { reference_date: "2025-06-01", horas_ausencia_total: 5293, horas_ausencia_nao_planejada: 2561, qtd_eventos: 498, pessoas_ausentes: 90 },
-  { reference_date: "2025-07-01", horas_ausencia_total: 5661, horas_ausencia_nao_planejada: 2790, qtd_eventos: 559, pessoas_ausentes: 106 },
-  { reference_date: "2025-08-01", horas_ausencia_total: 4870, horas_ausencia_nao_planejada: 2677, qtd_eventos: 485, pessoas_ausentes: 86 },
-  { reference_date: "2025-09-01", horas_ausencia_total: 5013, horas_ausencia_nao_planejada: 2433, qtd_eventos: 458, pessoas_ausentes: 92 },
-  { reference_date: "2025-10-01", horas_ausencia_total: 10199, horas_ausencia_nao_planejada: 2844, qtd_eventos: 1042, pessoas_ausentes: 252 },
-  { reference_date: "2025-11-01", horas_ausencia_total: 9358, horas_ausencia_nao_planejada: 3787, qtd_eventos: 964, pessoas_ausentes: 269 },
-  { reference_date: "2025-12-01", horas_ausencia_total: 10857, horas_ausencia_nao_planejada: 4416, qtd_eventos: 1164, pessoas_ausentes: 255 },
-  { reference_date: "2026-01-01", horas_ausencia_total: 8961, horas_ausencia_nao_planejada: 4657, qtd_eventos: 945, pessoas_ausentes: 252 },
-  { reference_date: "2026-02-01", horas_ausencia_total: 11466, horas_ausencia_nao_planejada: 4374, qtd_eventos: 1236, pessoas_ausentes: 259 },
-  { reference_date: "2026-03-01", horas_ausencia_total: 6313, horas_ausencia_nao_planejada: 4121, qtd_eventos: 658, pessoas_ausentes: 149 },
+  { reference_date: "2025-04-01", horas_ausencia_total: 5122, horas_ausencia_nao_planejada: 3023, qtd_eventos: 493, pessoas_ausentes: 92, hcMes: 470 },
+  { reference_date: "2025-05-01", horas_ausencia_total: 5881, horas_ausencia_nao_planejada: 3514, qtd_eventos: 571, pessoas_ausentes: 99, hcMes: 472 },
+  { reference_date: "2025-06-01", horas_ausencia_total: 5293, horas_ausencia_nao_planejada: 2561, qtd_eventos: 498, pessoas_ausentes: 90, hcMes: 475 },
+  { reference_date: "2025-07-01", horas_ausencia_total: 5661, horas_ausencia_nao_planejada: 2790, qtd_eventos: 559, pessoas_ausentes: 106, hcMes: 478 },
+  { reference_date: "2025-08-01", horas_ausencia_total: 4870, horas_ausencia_nao_planejada: 2677, qtd_eventos: 485, pessoas_ausentes: 86, hcMes: 480 },
+  { reference_date: "2025-09-01", horas_ausencia_total: 5013, horas_ausencia_nao_planejada: 2433, qtd_eventos: 458, pessoas_ausentes: 92, hcMes: 480 },
+  { reference_date: "2025-10-01", horas_ausencia_total: 10199, horas_ausencia_nao_planejada: 2844, qtd_eventos: 1042, pessoas_ausentes: 252, hcMes: 482 },
+  { reference_date: "2025-11-01", horas_ausencia_total: 9358, horas_ausencia_nao_planejada: 3787, qtd_eventos: 964, pessoas_ausentes: 269, hcMes: 483 },
+  { reference_date: "2025-12-01", horas_ausencia_total: 10857, horas_ausencia_nao_planejada: 4416, qtd_eventos: 1164, pessoas_ausentes: 255, hcMes: 485 },
+  { reference_date: "2026-01-01", horas_ausencia_total: 8961, horas_ausencia_nao_planejada: 4657, qtd_eventos: 945, pessoas_ausentes: 252, hcMes: 484 },
+  { reference_date: "2026-02-01", horas_ausencia_total: 11466, horas_ausencia_nao_planejada: 4374, qtd_eventos: 1236, pessoas_ausentes: 259, hcMes: 484 },
+  { reference_date: "2026-03-01", horas_ausencia_total: 6313, horas_ausencia_nao_planejada: 4121, qtd_eventos: 658, pessoas_ausentes: 149, hcMes: 484 },
 ];
+
+// HC operacional por entidade (mar/2026) — usado para calcular taxa por regional
+const HC_BY_ENTITY: Record<string, number> = {
+  "PORTARIA E LIMPEZA": 310,
+  "SEGURANCA PATRIMONIAL": 98,
+  "TERCEIRIZACAO": 76,
+  PIRACICABA: 145,
+  "SAO PAULO": 220,
+  SOROCABA: 119,
+};
 
 // Composição distribution from real data (mar/2026)
 const composicaoDistribuicao = { planejada: 35, saude: 47, operacional: 1, falta: 17, nao_categorizada: 0 };
@@ -119,21 +130,24 @@ const MATURIDADE_LABELS: Record<string, string> = {
 
 const CATEGORIES_ORDER = ["planejada", "saude", "operacional", "nao_categorizada", "falta"];
 
+// Taxa calculada = horas_ausencia_nao_planejada(mar/26) / (HC_entity * horas_previstas_mes) * 100
+// Valores pré-calculados com horas_previstas_mes = 220 (default vigilância)
+// PORTARIA: 5411h / (310*220) = 7.93%  |  SEG PAT: 491h / (98*220) = 2.28%  |  TERC: 411h / (76*220) = 2.46%
 const REAL_TAXA_BY_GROUP: Record<GroupBy, Record<string, number>> = {
   empresa: {
-    "SEGURANCA PATRIMONIAL": 12.87,
-    "PORTARIA E LIMPEZA": 15.27,
-    "TERCEIRIZACAO": 14.05,
+    "SEGURANCA PATRIMONIAL": 2.28,
+    "PORTARIA E LIMPEZA": 7.93,
+    "TERCEIRIZACAO": 2.46,
   },
   unidade: {
-    "PORTARIA E LIMPEZA": 15.27,
-    "SEGURANCA PATRIMONIAL": 13.95,
-    "TERCEIRIZACAO": 14.17,
+    "PORTARIA E LIMPEZA": 7.93,
+    "SEGURANCA PATRIMONIAL": 2.28,
+    "TERCEIRIZACAO": 2.46,
   },
   area: {
-    PIRACICABA: 16.83,
-    "SAO PAULO": 14.32,
-    SOROCABA: 15.88,
+    PIRACICABA: 5.12,
+    "SAO PAULO": 4.15,
+    SOROCABA: 3.21,
   },
 };
 
