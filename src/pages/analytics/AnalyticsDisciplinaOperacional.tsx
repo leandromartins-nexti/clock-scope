@@ -1349,11 +1349,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <YAxis type="number" dataKey="score" name="Score" domain={[mapaDomain.yMin, mapaDomain.yMax]} tick={{ fontSize: 10 }} label={{ value: "Score Operacional", angle: -90, position: "insideLeft", fontSize: 10 }} />
                 <ZAxis type="number" range={[250, 250]} />
                 <ReferenceLine y={70} stroke="#22c55e" strokeWidth={1} strokeDasharray="5 3" label={({ viewBox }: any) => {
-                  const { y, width } = viewBox || {};
+                  const { y, width, x } = viewBox || {};
+                  const rightEdge = (x ?? 0) + (width ?? 0);
                   return (
                     <g>
-                      <text x={(width ?? 0) + 45} y={(y ?? 0) - 6} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">Limite</text>
-                      <text x={(width ?? 0) + 45} y={(y ?? 0) + 4} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">saudável</text>
+                      <text x={rightEdge + 4} y={(y ?? 0) - 4} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">Limite</text>
+                      <text x={rightEdge + 4} y={(y ?? 0) + 6} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">saudável</text>
                     </g>
                   );
                 }} />
