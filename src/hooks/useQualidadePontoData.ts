@@ -82,7 +82,12 @@ const DIMENSION_MAP: Record<string, string> = {
 
 function loadFromImported(customerId: number): Partial<QualidadePontoDatasets> | null {
   const customer = loadCustomerFromStorage(customerId);
-  if (!customer) return null;
+  if (!customer) {
+    console.log(`[useQualidadePontoData] No imported data for customer ${customerId}`);
+    return null;
+  }
+  console.log(`[useQualidadePontoData] Loading imported data for ${customer.label} (${customerId})`,
+    customer.menus.map(m => m.tabs.map(t => `${t.tabSlug}: ${t.charts.map(c => `${c.chartSlug}(${Object.keys(c.dimensions).join(',')})`).join(', ')}`)));
 
   const result: Partial<QualidadePontoDatasets> = {};
 
