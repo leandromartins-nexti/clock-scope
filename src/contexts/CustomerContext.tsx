@@ -101,8 +101,8 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
   };
 
   const [customerId, setCustomerIdState] = useState<number>(getDefaultCustomerId);
-  const [customers, setCustomers] = useState<CustomerEntry[]>(() => getAllCustomers());
   const [customerDataVersion, setCustomerDataVersion] = useState(0);
+  const customers = getAllCustomers();
 
   // Lock to client's customer when not nexti
   useEffect(() => {
@@ -123,7 +123,6 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
   }, [canSwitchClient]);
 
   const refreshCustomers = useCallback(() => {
-    setCustomers(getAllCustomers());
     setCustomerDataVersion((version) => version + 1);
   }, []);
 
