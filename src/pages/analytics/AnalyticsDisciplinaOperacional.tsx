@@ -1790,14 +1790,15 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         };
                         return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.25)` : `rgba(${hexToRgb(baseColor)},0.75)`} />;
                       })}
-                      <LabelList content={({ x, y, width: w, index }: any) => {
+                      <LabelList content={({ x, y, width: w, height: h, index }: any) => {
                         const d = sobrecargaData[index];
                         if (!d) return null;
                         const isCritical = d.categoria === "Pico crítico";
                         const isPeak = d === picoEntry && isCritical;
+                        const barH = h ?? 0;
                         return (
                           <g>
-                            <text x={(x ?? 0) + (w ?? 0) / 2} y={(y ?? 0) - (isPeak ? 14 : 4)} textAnchor="middle" fontSize={9} fill="hsl(var(--muted-foreground))" fontWeight={500}>
+                            <text x={(x ?? 0) + (w ?? 0) / 2} y={(y ?? 0) + barH / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
                               {d.operadores}
                             </text>
                             {isPeak && (
