@@ -1265,6 +1265,19 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   // fixedBubble for Mapa de Operações click-to-label
   const [fixedBubble, setFixedBubble] = useState<string | null>(null);
+  // Score category filter for Mapa de Operações
+  const [mapaScoreFilter, setMapaScoreFilter] = useState<Set<string>>(() => new Set(["green", "orange", "red"]));
+  const toggleMapaScoreFilter = useCallback((cat: string) => {
+    setMapaScoreFilter(prev => {
+      const next = new Set(prev);
+      if (next.has(cat)) {
+        if (next.size > 1) next.delete(cat);
+      } else {
+        next.add(cat);
+      }
+      return next;
+    });
+  }, []);
 
   const tratDomain = useMemo(() => {
     if (!chartScatterTrat.length) return { xMin: 0, xMax: 300000, yMin: 1, yMax: 7 };
@@ -1546,7 +1559,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </div>
                   );
                 }} />
-                <Scatter data={mapaOperacoesData} shape={(props: any) => {
+                <Scatter data={mapaOperacoesData.filter((d: any) => {
+                  const cat = d.score >= 70 ? "green" : d.score >= 55 ? "orange" : "red";
+                  return mapaScoreFilter.has(cat);
+                })} shape={(props: any) => {
                   const { cx, cy, payload } = props;
                   const r = 14;
                   const isFixed = fixedBubble === payload.regional;
@@ -1582,10 +1598,31 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 }} />
               </ScatterChart>
             </ResponsiveContainer>
-            <div className="flex items-center justify-center gap-4 mt-1 text-[10px] text-muted-foreground">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "#22c55e" }} /> Score ≥ 70</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "#f59e0b" }} /> Score 55-70</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "#ef4444" }} /> Score &lt; 55</span>
+            <div className="flex items-center justify-center gap-3 mt-1 text-[10px]">
+              {[
+                { cat: "green", color: "#22c55e", label: "Score ≥ 70" },
+                { cat: "orange", color: "#f59e0b", label: "Score 55-70" },
+                { cat: "red", color: "#ef4444", label: "Score < 55" },
+              ].map(({ cat, color, label }) => {
+                const active = mapaScoreFilter.has(cat);
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => toggleMapaScoreFilter(cat)}
+                    className={`flex items-center gap-1 px-2 py-0.5 rounded-full border transition-all ${
+                      active
+                        ? "border-border/60 text-foreground"
+                        : "border-transparent text-muted-foreground/40 line-through"
+                    }`}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full inline-block transition-opacity"
+                      style={{ backgroundColor: color, opacity: active ? 1 : 0.3 }}
+                    />
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
