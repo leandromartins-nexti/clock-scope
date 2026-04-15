@@ -1231,7 +1231,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     const raw = maxHc * 1.15;
     const step = niceSteps.find(s => Math.ceil(raw / s) <= 6) || Math.ceil(raw / 6 / 50) * 50;
     const xMax = Math.ceil(raw / step) * step;
-    return { xMin: 0, xMax, yMin: 0, yMax: 100 };
+    return { xMin: 0, xMax, yMin: 0, yMax: 110 };
   }, [mapaOperacoesData]);
 
   // Critical zone: Score < 55 AND Headcount > median
@@ -1493,7 +1493,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Headcount × Score · uma bolha por {groupBy === "empresa" ? "empresa" : groupBy === "unidade" ? "un. negócio" : "área"}{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
             <ResponsiveContainer width="100%" height={280}>
-              <ScatterChart margin={{ top: 10, right: 50, bottom: 10, left: 0 }}>
+              <ScatterChart margin={{ top: 5, right: 50, bottom: 10, left: 0 }}>
                 <defs>
                   <linearGradient id="mapaOperacoesGradient" x1="1" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#22c55e" stopOpacity={0.20} />
@@ -1505,7 +1505,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" dataKey="headcount" name="Headcount" domain={[mapaDomain.xMin, mapaDomain.xMax]} tickCount={7} tick={{ fontSize: 10 }} label={{ value: "Headcount", position: "insideBottom", offset: -5, fontSize: 10 }} />
                 <YAxis type="number" dataKey="score" name="Score" domain={[mapaDomain.yMin, mapaDomain.yMax]} tick={{ fontSize: 10 }} label={{ value: "Score Operacional", angle: -90, position: "insideLeft", fontSize: 10 }} />
-                <ZAxis type="number" range={[250, 250]} />
+                <ZAxis type="number" range={[150, 150]} />
                 <ReferenceLine y={70} stroke="#22c55e" strokeWidth={1.5} strokeDasharray="8 4" label={({ viewBox }: any) => {
                   const { y, width, x } = viewBox || {};
                   const rightEdge = (x ?? 0) + (width ?? 0);
@@ -1516,7 +1516,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     </g>
                   );
                 }} />
-                <ReferenceArea x1={mapaDomain.xMax * 0.75} x2={mapaDomain.xMax} y1={95} y2={100} fill="transparent" strokeOpacity={0} label={{ value: "Escala produtiva", position: "insideTopRight", fontSize: 9, fontWeight: 500, fill: "rgba(34,197,94,0.6)" }} />
+                <ReferenceArea x1={mapaDomain.xMax * 0.75} x2={mapaDomain.xMax} y1={100} y2={110} fill="transparent" strokeOpacity={0} label={{ value: "Escala produtiva", position: "insideTopRight", fontSize: 9, fontWeight: 500, fill: "rgba(34,197,94,0.6)" }} />
                 <ReferenceArea x1={mapaDomain.xMin} x2={mapaDomain.xMax * 0.25} y1={0} y2={5} fill="transparent" strokeOpacity={0} label={{ value: "Baixa performance", position: "insideBottomLeft", fontSize: 9, fontWeight: 500, fill: "rgba(239,68,68,0.6)" }} />
                 <RechartsTooltip content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
@@ -1546,7 +1546,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 }} />
                 <Scatter data={mapaOperacoesData} shape={(props: any) => {
                   const { cx, cy, payload } = props;
-                  const r = 20;
+                  const r = 14;
                   const isFixed = fixedBubble === payload.regional;
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                    const hasFilter = !!selectedRegional;
@@ -1569,12 +1569,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                          strokeWidth={isFixed && hasFilter ? 2 : 1}
                          strokeDasharray={isFixed && hasFilter ? "4 3" : "none"}
                        />
-                       <text x={cx} y={cy - 5} textAnchor="middle" fontSize={11} fontWeight={700} fill={textColor} dominantBaseline="middle">
-                         {abbr}
+                        <text x={cx} y={cy - 3} textAnchor="middle" fontSize={8} fontWeight={700} fill={textColor} dominantBaseline="middle">
+                          {abbr}
+                        </text>
+                        <text x={cx} y={cy + 6} textAnchor="middle" fontSize={7} fontWeight={600} fill={textColor} dominantBaseline="middle">
+                          {payload.score}
                        </text>
-                       <text x={cx} y={cy + 8} textAnchor="middle" fontSize={10} fontWeight={600} fill={textColor} dominantBaseline="middle">
-                         {payload.score}
-                      </text>
                     </g>
                   );
                 }} />
