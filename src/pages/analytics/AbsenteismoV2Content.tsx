@@ -372,7 +372,70 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
     }));
   }, [selectedRegional, volumeByDim, nameField, absConfig.horas_previstas_mes]);
 
-  // ── Composição chart data (stacked area 100%) ──
+  // ── V5 Composição chart data (stacked bars by operational category + taxa line) ──
+  const compV5ChartData = useMemo(() => {
+    const raw = (groupBy === "empresa" ? compV5Empresa : groupBy === "area" ? compV5Area : compV5UnNegocio) as Array<Record<string, any>>;
+    const dimNameField = groupBy === "empresa" ? "dim_name" : "dim_name";
+    const dates = Object.keys(MESES_LABELS);
+
+    return dates.map(date => {
+      let items = raw.filter(d => d.reference_date === date);
+      if (selectedRegional) {
+        const normalizedSel = normalizeEntityName(selectedRegional);
+        items = items.filter(d => normalizeEntityName(String(d.dim_name ?? "")) === normalizedSel);
+      }
+      if (items.length === 0) return null;
+
+      // Sum operational categories
+      const row: Record<string, any> = { mes: MESES_LABELS[date] };
+      let somaOp = 0;
+      for (const cat of V5_OPERATIONAL_CATS) {
+        const v = items.reduce((s, r) => s + (Number(r[cat.key]) || 0), 0);
+        row[cat.key] = +v.toFixed(1);
+        somaOp += v;
+      }
+      // Excluded categories
+      for (const cat of V5_EXCLUDED_CATS) {
+        const v = items.reduce((s, r) => s + (Number(r[cat.key]) || 0), 0);
+        row[cat.key] = +v.toFixed(1);
+      }
+      // Taxa operacional: somaOp / (somaRegular + somaDebito)
+      const somaRegular = items.reduce((s, r) => s + (Number(r.regular_h) || 0), 0);
+      const somaDebito = items.reduce((s, r) => s + (Number(r.debit_total_h) || 0), 0);
+      const denom = somaRegular + somaDebito;
+      row.taxaOperacional = denom > 0 ? +((somaOp / denom) * 100).toFixed(2) : 0;
+      row.somaOperacional = +somaOp.toFixed(1);
+      row.hcMes = Math.max(...items.map(r => Number(r.hc_mes) || 0));
+
+      return row;
+    }).filter(Boolean) as Array<Record<string, any>>;
+  }, [groupBy, selectedRegional]);
+
+  // V5 composição sub-score (period total)
+  const compV5Score = useMemo(() => {
+    const raw = (groupBy === "empresa" ? compV5Empresa : groupBy === "area" ? compV5Area : compV5UnNegocio) as Array<Record<string, any>>;
+    let items = raw;
+    if (selectedRegional) {
+      const normalizedSel = normalizeEntityName(selectedRegional);
+      items = items.filter(d => normalizeEntityName(String(d.dim_name ?? "")) === normalizedSel);
+    }
+    return computeV5ComposicaoScore(items);
+  }, [groupBy, selectedRegional]);
+
+  // Active v5 categories (those with hours > 0 in the period)
+  const activeV5Cats = useMemo(() => {
+    return V5_OPERATIONAL_CATS.filter(cat =>
+      compV5ChartData.some(d => (d[cat.key] as number) > 0)
+    );
+  }, [compV5ChartData]);
+
+  const activeV5ExcludedCats = useMemo(() => {
+    return V5_EXCLUDED_CATS.filter(cat =>
+      compV5ChartData.some(d => (d[cat.key] as number) > 0)
+    );
+  }, [compV5ChartData]);
+
+
   const composicaoChartData = useMemo(() => {
     const raw = groupBy === "empresa" ? composicaoEmpresa : groupBy === "area" ? composicaoArea : composicaoUnNegocio;
     const nf = nameField;
