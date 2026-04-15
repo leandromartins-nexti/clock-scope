@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info } from "lucide-react";
+import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Users } from "lucide-react";
 import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
 import ScoreAbsenteismoConfig from "./ScoreAbsenteismoConfig";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
 import CompositeChartDataModal from "@/components/analytics/CompositeChartDataModal";
 import type { ChartDataSource } from "@/components/analytics/ChartDataModal";
+import ClientManagement from "@/components/analytics/ClientManagement";
+import { useCustomer } from "@/contexts/CustomerContext";
 
 // Import chart sources
 import {
@@ -189,14 +191,16 @@ function MenuSection({ menu }: { menu: MenuEntry }) {
 }
 
 // ── Main Page ──
-const tabs = [
-  { id: "base-dados", label: "Base de Dados", icon: Database },
-  { id: "scores", label: "Scores", icon: Gauge },
-];
-
 export default function AnalyticsConfiguracao() {
+  const { canSwitchClient } = useCustomer();
   const [activeTab, setActiveTab] = useState("base-dados");
   const [activeScore, setActiveScore] = useState("qualidade");
+
+  const tabs = [
+    { id: "base-dados", label: "Base de Dados", icon: Database },
+    { id: "scores", label: "Scores", icon: Gauge },
+    ...(canSwitchClient ? [{ id: "clientes", label: "Clientes", icon: Users }] : []),
+  ];
 
   const totalCharts = dataRegistry.reduce((acc, m) => acc + m.tabs.reduce((a, t) => a + t.charts.length, 0), 0);
 
@@ -292,6 +296,12 @@ export default function AnalyticsConfiguracao() {
                 </>
               )}
             </div>
+          </div>
+        )}
+
+        {activeTab === "clientes" && canSwitchClient && (
+          <div className="flex-1 px-6 py-5">
+            <ClientManagement />
           </div>
         )}
       </div>
