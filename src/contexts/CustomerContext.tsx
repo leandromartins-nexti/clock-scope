@@ -12,6 +12,7 @@ interface CustomerContextType {
   customerId: number;
   customerLabel: string;
   customers: CustomerEntry[];
+  customerDataVersion: number;
   setCustomerId: (id: number) => void;
   /** Refresh customer list (after import/removal) */
   refreshCustomers: () => void;
@@ -52,6 +53,7 @@ const CustomerContext = createContext<CustomerContextType>({
   customerId: 642,
   customerLabel: "Cliente 642",
   customers: [],
+  customerDataVersion: 0,
   setCustomerId: () => {},
   refreshCustomers: () => {},
   loadCustomerData: async () => null,
@@ -70,6 +72,7 @@ const customerJsonModules = import.meta.glob<Record<string, any>>(
 export function CustomerProvider({ children }: { children: ReactNode }) {
   const [customerId, setCustomerIdState] = useState<number>(getStoredCustomerId);
   const [customers, setCustomers] = useState<CustomerEntry[]>(() => getAllCustomers());
+  const [customerDataVersion, setCustomerDataVersion] = useState(0);
 
   const customerLabel = customers.find(c => c.customer_id === customerId)?.label ?? `Cliente ${customerId}`;
 
@@ -82,6 +85,7 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
 
   const refreshCustomers = useCallback(() => {
     setCustomers(getAllCustomers());
+    setCustomerDataVersion((version) => version + 1);
   }, []);
 
   const loadCustomerData = useCallback(async (tab: string, chart: string, dimension: string): Promise<any | null> => {
@@ -109,6 +113,7 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       customerId,
       customerLabel,
       customers,
+      customerDataVersion,
       setCustomerId,
       refreshCustomers,
       loadCustomerData,

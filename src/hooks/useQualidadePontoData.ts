@@ -31,7 +31,7 @@ export interface QualidadePontoDatasets {
   kpisPeriodoAnterior: any;
 }
 
-const DEFAULT_DATASETS: QualidadePontoDatasets = {
+const BUILTIN_DEFAULT_DATASETS: QualidadePontoDatasets = {
   hcEmpresa: defaultHcEmpresa as any[],
   hcUnidade: defaultHcUnidade as any[],
   hcArea: defaultHcArea as any[],
@@ -44,6 +44,24 @@ const DEFAULT_DATASETS: QualidadePontoDatasets = {
   decomposicaoScore: defaultDecomposicao,
   kpisPeriodoAnterior: defaultKpisPeriodo,
 };
+
+const EMPTY_DATASETS: QualidadePontoDatasets = {
+  hcEmpresa: [],
+  hcUnidade: [],
+  hcArea: [],
+  tratTempoEmpresa: [],
+  tratTempoUnidade: [],
+  tratTempoArea: [],
+  sobrecargaEmpresa: [],
+  sobrecargaUnidade: [],
+  sobrecargaArea: [],
+  decomposicaoScore: {},
+  kpisPeriodoAnterior: {},
+};
+
+function getBaseDatasets(customerId: number): QualidadePontoDatasets {
+  return customerId === 642 ? BUILTIN_DEFAULT_DATASETS : EMPTY_DATASETS;
+}
 
 /**
  * Mapping from ZIP chart slugs to the datasets they provide.
@@ -64,13 +82,7 @@ const DIMENSION_MAP: Record<string, string> = {
 
 function loadFromImported(customerId: number): Partial<QualidadePontoDatasets> | null {
   const customer = loadCustomerFromStorage(customerId);
-  if (!customer) {
-    console.log(`[useQualidadePontoData] Nenhum dado importado para customer ${customerId}`);
-    return null;
-  }
-
-  console.log(`[useQualidadePontoData] Carregando dados importados de ${customer.label} (${customerId})`, 
-    customer.menus.map(m => m.tabs.map(t => `${t.tabSlug}: ${t.charts.map(c => `${c.chartSlug}(${Object.keys(c.dimensions).join(',')})`).join(', ')}`)));
+  if (!customer) return null;
 
   const result: Partial<QualidadePontoDatasets> = {};
 
@@ -79,10 +91,7 @@ function loadFromImported(customerId: number): Partial<QualidadePontoDatasets> |
       if (tab.tabSlug !== "qualidade-ponto") continue;
       for (const chart of tab.charts) {
         const mapping = CHART_TO_DATASET_MAP[chart.chartSlug];
-        if (!mapping) {
-          console.warn(`[useQualidadePontoData] Chart slug sem mapeamento: "${chart.chartSlug}"`);
-          continue;
-        }
+        if (!mapping) continue;
 
         const { datasetPrefix } = mapping;
         if (chart.dimensions.empresa) {
@@ -98,25 +107,26 @@ function loadFromImported(customerId: number): Partial<QualidadePontoDatasets> |
     }
   }
 
-  console.log(`[useQualidadePontoData] Datasets carregados:`, Object.keys(result));
   return Object.keys(result).length > 0 ? result : null;
 }
 
 export function useQualidadePontoData(): { data: QualidadePontoDatasets; loading: boolean } {
-  const { customerId, loadCustomerData } = useCustomer();
-  const [data, setData] = useState<QualidadePontoDatasets>(DEFAULT_DATASETS);
+  const { customerId, loadCustomerData, customerDataVersion } = useCustomer();
+  const [data, setData] = useState<QualidadePontoDatasets>(() => getBaseDatasets(customerId));
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
+      const baseData = getBaseDatasets(customerId);
       setLoading(true);
+      if (!cancelled) setData(baseData);
 
       // 1. Try imported data from localStorage
       const imported = loadFromImported(customerId);
       if (imported && !cancelled) {
-        setData({ ...DEFAULT_DATASETS, ...imported });
+        setData({ ...baseData, ...imported });
         setLoading(false);
         return;
       }
@@ -145,7 +155,7 @@ export function useQualidadePontoData(): { data: QualidadePontoDatasets; loading
 
       if (cancelled) return;
 
-      const newData = { ...DEFAULT_DATASETS };
+      const newData = { ...baseData };
       for (const { key, result } of results) {
         if (result) {
           (newData as any)[key] = result;
@@ -158,7 +168,7 @@ export function useQualidadePontoData(): { data: QualidadePontoDatasets; loading
 
     load();
     return () => { cancelled = true; };
-  }, [customerId, loadCustomerData]);
+  }, [customerId, customerDataVersion, loadCustomerData]);
 
   return { data, loading };
 }
