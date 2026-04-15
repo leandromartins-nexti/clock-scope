@@ -829,10 +829,12 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                     const isActive = selectedMes === payload.value;
                     return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
                   }} />
-                  <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} label={{ value: "Distribuição (%)", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
-                  {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
+                  <YAxis yAxisId="left" tick={{ fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} label={{ value: "Distribuição (%)", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} tickFormatter={v => formatHoursCompact(v)} label={{ value: "Volume (h)", angle: 90, position: "insideRight", style: { fontSize: 10, fill: "#9ca3af" }, offset: 0 }} />
+                  {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                   <RechartsTooltip content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
+                    const d = payload[0]?.payload;
                     return (
                       <div className="bg-white border rounded-lg p-2.5 shadow-md text-xs space-y-1">
                         <p className="font-semibold text-foreground">{label}</p>
@@ -843,6 +845,13 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                             <span className="font-medium text-foreground">{typeof p.value === "number" ? `${p.value.toFixed(1)}%` : p.value}</span>
                           </div>
                         ))}
+                        {d?.volumeTotal > 0 && (
+                          <div className="flex items-center gap-1.5 border-t border-border/30 pt-1 mt-1">
+                            <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: "#6b7280" }} />
+                            <span className="text-muted-foreground">Volume total:</span>
+                            <span className="font-medium text-foreground">{d.volumeTotal.toLocaleString("pt-BR")}h</span>
+                          </div>
+                        )}
                       </div>
                     );
                   }} />
@@ -851,6 +860,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       key={cat}
                       dataKey={cat}
                       stackId="1"
+                      yAxisId="left"
                       radius={catIdx === arr.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
                       name={CATEGORY_LABELS[cat]}
                     >
@@ -859,26 +869,17 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                         const dimmed = selectedMes && selectedMes !== (entry as any).mes;
                         return <Cell key={idx} fill={dimmed ? `${CATEGORY_COLORS[cat]}73` : `${CATEGORY_COLORS[cat]}BF`} stroke={isActive ? "#FF5722" : CATEGORY_COLORS[cat]} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
                       })}
-                      <LabelList content={({ x, y, width, height, index }: any) => {
-                        const d = composicaoChartData[index];
-                        if (!d) return null;
-                        const val = (d as any)[cat] ?? 0;
-                        if (val < 5 || (height ?? 0) < 14) return null;
-                        return (
-                          <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
-                            {`${val.toFixed(0)}%`}
-                          </text>
-                        );
-                      }} />
                     </Bar>
                   ))}
-                  <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={
-                    CATEGORIES_ORDER.filter(cat => composicaoChartData.some(d => (d as any)[cat] > 0)).map(cat => ({
+                  <Line yAxisId="right" type="monotone" dataKey="volumeTotal" stroke="#6b7280" strokeWidth={1.5} strokeDasharray="6 3" dot={false} name="Volume Total (h)" />
+                  <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
+                    ...CATEGORIES_ORDER.filter(cat => composicaoChartData.some(d => (d as any)[cat] > 0)).map(cat => ({
                       value: `${CATEGORY_LABELS[cat]} ${composicaoDistribuicao[cat as keyof typeof composicaoDistribuicao] ?? 0}%`,
                       type: "square" as const,
                       color: CATEGORY_COLORS[cat],
-                    }))
-                  } />
+                    })),
+                    { value: "Volume Total", type: "plainline" as const, color: "#6b7280" },
+                  ]} />
                 </ComposedChart>
               </ResponsiveContainer>
             ) : (
