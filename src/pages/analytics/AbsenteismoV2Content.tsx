@@ -595,7 +595,11 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
           </ScoreBoard>
 
           {/* 2. Taxa Absenteísmo → vinculado a G1 */}
-          <KPIBoard title="Taxa Absenteísmo" tooltip="Taxa de absenteísmo operacional na última competência. Hover para ver horas perdidas.">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Taxa Absenteísmo</p>
+              <InfoTip text="Taxa de absenteísmo operacional na última competência. Hover para ver horas perdidas." />
+            </div>
             <p className={`text-xl font-bold mt-0.5 truncate ${latestTaxa <= 2.5 ? "text-green-600" : latestTaxa <= 6.0 ? "text-orange-500" : "text-red-600"}`} title={`Horas perdidas no mês: ${formatHoursCompact(horasPerdidaMes)} · Acumulado 12m: ${formatHoursCompact(MOCK.horasPerdidas12meses)}`}>{latestTaxa}%</p>
             <p className={`text-[11px] mt-0.5 font-medium ${latestTaxa <= 2.5 ? "text-green-600" : latestTaxa <= 6.0 ? "text-orange-500" : "text-red-600"}`}>
               {volScore.label}
@@ -611,28 +615,40 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
               const dColor = Math.abs(d) < 0.1 ? "text-muted-foreground" : d > 0 ? "text-red-600" : "text-green-600";
               return <span className={`text-[10px] flex items-center gap-0.5 mt-1 ${dColor}`}>{arrow} {Math.abs(d).toFixed(1)}pp vs {prevTaxa}% (ant.)</span>;
             })()}
-          </KPIBoard>
+          </div>
 
           {/* 3. % Faltas Injustificadas → vinculado a G2 */}
-          <KPIBoard title="% Faltas Injustif." tooltip="Percentual de horas de falta injustificada sobre o total de ausências.">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">% Faltas Injustif.</p>
+              <InfoTip text="Percentual de horas de falta injustificada sobre o total de ausências." />
+            </div>
             <p className={`text-xl font-bold mt-0.5 truncate ${pctFaltasInjustificadas >= 15 ? "text-red-600" : pctFaltasInjustificadas >= 10 ? "text-orange-500" : "text-green-600"}`}>{pctFaltasInjustificadas}%</p>
             <p className={`text-[11px] mt-0.5 font-medium ${pctFaltasInjustificadas >= 15 ? "text-red-600" : pctFaltasInjustificadas >= 10 ? "text-orange-500" : "text-green-600"}`}>
               {pctFaltasInjustificadas >= 15 ? "Crítico" : pctFaltasInjustificadas >= 10 ? "Atenção" : "Bom"}
             </p>
             <span className="text-[10px] flex items-center gap-0.5 mt-1 text-red-600">↑ 2pp vs 15% (ant.)</span>
-          </KPIBoard>
+          </div>
 
           {/* 4. % Maturidade → vinculado a G3 */}
-          <KPIBoard title="% Maturidade" tooltip="Percentual planejado vs reativo. Quanto maior o planejado, mais madura a gestão.">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">% Maturidade</p>
+              <InfoTip text="Percentual planejado vs reativo. Quanto maior o planejado, mais madura a gestão." />
+            </div>
             <p className={`text-xl font-bold mt-0.5 truncate ${pctMaturidade >= 85 ? "text-green-600" : pctMaturidade >= 70 ? "text-orange-500" : "text-red-600"}`}>{pctMaturidade}%</p>
             <p className={`text-[11px] mt-0.5 font-medium ${pctMaturidade >= 85 ? "text-green-600" : pctMaturidade >= 70 ? "text-orange-500" : "text-red-600"}`}>
               {matFaixa.label}
             </p>
             <span className="text-[10px] flex items-center gap-0.5 mt-1 text-muted-foreground">planejado vs reativo</span>
-          </KPIBoard>
+          </div>
 
           {/* 5. Melhor Operação */}
-          <KPIBoard title="Melhor Operação" tooltip="Operação com maior score de absenteísmo (menor risco).">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Melhor Operação</p>
+              <InfoTip text="Operação com maior score de absenteísmo (menor risco)." />
+            </div>
             {(() => {
               const sorted = [...mapaOperacoesData].sort((a, b) => b.score - a.score);
               const best = sorted[0];
@@ -646,10 +662,14 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                 </>
               );
             })()}
-          </KPIBoard>
+          </div>
 
           {/* 6. Maior Risco */}
-          <KPIBoard title="Maior Risco" tooltip="Operação com menor score de absenteísmo (maior risco).">
+          <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
+            <div className="flex items-center gap-1 mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Maior Risco</p>
+              <InfoTip text="Operação com menor score de absenteísmo (maior risco)." />
+            </div>
             {(() => {
               const sorted = [...mapaOperacoesData].sort((a, b) => a.score - b.score);
               const worst = sorted[0];
@@ -663,7 +683,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                 </>
               );
             })()}
-          </KPIBoard>
+          </div>
         </div>
 
         {/* ── Row 1: Mapa de Operações + Volume Mensal (grid 2 colunas) ── */}
