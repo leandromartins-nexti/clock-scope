@@ -1,0 +1,317 @@
+[
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-04-01",
+    "qtd_eventos": 104,
+    "horas_ausencia": 893.9,
+    "pessoas_ausentes": 21
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2025-04-01",
+    "qtd_eventos": 13,
+    "horas_ausencia": 154.0,
+    "pessoas_ausentes": 2
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-04-01",
+    "qtd_eventos": 4,
+    "horas_ausencia": 44.0,
+    "pessoas_ausentes": 1
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-05-01",
+    "qtd_eventos": 143,
+    "horas_ausencia": 1199.7,
+    "pessoas_ausentes": 25
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-05-01",
+    "qtd_eventos": 18,
+    "horas_ausencia": 196.9,
+    "pessoas_ausentes": 3
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2025-05-01",
+    "qtd_eventos": 12,
+    "horas_ausencia": 139.0,
+    "pessoas_ausentes": 3
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-06-01",
+    "qtd_eventos": 173,
+    "horas_ausencia": 1657.9,
+    "pessoas_ausentes": 26
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-06-01",
+    "qtd_eventos": 26,
+    "horas_ausencia": 284.2,
+    "pessoas_ausentes": 4
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2025-06-01",
+    "qtd_eventos": 19,
+    "horas_ausencia": 225.0,
+    "pessoas_ausentes": 3
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-07-01",
+    "qtd_eventos": 145,
+    "horas_ausencia": 1319.8,
+    "pessoas_ausentes": 29
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-07-01",
+    "qtd_eventos": 29,
+    "horas_ausencia": 294.2,
+    "pessoas_ausentes": 4
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2025-07-01",
+    "qtd_eventos": 1,
+    "horas_ausencia": 11.0,
+    "pessoas_ausentes": 1
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-08-01",
+    "qtd_eventos": 119,
+    "horas_ausencia": 1247.4,
+    "pessoas_ausentes": 21
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-08-01",
+    "qtd_eventos": 19,
+    "horas_ausencia": 201.4,
+    "pessoas_ausentes": 2
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-09-01",
+    "qtd_eventos": 99,
+    "horas_ausencia": 1044.9,
+    "pessoas_ausentes": 17
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-09-01",
+    "qtd_eventos": 18,
+    "horas_ausencia": 198.0,
+    "pessoas_ausentes": 2
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2025-09-01",
+    "qtd_eventos": 5,
+    "horas_ausencia": 57.0,
+    "pessoas_ausentes": 2
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-10-01",
+    "qtd_eventos": 78,
+    "horas_ausencia": 808.0,
+    "pessoas_ausentes": 20
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2025-10-01",
+    "qtd_eventos": 34,
+    "horas_ausencia": 317.6,
+    "pessoas_ausentes": 12
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-10-01",
+    "qtd_eventos": 23,
+    "horas_ausencia": 254.0,
+    "pessoas_ausentes": 4
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-11-01",
+    "qtd_eventos": 106,
+    "horas_ausencia": 1079.3,
+    "pessoas_ausentes": 23
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-11-01",
+    "qtd_eventos": 28,
+    "horas_ausencia": 308.7,
+    "pessoas_ausentes": 3
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2025-11-01",
+    "qtd_eventos": 25,
+    "horas_ausencia": 220.8,
+    "pessoas_ausentes": 9
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2025-12-01",
+    "qtd_eventos": 47,
+    "horas_ausencia": 431.1,
+    "pessoas_ausentes": 18
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2025-12-01",
+    "qtd_eventos": 30,
+    "horas_ausencia": 267.2,
+    "pessoas_ausentes": 7
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2025-12-01",
+    "qtd_eventos": 9,
+    "horas_ausencia": 99.0,
+    "pessoas_ausentes": 2
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2026-01-01",
+    "qtd_eventos": 97,
+    "horas_ausencia": 760.8,
+    "pessoas_ausentes": 21
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2026-01-01",
+    "qtd_eventos": 8,
+    "horas_ausencia": 86.0,
+    "pessoas_ausentes": 4
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2026-01-01",
+    "qtd_eventos": 9,
+    "horas_ausencia": 76.8,
+    "pessoas_ausentes": 8
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2026-02-01",
+    "qtd_eventos": 117,
+    "horas_ausencia": 1009.9,
+    "pessoas_ausentes": 22
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2026-02-01",
+    "qtd_eventos": 27,
+    "horas_ausencia": 294.2,
+    "pessoas_ausentes": 3
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2026-02-01",
+    "qtd_eventos": 27,
+    "horas_ausencia": 235.3,
+    "pessoas_ausentes": 8
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2026-03-01",
+    "qtd_eventos": 112,
+    "horas_ausencia": 1014.2,
+    "pessoas_ausentes": 19
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11046,
+    "area_name": "PIRACICABA",
+    "reference_date": "2026-03-01",
+    "qtd_eventos": 27,
+    "horas_ausencia": 290.2,
+    "pessoas_ausentes": 5
+  },
+  {
+    "customer_id": 642,
+    "area_id": 11045,
+    "area_name": "SOROCABA",
+    "reference_date": "2026-03-01",
+    "qtd_eventos": 13,
+    "horas_ausencia": 88.8,
+    "pessoas_ausentes": 6
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "customer_id": 642,
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "reference_date": "2026-03-01",
+    "categoria": "1_planejado",
+    "qtd_eventos": 469,
+    "horas_total": 4828.0,
+    "pessoas_distintas": 116
+  },
+  {
+    "customer_id": 642,
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "reference_date": "2026-03-01",
+    "categoria": "2_reativo",
+    "qtd_eventos": 99,
+    "horas_total": 936.0,
+    "pessoas_distintas": 32
+  },
+  {
+    "customer_id": 642,
+    "company_id": 9379,
+    "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
+    "reference_date": "2026-03-01",
+    "categoria": "1_planejado",
+    "qtd_eventos": 41,
+    "horas_total": 340.0,
+    "pessoas_distintas": 7
+  },
+  {
+    "customer_id": 642,
+    "company_id": 9379,
+    "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
+    "reference_date": "2026-03-01",
+    "categoria": "2_reativo",
+    "qtd_eventos": 17,
+    "horas_total": 154.0,
+    "pessoas_distintas": 5
+  }
+]

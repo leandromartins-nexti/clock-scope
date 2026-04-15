@@ -1,0 +1,38 @@
+[
+  {
+    "customer_id": 642,
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "reference_date": "2026-03-01",
+    "absence_situation_id": 18345,
+    "absence_situation_name": "Férias",
+    "qtd_eventos": 145,
+    "horas_total": 1668.0,
+    "pessoas_distintas": 22,
+    "_categoria_sugerida": "planejada"
+  },
+  {
+    "customer_id": 642,
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "reference_date": "2026-03-01",
+    "absence_situation_id": 18348,
+    "absence_situation_name": "Atestado",
+    "qtd_eventos": 142,
+    "horas_total": 1460.0,
+    "pessoas_distintas": 65,
+    "_categoria_sugerida": "saude"
+  },
+  {
+    "customer_id": 642,
+    "company_id": 9380,
+    "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+    "reference_date": "2026-03-01",
+    "absence_situation_id": 18346,
+    "absence_situation_name": "Falta",
+    "qtd_eventos": 99,
+    "horas_total": 936.0,
+    "pessoas_distintas": 32,
+    "_categoria_sugerida": "falta"
+  }
+]

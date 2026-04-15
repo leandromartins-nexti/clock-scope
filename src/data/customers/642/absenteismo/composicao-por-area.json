@@ -1,0 +1,14 @@
+[
+  {
+    "customer_id": 642,
+    "area_id": 11043,
+    "area_name": "SAO PAULO",
+    "reference_date": "2026-03-01",
+    "absence_situation_id": 18345,
+    "absence_situation_name": "Férias",
+    "qtd_eventos": 38,
+    "horas_total": 456.0,
+    "pessoas_distintas": 8,
+    "_categoria_sugerida": "planejada"
+  }
+]
