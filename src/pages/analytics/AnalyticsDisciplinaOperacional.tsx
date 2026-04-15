@@ -1406,10 +1406,10 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       className="cursor-pointer"
                     >
                       <circle cx={cx} cy={cy} r={r} fill={payload.bubbleColor} fillOpacity={opacity} stroke={isFixed ? "#1e293b" : payload.bubbleColor} strokeWidth={strokeW} />
-                      <text x={cx} y={cy - 4} textAnchor="middle" fontSize={9} fontWeight={700} fill="#fff" dominantBaseline="middle">
+                      <text x={cx} y={cy - 5} textAnchor="middle" fontSize={11} fontWeight={700} fill="#1e293b" dominantBaseline="middle">
                         {abbr}
                       </text>
-                      <text x={cx} y={cy + 7} textAnchor="middle" fontSize={8} fontWeight={600} fill="#fff" dominantBaseline="middle">
+                      <text x={cx} y={cy + 8} textAnchor="middle" fontSize={10} fontWeight={600} fill="#1e293b" dominantBaseline="middle">
                         {payload.score}
                       </text>
                     </g>
