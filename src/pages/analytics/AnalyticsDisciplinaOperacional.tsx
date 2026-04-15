@@ -1560,7 +1560,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
                   const isHighHc = d.headcount > medianHeadcount;
-                  const isHighScore = d.score >= 70;
+                  const isHighScore = d.score >= scoreConfig.threshold_good;
                   const quadrante = isHighHc && isHighScore ? "Alta escala saudável"
                     : isHighHc && !isHighScore ? "Alta escala em risco"
                     : !isHighHc && isHighScore ? "Pequena escala saudável"
