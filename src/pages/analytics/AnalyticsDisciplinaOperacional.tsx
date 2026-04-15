@@ -1589,17 +1589,19 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   );
                 }} />
                 <Scatter data={mapaOperacoesData.filter((d: any) => {
-                  const cat = d.score >= 70 ? "green" : d.score >= 55 ? "orange" : "red";
+                  const val = getMapaVal(d);
+                  const cat = val >= activeDimConfig.thresholds[0] ? "green" : val >= activeDimConfig.thresholds[1] ? "orange" : "red";
                   return mapaScoreFilter.has(cat);
                 })} shape={(props: any) => {
                   const { cx, cy, payload } = props;
                   const r = 14;
+                  const val = getMapaVal(payload);
+                  const dynColor = getMapaBubbleColor(val);
                   const isFixed = fixedBubble === payload.regional;
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                    const hasFilter = !!selectedRegional;
                    const opacity = isFixed ? 0.85 : isSelected ? 0.75 : 0.45;
                    const textColor = "#fff";
-                   // 3-letter abbreviation like sidebar
                    const clean = payload.regional.replace(/^VIG\s*EYES\s*/i, "").trim();
                    const abbr = clean ? clean.slice(0, 3).toUpperCase() : payload.regional.slice(0, 3).toUpperCase();
                    return (
@@ -1611,8 +1613,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                        onContextMenu={(e: any) => { e.preventDefault(); e.stopPropagation(); onItemDetail?.(payload.regional); }}
                        className="cursor-pointer"
                      >
-                       <circle cx={cx} cy={cy} r={r} fill={payload.bubbleColor} fillOpacity={opacity}
-                         stroke={isFixed && hasFilter ? "#FF5722" : payload.bubbleColor}
+                       <circle cx={cx} cy={cy} r={r} fill={dynColor} fillOpacity={opacity}
+                         stroke={isFixed && hasFilter ? "#FF5722" : dynColor}
                          strokeWidth={isFixed && hasFilter ? 2 : 1}
                          strokeDasharray={isFixed && hasFilter ? "4 3" : "none"}
                        />
@@ -1620,7 +1622,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           {abbr}
                         </text>
                         <text x={cx} y={cy + 6} textAnchor="middle" fontSize={7} fontWeight={600} fill={textColor} dominantBaseline="middle">
-                          {payload.score}
+                          {val}
                        </text>
                     </g>
                   );
