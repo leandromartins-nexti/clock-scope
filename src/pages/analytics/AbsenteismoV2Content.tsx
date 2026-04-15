@@ -1067,7 +1067,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       })}
                       {d?.taxaOperacional > 0 && (
                         <div className="flex items-center gap-1.5 border-t border-border/30 pt-1 mt-1">
-                          <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: "#3b82f6" }} />
+                          <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: "#2196f3" }} />
                           <span className="text-muted-foreground">Taxa operacional:</span>
                           <span className="font-medium text-foreground">{d.taxaOperacional}%</span>
                         </div>
