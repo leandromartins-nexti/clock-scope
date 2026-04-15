@@ -878,7 +878,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       type: "square" as const,
                       color: CATEGORY_COLORS[cat],
                     })),
-                    { value: "Volume Total", type: "plainline" as const, color: "#6b7280" },
+                    { value: "Volume Total", type: "line" as const, color: "#6b7280" },
                   ]} />
                 </ComposedChart>
               </ResponsiveContainer>
@@ -951,7 +951,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: `Planejado ${maturidadeDistribuicao.planejado}%`, type: "square" as const, color: MATURIDADE_COLORS["1_planejado"] },
                   { value: `Reativo ${maturidadeDistribuicao.reativo}%`, type: "square" as const, color: MATURIDADE_COLORS["2_reativo"] },
-                  { value: "% Falta crua", type: "plainline" as const, color: "#dc2626" },
+                  { value: "% Falta crua", type: "line" as const, color: "#dc2626" },
                 ]} />
               </ComposedChart>
             </ResponsiveContainer>
