@@ -1,0 +1,326 @@
+[
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-04-01",
+    "qtd_eventos": 406,
+    "horas_ausencia": 4420.2,
+    "pessoas_ausentes": 73
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-04-01",
+    "qtd_eventos": 76,
+    "horas_ausencia": 607.1,
+    "pessoas_ausentes": 13
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-04-01",
+    "qtd_eventos": 11,
+    "horas_ausencia": 94.3,
+    "pessoas_ausentes": 6
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-05-01",
+    "qtd_eventos": 446,
+    "horas_ausencia": 4917.2,
+    "pessoas_ausentes": 78
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-05-01",
+    "qtd_eventos": 69,
+    "horas_ausencia": 509.9,
+    "pessoas_ausentes": 11
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-05-01",
+    "qtd_eventos": 56,
+    "horas_ausencia": 453.9,
+    "pessoas_ausentes": 11
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-06-01",
+    "qtd_eventos": 374,
+    "horas_ausencia": 4170.2,
+    "pessoas_ausentes": 68
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-06-01",
+    "qtd_eventos": 80,
+    "horas_ausencia": 673.6,
+    "pessoas_ausentes": 11
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-06-01",
+    "qtd_eventos": 44,
+    "horas_ausencia": 449.1,
+    "pessoas_ausentes": 11
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-07-01",
+    "qtd_eventos": 423,
+    "horas_ausencia": 4371.9,
+    "pessoas_ausentes": 81
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-07-01",
+    "qtd_eventos": 79,
+    "horas_ausencia": 719.0,
+    "pessoas_ausentes": 13
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-07-01",
+    "qtd_eventos": 57,
+    "horas_ausencia": 569.6,
+    "pessoas_ausentes": 12
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-08-01",
+    "qtd_eventos": 400,
+    "horas_ausencia": 4118.4,
+    "pessoas_ausentes": 72
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-08-01",
+    "qtd_eventos": 51,
+    "horas_ausencia": 390.5,
+    "pessoas_ausentes": 10
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-08-01",
+    "qtd_eventos": 34,
+    "horas_ausencia": 360.7,
+    "pessoas_ausentes": 5
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-09-01",
+    "qtd_eventos": 394,
+    "horas_ausencia": 4335.2,
+    "pessoas_ausentes": 79
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-09-01",
+    "qtd_eventos": 32,
+    "horas_ausencia": 342.9,
+    "pessoas_ausentes": 8
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-09-01",
+    "qtd_eventos": 32,
+    "horas_ausencia": 334.9,
+    "pessoas_ausentes": 6
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-10-01",
+    "qtd_eventos": 965,
+    "horas_ausencia": 9401.5,
+    "pessoas_ausentes": 236
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-10-01",
+    "qtd_eventos": 51,
+    "horas_ausencia": 562.7,
+    "pessoas_ausentes": 8
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-10-01",
+    "qtd_eventos": 25,
+    "horas_ausencia": 230.5,
+    "pessoas_ausentes": 7
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-11-01",
+    "qtd_eventos": 867,
+    "horas_ausencia": 8386.3,
+    "pessoas_ausentes": 247
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-11-01",
+    "qtd_eventos": 57,
+    "horas_ausencia": 606.2,
+    "pessoas_ausentes": 10
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-11-01",
+    "qtd_eventos": 40,
+    "horas_ausencia": 365.6,
+    "pessoas_ausentes": 12
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2025-12-01",
+    "qtd_eventos": 1092,
+    "horas_ausencia": 10225.0,
+    "pessoas_ausentes": 233
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2025-12-01",
+    "qtd_eventos": 45,
+    "horas_ausencia": 392.5,
+    "pessoas_ausentes": 14
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2025-12-01",
+    "qtd_eventos": 24,
+    "horas_ausencia": 213.0,
+    "pessoas_ausentes": 8
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2026-01-01",
+    "qtd_eventos": 861,
+    "horas_ausencia": 8278.5,
+    "pessoas_ausentes": 232
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2026-01-01",
+    "qtd_eventos": 64,
+    "horas_ausencia": 509.9,
+    "pessoas_ausentes": 13
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2026-01-01",
+    "qtd_eventos": 20,
+    "horas_ausencia": 173.0,
+    "pessoas_ausentes": 9
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2026-02-01",
+    "qtd_eventos": 1146,
+    "horas_ausencia": 10602.6,
+    "pessoas_ausentes": 242
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2026-02-01",
+    "qtd_eventos": 50,
+    "horas_ausencia": 523.2,
+    "pessoas_ausentes": 9
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2026-02-01",
+    "qtd_eventos": 40,
+    "horas_ausencia": 340.5,
+    "pessoas_ausentes": 8
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2026-03-01",
+    "qtd_eventos": 563,
+    "horas_ausencia": 5410.9,
+    "pessoas_ausentes": 131
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17519,
+    "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+    "reference_date": "2026-03-01",
+    "qtd_eventos": 49,
+    "horas_ausencia": 490.7,
+    "pessoas_ausentes": 10
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17517,
+    "business_unit_name": "VIG EYES TERCEIRIZACAO",
+    "reference_date": "2026-03-01",
+    "qtd_eventos": 46,
+    "horas_ausencia": 411.0,
+    "pessoas_ausentes": 11
+  }
+]

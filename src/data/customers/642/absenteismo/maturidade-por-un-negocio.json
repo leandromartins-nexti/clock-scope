@@ -1,0 +1,22 @@
+[
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2026-03-01",
+    "categoria": "1_planejado",
+    "qtd_eventos": 478,
+    "horas_total": 4699.0,
+    "pessoas_distintas": 121
+  },
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2026-03-01",
+    "categoria": "2_reativo",
+    "qtd_eventos": 85,
+    "horas_total": 711.0,
+    "pessoas_distintas": 26
+  }
+]

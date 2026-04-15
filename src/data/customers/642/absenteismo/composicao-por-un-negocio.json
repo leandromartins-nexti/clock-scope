@@ -1,0 +1,14 @@
+[
+  {
+    "customer_id": 642,
+    "business_unit_id": 17518,
+    "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+    "reference_date": "2026-03-01",
+    "absence_situation_id": 18345,
+    "absence_situation_name": "Férias",
+    "qtd_eventos": 156,
+    "horas_total": 1763.0,
+    "pessoas_distintas": 23,
+    "_categoria_sugerida": "planejada"
+  }
+]
