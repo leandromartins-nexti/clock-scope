@@ -575,7 +575,8 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
           />
         </div>
 
-        {/* ── Convention 1: Mapa de Operações (first component after BigNumbers) ── */}
+        {/* ── Row 1: Mapa de Operações + Volume Mensal (grid 2 colunas) ── */}
+        <div className="grid grid-cols-2 gap-3">
         <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
@@ -690,7 +691,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
           </div>
         </div>
 
-        {/* ── G1: Volume Mensal ── */}
+        {/* G1: Volume Mensal */}
         <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
           <div className="flex items-center justify-between mb-0.5">
             <div>
@@ -709,6 +710,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
             {renderVolumeChart()}
           </ResponsiveContainer>
         </div>
+        </div>{/* close grid-cols-2 row 1 */}
 
         {/* ── G2 + G3: Composição + Maturidade side by side ── */}
         <div className="grid grid-cols-2 gap-3">
