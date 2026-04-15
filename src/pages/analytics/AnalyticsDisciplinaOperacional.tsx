@@ -1502,15 +1502,18 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         <div className="grid grid-cols-2 gap-3">
           {/* Mapa de Operações (scatter: Headcount × Score) */}
           <div data-onboarding="scatter-qualidade" className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
-            <div className="flex items-center justify-between mb-0.5">
-              <div className="flex items-center gap-1.5">
-                <h4 className="text-sm font-semibold">Mapa de Operações</h4>
-                <InfoTip text="Cada bolha é uma operação. Posição horizontal mostra o headcount (escala da operação). Posição vertical mostra o Score Operacional (saúde). Cor da bolha reforça a classificação do score. Operações no canto superior direito têm alta escala e estão saudáveis. Operações no canto inferior direito têm alta escala mas estão com problemas, alta prioridade de ação." />
+            <div className="flex items-center justify-between mb-1">
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <h4 className="text-sm font-semibold">Mapa de Operações</h4>
+                  <InfoTip text="Cada bolha é uma operação. Posição horizontal mostra o headcount (escala da operação). Posição vertical mostra o Score Operacional (saúde). Cor da bolha reforça a classificação do score. Operações no canto superior direito têm alta escala e estão saudáveis. Operações no canto inferior direito têm alta escala mas estão com problemas, alta prioridade de ação." />
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Headcount × {activeDimConfig.yLabel} · uma bolha por {groupBy === "empresa" ? "empresa" : groupBy === "unidade" ? "un. negócio" : "área"}{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 {criticalCount > 0 && mapaDimension === "score" && (
                   <span className="text-[10px] font-medium bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full">
-                    {criticalCount} operação{criticalCount > 1 ? "ões" : ""} em zona crítica
+                    {criticalCount} crítica{criticalCount > 1 ? "s" : ""}
                   </span>
                 )}
                 <button onClick={() => setChartDataModal("matrizSaude")} className="p-1 rounded hover:bg-muted/60 transition-colors" title="Ver dados">
@@ -1518,23 +1521,22 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 </button>
               </div>
             </div>
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-[10px] text-muted-foreground">Headcount × {activeDimConfig.yLabel} · uma bolha por {groupBy === "empresa" ? "empresa" : groupBy === "unidade" ? "un. negócio" : "área"}{selectedMes ? ` · ${selectedMes}` : " · consolidado"}</p>
-              <div className="flex items-center gap-0.5 bg-muted/40 rounded-lg p-0.5">
-                {(Object.entries(mapaDimensionConfig) as [MapaDimension, typeof activeDimConfig][]).map(([key, cfg]) => (
-                  <button
-                    key={key}
-                    onClick={() => setMapaDimension(key)}
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-medium transition-all ${
-                      mapaDimension === key
-                        ? "bg-card text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {cfg.label}
-                  </button>
-                ))}
-              </div>
+            {/* Dimension selector — compact inline pills */}
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider mr-0.5">Analisar por</span>
+              {(Object.entries(mapaDimensionConfig) as [MapaDimension, typeof activeDimConfig][]).map(([key, cfg]) => (
+                <button
+                  key={key}
+                  onClick={() => setMapaDimension(key)}
+                  className={`px-2 py-[3px] rounded-full text-[10px] font-medium border transition-all ${
+                    mapaDimension === key
+                      ? "bg-foreground text-background border-foreground"
+                      : "bg-transparent text-muted-foreground border-border/60 hover:border-foreground/30 hover:text-foreground"
+                  }`}
+                >
+                  {cfg.label}
+                </button>
+              ))}
             </div>
             <ResponsiveContainer width="100%" height={280}>
               <ScatterChart margin={{ top: 5, right: 50, bottom: 10, left: 0 }}>
