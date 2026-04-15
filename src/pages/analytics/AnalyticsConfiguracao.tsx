@@ -298,6 +298,12 @@ export default function AnalyticsConfiguracao() {
             </div>
           </div>
         )}
+
+        {activeTab === "clientes" && canSwitchClient && (
+          <div className="flex-1 px-6 py-5">
+            <ClientManagement />
+          </div>
+        )}
       </div>
     </div>
   );
