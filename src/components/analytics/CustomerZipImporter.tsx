@@ -284,13 +284,10 @@ export async function parseCustomerZip(file: File): Promise<ImportedCustomer> {
 // ── UI Component ──
 
 export default function CustomerZipImporter() {
-  const { customers, setCustomerId, refreshCustomers } = useCustomer();
+  const { refreshCustomers } = useCustomer();
   const [dragOver, setDragOver] = useState(false);
   const [importing, setImporting] = useState(false);
   const [lastResult, setLastResult] = useState<{ success: boolean; message: string } | null>(null);
-  const [importedCustomers, setImportedCustomers] = useState<CustomerEntry[]>(() => getImportedCustomersIndex());
-  const [expandedCustomer, setExpandedCustomer] = useState<number | null>(null);
-  const [customerDetails, setCustomerDetails] = useState<ImportedCustomer | null>(null);
 
   const handleFile = useCallback(async (file: File) => {
     if (!file.name.endsWith(".zip")) {
@@ -304,21 +301,16 @@ export default function CustomerZipImporter() {
     try {
       const customer = await parseCustomerZip(file);
 
-      // Count data points
       const totalJsons = customer.menus.reduce((acc, m) =>
         acc + m.tabs.reduce((a, t) =>
           a + t.charts.reduce((c, ch) => c + Object.keys(ch.dimensions).length, 0), 0), 0);
-      const totalSqls = customer.menus.reduce((acc, m) =>
-        acc + m.tabs.reduce((a, t) =>
-          a + t.charts.filter(ch => ch.sql).length, 0), 0);
 
       saveCustomerToStorage(customer);
       refreshCustomers();
-      setImportedCustomers(getImportedCustomersIndex());
 
       setLastResult({
         success: true,
-        message: `Cliente ${customer.customerId} (${customer.label}) importado com sucesso. ${totalJsons} datasets, ${totalSqls} queries SQL.`,
+        message: `Cliente ${customer.customerId} (${customer.label}) importado · ${totalJsons} datasets`,
       });
 
       toast.success(`Cliente ${customer.label} importado!`);
@@ -343,29 +335,8 @@ export default function CustomerZipImporter() {
     e.target.value = "";
   }, [handleFile]);
 
-  const handleRemove = useCallback((customerId: number) => {
-    removeCustomerFromStorage(customerId);
-    refreshCustomers();
-    setImportedCustomers(getImportedCustomersIndex());
-    if (expandedCustomer === customerId) {
-      setExpandedCustomer(null);
-      setCustomerDetails(null);
-    }
-    toast.success("Cliente removido");
-  }, [expandedCustomer, refreshCustomers]);
-
-  const toggleExpand = useCallback((customerId: number) => {
-    if (expandedCustomer === customerId) {
-      setExpandedCustomer(null);
-      setCustomerDetails(null);
-    } else {
-      setExpandedCustomer(customerId);
-      setCustomerDetails(loadCustomerFromStorage(customerId));
-    }
-  }, [expandedCustomer]);
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Drop zone */}
       <div
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
@@ -373,7 +344,7 @@ export default function CustomerZipImporter() {
         onDrop={handleDrop}
         className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
           dragOver
-            ? "border-[#FF5722] bg-orange-50/50"
+            ? "border-[#FF5722] bg-[#FF5722]/5"
             : "border-border hover:border-muted-foreground/40 hover:bg-muted/20"
         }`}
         onClick={() => document.getElementById("zip-input")?.click()}
@@ -393,13 +364,13 @@ export default function CustomerZipImporter() {
             </>
           ) : (
             <>
-              <div className="w-12 h-12 rounded-xl bg-muted/50 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center">
                 <Upload className="w-5 h-5 text-muted-foreground" />
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">Arraste um ZIP aqui ou clique para selecionar</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Formato esperado: <code className="bg-muted px-1 py-0.5 rounded text-[10px]">ID - Nome / Menu / Aba / N. Gráfico / arquivos</code>
+                  Formato: <code className="bg-muted px-1.5 py-0.5 rounded text-[10px]">ID – Nome / Menu / Aba / N. Gráfico / arquivos</code>
                 </p>
               </div>
             </>
@@ -411,7 +382,7 @@ export default function CustomerZipImporter() {
       {lastResult && (
         <div className={`flex items-start gap-2 px-4 py-3 rounded-lg text-sm ${
           lastResult.success
-            ? "bg-green-50 text-green-800 border border-green-200"
+            ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
             : "bg-red-50 text-red-800 border border-red-200"
         }`}>
           {lastResult.success ? <Check className="w-4 h-4 mt-0.5 shrink-0" /> : <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />}
@@ -419,84 +390,13 @@ export default function CustomerZipImporter() {
         </div>
       )}
 
-      {/* Imported customers list */}
-      {importedCustomers.length > 0 && (
-        <div className="space-y-2">
-          <h4 className="text-sm font-semibold text-foreground">Clientes Importados</h4>
-          <div className="space-y-1.5">
-            {importedCustomers.map((c) => (
-              <div key={c.customer_id} className="border border-border rounded-lg overflow-hidden bg-card">
-                <div className="flex items-center gap-3 px-4 py-2.5">
-                  <button
-                    onClick={() => toggleExpand(c.customer_id)}
-                    className="flex items-center gap-2 flex-1 text-left"
-                  >
-                    {expandedCustomer === c.customer_id
-                      ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-                      : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
-                    <FileArchive className="w-4 h-4 text-[#FF5722]" />
-                    <span className="text-sm font-medium text-foreground">{c.label}</span>
-                    <span className="text-[10px] text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">ID: {c.customer_id}</span>
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 text-xs text-[#FF5722]"
-                      onClick={() => { setCustomerId(c.customer_id); toast.success(`Cliente ativo: ${c.label}`); }}
-                    >
-                      Ativar
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 text-xs text-red-500 hover:text-red-600 hover:bg-red-50"
-                      onClick={() => handleRemove(c.customer_id)}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Expanded detail */}
-                {expandedCustomer === c.customer_id && customerDetails && (
-                  <div className="border-t border-border/40 px-4 py-3 bg-muted/10 space-y-2">
-                    {customerDetails.menus.map((menu) => (
-                      <div key={menu.menuSlug}>
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{menu.menuLabel}</p>
-                        {menu.tabs.map((tab) => (
-                          <div key={tab.tabSlug} className="ml-3 mt-1">
-                            <p className="text-xs font-medium text-foreground/80">{tab.tabLabel}</p>
-                            <div className="ml-3 mt-1 space-y-1">
-                              {tab.charts.map((chart) => {
-                                const dims = Object.keys(chart.dimensions);
-                                const totalRecords = Object.values(chart.dimensions).reduce((a, d) => a + (Array.isArray(d) ? d.length : 0), 0);
-                                return (
-                                  <div key={chart.chartSlug} className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                                    <Database className="w-3 h-3" />
-                                    <span className="text-foreground/70">{chart.chartLabel}</span>
-                                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded">{dims.length} dims · {totalRecords} reg</span>
-                                    {chart.sql && <FileText className="w-3 h-3 text-blue-400" />}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Template info */}
-      <div className="bg-muted/30 border border-border/40 rounded-lg px-4 py-3 space-y-2">
-        <h4 className="text-xs font-semibold text-foreground/80">Estrutura esperada do ZIP</h4>
-        <pre className="text-[10px] text-muted-foreground leading-relaxed font-mono">{`{ID} - {Nome do Cliente}/
+      {/* Template info (collapsible) */}
+      <details className="group">
+        <summary className="text-[11px] text-muted-foreground cursor-pointer hover:text-foreground transition-colors select-none">
+          Ver estrutura esperada do ZIP
+        </summary>
+        <div className="mt-2 bg-muted/30 border border-border/40 rounded-lg px-4 py-3">
+          <pre className="text-[10px] text-muted-foreground leading-relaxed font-mono">{`{ID} – {Nome do Cliente}/
   {Menu}/                              (ex: Operacional)
     {Aba}/                             (ex: Qualidade do Ponto)
       {N}. {Nome do Gráfico}/          (ex: 1. Evolução da Qualidade e Headcount)
@@ -504,7 +404,8 @@ export default function CustomerZipImporter() {
         JSON {Nome} Por Empresa.json
         JSON {Nome} Por Unidade de Negócio.json
         JSON {Nome} Por Área.json`}</pre>
-      </div>
+        </div>
+      </details>
     </div>
   );
 }
