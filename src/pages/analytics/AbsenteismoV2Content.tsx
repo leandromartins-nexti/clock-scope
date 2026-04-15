@@ -344,23 +344,28 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   const sidebarItems = useMemo(() => {
     const raw = groupBy === "empresa" ? volumeEmpresa : groupBy === "area" ? volumeArea : volumeUnNegocio;
     const nf = nameField;
-    const entities = new Map<string, { horas: number; count: number }>();
+    const entities = new Map<string, { horasTotal: number; pessoasMax: number; meses: Set<string> }>();
     
     for (const row of raw as any[]) {
       const name = row[nf];
-      if (!entities.has(name)) entities.set(name, { horas: 0, count: 0 });
+      if (!entities.has(name)) entities.set(name, { horasTotal: 0, pessoasMax: 0, meses: new Set() });
       const e = entities.get(name)!;
-      e.horas += row.horas_ausencia ?? 0;
-      e.count++;
+      e.horasTotal += row.horas_ausencia ?? 0;
+      e.pessoasMax = Math.max(e.pessoasMax, row.pessoas_ausentes ?? 0);
+      e.meses.add(row.reference_date);
     }
     
-    const maxHoras = Math.max(...[...entities.values()].map(e => e.horas));
-    
-    return [...entities.entries()].map(([nome, data]) => ({
-      nome,
-      value: nome,
-      score: Math.round(Math.max(0, 100 - (data.horas / maxHoras) * 100)),
-    })).sort((a, b) => b.score - a.score);
+    return [...entities.entries()].map(([nome, data]) => {
+      // Average monthly taxa = totalHoras / (avgPessoas * 200 * numMeses)
+      const numMeses = data.meses.size || 1;
+      const avgTaxa = data.pessoasMax > 0 ? (data.horasTotal / (data.pessoasMax * 200 * numMeses)) * 100 : 0;
+      const score = computeVolumeScore(avgTaxa).score;
+      return {
+        nome,
+        value: nome,
+        score,
+      };
+    }).sort((a, b) => b.score - a.score);
   }, [groupBy, nameField]);
 
   // ── Mapa de Operações data (Convention 1) ──
@@ -369,27 +374,28 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   const mapaOperacoesData = useMemo(() => {
     const raw = groupBy === "empresa" ? volumeEmpresa : groupBy === "area" ? volumeArea : volumeUnNegocio;
     const nf = nameField;
-    const entities = new Map<string, { horas: number; headcount: number; count: number }>();
+    const entities = new Map<string, { horasTotal: number; pessoasMax: number; headcount: number; meses: Set<string> }>();
 
     for (const row of raw as any[]) {
       const name = row[nf];
-      if (!entities.has(name)) entities.set(name, { horas: 0, headcount: 0, count: 0 });
+      if (!entities.has(name)) entities.set(name, { horasTotal: 0, pessoasMax: 0, headcount: 0, meses: new Set() });
       const e = entities.get(name)!;
-      e.horas += row.horas_ausencia ?? 0;
+      e.horasTotal += row.horas_ausencia ?? 0;
+      e.pessoasMax = Math.max(e.pessoasMax, row.pessoas_ausentes ?? 0);
       e.headcount = Math.max(e.headcount, row.pessoas_ausentes ?? row.headcount ?? 0);
-      e.count++;
+      e.meses.add(row.reference_date);
     }
-
-    const maxHoras = Math.max(...[...entities.values()].map(e => e.horas), 1);
 
     return [...entities.entries()]
       .filter(([nome]) => visibleSet.size === 0 || visibleSet.has(nome))
       .map(([nome, data]) => {
-        const score = Math.round(Math.max(0, 100 - (data.horas / maxHoras) * 100));
+        const numMeses = data.meses.size || 1;
+        const avgTaxa = data.pessoasMax > 0 ? (data.horasTotal / (data.pessoasMax * 200 * numMeses)) * 100 : 0;
+        const score = computeVolumeScore(avgTaxa).score;
         const bubbleColor = score >= 70 ? "#22c55e" : score >= 50 ? "#f59e0b" : "#ef4444";
         return {
           regional: nome,
-          headcount: data.headcount || Math.round(data.count * 10),
+          headcount: data.headcount || 10,
           score,
           classifLabel: getScoreLabel(score),
           bubbleColor,
