@@ -1412,8 +1412,9 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                        className="cursor-pointer"
                      >
                        <circle cx={cx} cy={cy} r={r} fill={payload.bubbleColor} fillOpacity={opacity}
-                         stroke={payload.bubbleColor}
-                         strokeWidth={1}
+                         stroke={isFixed && hasFilter ? "#FF5722" : payload.bubbleColor}
+                         strokeWidth={isFixed && hasFilter ? 2 : 1}
+                         strokeDasharray={isFixed && hasFilter ? "4 3" : "none"}
                        />
                        <text x={cx} y={cy - 5} textAnchor="middle" fontSize={11} fontWeight={700} fill={textColor} dominantBaseline="middle">
                          {abbr}
