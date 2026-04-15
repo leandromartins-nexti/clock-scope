@@ -1498,7 +1498,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   {qualidadeComHeadcount.map((entry, idx) => {
                     const isActive = selectedMes && selectedMes === entry.mes;
                     const dimmed = selectedMes && selectedMes !== entry.mes;
-                    return <Cell key={idx} fill={dimmed ? "rgba(34,197,94,0.45)" : "rgba(34,197,94,0.75)"} stroke={isActive ? "#FF5722" : "#22c55e"} strokeWidth={isActive ? 2 : 1} />;
+                    return <Cell key={idx} fill={dimmed ? "rgba(34,197,94,0.45)" : "rgba(34,197,94,0.75)"} stroke={isActive ? "#FF5722" : "#22c55e"} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
                   })}
                   <LabelList dataKey="registradas" position="center" fontSize={9} fill="#fff" fontWeight={600} formatter={(v: number) => {
                     return `${v.toLocaleString("pt-BR")}`;
