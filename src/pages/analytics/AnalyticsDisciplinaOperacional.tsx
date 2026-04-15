@@ -1397,7 +1397,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const isFixed = fixedBubble === payload.regional;
                   const isSelected = !selectedRegional || selectedRegional === payload.regional;
                    const hasFilter = !!selectedRegional;
-                   const opacity = isFixed ? 0.85 : isSelected ? 0.75 : 0.50;
+                   const opacity = isFixed ? 0.85 : isSelected ? 0.75 : 0.45;
                    const textColor = "#fff";
                    // 3-letter abbreviation like sidebar
                    const clean = payload.regional.replace(/^VIG\s*EYES\s*/i, "").trim();
@@ -1497,7 +1497,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <Area yAxisId="right" type="monotone" dataKey="activeHeadcount" fill="#D3D1C7" fillOpacity={0.4} stroke="#D3D1C7" strokeWidth={0} name="Headcount" />
                 <Bar yAxisId="left" dataKey="registradas" stackId="qual" stroke="#22c55e" strokeWidth={1} radius={[0, 0, 0, 0]} name="Registradas">
                   {qualidadeComHeadcount.map((entry, idx) => (
-                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.50)" : "rgba(34,197,94,0.75)"} />
+                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(34,197,94,0.45)" : "rgba(34,197,94,0.75)"} />
                   ))}
                   <LabelList dataKey="registradas" position="center" fontSize={9} fill="#fff" fontWeight={600} formatter={(v: number) => {
                     return `${v.toLocaleString("pt-BR")}`;
@@ -1515,7 +1515,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 </Bar>
                 <Bar yAxisId="left" dataKey="justificadas" stackId="qual" stroke="#ef4444" strokeWidth={1} radius={[4, 4, 0, 0]} name="Justificadas">
                   {qualidadeComHeadcount.map((entry, idx) => (
-                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.50)" : "rgba(239,68,68,0.75)"} />
+                    <Cell key={idx} fill={selectedMes && selectedMes !== entry.mes ? "rgba(239,68,68,0.45)" : "rgba(239,68,68,0.75)"} />
                   ))}
                   <LabelList content={({ x, y, width, height, index }: any) => {
                     const d = qualidadeComHeadcount[index];
@@ -1787,7 +1787,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           const b = parseInt(hex.slice(5, 7), 16);
                           return `${r},${g},${b}`;
                         };
-                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.50)` : `rgba(${hexToRgb(baseColor)},0.75)`} stroke={baseColor} />;
+                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.45)` : `rgba(${hexToRgb(baseColor)},0.75)`} stroke={baseColor} />;
                       })}
                       <LabelList content={({ x, y, width: w, height: h, index }: any) => {
                         const d = sobrecargaData[index];
