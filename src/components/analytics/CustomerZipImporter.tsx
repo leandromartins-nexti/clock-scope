@@ -69,6 +69,23 @@ function parseDimensionFromFilename(filename: string): string | null {
   return DIMENSION_MAP[match[1]] ?? null;
 }
 
+function normalizeImportedJsonData(value: unknown): any {
+  if (Array.isArray(value)) return value;
+  if (!value || typeof value !== "object") return value;
+
+  const entries = Object.entries(value as Record<string, unknown>);
+  if (entries.length === 1) {
+    const [, nested] = entries[0];
+    if (Array.isArray(nested)) return nested;
+  }
+
+  if ("data" in (value as Record<string, unknown>) && Array.isArray((value as Record<string, unknown>).data)) {
+    return (value as Record<string, unknown>).data;
+  }
+
+  return value;
+}
+
 export interface ImportedChart {
   chartSlug: string;
   chartLabel: string;
@@ -155,7 +172,7 @@ export function loadChartDataFromStorage(
       if (tab.tabSlug !== tabSlug) continue;
       for (const chart of tab.charts) {
         if (chart.chartSlug !== chartSlug) continue;
-        return chart.dimensions[dimension] ?? null;
+        return normalizeImportedJsonData(chart.dimensions[dimension] ?? null);
       }
     }
   }
@@ -230,7 +247,7 @@ export async function parseCustomerZip(file: File): Promise<ImportedCustomer> {
       if (dimension) {
         try {
           const content = await zipFile.async("string");
-          chart.dimensions[dimension] = JSON.parse(content);
+          chart.dimensions[dimension] = normalizeImportedJsonData(JSON.parse(content));
         } catch (e) {
           console.warn(`Failed to parse JSON: ${path}`, e);
         }
