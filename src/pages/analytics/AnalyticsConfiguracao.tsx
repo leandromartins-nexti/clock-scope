@@ -1,6 +1,5 @@
 import { useState } from "react";
-import ClientManagement from "@/components/analytics/ClientManagement";
-import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Users } from "lucide-react";
+import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info } from "lucide-react";
 import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
 import ScoreAbsenteismoConfig from "./ScoreAbsenteismoConfig";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
@@ -191,13 +190,12 @@ function MenuSection({ menu }: { menu: MenuEntry }) {
 
 // ── Main Page ──
 const tabs = [
-  { id: "clientes", label: "Clientes", icon: Users },
   { id: "base-dados", label: "Base de Dados", icon: Database },
   { id: "scores", label: "Scores", icon: Gauge },
 ];
 
 export default function AnalyticsConfiguracao() {
-  const [activeTab, setActiveTab] = useState("clientes");
+  const [activeTab, setActiveTab] = useState("base-dados");
   const [activeScore, setActiveScore] = useState("qualidade");
 
   const totalCharts = dataRegistry.reduce((acc, m) => acc + m.tabs.reduce((a, t) => a + t.charts.length, 0), 0);
@@ -226,11 +224,6 @@ export default function AnalyticsConfiguracao() {
 
       {/* Content */}
       <div className="flex-1 flex min-h-0">
-        {activeTab === "clientes" && (
-          <div className="flex-1 px-6 py-5 overflow-auto">
-            <ClientManagement />
-          </div>
-        )}
 
         {activeTab === "base-dados" && (
           <div className="flex-1 px-6 py-5">

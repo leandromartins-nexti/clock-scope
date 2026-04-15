@@ -4,16 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, EyeOff, LogIn, UserPlus, AlertCircle, CheckCircle2 } from "lucide-react";
 import nextiLogo from "@/assets/nexti-logo.png";
-
-const CLIENTS = [
-  { value: "nexti", label: "Nexti" },
-  { value: "orsegups", label: "Orsegups" },
-  { value: "atitudeservicos", label: "Atitude Serviços" },
-  { value: "vigeyes", label: "VigEyes" },
-];
 
 export default function Login() {
   const { login, register } = useAuth();
@@ -36,10 +28,16 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
-    if (!client) {
-      setError("Selecione o cliente");
+    if (!client.trim()) {
+      setError("Informe a empresa");
       return;
     }
+
+    // Normalize: "atitude" variants → "atitudeservicos"
+    const normalizedClient = client.trim().toLowerCase().replace(/\s+/g, "");
+    const finalClient = normalizedClient === "atitude" || normalizedClient === "atitudeserviços"
+      ? "atitudeservicos"
+      : normalizedClient;
 
     if (mode === "login") {
       const result = login(username, password);
@@ -54,7 +52,7 @@ export default function Login() {
         setError(pwError);
         return;
       }
-      const result = register(username, password, name, client);
+      const result = register(username, password, name, finalClient);
       if (!result.success) setError(result.error || "Erro ao cadastrar");
     }
   };
@@ -78,21 +76,18 @@ export default function Login() {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Client selector - always first */}
+            {/* Empresa - text input */}
             <div className="space-y-2">
-              <Label>Cliente</Label>
-              <Select value={client} onValueChange={setClient}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o cliente" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CLIENTS.map((c) => (
-                    <SelectItem key={c.value} value={c.value}>
-                      {c.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label>Empresa</Label>
+              <Input
+                value={client}
+                onChange={(e) => setClient(e.target.value)}
+                placeholder="Ex: nexti, orsegups, atitudeservicos, vigeyes"
+                autoComplete="organization"
+              />
+              <p className="text-[10px] text-muted-foreground">
+                Digite o nome da empresa exatamente como cadastrado
+              </p>
             </div>
 
             {mode === "register" && (
