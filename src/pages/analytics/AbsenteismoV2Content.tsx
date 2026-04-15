@@ -46,6 +46,11 @@ import composicaoEmpresa from "@/data/customers/642/absenteismo/composicao-por-e
 import composicaoUnNegocio from "@/data/customers/642/absenteismo/composicao-por-un-negocio.json";
 import composicaoArea from "@/data/customers/642/absenteismo/composicao-por-area.json";
 import maturidadeEmpresa from "@/data/customers/642/absenteismo/maturidade-por-empresa.json";
+
+// V5 composição data (granular categories)
+import compV5Empresa from "@/data/customers/642/absenteismo/composicao-v5-por-empresa.json";
+import compV5UnNegocio from "@/data/customers/642/absenteismo/composicao-v5-por-un-negocio.json";
+import compV5Area from "@/data/customers/642/absenteismo/composicao-v5-por-area.json";
 import maturidadeUnNegocio from "@/data/customers/642/absenteismo/maturidade-por-un-negocio.json";
 import maturidadeArea from "@/data/customers/642/absenteismo/maturidade-por-area.json";
 
