@@ -61,14 +61,15 @@ const dataRegistry: MenuEntry[] = [
             source: evolucaoTempoTratativaSource,
           },
           {
-            id: "matriz-saude",
-            chartName: "Matriz de Saúde Operacional",
+            id: "mapa-operacoes",
+            chartName: "Mapa de Operações",
             columns: evolucaoQualidadeHeadcountColumns,
             source: evolucaoQualidadeHeadcountSource,
             derived: true,
             derivedSources: [
-              { label: "Fonte: Evolução da Qualidade e Headcount", source: evolucaoQualidadeHeadcountSource, columns: evolucaoQualidadeHeadcountColumns },
-              { label: "Fonte: Evolução do Tempo de Tratativa", source: evolucaoTempoTratativaSource, columns: evolucaoTempoTratativaColumns },
+              { label: "Fonte 1: Evolução da Qualidade e Headcount", source: evolucaoQualidadeHeadcountSource, columns: evolucaoQualidadeHeadcountColumns },
+              { label: "Fonte 2: Evolução do Tempo de Tratativa", source: evolucaoTempoTratativaSource, columns: evolucaoTempoTratativaColumns },
+              { label: "Fonte 3: Sobrecarga do Back-office", source: sobrecargaBackofficeSource, columns: sobrecargaBackofficeColumns },
             ],
           },
           {
