@@ -1378,6 +1378,17 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
           { key: "classifLabel", label: "Classificação" },
         ]}
       />
+      <ChartDataModal
+        open={chartDataModal === "compV5"}
+        onClose={() => setChartDataModal(null)}
+        title="Composição do Absenteísmo — Dados"
+        data={compV5ChartData}
+        columns={[
+          { key: "mes", label: "Competência" },
+          ...activeV5Cats.map(cat => ({ key: cat.key, label: cat.label, format: (v: number) => `${v}h` })),
+          { key: "taxaOperacional", label: "Taxa Op. (%)", format: (v: number) => `${v}%` },
+        ]}
+      />
     </div>
   );
 }
