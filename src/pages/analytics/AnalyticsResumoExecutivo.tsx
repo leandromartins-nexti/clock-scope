@@ -233,28 +233,35 @@ export default function AnalyticsResumoExecutivo() {
   const scoreDiff = activeScore - prevScore;
 
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col">
+    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
       {/* Filter bar */}
-      <div className="bg-white px-6 py-3 border-b border-border flex items-center justify-between">
-        <div className="flex items-center gap-3 flex-wrap">
+      <div className="bg-white px-3 sm:px-6 py-3 border-b border-border flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
           <div className="flex items-center gap-2 text-sm">
             <Filter className="w-4 h-4 text-[#FF5722]" />
-            <span className="font-semibold text-foreground">Filtros Aplicados:</span>
+            <span className="font-semibold text-foreground hidden sm:inline">Filtros Aplicados:</span>
           </div>
-          <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium">Período: {periodoLabel}</span>
+          <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium whitespace-nowrap">Período: {periodoLabel}</span>
           {selectedRegional && (
-            <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium flex items-center gap-1">
-              {groupBy === "empresa" ? "Empresa" : groupBy === "unidade" ? "Un. Negócio" : "Área"}: {selectedRegional}
-              <button onClick={() => setSelectedRegional(null)} className="ml-1 hover:text-red-600">✕</button>
+            <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium flex items-center gap-1 max-w-[160px] sm:max-w-none truncate">
+              <span className="truncate">{groupBy === "empresa" ? "Empresa" : groupBy === "unidade" ? "Un. Negócio" : "Área"}: {selectedRegional}</span>
+              <button onClick={() => setSelectedRegional(null)} className="ml-1 hover:text-red-600 shrink-0">✕</button>
             </span>
           )}
         </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <button onClick={() => setFilterOpen(true)} className="border border-border text-muted-foreground px-4 py-2 rounded text-sm font-medium flex items-center gap-2 hover:bg-gray-50">
-            <Filter className="w-4 h-4" /> Filtros
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <button onClick={() => setFilterOpen(true)} className="border border-border text-muted-foreground px-2 sm:px-4 py-2 rounded text-sm font-medium flex items-center gap-2 hover:bg-gray-50">
+            <Filter className="w-4 h-4" /> <span className="hidden sm:inline">Filtros</span>
           </button>
-          <button onClick={() => setSelectedRegional(null)} className="flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline">
+          <button onClick={() => setSelectedRegional(null)} className="hidden sm:flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline">
             <Eraser className="w-4 h-4" /> Limpar Filtros
+          </button>
+          <button
+            onClick={() => window.dispatchEvent(new Event("open-tipo-operacao"))}
+            className="sm:hidden text-muted-foreground hover:text-foreground p-1.5 rounded-md transition-colors"
+            aria-label="Abrir tipo de operação"
+          >
+            <Filter className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -262,10 +269,10 @@ export default function AnalyticsResumoExecutivo() {
       {/* Content: main + sidebar */}
       <div className="flex-1 flex min-h-0">
         {/* Main content */}
-        <div className="flex-1 min-w-0 pl-6 pr-4 py-4 space-y-3 overflow-y-auto">
+        <div className="flex-1 min-w-0 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 sm:pb-4 space-y-3 overflow-y-auto">
 
           {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <div data-onboarding="score-operacional">
               <ScoreBoard title="Score Nexti" tooltip="Score consolidado da operação, calculado pela média ponderada dos sub-scores de Ponto e Absenteísmo. Configure os pesos em Configuração → Scores → Score Nexti.">
                 <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={scoreClassif.label} color={scoreClassif.color} />
@@ -304,12 +311,12 @@ export default function AnalyticsResumoExecutivo() {
           {/* ═══ Linha 2: Indicadores — lista vertical com sparklines inline ═══ */}
           <div className="bg-card border border-border/50 rounded-xl" data-onboarding="sparkline-table">
             {/* Header */}
-            <div className="flex items-center gap-4 px-4 py-2 border-b border-border/40 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+            <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 border-b border-border/40 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
               <div className="w-2" />
-              <span className="min-w-[140px]">Indicador</span>
+              <span className="flex-1 sm:flex-none sm:min-w-[140px]">Indicador</span>
               <span className="min-w-[45px] text-center">Score</span>
-              <span className="min-w-[65px] text-center">Variação</span>
-              <div className="flex-1 min-w-[120px]" />
+              <span className="min-w-[55px] sm:min-w-[65px] text-center">Variação</span>
+              <div className="hidden sm:block flex-1 sm:min-w-[120px]" />
             </div>
             <div className="divide-y divide-border/40">
               {sparklineCards.map((card) => {
@@ -320,20 +327,20 @@ export default function AnalyticsResumoExecutivo() {
                 };
                 const targetRoute = indicadorRouteMap[card.label];
                 return (
-                  <div
+                <div
                     key={card.label}
                     data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
-                    className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
+                    className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
                     onClick={() => targetRoute && navigate(targetRoute)}
                     title={`Ver detalhes de ${card.label}`}
                   >
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: getLineColor(card.score) }} />
-                    <span className="text-sm font-medium text-foreground min-w-[140px]">{card.label}</span>
+                    <span className="text-sm font-medium text-foreground flex-1 sm:flex-none sm:min-w-[140px] truncate">{card.label}</span>
                     <span className={`text-xs font-bold min-w-[45px] text-center px-1.5 py-0.5 rounded ${getScoreColor(card.score)} ${getScoreBg(card.score)}`}>{card.score}</span>
-                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[65px] text-center ${card.corVariacao} ${
+                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[55px] sm:min-w-[65px] text-center ${card.corVariacao} ${
                       card.corVariacao.includes('green') ? 'bg-green-50' : card.corVariacao.includes('red') ? 'bg-red-50' : 'bg-gray-50'
                     }`}>{card.variacao}</span>
-                    <div className="flex-1 h-[36px] min-w-[120px]">
+                    <div className="hidden sm:block flex-1 h-[36px] sm:min-w-[120px]">
                       <ResponsiveContainer width="100%" height={36}>
                         <LineChart data={card.evolucao}>
                           {card.perPointColors && (
@@ -385,7 +392,7 @@ export default function AnalyticsResumoExecutivo() {
             </div>
             {/* Month legend footer */}
             {sparklineCards[0]?.evolucao.length > 0 && (
-              <div className="flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
+              <div className="hidden sm:flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
                 <div className="w-2" />
                 <span className="min-w-[140px]" />
                 <span className="min-w-[45px]" />
@@ -402,12 +409,12 @@ export default function AnalyticsResumoExecutivo() {
 
 
           {/* ═══ CTA Financeiro ═══ */}
-          <div className="bg-surface border border-border/50 rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+          <div className="bg-surface border border-border/50 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
                 <DollarSign size={20} className="text-[#FF5722]" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-semibold">Visão Financeira em breve</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Prepare seus parâmetros agora para que a visão em R$ já esteja pronta quando liberada.
@@ -416,7 +423,7 @@ export default function AnalyticsResumoExecutivo() {
             </div>
             <button
               onClick={() => navigate("/analytics/configuracao")}
-              className="bg-[#FF5722] text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition shrink-0"
+              className="bg-[#FF5722] text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition shrink-0 w-full sm:w-auto"
             >
               Configurar parâmetros
             </button>
