@@ -191,7 +191,6 @@ export default function UserManagementTab() {
     );
   };
 
-  const UserRow = ({ u, actions }: { u: StoredUser; actions: React.ReactNode }) => renderUserRow(u, actions);
 
   return (
     <div className="space-y-6">
