@@ -510,10 +510,10 @@ export default function TurnoverTab() {
   const maiorRiscoAnterior = kpisAnterior.maior_risco as any;
 
   return (
-    <div className="flex flex-1 min-h-0">
-      <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4 overflow-y-auto">
+    <div className="flex flex-col xl:flex-row flex-1 min-h-0 w-full">
+      <div className="flex-1 min-w-0 space-y-3 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 xl:pb-4 overflow-y-auto">
         {/* Row 1: 6 KPI Cards */}
-        <div className="grid grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
           {/* 1. Score with decomposition popover */}
           <ScoreBoard title="Score da Aba" tooltip="Score composto de turnover, calculado a partir do turnover anual, voluntário e precoce. Clique para ver a decomposição.">
             <ScoreDecompositionPopover score={score} faixa={faixa} scoreColor={scoreClassif.color} />
@@ -605,7 +605,7 @@ export default function TurnoverTab() {
         </div>
 
         {/* Row 2: 2 charts */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           {/* Chart 1: Evolução do Turnover e Headcount */}
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-0.5">
@@ -670,7 +670,7 @@ export default function TurnoverTab() {
         </div>
 
         {/* Row 3: 2 charts */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           {/* Chart 3: Top 10 Clientes com Maior Volume de Saídas */}
           {(() => {
             const { data: rankingData, totalWithExits } = getRankingTop10(groupBy, selectedRegional);

@@ -773,10 +773,10 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
   // CATEGORIES_ORDER moved to module level
 
   return (
-    <div className="flex w-full flex-1 min-w-0">
-      <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
+    <div className="flex flex-col xl:flex-row w-full flex-1 min-w-0">
+      <div className="flex-1 min-w-0 space-y-3 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 xl:pb-4">
         {/* ── BigNumbers (6 cards) ── */}
-        <div className="grid grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
           {/* 1. Score Absenteísmo */}
           <ScoreBoard title="Score Absenteísmo" tooltip="Score composto: Volume (50%) + Composição (30%) + Maturidade (20%). Clique para detalhes.">
             <button className="cursor-pointer" onClick={() => setScoreDetailOpen(true)} title="Ver decomposição do score">
@@ -889,7 +889,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
         </div>
 
         {/* ── Row 1: Mapa de Operações + Volume Mensal (grid 2 colunas) ── */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
         <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
@@ -1117,7 +1117,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
         </div>{/* close grid-cols-2 row 1 */}
 
         {/* ── G2 + G3: Composição + Maturidade side by side ── */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           {/* G2: Composição das Ausências por Tipo */}
           <div className="bg-card border border-border/50 rounded-xl p-4">
             <div className="flex items-center justify-between mb-0.5">
@@ -1269,7 +1269,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
         </div>
 
         {/* ── Insights inline ── */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           <div className="bg-card border border-orange-200 rounded-xl p-4 space-y-2">
             <p className="text-xs font-semibold text-orange-600">⚠ Alertas</p>
             <ul className="text-xs text-muted-foreground space-y-1.5">
