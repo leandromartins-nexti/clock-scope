@@ -31,7 +31,8 @@ function normComp(comp: string): string {
 }
 
 /** Strip "VIG EYES " prefix for entity name matching */
-function normName(name: string): string {
+function normName(name: string | undefined | null): string {
+  if (!name) return "";
   return name.replace(/^VIG EYES\s+/i, "").trim();
 }
 
