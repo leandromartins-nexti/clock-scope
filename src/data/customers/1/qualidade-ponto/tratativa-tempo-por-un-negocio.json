@@ -2,7 +2,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-04-01",
     "total_ajustes": 8700,
     "faixa_ate_1_dia": 8382,
@@ -17,7 +17,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-04-01",
     "total_ajustes": 8657,
     "faixa_ate_1_dia": 8227,
@@ -32,7 +32,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-04-01",
     "total_ajustes": 7059,
     "faixa_ate_1_dia": 6872,
@@ -47,7 +47,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-04-01",
     "total_ajustes": 5058,
     "faixa_ate_1_dia": 4720,
@@ -62,7 +62,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-04-01",
     "total_ajustes": 2346,
     "faixa_ate_1_dia": 2215,
@@ -77,7 +77,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-04-01",
     "total_ajustes": 1910,
     "faixa_ate_1_dia": 1801,
@@ -92,7 +92,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-04-01",
     "total_ajustes": 1572,
     "faixa_ate_1_dia": 1530,
@@ -107,7 +107,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-04-01",
     "total_ajustes": 1557,
     "faixa_ate_1_dia": 1530,
@@ -122,7 +122,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-04-01",
     "total_ajustes": 1448,
     "faixa_ate_1_dia": 378,
@@ -137,7 +137,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-04-01",
     "total_ajustes": 1382,
     "faixa_ate_1_dia": 1268,
@@ -152,7 +152,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-04-01",
     "total_ajustes": 1321,
     "faixa_ate_1_dia": 1247,
@@ -167,7 +167,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-04-01",
     "total_ajustes": 1178,
     "faixa_ate_1_dia": 1124,
@@ -182,7 +182,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-04-01",
     "total_ajustes": 1131,
     "faixa_ate_1_dia": 1090,
@@ -197,7 +197,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-04-01",
     "total_ajustes": 545,
     "faixa_ate_1_dia": 515,
@@ -212,7 +212,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-04-01",
     "total_ajustes": 508,
     "faixa_ate_1_dia": 446,
@@ -227,7 +227,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-04-01",
     "total_ajustes": 349,
     "faixa_ate_1_dia": 325,
@@ -242,7 +242,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-04-01",
     "total_ajustes": 190,
     "faixa_ate_1_dia": 186,
@@ -257,7 +257,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-04-01",
     "total_ajustes": 125,
     "faixa_ate_1_dia": 66,
@@ -272,7 +272,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-04-01",
     "total_ajustes": 95,
     "faixa_ate_1_dia": 68,
@@ -287,7 +287,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2025-04-01",
     "total_ajustes": 19,
     "faixa_ate_1_dia": 6,
@@ -302,7 +302,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-04-01",
     "total_ajustes": 9,
     "faixa_ate_1_dia": 5,
@@ -317,7 +317,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2025-04-01",
     "total_ajustes": 3,
     "faixa_ate_1_dia": 0,
@@ -332,7 +332,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-05-01",
     "total_ajustes": 9028,
     "faixa_ate_1_dia": 8738,
@@ -347,7 +347,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-05-01",
     "total_ajustes": 8702,
     "faixa_ate_1_dia": 8054,
@@ -362,7 +362,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-05-01",
     "total_ajustes": 6410,
     "faixa_ate_1_dia": 6220,
@@ -377,7 +377,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-05-01",
     "total_ajustes": 5017,
     "faixa_ate_1_dia": 4692,
@@ -392,7 +392,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-05-01",
     "total_ajustes": 2303,
     "faixa_ate_1_dia": 2176,
@@ -407,7 +407,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-05-01",
     "total_ajustes": 1766,
     "faixa_ate_1_dia": 1669,
@@ -422,7 +422,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-05-01",
     "total_ajustes": 1679,
     "faixa_ate_1_dia": 1400,
@@ -437,7 +437,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-05-01",
     "total_ajustes": 1540,
     "faixa_ate_1_dia": 1359,
@@ -452,7 +452,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-05-01",
     "total_ajustes": 1452,
     "faixa_ate_1_dia": 1394,
@@ -467,7 +467,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-05-01",
     "total_ajustes": 1393,
     "faixa_ate_1_dia": 1349,
@@ -482,7 +482,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-05-01",
     "total_ajustes": 1220,
     "faixa_ate_1_dia": 1134,
@@ -497,7 +497,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-05-01",
     "total_ajustes": 1204,
     "faixa_ate_1_dia": 1159,
@@ -512,7 +512,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-05-01",
     "total_ajustes": 563,
     "faixa_ate_1_dia": 539,
@@ -527,7 +527,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-05-01",
     "total_ajustes": 549,
     "faixa_ate_1_dia": 487,
@@ -542,7 +542,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-05-01",
     "total_ajustes": 375,
     "faixa_ate_1_dia": 159,
@@ -557,7 +557,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-05-01",
     "total_ajustes": 331,
     "faixa_ate_1_dia": 268,
@@ -572,7 +572,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-05-01",
     "total_ajustes": 179,
     "faixa_ate_1_dia": 173,
@@ -587,7 +587,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-05-01",
     "total_ajustes": 102,
     "faixa_ate_1_dia": 59,
@@ -602,7 +602,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-05-01",
     "total_ajustes": 26,
     "faixa_ate_1_dia": 20,
@@ -617,7 +617,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-05-01",
     "total_ajustes": 10,
     "faixa_ate_1_dia": 5,
@@ -632,7 +632,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2025-05-01",
     "total_ajustes": 6,
     "faixa_ate_1_dia": 0,
@@ -647,7 +647,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2025-05-01",
     "total_ajustes": 1,
     "faixa_ate_1_dia": 0,
@@ -662,7 +662,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-06-01",
     "total_ajustes": 9711,
     "faixa_ate_1_dia": 9388,
@@ -677,7 +677,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-06-01",
     "total_ajustes": 7761,
     "faixa_ate_1_dia": 7230,
@@ -692,7 +692,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-06-01",
     "total_ajustes": 6077,
     "faixa_ate_1_dia": 5643,
@@ -707,7 +707,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-06-01",
     "total_ajustes": 5859,
     "faixa_ate_1_dia": 5503,
@@ -722,7 +722,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-06-01",
     "total_ajustes": 2163,
     "faixa_ate_1_dia": 1033,
@@ -737,7 +737,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-06-01",
     "total_ajustes": 1695,
     "faixa_ate_1_dia": 1628,
@@ -752,7 +752,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-06-01",
     "total_ajustes": 1598,
     "faixa_ate_1_dia": 1505,
@@ -767,7 +767,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-06-01",
     "total_ajustes": 1496,
     "faixa_ate_1_dia": 1429,
@@ -782,7 +782,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-06-01",
     "total_ajustes": 1418,
     "faixa_ate_1_dia": 1308,
@@ -797,7 +797,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-06-01",
     "total_ajustes": 1372,
     "faixa_ate_1_dia": 1335,
@@ -812,7 +812,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-06-01",
     "total_ajustes": 1298,
     "faixa_ate_1_dia": 1211,
@@ -827,7 +827,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-06-01",
     "total_ajustes": 1287,
     "faixa_ate_1_dia": 1264,
@@ -842,7 +842,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-06-01",
     "total_ajustes": 1054,
     "faixa_ate_1_dia": 1018,
@@ -857,7 +857,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-06-01",
     "total_ajustes": 499,
     "faixa_ate_1_dia": 469,
@@ -872,7 +872,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-06-01",
     "total_ajustes": 371,
     "faixa_ate_1_dia": 331,
@@ -887,7 +887,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-06-01",
     "total_ajustes": 329,
     "faixa_ate_1_dia": 312,
@@ -902,7 +902,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-06-01",
     "total_ajustes": 155,
     "faixa_ate_1_dia": 154,
@@ -917,7 +917,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-06-01",
     "total_ajustes": 42,
     "faixa_ate_1_dia": 3,
@@ -932,7 +932,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-06-01",
     "total_ajustes": 19,
     "faixa_ate_1_dia": 16,
@@ -947,7 +947,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-06-01",
     "total_ajustes": 6,
     "faixa_ate_1_dia": 1,
@@ -962,7 +962,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2025-06-01",
     "total_ajustes": 5,
     "faixa_ate_1_dia": 0,
@@ -977,7 +977,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2025-06-01",
     "total_ajustes": 4,
     "faixa_ate_1_dia": 2,
@@ -992,7 +992,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-07-01",
     "total_ajustes": 9449,
     "faixa_ate_1_dia": 8942,
@@ -1007,7 +1007,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-07-01",
     "total_ajustes": 7177,
     "faixa_ate_1_dia": 6630,
@@ -1022,7 +1022,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-07-01",
     "total_ajustes": 5528,
     "faixa_ate_1_dia": 5135,
@@ -1037,7 +1037,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-07-01",
     "total_ajustes": 5524,
     "faixa_ate_1_dia": 5228,
@@ -1052,7 +1052,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-07-01",
     "total_ajustes": 2640,
     "faixa_ate_1_dia": 989,
@@ -1067,7 +1067,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-07-01",
     "total_ajustes": 1826,
     "faixa_ate_1_dia": 1730,
@@ -1082,7 +1082,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-07-01",
     "total_ajustes": 1786,
     "faixa_ate_1_dia": 1710,
@@ -1097,7 +1097,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-07-01",
     "total_ajustes": 1525,
     "faixa_ate_1_dia": 1452,
@@ -1112,7 +1112,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-07-01",
     "total_ajustes": 1395,
     "faixa_ate_1_dia": 1347,
@@ -1127,7 +1127,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-07-01",
     "total_ajustes": 1383,
     "faixa_ate_1_dia": 1355,
@@ -1142,7 +1142,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-07-01",
     "total_ajustes": 1348,
     "faixa_ate_1_dia": 1286,
@@ -1157,7 +1157,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-07-01",
     "total_ajustes": 1204,
     "faixa_ate_1_dia": 1101,
@@ -1172,7 +1172,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-07-01",
     "total_ajustes": 740,
     "faixa_ate_1_dia": 723,
@@ -1187,7 +1187,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-07-01",
     "total_ajustes": 388,
     "faixa_ate_1_dia": 337,
@@ -1202,7 +1202,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-07-01",
     "total_ajustes": 384,
     "faixa_ate_1_dia": 354,
@@ -1217,7 +1217,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-07-01",
     "total_ajustes": 355,
     "faixa_ate_1_dia": 317,
@@ -1232,7 +1232,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-07-01",
     "total_ajustes": 164,
     "faixa_ate_1_dia": 158,
@@ -1247,7 +1247,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-07-01",
     "total_ajustes": 97,
     "faixa_ate_1_dia": 95,
@@ -1262,7 +1262,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-07-01",
     "total_ajustes": 25,
     "faixa_ate_1_dia": 17,
@@ -1277,7 +1277,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-07-01",
     "total_ajustes": 7,
     "faixa_ate_1_dia": 3,
@@ -1292,7 +1292,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2025-07-01",
     "total_ajustes": 6,
     "faixa_ate_1_dia": 0,
@@ -1307,7 +1307,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2025-07-01",
     "total_ajustes": 2,
     "faixa_ate_1_dia": 0,
@@ -1322,7 +1322,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-08-01",
     "total_ajustes": 6924,
     "faixa_ate_1_dia": 6330,
@@ -1337,7 +1337,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-08-01",
     "total_ajustes": 5447,
     "faixa_ate_1_dia": 5005,
@@ -1352,7 +1352,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-08-01",
     "total_ajustes": 4769,
     "faixa_ate_1_dia": 4480,
@@ -1367,7 +1367,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-08-01",
     "total_ajustes": 4744,
     "faixa_ate_1_dia": 4393,
@@ -1382,7 +1382,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-08-01",
     "total_ajustes": 2769,
     "faixa_ate_1_dia": 1017,
@@ -1397,7 +1397,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-08-01",
     "total_ajustes": 1476,
     "faixa_ate_1_dia": 1371,
@@ -1412,7 +1412,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-08-01",
     "total_ajustes": 1475,
     "faixa_ate_1_dia": 1418,
@@ -1427,7 +1427,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-08-01",
     "total_ajustes": 1447,
     "faixa_ate_1_dia": 1344,
@@ -1442,7 +1442,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-08-01",
     "total_ajustes": 1367,
     "faixa_ate_1_dia": 1288,
@@ -1457,7 +1457,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-08-01",
     "total_ajustes": 1055,
     "faixa_ate_1_dia": 976,
@@ -1472,7 +1472,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-08-01",
     "total_ajustes": 946,
     "faixa_ate_1_dia": 920,
@@ -1487,7 +1487,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-08-01",
     "total_ajustes": 923,
     "faixa_ate_1_dia": 822,
@@ -1502,7 +1502,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-08-01",
     "total_ajustes": 724,
     "faixa_ate_1_dia": 670,
@@ -1517,7 +1517,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-08-01",
     "total_ajustes": 349,
     "faixa_ate_1_dia": 305,
@@ -1532,7 +1532,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-08-01",
     "total_ajustes": 337,
     "faixa_ate_1_dia": 316,
@@ -1547,7 +1547,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-08-01",
     "total_ajustes": 282,
     "faixa_ate_1_dia": 264,
@@ -1562,7 +1562,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-08-01",
     "total_ajustes": 155,
     "faixa_ate_1_dia": 151,
@@ -1577,7 +1577,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-08-01",
     "total_ajustes": 54,
     "faixa_ate_1_dia": 53,
@@ -1592,7 +1592,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-08-01",
     "total_ajustes": 12,
     "faixa_ate_1_dia": 3,
@@ -1607,7 +1607,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-08-01",
     "total_ajustes": 10,
     "faixa_ate_1_dia": 4,
@@ -1622,7 +1622,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2025-08-01",
     "total_ajustes": 2,
     "faixa_ate_1_dia": 0,
@@ -1637,7 +1637,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-09-01",
     "total_ajustes": 6830,
     "faixa_ate_1_dia": 6671,
@@ -1652,7 +1652,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-09-01",
     "total_ajustes": 6786,
     "faixa_ate_1_dia": 6492,
@@ -1667,7 +1667,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-09-01",
     "total_ajustes": 6476,
     "faixa_ate_1_dia": 6159,
@@ -1682,7 +1682,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-09-01",
     "total_ajustes": 5522,
     "faixa_ate_1_dia": 5258,
@@ -1697,7 +1697,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-09-01",
     "total_ajustes": 2936,
     "faixa_ate_1_dia": 1208,
@@ -1712,7 +1712,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-09-01",
     "total_ajustes": 1701,
     "faixa_ate_1_dia": 1594,
@@ -1727,7 +1727,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-09-01",
     "total_ajustes": 1407,
     "faixa_ate_1_dia": 1320,
@@ -1742,7 +1742,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-09-01",
     "total_ajustes": 1349,
     "faixa_ate_1_dia": 1323,
@@ -1757,7 +1757,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-09-01",
     "total_ajustes": 1317,
     "faixa_ate_1_dia": 1265,
@@ -1772,7 +1772,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-09-01",
     "total_ajustes": 1002,
     "faixa_ate_1_dia": 897,
@@ -1787,7 +1787,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-09-01",
     "total_ajustes": 916,
     "faixa_ate_1_dia": 851,
@@ -1802,7 +1802,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-09-01",
     "total_ajustes": 846,
     "faixa_ate_1_dia": 832,
@@ -1817,7 +1817,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-09-01",
     "total_ajustes": 742,
     "faixa_ate_1_dia": 710,
@@ -1832,7 +1832,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-09-01",
     "total_ajustes": 342,
     "faixa_ate_1_dia": 301,
@@ -1847,7 +1847,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-09-01",
     "total_ajustes": 237,
     "faixa_ate_1_dia": 210,
@@ -1862,7 +1862,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-09-01",
     "total_ajustes": 217,
     "faixa_ate_1_dia": 209,
@@ -1877,7 +1877,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-09-01",
     "total_ajustes": 139,
     "faixa_ate_1_dia": 134,
@@ -1892,7 +1892,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-09-01",
     "total_ajustes": 27,
     "faixa_ate_1_dia": 27,
@@ -1907,7 +1907,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-09-01",
     "total_ajustes": 9,
     "faixa_ate_1_dia": 6,
@@ -1922,7 +1922,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-09-01",
     "total_ajustes": 4,
     "faixa_ate_1_dia": 3,
@@ -1937,7 +1937,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2025-09-01",
     "total_ajustes": 2,
     "faixa_ate_1_dia": 0,
@@ -1952,7 +1952,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2025-09-01",
     "total_ajustes": 1,
     "faixa_ate_1_dia": 0,
@@ -1967,7 +1967,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-10-01",
     "total_ajustes": 7212,
     "faixa_ate_1_dia": 6896,
@@ -1982,7 +1982,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-10-01",
     "total_ajustes": 5658,
     "faixa_ate_1_dia": 5322,
@@ -1997,7 +1997,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-10-01",
     "total_ajustes": 4368,
     "faixa_ate_1_dia": 4109,
@@ -2012,7 +2012,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-10-01",
     "total_ajustes": 4121,
     "faixa_ate_1_dia": 4032,
@@ -2027,7 +2027,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-10-01",
     "total_ajustes": 2472,
     "faixa_ate_1_dia": 972,
@@ -2042,7 +2042,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-10-01",
     "total_ajustes": 1557,
     "faixa_ate_1_dia": 1469,
@@ -2057,7 +2057,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-10-01",
     "total_ajustes": 1523,
     "faixa_ate_1_dia": 1437,
@@ -2072,7 +2072,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-10-01",
     "total_ajustes": 1370,
     "faixa_ate_1_dia": 1303,
@@ -2087,7 +2087,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-10-01",
     "total_ajustes": 1211,
     "faixa_ate_1_dia": 1156,
@@ -2102,7 +2102,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-10-01",
     "total_ajustes": 1145,
     "faixa_ate_1_dia": 1121,
@@ -2117,7 +2117,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-10-01",
     "total_ajustes": 903,
     "faixa_ate_1_dia": 816,
@@ -2132,7 +2132,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-10-01",
     "total_ajustes": 768,
     "faixa_ate_1_dia": 744,
@@ -2147,7 +2147,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-10-01",
     "total_ajustes": 662,
     "faixa_ate_1_dia": 622,
@@ -2162,7 +2162,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-10-01",
     "total_ajustes": 350,
     "faixa_ate_1_dia": 313,
@@ -2177,7 +2177,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-10-01",
     "total_ajustes": 227,
     "faixa_ate_1_dia": 224,
@@ -2192,7 +2192,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-10-01",
     "total_ajustes": 211,
     "faixa_ate_1_dia": 189,
@@ -2207,7 +2207,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-10-01",
     "total_ajustes": 149,
     "faixa_ate_1_dia": 148,
@@ -2222,7 +2222,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-10-01",
     "total_ajustes": 62,
     "faixa_ate_1_dia": 56,
@@ -2237,7 +2237,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2025-10-01",
     "total_ajustes": 4,
     "faixa_ate_1_dia": 2,
@@ -2252,7 +2252,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2025-10-01",
     "total_ajustes": 3,
     "faixa_ate_1_dia": 0,
@@ -2267,7 +2267,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-10-01",
     "total_ajustes": 3,
     "faixa_ate_1_dia": 2,
@@ -2282,7 +2282,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-10-01",
     "total_ajustes": 1,
     "faixa_ate_1_dia": 0,
@@ -2297,7 +2297,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-11-01",
     "total_ajustes": 7485,
     "faixa_ate_1_dia": 7106,
@@ -2312,7 +2312,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-11-01",
     "total_ajustes": 5752,
     "faixa_ate_1_dia": 5548,
@@ -2327,7 +2327,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-11-01",
     "total_ajustes": 4769,
     "faixa_ate_1_dia": 4495,
@@ -2342,7 +2342,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-11-01",
     "total_ajustes": 4188,
     "faixa_ate_1_dia": 4113,
@@ -2357,7 +2357,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-11-01",
     "total_ajustes": 2604,
     "faixa_ate_1_dia": 1225,
@@ -2372,7 +2372,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-11-01",
     "total_ajustes": 1828,
     "faixa_ate_1_dia": 1782,
@@ -2387,7 +2387,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-11-01",
     "total_ajustes": 1637,
     "faixa_ate_1_dia": 1602,
@@ -2402,7 +2402,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-11-01",
     "total_ajustes": 1472,
     "faixa_ate_1_dia": 1425,
@@ -2417,7 +2417,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-11-01",
     "total_ajustes": 1133,
     "faixa_ate_1_dia": 1101,
@@ -2432,7 +2432,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-11-01",
     "total_ajustes": 1079,
     "faixa_ate_1_dia": 1042,
@@ -2447,7 +2447,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-11-01",
     "total_ajustes": 914,
     "faixa_ate_1_dia": 868,
@@ -2462,7 +2462,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-11-01",
     "total_ajustes": 852,
     "faixa_ate_1_dia": 835,
@@ -2477,7 +2477,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-11-01",
     "total_ajustes": 689,
     "faixa_ate_1_dia": 660,
@@ -2492,7 +2492,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-11-01",
     "total_ajustes": 332,
     "faixa_ate_1_dia": 301,
@@ -2507,7 +2507,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-11-01",
     "total_ajustes": 230,
     "faixa_ate_1_dia": 215,
@@ -2522,7 +2522,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-11-01",
     "total_ajustes": 199,
     "faixa_ate_1_dia": 186,
@@ -2537,7 +2537,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-11-01",
     "total_ajustes": 98,
     "faixa_ate_1_dia": 98,
@@ -2552,7 +2552,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-11-01",
     "total_ajustes": 66,
     "faixa_ate_1_dia": 66,
@@ -2567,7 +2567,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-11-01",
     "total_ajustes": 18,
     "faixa_ate_1_dia": 7,
@@ -2582,7 +2582,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-11-01",
     "total_ajustes": 5,
     "faixa_ate_1_dia": 0,
@@ -2597,7 +2597,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2025-11-01",
     "total_ajustes": 1,
     "faixa_ate_1_dia": 0,
@@ -2612,7 +2612,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2025-12-01",
     "total_ajustes": 9481,
     "faixa_ate_1_dia": 9080,
@@ -2627,7 +2627,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2025-12-01",
     "total_ajustes": 7523,
     "faixa_ate_1_dia": 7084,
@@ -2642,7 +2642,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2025-12-01",
     "total_ajustes": 5371,
     "faixa_ate_1_dia": 5265,
@@ -2657,7 +2657,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2025-12-01",
     "total_ajustes": 5366,
     "faixa_ate_1_dia": 5133,
@@ -2672,7 +2672,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2025-12-01",
     "total_ajustes": 2527,
     "faixa_ate_1_dia": 960,
@@ -2687,7 +2687,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2025-12-01",
     "total_ajustes": 1902,
     "faixa_ate_1_dia": 1834,
@@ -2702,7 +2702,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2025-12-01",
     "total_ajustes": 1790,
     "faixa_ate_1_dia": 1724,
@@ -2717,7 +2717,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2025-12-01",
     "total_ajustes": 1643,
     "faixa_ate_1_dia": 1604,
@@ -2732,7 +2732,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2025-12-01",
     "total_ajustes": 1290,
     "faixa_ate_1_dia": 1230,
@@ -2747,7 +2747,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2025-12-01",
     "total_ajustes": 1253,
     "faixa_ate_1_dia": 1166,
@@ -2762,7 +2762,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2025-12-01",
     "total_ajustes": 1005,
     "faixa_ate_1_dia": 905,
@@ -2777,7 +2777,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2025-12-01",
     "total_ajustes": 819,
     "faixa_ate_1_dia": 802,
@@ -2792,7 +2792,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2025-12-01",
     "total_ajustes": 767,
     "faixa_ate_1_dia": 717,
@@ -2807,7 +2807,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2025-12-01",
     "total_ajustes": 384,
     "faixa_ate_1_dia": 314,
@@ -2822,7 +2822,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2025-12-01",
     "total_ajustes": 273,
     "faixa_ate_1_dia": 247,
@@ -2837,7 +2837,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2025-12-01",
     "total_ajustes": 248,
     "faixa_ate_1_dia": 244,
@@ -2852,7 +2852,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2025-12-01",
     "total_ajustes": 111,
     "faixa_ate_1_dia": 107,
@@ -2867,7 +2867,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2025-12-01",
     "total_ajustes": 69,
     "faixa_ate_1_dia": 68,
@@ -2882,7 +2882,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2025-12-01",
     "total_ajustes": 7,
     "faixa_ate_1_dia": 1,
@@ -2897,7 +2897,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2025-12-01",
     "total_ajustes": 7,
     "faixa_ate_1_dia": 3,
@@ -2912,7 +2912,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2025-12-01",
     "total_ajustes": 6,
     "faixa_ate_1_dia": 4,
@@ -2927,7 +2927,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2025-12-01",
     "total_ajustes": 2,
     "faixa_ate_1_dia": 0,
@@ -2942,7 +2942,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2026-01-01",
     "total_ajustes": 8854,
     "faixa_ate_1_dia": 8473,
@@ -2957,7 +2957,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2026-01-01",
     "total_ajustes": 7482,
     "faixa_ate_1_dia": 7181,
@@ -2972,7 +2972,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2026-01-01",
     "total_ajustes": 5113,
     "faixa_ate_1_dia": 5021,
@@ -2987,7 +2987,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2026-01-01",
     "total_ajustes": 4832,
     "faixa_ate_1_dia": 4666,
@@ -3002,7 +3002,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2026-01-01",
     "total_ajustes": 2877,
     "faixa_ate_1_dia": 934,
@@ -3017,7 +3017,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2026-01-01",
     "total_ajustes": 1905,
     "faixa_ate_1_dia": 1844,
@@ -3032,7 +3032,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2026-01-01",
     "total_ajustes": 1623,
     "faixa_ate_1_dia": 1586,
@@ -3047,7 +3047,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2026-01-01",
     "total_ajustes": 1524,
     "faixa_ate_1_dia": 1480,
@@ -3062,7 +3062,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2026-01-01",
     "total_ajustes": 1369,
     "faixa_ate_1_dia": 1349,
@@ -3077,7 +3077,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2026-01-01",
     "total_ajustes": 1148,
     "faixa_ate_1_dia": 1060,
@@ -3092,7 +3092,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2026-01-01",
     "total_ajustes": 1131,
     "faixa_ate_1_dia": 1101,
@@ -3107,7 +3107,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2026-01-01",
     "total_ajustes": 727,
     "faixa_ate_1_dia": 719,
@@ -3122,7 +3122,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2026-01-01",
     "total_ajustes": 705,
     "faixa_ate_1_dia": 654,
@@ -3137,7 +3137,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2026-01-01",
     "total_ajustes": 446,
     "faixa_ate_1_dia": 416,
@@ -3152,7 +3152,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2026-01-01",
     "total_ajustes": 200,
     "faixa_ate_1_dia": 198,
@@ -3167,7 +3167,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2026-01-01",
     "total_ajustes": 187,
     "faixa_ate_1_dia": 182,
@@ -3182,7 +3182,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2026-01-01",
     "total_ajustes": 101,
     "faixa_ate_1_dia": 101,
@@ -3197,7 +3197,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2026-01-01",
     "total_ajustes": 58,
     "faixa_ate_1_dia": 56,
@@ -3212,7 +3212,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2026-01-01",
     "total_ajustes": 17,
     "faixa_ate_1_dia": 4,
@@ -3227,7 +3227,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2026-01-01",
     "total_ajustes": 4,
     "faixa_ate_1_dia": 1,
@@ -3242,7 +3242,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2026-01-01",
     "total_ajustes": 3,
     "faixa_ate_1_dia": 0,
@@ -3257,7 +3257,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2026-01-01",
     "total_ajustes": 1,
     "faixa_ate_1_dia": 0,
@@ -3272,7 +3272,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2026-02-01",
     "total_ajustes": 8688,
     "faixa_ate_1_dia": 8257,
@@ -3287,7 +3287,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2026-02-01",
     "total_ajustes": 6778,
     "faixa_ate_1_dia": 6435,
@@ -3302,7 +3302,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2026-02-01",
     "total_ajustes": 4987,
     "faixa_ate_1_dia": 4845,
@@ -3317,7 +3317,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2026-02-01",
     "total_ajustes": 4694,
     "faixa_ate_1_dia": 4388,
@@ -3332,7 +3332,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2026-02-01",
     "total_ajustes": 3223,
     "faixa_ate_1_dia": 1163,
@@ -3347,7 +3347,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2026-02-01",
     "total_ajustes": 1771,
     "faixa_ate_1_dia": 1720,
@@ -3362,7 +3362,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2026-02-01",
     "total_ajustes": 1482,
     "faixa_ate_1_dia": 1333,
@@ -3377,7 +3377,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2026-02-01",
     "total_ajustes": 1393,
     "faixa_ate_1_dia": 1320,
@@ -3392,7 +3392,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2026-02-01",
     "total_ajustes": 1378,
     "faixa_ate_1_dia": 1338,
@@ -3407,7 +3407,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2026-02-01",
     "total_ajustes": 1083,
     "faixa_ate_1_dia": 1020,
@@ -3422,7 +3422,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2026-02-01",
     "total_ajustes": 1004,
     "faixa_ate_1_dia": 977,
@@ -3437,7 +3437,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2026-02-01",
     "total_ajustes": 821,
     "faixa_ate_1_dia": 795,
@@ -3452,7 +3452,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2026-02-01",
     "total_ajustes": 693,
     "faixa_ate_1_dia": 664,
@@ -3467,7 +3467,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2026-02-01",
     "total_ajustes": 505,
     "faixa_ate_1_dia": 474,
@@ -3482,7 +3482,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2026-02-01",
     "total_ajustes": 320,
     "faixa_ate_1_dia": 306,
@@ -3497,7 +3497,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2026-02-01",
     "total_ajustes": 166,
     "faixa_ate_1_dia": 156,
@@ -3512,7 +3512,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2026-02-01",
     "total_ajustes": 113,
     "faixa_ate_1_dia": 109,
@@ -3527,7 +3527,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2026-02-01",
     "total_ajustes": 86,
     "faixa_ate_1_dia": 81,
@@ -3542,7 +3542,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2026-02-01",
     "total_ajustes": 23,
     "faixa_ate_1_dia": 3,
@@ -3557,7 +3557,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2026-02-01",
     "total_ajustes": 4,
     "faixa_ate_1_dia": 0,
@@ -3572,7 +3572,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 28,
-    "business_unit_name": "XANGRI-LA",
+    "business_unit_name": "Alagoas",
     "reference_month": "2026-02-01",
     "total_ajustes": 3,
     "faixa_ate_1_dia": 0,
@@ -3587,7 +3587,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2026-02-01",
     "total_ajustes": 2,
     "faixa_ate_1_dia": 1,
@@ -3602,7 +3602,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 11,
-    "business_unit_name": "CAPITAL ACL",
+    "business_unit_name": "Ceará",
     "reference_month": "2026-03-01",
     "total_ajustes": 10100,
     "faixa_ate_1_dia": 9447,
@@ -3617,7 +3617,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 4,
-    "business_unit_name": "ITAJAÍ",
+    "business_unit_name": "Minas Gerais",
     "reference_month": "2026-03-01",
     "total_ajustes": 7805,
     "faixa_ate_1_dia": 7377,
@@ -3632,7 +3632,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 15,
-    "business_unit_name": "CURITIBA NORTE",
+    "business_unit_name": "Mato Grosso",
     "reference_month": "2026-03-01",
     "total_ajustes": 5710,
     "faixa_ate_1_dia": 5204,
@@ -3647,7 +3647,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 3,
-    "business_unit_name": "CAPITAL SEG",
+    "business_unit_name": "Rio de Janeiro",
     "reference_month": "2026-03-01",
     "total_ajustes": 5199,
     "faixa_ate_1_dia": 5008,
@@ -3662,7 +3662,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 2,
-    "business_unit_name": "ADMINISTRAÇÃO - SEDE",
+    "business_unit_name": "São Paulo",
     "reference_month": "2026-03-01",
     "total_ajustes": 3535,
     "faixa_ate_1_dia": 1412,
@@ -3677,7 +3677,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 6,
-    "business_unit_name": "BLUMENAU",
+    "business_unit_name": "Paraná",
     "reference_month": "2026-03-01",
     "total_ajustes": 2081,
     "faixa_ate_1_dia": 1960,
@@ -3692,7 +3692,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 24,
-    "business_unit_name": "CAMPINAS",
+    "business_unit_name": "Piauí",
     "reference_month": "2026-03-01",
     "total_ajustes": 1813,
     "faixa_ate_1_dia": 1646,
@@ -3707,7 +3707,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 7,
-    "business_unit_name": "JOINVILLE",
+    "business_unit_name": "Rio Grande do Sul",
     "reference_month": "2026-03-01",
     "total_ajustes": 1506,
     "faixa_ate_1_dia": 1437,
@@ -3722,7 +3722,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 14,
-    "business_unit_name": "JARAGUÁ DO SUL",
+    "business_unit_name": "Distrito Federal",
     "reference_month": "2026-03-01",
     "total_ajustes": 1431,
     "faixa_ate_1_dia": 1379,
@@ -3737,7 +3737,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 8,
-    "business_unit_name": "LAGES",
+    "business_unit_name": "Santa Catarina",
     "reference_month": "2026-03-01",
     "total_ajustes": 1295,
     "faixa_ate_1_dia": 1189,
@@ -3752,7 +3752,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 16,
-    "business_unit_name": "CASCAVEL",
+    "business_unit_name": "Mato Grosso do Sul",
     "reference_month": "2026-03-01",
     "total_ajustes": 1072,
     "faixa_ate_1_dia": 982,
@@ -3767,7 +3767,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 13,
-    "business_unit_name": "RIO DO SUL",
+    "business_unit_name": "Espírito Santo",
     "reference_month": "2026-03-01",
     "total_ajustes": 917,
     "faixa_ate_1_dia": 849,
@@ -3782,7 +3782,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 5,
-    "business_unit_name": "BRUSQUE",
+    "business_unit_name": "Bahia",
     "reference_month": "2026-03-01",
     "total_ajustes": 834,
     "faixa_ate_1_dia": 781,
@@ -3797,7 +3797,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 12,
-    "business_unit_name": "CHAPECÓ",
+    "business_unit_name": "Goiás",
     "reference_month": "2026-03-01",
     "total_ajustes": 467,
     "faixa_ate_1_dia": 421,
@@ -3812,7 +3812,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 23,
-    "business_unit_name": "NOVO HAMBURGO",
+    "business_unit_name": "Maranhão",
     "reference_month": "2026-03-01",
     "total_ajustes": 391,
     "faixa_ate_1_dia": 364,
@@ -3827,7 +3827,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 9,
-    "business_unit_name": "CRICIÚMA",
+    "business_unit_name": "Pernambuco",
     "reference_month": "2026-03-01",
     "total_ajustes": 163,
     "faixa_ate_1_dia": 138,
@@ -3842,7 +3842,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 18,
-    "business_unit_name": "TUBARÃO",
+    "business_unit_name": "Pará",
     "reference_month": "2026-03-01",
     "total_ajustes": 126,
     "faixa_ate_1_dia": 124,
@@ -3857,7 +3857,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 27,
-    "business_unit_name": "SÃO JOSÉ DO RIO PRETO",
+    "business_unit_name": "Sergipe",
     "reference_month": "2026-03-01",
     "total_ajustes": 58,
     "faixa_ate_1_dia": 50,
@@ -3872,7 +3872,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 22,
-    "business_unit_name": "TRAMANDAÍ",
+    "business_unit_name": "Amazonas",
     "reference_month": "2026-03-01",
     "total_ajustes": 28,
     "faixa_ate_1_dia": 5,
@@ -3887,7 +3887,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 26,
-    "business_unit_name": "PALMAS",
+    "business_unit_name": "Paraíba",
     "reference_month": "2026-03-01",
     "total_ajustes": 2,
     "faixa_ate_1_dia": 2,
@@ -3902,7 +3902,7 @@
   {
     "customer_id": 1,
     "business_unit_id": 25,
-    "business_unit_name": "GOIANIA",
+    "business_unit_name": "Rio Grande do Norte",
     "reference_month": "2026-03-01",
     "total_ajustes": 2,
     "faixa_ate_1_dia": 1,

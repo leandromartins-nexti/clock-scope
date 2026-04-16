@@ -2,7 +2,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-04-01",
     "clocking_count": 129354,
     "registered_count": 104020,
@@ -14,7 +14,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-04-01",
     "clocking_count": 19828,
     "registered_count": 17199,
@@ -26,7 +26,7 @@
   {
     "customer_id": 1,
     "company_id": 72,
-    "company_name": "ORSEGUPS COM. EQUIP. DE SEG. ELETRO LTDA",
+    "company_name": "Fênix Construções",
     "reference_month": "2025-04-01",
     "clocking_count": 72,
     "registered_count": 72,
@@ -38,7 +38,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-04-01",
     "clocking_count": 694,
     "registered_count": 612,
@@ -50,7 +50,7 @@
   {
     "customer_id": 1,
     "company_id": 6330,
-    "company_name": "AGREGA SERVIÇOS E APOIO ADMINISTRATIVO LTDA",
+    "company_name": "Garra Mineração S.A.",
     "reference_month": "2025-04-01",
     "clocking_count": 40,
     "registered_count": 40,
@@ -62,7 +62,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-04-01",
     "clocking_count": 178651,
     "registered_count": 155144,
@@ -74,7 +74,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-05-01",
     "clocking_count": 612,
     "registered_count": 566,
@@ -86,7 +86,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-05-01",
     "clocking_count": 135136,
     "registered_count": 107500,
@@ -98,7 +98,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-05-01",
     "clocking_count": 185566,
     "registered_count": 160005,
@@ -110,7 +110,7 @@
   {
     "customer_id": 1,
     "company_id": 6330,
-    "company_name": "AGREGA SERVIÇOS E APOIO ADMINISTRATIVO LTDA",
+    "company_name": "Garra Mineração S.A.",
     "reference_month": "2025-05-01",
     "clocking_count": 42,
     "registered_count": 42,
@@ -122,7 +122,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-05-01",
     "clocking_count": 20758,
     "registered_count": 17661,
@@ -134,7 +134,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-06-01",
     "clocking_count": 639,
     "registered_count": 571,
@@ -146,7 +146,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-06-01",
     "clocking_count": 179432,
     "registered_count": 153864,
@@ -158,7 +158,7 @@
   {
     "customer_id": 1,
     "company_id": 6330,
-    "company_name": "AGREGA SERVIÇOS E APOIO ADMINISTRATIVO LTDA",
+    "company_name": "Garra Mineração S.A.",
     "reference_month": "2025-06-01",
     "clocking_count": 40,
     "registered_count": 40,
@@ -170,7 +170,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-06-01",
     "clocking_count": 133362,
     "registered_count": 104129,
@@ -182,7 +182,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-06-01",
     "clocking_count": 20417,
     "registered_count": 17416,
@@ -194,7 +194,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-07-01",
     "clocking_count": 734,
     "registered_count": 652,
@@ -206,7 +206,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-07-01",
     "clocking_count": 191870,
     "registered_count": 167260,
@@ -218,7 +218,7 @@
   {
     "customer_id": 1,
     "company_id": 6330,
-    "company_name": "AGREGA SERVIÇOS E APOIO ADMINISTRATIVO LTDA",
+    "company_name": "Garra Mineração S.A.",
     "reference_month": "2025-07-01",
     "clocking_count": 40,
     "registered_count": 38,
@@ -230,7 +230,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-07-01",
     "clocking_count": 149013,
     "registered_count": 119451,
@@ -242,7 +242,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-07-01",
     "clocking_count": 21624,
     "registered_count": 19044,
@@ -254,7 +254,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-08-01",
     "clocking_count": 141878,
     "registered_count": 119523,
@@ -266,7 +266,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-08-01",
     "clocking_count": 682,
     "registered_count": 599,
@@ -278,7 +278,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-08-01",
     "clocking_count": 186988,
     "registered_count": 166527,
@@ -290,7 +290,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-08-01",
     "clocking_count": 21454,
     "registered_count": 19192,
@@ -302,7 +302,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-09-01",
     "clocking_count": 726,
     "registered_count": 638,
@@ -314,7 +314,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-09-01",
     "clocking_count": 142997,
     "registered_count": 122004,
@@ -326,7 +326,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-09-01",
     "clocking_count": 21270,
     "registered_count": 15479,
@@ -338,7 +338,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-09-01",
     "clocking_count": 182488,
     "registered_count": 162004,
@@ -350,7 +350,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-10-01",
     "clocking_count": 590,
     "registered_count": 519,
@@ -362,7 +362,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-10-01",
     "clocking_count": 21844,
     "registered_count": 19080,
@@ -374,7 +374,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-10-01",
     "clocking_count": 150240,
     "registered_count": 128549,
@@ -386,7 +386,7 @@
   {
     "customer_id": 1,
     "company_id": 5,
-    "company_name": "ORSEGUPS SERVIÇOS DE LIMPEZA E MANUTENÇÃO LTDA",
+    "company_name": "Boreal Energia Ltda.",
     "reference_month": "2025-10-01",
     "clocking_count": 18,
     "registered_count": 9,
@@ -398,7 +398,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-10-01",
     "clocking_count": 184913,
     "registered_count": 167723,
@@ -410,7 +410,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-11-01",
     "clocking_count": 20697,
     "registered_count": 17943,
@@ -422,7 +422,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-11-01",
     "clocking_count": 540,
     "registered_count": 477,
@@ -434,7 +434,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-11-01",
     "clocking_count": 133765,
     "registered_count": 111529,
@@ -446,7 +446,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-11-01",
     "clocking_count": 166682,
     "registered_count": 147144,
@@ -458,7 +458,7 @@
   {
     "customer_id": 1,
     "company_id": 5,
-    "company_name": "ORSEGUPS SERVIÇOS DE LIMPEZA E MANUTENÇÃO LTDA",
+    "company_name": "Boreal Energia Ltda.",
     "reference_month": "2025-11-01",
     "clocking_count": 4,
     "registered_count": 4,
@@ -470,7 +470,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2025-12-01",
     "clocking_count": 140179,
     "registered_count": 112586,
@@ -482,7 +482,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2025-12-01",
     "clocking_count": 21218,
     "registered_count": 17972,
@@ -494,7 +494,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2025-12-01",
     "clocking_count": 176083,
     "registered_count": 153409,
@@ -506,7 +506,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2025-12-01",
     "clocking_count": 482,
     "registered_count": 436,
@@ -518,7 +518,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2026-01-01",
     "clocking_count": 140983,
     "registered_count": 113753,
@@ -530,7 +530,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2026-01-01",
     "clocking_count": 21474,
     "registered_count": 18455,
@@ -542,7 +542,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2026-01-01",
     "clocking_count": 172064,
     "registered_count": 149699,
@@ -554,7 +554,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2026-01-01",
     "clocking_count": 642,
     "registered_count": 526,
@@ -566,7 +566,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2026-02-01",
     "clocking_count": 19620,
     "registered_count": 16714,
@@ -578,7 +578,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2026-02-01",
     "clocking_count": 724,
     "registered_count": 640,
@@ -590,7 +590,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2026-02-01",
     "clocking_count": 132200,
     "registered_count": 104949,
@@ -602,7 +602,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2026-02-01",
     "clocking_count": 161633,
     "registered_count": 140426,
@@ -614,7 +614,7 @@
   {
     "customer_id": 1,
     "company_id": 8,
-    "company_name": "ORSEGUPS MONITORAMENTO ELETRÔNICO LTDA.",
+    "company_name": "Cosmos Têxtil Indústria",
     "reference_month": "2026-03-01",
     "clocking_count": 795,
     "registered_count": 729,
@@ -626,7 +626,7 @@
   {
     "customer_id": 1,
     "company_id": 9,
-    "company_name": "ORSEGUPS SEGURANÇA E VIGILANCIA LTDA",
+    "company_name": "Delta Logística Brasil",
     "reference_month": "2026-03-01",
     "clocking_count": 178364,
     "registered_count": 154551,
@@ -638,7 +638,7 @@
   {
     "customer_id": 1,
     "company_id": 2,
-    "company_name": "CASVIG CATARINENSE DE SEGURANÇA E VIGILÂNCIA LTDA.",
+    "company_name": "Aurora Alimentos S.A.",
     "reference_month": "2026-03-01",
     "clocking_count": 21580,
     "registered_count": 18409,
@@ -650,7 +650,7 @@
   {
     "customer_id": 1,
     "company_id": 19,
-    "company_name": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA LTDA",
+    "company_name": "Equinox Farmacêutica",
     "reference_month": "2026-03-01",
     "clocking_count": 149189,
     "registered_count": 117565,

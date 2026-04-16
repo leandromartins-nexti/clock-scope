@@ -6,21 +6,57 @@
     "title": "Empresa ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA opera em Atenção",
     "narrative": "Única empresa do grupo classificada como Atenção (Score 68.9). Tem 481 ajustes por operador no pico (limite Crítico do Padrão Nexti) e média de 441h de hora-extra rateada por mês. Diferente das outras empresas do grupo, não há tendência clara de melhoria — o problema é estrutural.",
     "evidence": {
-      "before": { "label": "Score atual", "value": "68.9 (Atenção)" },
-      "after": { "label": "Score médio do grupo", "value": "80.5" }
+      "before": {
+        "label": "Score atual",
+        "value": "68.9 (Atenção)"
+      },
+      "after": {
+        "label": "Score médio do grupo",
+        "value": "80.5"
+      }
     },
     "action": "Avaliar dimensionamento do back-office desta empresa e revisar processo",
-    "crossRef": { "targetId": "opp_001", "label": "Ver oportunidade em Oportunidades" },
+    "crossRef": {
+      "targetId": "opp_001",
+      "label": "Ver oportunidade em Oportunidades"
+    },
     "modal": {
       "diagnosis": "ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA tem o pior Score entre as 7 empresas do grupo. A combinação de aj/operador alto (média 425, pico 481) com HE rateada elevada (441h/mês) indica que a equipe de back-office está sobrecarregada cronicamente. Os 50-55 operadores ativos não dão conta do volume de ~22.000 ajustes/mês. Não é problema pontual: o padrão se repete há 12 meses.",
       "evidence": [
-        { "label": "Score consolidado", "value": "68.9", "context": "Atenção, único do grupo nessa faixa" },
-        { "label": "Volume de ajustes médio", "value": "22.235/mês", "context": "Segundo maior do grupo" },
-        { "label": "Operadores ativos", "value": "50-55", "context": "Estável durante 12 meses" },
-        { "label": "Aj/operador médio anual", "value": "414", "context": "Acima do limite saudável de 200" },
-        { "label": "HE rateada média", "value": "441h/mês", "context": "Variou de 333h a 596h" },
-        { "label": "Colaboradores ativos", "value": "3.634" },
-        { "label": "Qualidade", "value": "81.4%", "context": "Terceira pior do grupo" }
+        {
+          "label": "Score consolidado",
+          "value": "68.9",
+          "context": "Atenção, único do grupo nessa faixa"
+        },
+        {
+          "label": "Volume de ajustes médio",
+          "value": "22.235/mês",
+          "context": "Segundo maior do grupo"
+        },
+        {
+          "label": "Operadores ativos",
+          "value": "50-55",
+          "context": "Estável durante 12 meses"
+        },
+        {
+          "label": "Aj/operador médio anual",
+          "value": "414",
+          "context": "Acima do limite saudável de 200"
+        },
+        {
+          "label": "HE rateada média",
+          "value": "441h/mês",
+          "context": "Variou de 333h a 596h"
+        },
+        {
+          "label": "Colaboradores ativos",
+          "value": "3.634"
+        },
+        {
+          "label": "Qualidade",
+          "value": "81.4%",
+          "context": "Terceira pior do grupo"
+        }
       ],
       "action_plan": [
         "Revisão de dimensionamento do back-office: 50 operadores para 22k ajustes/mês é insuficiente (440 aj/op vs benchmark 200)",
@@ -29,7 +65,9 @@
         "Comparar com ORSEGUPS SEGURANÇA E VIGILANCIA (que opera com 207 aj/op) para identificar diferença de processo",
         "Meta: trazer aj/operador para ≤300 em 90 dias e ≤200 em 6 meses"
       ],
-      "related_cards": ["opp_001"]
+      "related_cards": [
+        "opp_001"
+      ]
     }
   },
   {
@@ -39,20 +77,51 @@
     "title": "ORSEGUPS SEGURANÇA E VIGILANCIA acumula 9.350h de HE rateada em 12 meses",
     "narrative": "A maior empresa do grupo em headcount (5.141 colaboradores) acumulou aproximadamente 9.350h de hora-extra rateada no período de 12 meses, média de 779h/mês. Mesmo com aj/operador controlado em 207, o volume absoluto de HE indica equipe BO operando consistentemente em ritmo intenso.",
     "evidence": {
-      "before": { "label": "HE rateada total/ano", "value": "9.350h" },
-      "after": { "label": "Custo estimado/ano", "value": "R$ 280.000+" }
+      "before": {
+        "label": "HE rateada total/ano",
+        "value": "9.350h"
+      },
+      "after": {
+        "label": "Custo estimado/ano",
+        "value": "R$ 280.000+"
+      }
     },
     "action": "Investigar concentração da HE entre os ~85 operadores ativos",
     "modal": {
       "diagnosis": "Apesar do aj/operador estar controlado em 207 (faixa Bom no Padrão Nexti) e Score consolidado em 74.1 (Bom), o volume absoluto de HE rateada chama atenção. ~9.350h em 12 meses representa custo direto significativo e risco oculto: se a HE estiver concentrada em poucos operadores, há risco de burnout e exposição trabalhista. Vale fazer diagnóstico individual da equipe.",
       "evidence": [
-        { "label": "Colaboradores ativos", "value": "5.141", "context": "Maior empresa do grupo" },
-        { "label": "Operadores BO", "value": "79-92", "context": "Estável" },
-        { "label": "Aj/operador", "value": "153-233", "context": "Faixa Bom/Excelente" },
-        { "label": "HE rateada acumulada", "value": "~9.350h/ano" },
-        { "label": "HE rateada/mês", "value": "620h-913h" },
-        { "label": "Tendência mar/26", "value": "620h", "context": "Queda vs meses anteriores" },
-        { "label": "Custo estimado HE", "value": "R$ 280-350k/ano" }
+        {
+          "label": "Colaboradores ativos",
+          "value": "5.141",
+          "context": "Maior empresa do grupo"
+        },
+        {
+          "label": "Operadores BO",
+          "value": "79-92",
+          "context": "Estável"
+        },
+        {
+          "label": "Aj/operador",
+          "value": "153-233",
+          "context": "Faixa Bom/Excelente"
+        },
+        {
+          "label": "HE rateada acumulada",
+          "value": "~9.350h/ano"
+        },
+        {
+          "label": "HE rateada/mês",
+          "value": "620h-913h"
+        },
+        {
+          "label": "Tendência mar/26",
+          "value": "620h",
+          "context": "Queda vs meses anteriores"
+        },
+        {
+          "label": "Custo estimado HE",
+          "value": "R$ 280-350k/ano"
+        }
       ],
       "action_plan": [
         "Mapear concentração de HE por operador (hipótese: 20% dos operadores fazem 80% das horas)",
@@ -61,7 +130,9 @@
         "Avaliar contratação de 2-3 operadores adicionais (custo R$ 13-15k/mês vs HE evitada R$ 18-24k/mês)",
         "Acompanhamento mensal por 6 meses"
       ],
-      "related_cards": ["opp_003"]
+      "related_cards": [
+        "opp_003"
+      ]
     }
   },
   {
@@ -71,18 +142,42 @@
     "title": "UN CAPITAL ACL é a pior unidade com volume relevante (Score 68.9)",
     "narrative": "Capital ACL tem 1.153 colaboradores ativos (sexta maior UN), mas Score 68.9 (Atenção). É a única UN com volume relevante (>500 HC) na faixa Atenção. Aj/operador chegou a 443, dentro da faixa Bom mas distante do líder do grupo.",
     "evidence": {
-      "before": { "label": "Capital ACL", "value": "Score 68.9" },
-      "after": { "label": "Média UNs >500 HC", "value": "Score 78.2" }
+      "before": {
+        "label": "Capital ACL",
+        "value": "Score 68.9"
+      },
+      "after": {
+        "label": "Média UNs >500 HC",
+        "value": "Score 78.2"
+      }
     },
     "action": "Comparar processo da Capital ACL com Capital Seg (1.808 HC, Score 74.8) que opera no mesmo município",
     "modal": {
       "diagnosis": "Capital ACL e Capital Seg parecem operar na mesma região (Capital), mas têm desempenhos diferentes. Capital Seg tem 1.808 colaboradores e Score 74.8; Capital ACL tem 1.153 e Score 68.9. Comparação entre as duas pode revelar o que falta na Capital ACL — provavelmente diferença de gestão local ou processo.",
       "evidence": [
-        { "label": "Capital ACL", "value": "1.153 HC, Score 68.9", "context": "Qualidade 81%, aj/op máx 443" },
-        { "label": "Capital Seg", "value": "1.808 HC, Score 74.8", "context": "Qualidade 85.3%, aj/op máx 244" },
-        { "label": "Tempo médio Capital ACL", "value": "0.6 dias" },
-        { "label": "Tempo médio Capital Seg", "value": "0.3 dias" },
-        { "label": "Acumulado >15d", "value": "1.3%", "context": "Similar entre as duas" }
+        {
+          "label": "Capital ACL",
+          "value": "1.153 HC, Score 68.9",
+          "context": "Qualidade 81%, aj/op máx 443"
+        },
+        {
+          "label": "Capital Seg",
+          "value": "1.808 HC, Score 74.8",
+          "context": "Qualidade 85.3%, aj/op máx 244"
+        },
+        {
+          "label": "Tempo médio Capital ACL",
+          "value": "0.6 dias"
+        },
+        {
+          "label": "Tempo médio Capital Seg",
+          "value": "0.3 dias"
+        },
+        {
+          "label": "Acumulado >15d",
+          "value": "1.3%",
+          "context": "Similar entre as duas"
+        }
       ],
       "action_plan": [
         "Verificar com gestão se Capital ACL e Capital Seg compartilham operação ou são independentes",
@@ -91,7 +186,9 @@
         "Replicar práticas da Capital Seg na Capital ACL",
         "Meta: levar Capital ACL para Score 75+ em 90 dias"
       ],
-      "related_cards": ["opp_002"]
+      "related_cards": [
+        "opp_002"
+      ]
     }
   },
   {
@@ -101,19 +198,46 @@
     "title": "UN ITAJAÍ acumula 326 ajustes por operador",
     "narrative": "Itajaí é a maior UN do grupo em headcount (1.459 colaboradores, terceira posição) e tem 326 aj/operador no pico. Apesar do Score 72.9 (Bom), a sobrecarga BO está visível e tende a piorar se o crescimento da operação continuar.",
     "evidence": {
-      "before": { "label": "Aj/operador (pico)", "value": "326" },
-      "after": { "label": "Limite Bom", "value": "≤400" }
+      "before": {
+        "label": "Aj/operador (pico)",
+        "value": "326"
+      },
+      "after": {
+        "label": "Limite Bom",
+        "value": "≤400"
+      }
     },
     "action": "Reforço preventivo do back-office antes que entre na faixa Atenção",
     "modal": {
       "diagnosis": "Itajaí está em posição de risco preventivo: ainda em zona Bom, mas com aj/operador no nível 326 (perto do limite 400 que dispararia downgrade para Atenção). Como é a terceira maior UN do grupo, qualquer agravamento aqui tem impacto desproporcional no Score consolidado da Orsegups.",
       "evidence": [
-        { "label": "Itajaí HC", "value": "1.459", "context": "Terceira maior UN" },
-        { "label": "Score", "value": "72.9 (Bom)" },
-        { "label": "Aj/operador máximo", "value": "326" },
-        { "label": "Tempo médio", "value": "0.6 dias", "context": "Saudável" },
-        { "label": "Qualidade", "value": "82.0%" },
-        { "label": "Comparativo Capital Seg", "value": "244 aj/op", "context": "1.808 HC" }
+        {
+          "label": "Itajaí HC",
+          "value": "1.459",
+          "context": "Terceira maior UN"
+        },
+        {
+          "label": "Score",
+          "value": "72.9 (Bom)"
+        },
+        {
+          "label": "Aj/operador máximo",
+          "value": "326"
+        },
+        {
+          "label": "Tempo médio",
+          "value": "0.6 dias",
+          "context": "Saudável"
+        },
+        {
+          "label": "Qualidade",
+          "value": "82.0%"
+        },
+        {
+          "label": "Comparativo Capital Seg",
+          "value": "244 aj/op",
+          "context": "1.808 HC"
+        }
       ],
       "action_plan": [
         "Avaliar adição preventiva de 1-2 operadores no BO de Itajaí",
@@ -132,19 +256,46 @@
     "title": "Velocidade média de tratativa abaixo de 1 dia em todos os 12 meses",
     "narrative": "A operação Orsegups manteve tempo médio de tratativa abaixo de 1 dia em TODOS os 12 meses do período (variando entre 0.5 e 0.9 dias). O percentual de ajustes resolvidos em <1 dia ficou sempre acima de 88%, com média de 91.4%. Isso reflete maturidade operacional consistente.",
     "evidence": {
-      "before": { "label": "Tempo médio mín (nov/25)", "value": "0.5 dias" },
-      "after": { "label": "Tempo médio máx (ago/25)", "value": "0.9 dias" }
+      "before": {
+        "label": "Tempo médio mín (nov/25)",
+        "value": "0.5 dias"
+      },
+      "after": {
+        "label": "Tempo médio máx (ago/25)",
+        "value": "0.9 dias"
+      }
     },
     "action": "Documentar como case interno de mesa de operações 24h e referência Nexti",
     "modal": {
       "diagnosis": "A consistência da velocidade de tratativa da Orsegups é o ativo operacional mais valioso da empresa. Em 12 meses, o pior mês foi 0.9 dias e 88.3% em <1 dia. Esse padrão é raro no segmento de terceirização HCM e diferencia a Orsegups dos demais clientes Nexti em uma ordem de magnitude.",
       "evidence": [
-        { "label": "Tempo médio mensal", "value": "0.5 a 0.9 dias" },
-        { "label": "% <1 dia", "value": "88.3% a 93.6%", "context": "Média 91.4%" },
-        { "label": "% >15 dias máximo", "value": "1.8%", "context": "Média 1.2%" },
-        { "label": "Volume processado anual", "value": "~485.000 ajustes" },
-        { "label": "Unidades de negócio", "value": "22" },
-        { "label": "Empresas no grupo", "value": "7", "context": "Padrão consistente" }
+        {
+          "label": "Tempo médio mensal",
+          "value": "0.5 a 0.9 dias"
+        },
+        {
+          "label": "% <1 dia",
+          "value": "88.3% a 93.6%",
+          "context": "Média 91.4%"
+        },
+        {
+          "label": "% >15 dias máximo",
+          "value": "1.8%",
+          "context": "Média 1.2%"
+        },
+        {
+          "label": "Volume processado anual",
+          "value": "~485.000 ajustes"
+        },
+        {
+          "label": "Unidades de negócio",
+          "value": "22"
+        },
+        {
+          "label": "Empresas no grupo",
+          "value": "7",
+          "context": "Padrão consistente"
+        }
       ],
       "action_plan": [
         "Documentar formalmente o playbook da mesa de operações 24h",
@@ -163,19 +314,47 @@
     "title": "UNs Tubarão, Criciúma e Palmas atingem Score Excelente acima de 90",
     "narrative": "Três unidades do grupo operam com Score acima de 90: Tubarão (90.9), Criciúma (90.6) e Palmas (90.6). São a referência interna para as outras 19 unidades. Tubarão é particularmente notável: 0.2 dias de tempo médio e 0.1% acumulado >15 dias.",
     "evidence": {
-      "before": { "label": "Tubarão", "value": "Score 90.9" },
-      "after": { "label": "Criciúma", "value": "Score 90.6" }
+      "before": {
+        "label": "Tubarão",
+        "value": "Score 90.9"
+      },
+      "after": {
+        "label": "Criciúma",
+        "value": "Score 90.6"
+      }
     },
     "action": "Mapear práticas dessas 3 UNs e replicar nas demais",
-    "crossRef": { "targetId": "opp_002", "label": "Ver oportunidade de replicação" },
+    "crossRef": {
+      "targetId": "opp_002",
+      "label": "Ver oportunidade de replicação"
+    },
     "modal": {
       "diagnosis": "Em um grupo com 22 unidades de negócio, 3 atingem o nível Excelente do Padrão Nexti. Não é coincidência: essas três têm em comum tempo médio de tratativa baixo (0.2-2.1 dias) e qualidade entre 80-92%. Replicar o que essas três fazem pode subir o Score consolidado da Orsegups em 3-5 pontos.",
       "evidence": [
-        { "label": "Tubarão", "value": "58 HC, Score 90.9", "context": "Qualidade 80.5%, tempo 0.2d, aj/op 25" },
-        { "label": "Criciúma", "value": "83 HC, Score 90.6", "context": "Qualidade 83.6%, tempo 0.6d, aj/op 56" },
-        { "label": "Palmas", "value": "10 HC, Score 90.6", "context": "Qualidade 92.4%, tempo 2.1d, aj/op 13" },
-        { "label": "São José do Rio Preto", "value": "23 HC, Score 90.3", "context": "Próximo do grupo excelente" },
-        { "label": "Padrão comum", "value": "Operação enxuta + processo bem definido + gestor próximo" }
+        {
+          "label": "Tubarão",
+          "value": "58 HC, Score 90.9",
+          "context": "Qualidade 80.5%, tempo 0.2d, aj/op 25"
+        },
+        {
+          "label": "Criciúma",
+          "value": "83 HC, Score 90.6",
+          "context": "Qualidade 83.6%, tempo 0.6d, aj/op 56"
+        },
+        {
+          "label": "Palmas",
+          "value": "10 HC, Score 90.6",
+          "context": "Qualidade 92.4%, tempo 2.1d, aj/op 13"
+        },
+        {
+          "label": "São José do Rio Preto",
+          "value": "23 HC, Score 90.3",
+          "context": "Próximo do grupo excelente"
+        },
+        {
+          "label": "Padrão comum",
+          "value": "Operação enxuta + processo bem definido + gestor próximo"
+        }
       ],
       "action_plan": [
         "Workshop de 4 horas com gestores das 3 UNs (Tubarão, Criciúma, Palmas)",
@@ -184,7 +363,9 @@
         "Acompanhamento mensal por 6 meses",
         "Reconhecimento formal das UNs líderes (premiação interna)"
       ],
-      "related_cards": ["opp_002"]
+      "related_cards": [
+        "opp_002"
+      ]
     }
   },
   {
@@ -194,18 +375,40 @@
     "title": "Operação consolidada estável com 8.700-9.300 colaboradores ativos",
     "narrative": "A Orsegups manteve headcount ativo entre 8.700 e 9.264 em todos os 12 meses, sem grandes oscilações. Combinado com volume de marcações estável (314k a 363k/mês), demonstra operação madura e previsível.",
     "evidence": {
-      "before": { "label": "HC mínimo (nov/25)", "value": "8.732" },
-      "after": { "label": "HC máximo (mar/26)", "value": "9.264" }
+      "before": {
+        "label": "HC mínimo (nov/25)",
+        "value": "8.732"
+      },
+      "after": {
+        "label": "HC máximo (mar/26)",
+        "value": "9.264"
+      }
     },
     "action": "Manter estabilidade como ativo de previsibilidade para planejamento",
     "modal": {
       "diagnosis": "A operação Orsegups apresenta estabilidade rara em terceirização HCM. Em 12 meses, headcount variou apenas 3% (8.732 a 9.264). Volume de marcações também estável (314k-363k/mês). Esse perfil é base sólida para planejamento financeiro, dimensionamento de equipe e investimentos.",
       "evidence": [
-        { "label": "HC ativo", "value": "8.732 a 9.264" },
-        { "label": "Variação anual", "value": "6%" },
-        { "label": "Volume de marcações", "value": "314k-363k/mês" },
-        { "label": "Variação de volume", "value": "16%", "context": "Sazonalidade normal" },
-        { "label": "Qualidade", "value": "82.7% a 88.3%" }
+        {
+          "label": "HC ativo",
+          "value": "8.732 a 9.264"
+        },
+        {
+          "label": "Variação anual",
+          "value": "6%"
+        },
+        {
+          "label": "Volume de marcações",
+          "value": "314k-363k/mês"
+        },
+        {
+          "label": "Variação de volume",
+          "value": "16%",
+          "context": "Sazonalidade normal"
+        },
+        {
+          "label": "Qualidade",
+          "value": "82.7% a 88.3%"
+        }
       ],
       "action_plan": [
         "Documentar estabilidade como diferencial em apresentações para diretoria",
@@ -223,21 +426,54 @@
     "title": "Redistribuir carga e contratar 2 operadores na ORSEGUPS PRESTAÇÃO LIMPEZA",
     "narrative": "A empresa que opera em Atenção (Score 68.9) tem 50-55 operadores para ~22.000 ajustes/mês (média 414 aj/op). Adicionar 2 operadores e revisar distribuição reduziria o aj/op para ~370 (faixa Bom) e a HE rateada de 441h/mês para ~250h/mês. Custo R$ 9.000/mês vs HE evitada R$ 8.000/mês.",
     "evidence": {
-      "before": { "label": "Custo 2 operadores", "value": "R$ 9.000/mês" },
-      "after": { "label": "HE evitada estimada", "value": "R$ 8.000/mês" }
+      "before": {
+        "label": "Custo 2 operadores",
+        "value": "R$ 9.000/mês"
+      },
+      "after": {
+        "label": "HE evitada estimada",
+        "value": "R$ 8.000/mês"
+      }
     },
     "action": "Submeter business case para diretoria operacional",
-    "crossRef": { "targetId": "risk_001", "label": "Ver risco em Riscos" },
+    "crossRef": {
+      "targetId": "risk_001",
+      "label": "Ver risco em Riscos"
+    },
     "modal": {
       "diagnosis": "A empresa ORSEGUPS PRESTAÇÃO DE SERVIÇOS DE LIMPEZA é a única do grupo em Atenção. O reforço estrutural mínimo (2 operadores) traz a empresa para zona segura. Em paralelo, redistribuir carga pode reduzir picos individuais de ajustes/operador.",
       "evidence": [
-        { "label": "Volume médio", "value": "22.235 ajustes/mês" },
-        { "label": "Operadores atuais", "value": "50-55" },
-        { "label": "Aj/operador atual", "value": "414 média", "context": "425-481 em vários meses" },
-        { "label": "Pós-implementação", "value": "404 aj/op", "context": "Dentro da faixa Bom" },
-        { "label": "HE rateada atual", "value": "441h/mês" },
-        { "label": "Custo 2 operadores", "value": "R$ 9.000/mês" },
-        { "label": "Payback", "value": "Imediato", "context": "HE evitada cobre custo" }
+        {
+          "label": "Volume médio",
+          "value": "22.235 ajustes/mês"
+        },
+        {
+          "label": "Operadores atuais",
+          "value": "50-55"
+        },
+        {
+          "label": "Aj/operador atual",
+          "value": "414 média",
+          "context": "425-481 em vários meses"
+        },
+        {
+          "label": "Pós-implementação",
+          "value": "404 aj/op",
+          "context": "Dentro da faixa Bom"
+        },
+        {
+          "label": "HE rateada atual",
+          "value": "441h/mês"
+        },
+        {
+          "label": "Custo 2 operadores",
+          "value": "R$ 9.000/mês"
+        },
+        {
+          "label": "Payback",
+          "value": "Imediato",
+          "context": "HE evitada cobre custo"
+        }
       ],
       "action_plan": [
         "Preparar business case formal com números acima",
@@ -246,7 +482,9 @@
         "Acompanhamento mensal por 6 meses",
         "Meta: levar Score para 75+ em 90 dias e 80+ em 6 meses"
       ],
-      "related_cards": ["risk_001"]
+      "related_cards": [
+        "risk_001"
+      ]
     }
   },
   {
@@ -256,20 +494,49 @@
     "title": "Replicar processo das UNs Excelentes (Tubarão, Criciúma, Palmas) nas piores",
     "narrative": "As 3 UNs com Score >90 têm tempo médio de tratativa abaixo de 2.1 dias. As UNs em zona Atenção (Capital ACL, Xangri-Lá) têm tempos similares. A diferença está em outros aspectos do processo. Workshop com os gestores das líderes pode revelar a fórmula.",
     "evidence": {
-      "before": { "label": "UNs Excelentes (3)", "value": "Score 90+" },
-      "after": { "label": "UNs em Atenção (2)", "value": "Score 68-69" }
+      "before": {
+        "label": "UNs Excelentes (3)",
+        "value": "Score 90+"
+      },
+      "after": {
+        "label": "UNs em Atenção (2)",
+        "value": "Score 68-69"
+      }
     },
     "action": "Workshop entre gestores das 3 UNs líderes e gestores das 2 UNs em Atenção",
-    "crossRef": { "targetId": "ach_002", "label": "Ver conquista em Conquistas" },
+    "crossRef": {
+      "targetId": "ach_002",
+      "label": "Ver conquista em Conquistas"
+    },
     "modal": {
       "diagnosis": "Replicação interna é o caminho mais rápido e mais barato de melhoria. Mesmo grupo, mesma cultura corporativa, mesmo produto Nexti. A diferença está na execução local.",
       "evidence": [
-        { "label": "Tubarão", "value": "Score 90.9, tempo 0.2d" },
-        { "label": "Criciúma", "value": "Score 90.6, tempo 0.6d" },
-        { "label": "Palmas", "value": "Score 90.6, tempo 2.1d" },
-        { "label": "Capital ACL", "value": "Score 68.9", "context": "Alvo prioritário" },
-        { "label": "Itajaí", "value": "Score 72.9", "context": "Alvo secundário" },
-        { "label": "Custo do programa", "value": "~R$ 5.000" }
+        {
+          "label": "Tubarão",
+          "value": "Score 90.9, tempo 0.2d"
+        },
+        {
+          "label": "Criciúma",
+          "value": "Score 90.6, tempo 0.6d"
+        },
+        {
+          "label": "Palmas",
+          "value": "Score 90.6, tempo 2.1d"
+        },
+        {
+          "label": "Capital ACL",
+          "value": "Score 68.9",
+          "context": "Alvo prioritário"
+        },
+        {
+          "label": "Itajaí",
+          "value": "Score 72.9",
+          "context": "Alvo secundário"
+        },
+        {
+          "label": "Custo do programa",
+          "value": "~R$ 5.000"
+        }
       ],
       "action_plan": [
         "Workshop de 1 dia com gestores das 3 UNs Excelentes",
@@ -278,7 +545,10 @@
         "Aplicar práticas em Capital ACL e Itajaí por 90 dias",
         "Meta: levar UNs em Atenção para Score 75+ em 90 dias"
       ],
-      "related_cards": ["ach_002", "risk_003"]
+      "related_cards": [
+        "ach_002",
+        "risk_003"
+      ]
     }
   },
   {
@@ -288,18 +558,41 @@
     "title": "Investigar redução súbita de HE em mar/26 na ORSEGUPS SEGURANÇA",
     "narrative": "A ORSEGUPS SEGURANÇA E VIGILANCIA teve queda na HE rateada de 887h (jan/26) → 756h (fev/26) → 620h (mar/26). Se a queda for real (não subnotificação), há aprendizado a capturar. Se for artefato, é preciso investigar para evitar mascaramento de problema.",
     "evidence": {
-      "before": { "label": "HE rateada jan/26", "value": "887h" },
-      "after": { "label": "HE rateada mar/26", "value": "620h" }
+      "before": {
+        "label": "HE rateada jan/26",
+        "value": "887h"
+      },
+      "after": {
+        "label": "HE rateada mar/26",
+        "value": "620h"
+      }
     },
     "action": "Investigar em até 15 dias se a redução é real ou artefato",
-    "crossRef": { "targetId": "risk_002", "label": "Ver risco em Riscos" },
+    "crossRef": {
+      "targetId": "risk_002",
+      "label": "Ver risco em Riscos"
+    },
     "modal": {
       "diagnosis": "Reduções abruptas em métricas precisam de auditoria. Se a queda de HE de 887h → 620h em 2 meses for real, há evento ou prática nova que pode ser sistematizada. Se for artefato (atraso de lançamento, mudança de regra), precisa ser entendido para evitar conclusões erradas.",
       "evidence": [
-        { "label": "HE últimos 6 meses", "value": "913h→798h→827h→887h→756h→620h" },
-        { "label": "Variação mar vs jan", "value": "-30%" },
-        { "label": "Ajustes processados", "value": "jan 16.242 → mar 17.356", "context": "+7% (não caiu)" },
-        { "label": "Operadores ativos", "value": "87→84", "context": "Similar" }
+        {
+          "label": "HE últimos 6 meses",
+          "value": "913h→798h→827h→887h→756h→620h"
+        },
+        {
+          "label": "Variação mar vs jan",
+          "value": "-30%"
+        },
+        {
+          "label": "Ajustes processados",
+          "value": "jan 16.242 → mar 17.356",
+          "context": "+7% (não caiu)"
+        },
+        {
+          "label": "Operadores ativos",
+          "value": "87→84",
+          "context": "Similar"
+        }
       ],
       "action_plan": [
         "Auditoria interna em 15 dias para entender a causa",
@@ -308,7 +601,9 @@
         "Se artefato: ajustar e refazer cálculo retroativo",
         "Reportar conclusão ao Comitê Executivo"
       ],
-      "related_cards": ["risk_002"]
+      "related_cards": [
+        "risk_002"
+      ]
     }
   },
   {
@@ -318,19 +613,46 @@
     "title": "UN ADMINISTRAÇÃO - SEDE: investigar tempo médio alto (3.7d) com qualidade ótima (92%)",
     "narrative": "A UN Administração-Sede tem padrão atípico: qualidade 92.2% (uma das melhores) mas tempo médio 3.7 dias e 4.7% acumulado >15d. Em geral, alta qualidade vem com alta velocidade. Essa anomalia merece investigação.",
     "evidence": {
-      "before": { "label": "Qualidade", "value": "92.2% (top 4)" },
-      "after": { "label": "Tempo médio", "value": "3.7d" }
+      "before": {
+        "label": "Qualidade",
+        "value": "92.2% (top 4)"
+      },
+      "after": {
+        "label": "Tempo médio",
+        "value": "3.7d"
+      }
     },
     "action": "Investigar se há tipo específico de ajuste lento na sede que enviesa o tempo",
     "modal": {
       "diagnosis": "A UN Administração-Sede tem perfil atípico no grupo. A combinação qualidade 92% + tempo 3.7d sugere que ela trata todos os ajustes mas leva mais tempo, possivelmente porque seus casos são mais complexos (administrativo central pode ter mais exceções).",
       "evidence": [
-        { "label": "Administração-Sede HC", "value": "830" },
-        { "label": "Score", "value": "71.7" },
-        { "label": "Qualidade", "value": "92.2%", "context": "4ª melhor de 22 UNs" },
-        { "label": "Tempo médio", "value": "3.7 dias", "context": "4ª pior" },
-        { "label": "Acumulado >15 dias", "value": "4.7%" },
-        { "label": "Aj/operador máximo", "value": "72", "context": "Folgado" }
+        {
+          "label": "Administração-Sede HC",
+          "value": "830"
+        },
+        {
+          "label": "Score",
+          "value": "71.7"
+        },
+        {
+          "label": "Qualidade",
+          "value": "92.2%",
+          "context": "4ª melhor de 22 UNs"
+        },
+        {
+          "label": "Tempo médio",
+          "value": "3.7 dias",
+          "context": "4ª pior"
+        },
+        {
+          "label": "Acumulado >15 dias",
+          "value": "4.7%"
+        },
+        {
+          "label": "Aj/operador máximo",
+          "value": "72",
+          "context": "Folgado"
+        }
       ],
       "action_plan": [
         "Mapear o tipo de ajuste tratado pela Sede (CLT, exceções, casos complexos)",
@@ -349,17 +671,36 @@
     "title": "Headcount cresce em mar/26 após 6 meses estável",
     "narrative": "Após 6 meses com headcount estável entre 8.732 e 8.906 colaboradores, mar/26 fechou com 9.264 (+4% vs fev/26). É o maior headcount do período e quebra do padrão. Pode indicar entrada de novo contrato ou expansão estrutural.",
     "evidence": {
-      "before": { "label": "HC fev/26", "value": "8.906" },
-      "after": { "label": "HC mar/26", "value": "9.264 (+358)" }
+      "before": {
+        "label": "HC fev/26",
+        "value": "8.906"
+      },
+      "after": {
+        "label": "HC mar/26",
+        "value": "9.264 (+358)"
+      }
     },
     "action": "Confirmar com gestão se há novo contrato ou expansão e preparar BO se for sustentado",
     "modal": {
       "diagnosis": "Mudança de patamar em headcount após período estável merece atenção. Se o crescimento for estrutural (novo contrato, expansão), exige reforço proporcional do back-office. Se for sazonal, basta acompanhar para garantir retorno ao baseline.",
       "evidence": [
-        { "label": "HC mensal", "value": "8.992→9.063→8.732→8.906→9.264" },
-        { "label": "Variação mar vs fev", "value": "+358 (+4%)" },
-        { "label": "Volume marcações mar/26", "value": "349.928" },
-        { "label": "Ajustes mar/26", "value": "44.535", "context": "Segundo maior do período" }
+        {
+          "label": "HC mensal",
+          "value": "8.992→9.063→8.732→8.906→9.264"
+        },
+        {
+          "label": "Variação mar vs fev",
+          "value": "+358 (+4%)"
+        },
+        {
+          "label": "Volume marcações mar/26",
+          "value": "349.928"
+        },
+        {
+          "label": "Ajustes mar/26",
+          "value": "44.535",
+          "context": "Segundo maior do período"
+        }
       ],
       "action_plan": [
         "Confirmar com diretoria comercial: houve entrada de novo contrato em mar/26?",
@@ -378,18 +719,40 @@
     "title": "Qualidade caiu progressivamente desde out/25",
     "narrative": "A qualidade consolidada teve seu pico em out/25 (88.3%) e vem caindo gradualmente: 86.1% (nov), 84.2% (dez), 84.3% (jan), 83.6% (fev), 83.2% (mar). Queda de 5pp em 5 meses. Tendência linear e consistente sem evento aparente.",
     "evidence": {
-      "before": { "label": "Qualidade out/25 (pico)", "value": "88.3%" },
-      "after": { "label": "Qualidade mar/26", "value": "83.2%" }
+      "before": {
+        "label": "Qualidade out/25 (pico)",
+        "value": "88.3%"
+      },
+      "after": {
+        "label": "Qualidade mar/26",
+        "value": "83.2%"
+      }
     },
     "action": "Investigar causa raiz antes que se cristalize como novo baseline",
     "modal": {
       "diagnosis": "Tendência decrescente em 5 meses consecutivos é diferente de oscilação aleatória. Sugere que algo organizacional está mudando — pode ser saída de pessoas-chave, mudança de processo, aumento de complexidade da operação, ou desgaste cultural. Atuar agora previne que o novo baseline ruim se cristalize.",
       "evidence": [
-        { "label": "Qualidade mensal", "value": "88.3%→86.1%→84.2%→84.3%→83.6%→83.2%" },
-        { "label": "Decremento total", "value": "-5.1pp em 5 meses" },
-        { "label": "Decremento mensal médio", "value": "-1.0pp" },
-        { "label": "Volume", "value": "Estável (314k-349k)", "context": "Não justifica queda" },
-        { "label": "Projeção se continuar", "value": "79% em jul/26" }
+        {
+          "label": "Qualidade mensal",
+          "value": "88.3%→86.1%→84.2%→84.3%→83.6%→83.2%"
+        },
+        {
+          "label": "Decremento total",
+          "value": "-5.1pp em 5 meses"
+        },
+        {
+          "label": "Decremento mensal médio",
+          "value": "-1.0pp"
+        },
+        {
+          "label": "Volume",
+          "value": "Estável (314k-349k)",
+          "context": "Não justifica queda"
+        },
+        {
+          "label": "Projeção se continuar",
+          "value": "79% em jul/26"
+        }
       ],
       "action_plan": [
         "Reunião de retrospectiva com gestores das 22 UNs em 30 dias",
