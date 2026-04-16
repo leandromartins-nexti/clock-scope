@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth, StoredUser } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X, Trash2, Users, Clock, ShieldAlert } from "lucide-react";
+import { Check, X, Trash2, Users, Clock, ShieldAlert, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function UserManagement() {
   const { user, getUsers, approveUser, rejectUser, deleteUser } = useAuth();
   const [tab, setTab] = useState("active");
+  const [tick, setTick] = useState(0);
+  const refresh = useCallback(() => setTick((t) => t + 1), []);
+
+  // Auto-refresh when window regains focus
+  useEffect(() => {
+    window.addEventListener("focus", refresh);
+    return () => window.removeEventListener("focus", refresh);
+  }, [refresh]);
 
   if (user?.role !== "admin") {
     return (
