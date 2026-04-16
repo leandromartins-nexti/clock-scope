@@ -11,6 +11,16 @@ import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
 import { buildDataSources } from "@/lib/qualidadeDataSources";
 import { computePrevTriScore } from "@/lib/scoreComputations";
 import {
+  useAbsenteismoScoreConfig,
+  computeVolumeScore,
+  computeComposicaoScore,
+  computeMaturidadeScore,
+  computeAbsCompositeScore,
+} from "@/contexts/AbsenteismoScoreConfigContext";
+import volumeEmpresa from "@/data/customers/642/absenteismo/volume-mensal-por-empresa.json";
+import compV5Empresa from "@/data/customers/642/absenteismo/composicao-v5-por-empresa.json";
+import maturidadeEmpresa from "@/data/customers/642/absenteismo/maturidade-por-empresa.json";
+import {
   Filter, Eraser, DollarSign, CheckCircle,
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
@@ -79,6 +89,7 @@ export default function AnalyticsResumoExecutivo() {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
+  const { config: absConfig } = useAbsenteismoScoreConfig();
 
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
@@ -174,7 +185,67 @@ export default function AnalyticsResumoExecutivo() {
     setFeedbackSubmitted(true);
   };
 
-  const sparklineCards = [qualidadeCard];
+  // ── Absenteismo card: composite score per month from JSONs ──
+  const absenteismoCard = useMemo(() => {
+    // HC operacional por mês (consistente com AbsenteismoV2Content)
+    const HC_BY_MONTH: Record<string, number> = {
+      "2025-04-01": 470, "2025-05-01": 472, "2025-06-01": 475, "2025-07-01": 478,
+      "2025-08-01": 480, "2025-09-01": 480, "2025-10-01": 482, "2025-11-01": 483,
+      "2025-12-01": 485, "2026-01-01": 484, "2026-02-01": 484, "2026-03-01": 484,
+    };
+    const months = Object.keys(HC_BY_MONTH).sort();
+
+    const evolucao = months.map((month) => {
+      // Volume: taxa = (sum horas / (HC * horas_previstas_mes)) * 100
+      const horasMes = (volumeEmpresa as any[])
+        .filter((r) => r.reference_date === month)
+        .reduce((s, r) => s + (r.horas_ausencia ?? 0), 0);
+      const hc = HC_BY_MONTH[month] ?? 0;
+      const taxa = hc > 0 ? (horasMes / (hc * absConfig.horas_previstas_mes)) * 100 : 0;
+      const volScore = computeVolumeScore(taxa, absConfig);
+
+      // Composição: agregar v5 categories
+      const v5 = (compV5Empresa as any[]).filter((r) => r.reference_date === month);
+      const agg = { planejada: 0, saude: 0, operacional: 0, falta: 0, nao_categorizada: 0 };
+      for (const r of v5) {
+        agg.planejada += (r.licenca_legal_h ?? 0) + (r.outros_planejados_h ?? 0);
+        agg.saude += (r.atestado_h ?? 0) + (r.acidente_h ?? 0) + (r.inss_h ?? 0);
+        agg.operacional += (r.disciplinar_h ?? 0);
+        agg.falta += (r.falta_nao_justificada_h ?? 0);
+      }
+      const compScore = computeComposicaoScore(agg, absConfig);
+
+      // Maturidade: % planejado das horas categorizadas
+      const matRows = (maturidadeEmpresa as any[]).filter((r) => r.reference_date === month);
+      let planejado = 0, total = 0;
+      for (const r of matRows) {
+        total += r.horas_total ?? 0;
+        if (r.categoria === "1_planejado") planejado += r.horas_total ?? 0;
+      }
+      const pctPlanejado = total > 0 ? (planejado / total) * 100 : 0;
+      const matScore = computeMaturidadeScore(pctPlanejado, absConfig);
+
+      const score = computeAbsCompositeScore(volScore, compScore, matScore, absConfig);
+      return { competencia: formatMesLabel(month), valor: score };
+    });
+
+    const lastScore = evolucao[evolucao.length - 1]?.valor ?? 0;
+    const firstScore = evolucao[0]?.valor ?? 0;
+    const diff = lastScore - firstScore;
+    const variacao = diff >= 0 ? `+${diff} pts` : `${diff} pts`;
+    const corVariacao = diff >= 0 ? "text-green-600" : "text-red-600";
+    return {
+      label: "Absenteísmo",
+      valor: `${lastScore}`,
+      variacao,
+      corVariacao,
+      score: lastScore,
+      evolucao,
+      perPointColors: true,
+    };
+  }, [absConfig]);
+
+  const sparklineCards = [qualidadeCard, absenteismoCard];
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
@@ -260,6 +331,7 @@ export default function AnalyticsResumoExecutivo() {
                 const lastIdx = card.evolucao.length - 1;
                 const indicadorRouteMap: Record<string, string> = {
                   "Qualidade do Ponto": "/analytics/operacional",
+                  "Absenteísmo": "/analytics/operacional",
                 };
                 const targetRoute = indicadorRouteMap[card.label];
                 return (
