@@ -776,7 +776,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
     <div className="flex flex-col xl:flex-row w-full flex-1 min-w-0">
       <div className="flex-1 min-w-0 space-y-3 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 xl:pb-4">
         {/* ── BigNumbers (6 cards) ── */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
           {/* 1. Score Absenteísmo */}
           <ScoreBoard title="Score Absenteísmo" tooltip="Score composto: Volume (50%) + Composição (30%) + Maturidade (20%). Clique para detalhes.">
             <button className="cursor-pointer" onClick={() => setScoreDetailOpen(true)} title="Ver decomposição do score">

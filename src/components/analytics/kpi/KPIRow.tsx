@@ -23,7 +23,7 @@ function isBigNumberData(item: BigNumberData | ReactNode): item is BigNumberData
 
 export default function KPIRow({ items }: KPIRowProps) {
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
       {items.map((item, i) => {
         // Custom render (ReactNode like ScoreBoard)
         if (isReactNode(item) && !isBigNumberData(item)) {

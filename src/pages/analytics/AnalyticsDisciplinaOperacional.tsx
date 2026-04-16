@@ -1321,7 +1321,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       {/* Left: KPI cards + charts */}
       <div className="flex-1 min-w-0 space-y-3 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 xl:pb-4">
         {/* Linha 1: 6 KPI Cards */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
           {/* 1. Score de Ponto with decomposition popover */}
           <ScoreBoard title="Score de Ponto" tooltip={`Score de Ponto\n─────────────────\nSaúde geral consolidada da operação de ponto.\nCombina 3 componentes com pesos configuráveis.\n\nJanela: média dos últimos 3 meses.\n\nCálculo:\n  (Qualidade × ${scoreConfig.weight_quality}%) + (Velocidade × ${scoreConfig.weight_treatment}%) + (Saúde Back-office × ${scoreConfig.weight_backoffice}%)\n\nScore ${compositeScore}: (${Math.round(fullBreakdown.qualPct)} × ${scoreConfig.weight_quality/100}) + (${Math.round(fullBreakdown.treatScore)} × ${scoreConfig.weight_treatment/100}) + (${Math.round(fullBreakdown.boScore)} × ${scoreConfig.weight_backoffice/100})`}>
             <Popover>
@@ -2564,7 +2564,7 @@ ORDER BY a.reference_month, a.headcount DESC;`;
     <div className="flex flex-col xl:flex-row w-full">
       <div className="flex-1 min-w-0 space-y-3 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 xl:pb-4">
         {/* Linha 1: Score + 4 KPI Cards */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
           <ScoreBoard title="Score da Aba" tooltip="Score composto que combina Absenteísmo e Turnover. Configure pesos e limites em Configuração.">
             <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={activeData.faixa} color={activeData.scoreColor} />
           </ScoreBoard>
