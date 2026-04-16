@@ -1,0 +1,222 @@
+import { useState, useCallback } from "react";
+import { useAuth, StoredUser, validatePassword } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Check, X, Trash2, Users, Clock, UserPlus, Eye, EyeOff, AlertCircle, CheckCircle2, RefreshCw } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+
+export default function UserManagementTab() {
+  const { user, getUsers, approveUser, rejectUser, deleteUser, register } = useAuth();
+  const [tab, setTab] = useState("active");
+  const [tick, setTick] = useState(0);
+  const refresh = useCallback(() => setTick((t) => t + 1), []);
+
+  // Register form state
+  const [newUsername, setNewUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newName, setNewName] = useState("");
+  const [newClient, setNewClient] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [regError, setRegError] = useState("");
+
+  const passwordChecks = [
+    { label: "Mínimo 8 caracteres", ok: newPassword.length >= 8 },
+    { label: "Letra maiúscula", ok: /[A-Z]/.test(newPassword) },
+    { label: "Letra minúscula", ok: /[a-z]/.test(newPassword) },
+    { label: "Caractere especial (!@#$...)", ok: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword) },
+  ];
+
+  if (user?.role !== "admin") return null;
+
+  const users = getUsers();
+  const activeUsers = users.filter((u) => u.status === "active");
+  const pendingUsers = users.filter((u) => u.status === "pending");
+  const rejectedUsers = users.filter((u) => u.status === "rejected");
+
+  const handleApprove = (u: StoredUser) => {
+    approveUser(u.id);
+    toast({ title: "Usuário aprovado", description: `${u.name} agora pode acessar o sistema.` });
+    refresh();
+  };
+
+  const handleReject = (u: StoredUser) => {
+    rejectUser(u.id);
+    toast({ title: "Cadastro recusado", description: `${u.name} foi recusado.`, variant: "destructive" });
+    refresh();
+  };
+
+  const handleDelete = (u: StoredUser) => {
+    deleteUser(u.id);
+    toast({ title: "Usuário removido", description: `${u.name} foi removido do sistema.` });
+    refresh();
+  };
+
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    setRegError("");
+    if (!newName.trim()) { setRegError("Informe o nome completo"); return; }
+    if (!newClient.trim()) { setRegError("Informe a empresa"); return; }
+    const pwError = validatePassword(newPassword);
+    if (pwError) { setRegError(pwError); return; }
+
+    const result = register(newUsername, newPassword, newName, newClient.trim().toLowerCase());
+    if (!result.success) {
+      setRegError(result.error || "Erro ao cadastrar");
+    } else {
+      toast({ title: "Usuário cadastrado", description: `${newName} foi criado com status pendente.` });
+      setNewUsername("");
+      setNewPassword("");
+      setNewName("");
+      setNewClient("");
+      refresh();
+    }
+  };
+
+  const UserRow = ({ u, actions }: { u: StoredUser; actions: React.ReactNode }) => (
+    <div className="flex items-center justify-between py-3 px-4 rounded-lg border bg-card hover:shadow-sm transition-shadow">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-sm truncate">{u.name}</span>
+          {u.role === "admin" && <Badge variant="secondary" className="text-[10px]">Admin</Badge>}
+        </div>
+        <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
+          <span>@{u.username}</span>
+          <span>•</span>
+          <span>{u.client}</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-1.5 ml-3 shrink-0">{actions}</div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* Register form */}
+      <div className="border border-border/60 rounded-xl p-5 bg-card">
+        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+          <UserPlus className="h-4 w-4" /> Cadastrar Novo Usuário
+        </h3>
+        <form onSubmit={handleRegister} className="grid grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label className="text-xs">Nome completo</Label>
+            <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Nome" className="h-9 text-sm" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Empresa</Label>
+            <Input value={newClient} onChange={(e) => setNewClient(e.target.value)} placeholder="Empresa" className="h-9 text-sm" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Usuário</Label>
+            <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" className="h-9 text-sm" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Senha</Label>
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Senha"
+                className="h-9 text-sm pr-9"
+              />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              </button>
+            </div>
+          </div>
+
+          {newPassword.length > 0 && (
+            <div className="col-span-2 flex flex-wrap gap-3">
+              {passwordChecks.map((check) => (
+                <div key={check.label} className="flex items-center gap-1.5 text-xs">
+                  {check.ok ? <CheckCircle2 className="h-3.5 w-3.5 text-green-600" /> : <AlertCircle className="h-3.5 w-3.5 text-muted-foreground" />}
+                  <span className={check.ok ? "text-green-600" : "text-muted-foreground"}>{check.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {regError && (
+            <div className="col-span-2 flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2">
+              <AlertCircle className="h-4 w-4 shrink-0" /> {regError}
+            </div>
+          )}
+
+          <div className="col-span-2">
+            <Button type="submit" size="sm" className="gap-1.5">
+              <UserPlus className="h-3.5 w-3.5" /> Cadastrar
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      {/* User lists */}
+      <Tabs value={tab} onValueChange={setTab}>
+        <div className="flex items-center justify-between">
+          <TabsList>
+            <TabsTrigger value="active" className="gap-1.5">
+              <Users className="h-3.5 w-3.5" /> Ativos ({activeUsers.length})
+            </TabsTrigger>
+            <TabsTrigger value="pending" className="gap-1.5">
+              <Clock className="h-3.5 w-3.5" /> Pendentes ({pendingUsers.length})
+            </TabsTrigger>
+            <TabsTrigger value="rejected" className="gap-1.5">
+              <X className="h-3.5 w-3.5" /> Recusados ({rejectedUsers.length})
+            </TabsTrigger>
+          </TabsList>
+          <Button size="sm" variant="outline" className="gap-1.5" onClick={refresh}>
+            <RefreshCw className="h-3.5 w-3.5" /> Atualizar
+          </Button>
+        </div>
+
+        <TabsContent value="active" className="space-y-2 mt-4">
+          {activeUsers.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Nenhum usuário ativo.</p>}
+          {activeUsers.map((u) => (
+            <UserRow key={u.id} u={u} actions={
+              u.id !== user!.id && u.role !== "admin" ? (
+                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              ) : null
+            } />
+          ))}
+        </TabsContent>
+
+        <TabsContent value="pending" className="space-y-2 mt-4">
+          {pendingUsers.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Nenhum cadastro pendente.</p>}
+          {pendingUsers.map((u) => (
+            <UserRow key={u.id} u={u} actions={
+              <>
+                <Button size="sm" variant="default" className="gap-1" onClick={() => handleApprove(u)}>
+                  <Check className="h-3.5 w-3.5" /> Aprovar
+                </Button>
+                <Button size="sm" variant="destructive" className="gap-1" onClick={() => handleReject(u)}>
+                  <X className="h-3.5 w-3.5" /> Recusar
+                </Button>
+              </>
+            } />
+          ))}
+        </TabsContent>
+
+        <TabsContent value="rejected" className="space-y-2 mt-4">
+          {rejectedUsers.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Nenhum cadastro recusado.</p>}
+          {rejectedUsers.map((u) => (
+            <UserRow key={u.id} u={u} actions={
+              <>
+                <Button size="sm" variant="outline" className="gap-1" onClick={() => handleApprove(u)}>
+                  <Check className="h-3.5 w-3.5" /> Reativar
+                </Button>
+                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </>
+            } />
+          ))}
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
