@@ -65,7 +65,7 @@ export function FloatingActionMenu() {
   return (
     <>
       {/* FAB + popup menu */}
-      <div ref={menuRef} className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+      <div ref={menuRef} className="fixed bottom-20 sm:bottom-6 right-6 z-50 flex flex-col items-end gap-2">
         {/* Popup options */}
         {menuOpen && !feedbackOpen && (
           <div className="flex flex-col gap-2 animate-fade-in mb-1">
