@@ -164,7 +164,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       client,
       name,
       role: "user",
-      status: "pending",
+      status: "active",
     };
     users.push(newUser);
     saveUsers(users);

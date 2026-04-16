@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Check, X, Trash2, Users, Clock, UserPlus, Eye, EyeOff, AlertCircle, CheckCircle2, RefreshCw, Pencil, Save } from "lucide-react";
+import { Trash2, Users, UserPlus, Eye, EyeOff, AlertCircle, CheckCircle2, RefreshCw, Pencil, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import customersIndex from "@/data/customers-index.json";
 
@@ -16,8 +16,7 @@ const CLIENT_OPTIONS = [
 ];
 
 export default function UserManagementTab() {
-  const { user, getUsers, approveUser, rejectUser, deleteUser, register, updateUser } = useAuth();
-  const [tab, setTab] = useState("active");
+  const { user, getUsers, deleteUser, register, updateUser } = useAuth();
   const [tick, setTick] = useState(0);
   const refresh = useCallback(() => setTick((t) => t + 1), []);
 
@@ -48,20 +47,6 @@ export default function UserManagementTab() {
 
   const users = getUsers();
   const activeUsers = users.filter((u) => u.status === "active");
-  const pendingUsers = users.filter((u) => u.status === "pending");
-  const rejectedUsers = users.filter((u) => u.status === "rejected");
-
-  const handleApprove = (u: StoredUser) => {
-    approveUser(u.id);
-    toast({ title: "Usuário aprovado", description: `${u.name} agora pode acessar o sistema.` });
-    refresh();
-  };
-
-  const handleReject = (u: StoredUser) => {
-    rejectUser(u.id);
-    toast({ title: "Cadastro recusado", description: `${u.name} foi recusado.`, variant: "destructive" });
-    refresh();
-  };
 
   const handleDelete = (u: StoredUser) => {
     deleteUser(u.id);
@@ -82,7 +67,7 @@ export default function UserManagementTab() {
     if (!result.success) {
       setRegError(result.error || "Erro ao cadastrar");
     } else {
-      toast({ title: "Usuário cadastrado", description: `${newName} foi criado com status pendente.` });
+      toast({ title: "Usuário cadastrado", description: `${newName} foi criado e já pode acessar o sistema.` });
       setNewUsername("");
       setNewPassword("");
       setNewName("");
