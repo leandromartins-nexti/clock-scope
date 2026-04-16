@@ -157,7 +157,7 @@ export default function AnalyticsResumoExecutivo() {
     () => computePrevTriScore(selectedRegional, groupBy as any, scoreConfig, sources),
     [selectedRegional, groupBy, scoreConfig, sources]
   );
-  const scoreDiff = activeScore - prevScore;
+  // (activeScore/scoreClassif/scoreDiff são definidos abaixo, após o cálculo do Absenteísmo)
 
   // Principal Melhora / Piora: entity with biggest positive/negative score change
   const { principalMelhora, principalPiora } = useMemo(() => {
@@ -251,6 +251,12 @@ export default function AnalyticsResumoExecutivo() {
   }, [absConfig]);
 
   const sparklineCards = [qualidadeCard, absenteismoCard];
+
+  // Score Nexti final (gauge): combinação ponderada de Ponto + Absenteísmo
+  const absenteismoScore = absenteismoCard.score;
+  const activeScore = computeNextiScore(pontoScore, absenteismoScore, nextiConfig);
+  const scoreClassif = getNextiScoreClassification(activeScore, nextiConfig);
+  const scoreDiff = activeScore - prevScore;
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
