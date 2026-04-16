@@ -10,16 +10,12 @@ import { useScoreConfig, getScoreClassification, computeCompositeScore } from "@
 import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
 import { buildDataSources } from "@/lib/qualidadeDataSources";
 import { computePrevTriScore } from "@/lib/scoreComputations";
+import { useAbsenteismoScoreConfig } from "@/contexts/AbsenteismoScoreConfigContext";
 import {
-  useAbsenteismoScoreConfig,
-  computeVolumeScore,
-  computeComposicaoScore,
-  computeMaturidadeScore,
-  computeAbsCompositeScore,
-} from "@/contexts/AbsenteismoScoreConfigContext";
-import volumeEmpresa from "@/data/customers/642/absenteismo/volume-mensal-por-empresa.json";
-import compV5Empresa from "@/data/customers/642/absenteismo/composicao-v5-por-empresa.json";
-import maturidadeEmpresa from "@/data/customers/642/absenteismo/maturidade-por-empresa.json";
+  computeAbsenteismoEvolution,
+  computeAbsenteismoCurrentScore,
+  type AbsGroupBy,
+} from "@/lib/absenteismoScoreShared";
 import {
   useNextiScoreConfig,
   computeNextiScore,
