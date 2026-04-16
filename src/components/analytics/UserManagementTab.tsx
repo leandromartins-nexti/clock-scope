@@ -284,22 +284,24 @@ export default function UserManagementTab() {
         <TabsContent value="active" className="space-y-2 mt-4">
           {activeUsers.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Nenhum usuário ativo.</p>}
           {activeUsers.map((u) => (
-            <UserRow key={u.id} u={u} actions={
-              u.id !== user!.id && u.role !== "admin" ? (
-                <>
+            <React.Fragment key={u.id}>
+              {renderUserRow(u,
+                u.id !== user!.id && u.role !== "admin" ? (
+                  <>
+                    <Button size="sm" variant="ghost" onClick={() => startEdit(u)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </>
+                ) : u.id === user!.id ? (
                   <Button size="sm" variant="ghost" onClick={() => startEdit(u)}>
                     <Pencil className="h-3.5 w-3.5" />
                   </Button>
-                  <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </>
-              ) : u.id === user!.id ? (
-                <Button size="sm" variant="ghost" onClick={() => startEdit(u)}>
-                  <Pencil className="h-3.5 w-3.5" />
-                </Button>
-              ) : null
-            } />
+                ) : null
+              )}
+            </React.Fragment>
           ))}
         </TabsContent>
 
