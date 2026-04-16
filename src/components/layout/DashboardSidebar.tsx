@@ -206,41 +206,7 @@ export function DashboardSidebar() {
 
         {/* ── Legacy items ── */}
         <LegacyMenuItems isCollapsed={isCollapsed} />
-
-      </SidebarContent>
       </SidebarContent>
     </Sidebar>
-  );
-}
-
-function AdminUserManagementLink({ isCollapsed }: { isCollapsed: boolean }) {
-  const { user } = useAuth();
-  const location = useLocation();
-  if (user?.role !== "admin") return null;
-
-  const isActive = location.pathname === "/user-management";
-
-  return (
-    <>
-      <div className="mx-3 my-2 border-t border-[rgba(255,255,255,0.1)]" />
-      <SidebarGroup className="px-3 py-1">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className={cn(
-                "text-[#A1A3A4] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors h-9 px-3",
-                isActive && "text-white bg-[rgba(255,255,255,0.08)]"
-              )}
-            >
-              <NavLink to="/user-management">
-                <Users className="w-4 h-4 mr-2" />
-                {!isCollapsed && <span className="text-[14px]">Gestão de Usuários</span>}
-              </NavLink>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarGroup>
-    </>
   );
 }
