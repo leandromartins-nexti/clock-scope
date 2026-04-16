@@ -5,22 +5,37 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X, Trash2, Users, Clock, UserPlus, Eye, EyeOff, AlertCircle, CheckCircle2, RefreshCw } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Check, X, Trash2, Users, Clock, UserPlus, Eye, EyeOff, AlertCircle, CheckCircle2, RefreshCw, Pencil, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import customersIndex from "@/data/customers-index.json";
+
+const CLIENT_OPTIONS = [
+  { value: "nexti", label: "Nexti (acesso total)" },
+  ...customersIndex.customers.map((c) => ({ value: c.label.toLowerCase().replace(/\s+/g, ""), label: c.label })),
+];
 
 export default function UserManagementTab() {
-  const { user, getUsers, approveUser, rejectUser, deleteUser, register } = useAuth();
+  const { user, getUsers, approveUser, rejectUser, deleteUser, register, updateUser } = useAuth();
   const [tab, setTab] = useState("active");
   const [tick, setTick] = useState(0);
   const refresh = useCallback(() => setTick((t) => t + 1), []);
 
-  // Register form state
+  // Register form
   const [newUsername, setNewUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newName, setNewName] = useState("");
   const [newClient, setNewClient] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [regError, setRegError] = useState("");
+
+  // Edit state
+  const [editId, setEditId] = useState<number | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editUsername, setEditUsername] = useState("");
+  const [editPassword, setEditPassword] = useState("");
+  const [showEditPassword, setShowEditPassword] = useState(false);
+  const [editError, setEditError] = useState("");
 
   const passwordChecks = [
     { label: "Mínimo 8 caracteres", ok: newPassword.length >= 8 },
@@ -58,11 +73,12 @@ export default function UserManagementTab() {
     e.preventDefault();
     setRegError("");
     if (!newName.trim()) { setRegError("Informe o nome completo"); return; }
-    if (!newClient.trim()) { setRegError("Informe a empresa"); return; }
+    if (!newClient) { setRegError("Selecione a empresa"); return; }
+    if (!newUsername.trim()) { setRegError("Informe o usuário"); return; }
     const pwError = validatePassword(newPassword);
     if (pwError) { setRegError(pwError); return; }
 
-    const result = register(newUsername, newPassword, newName, newClient.trim().toLowerCase());
+    const result = register(newUsername, newPassword, newName, newClient);
     if (!result.success) {
       setRegError(result.error || "Erro ao cadastrar");
     } else {
@@ -75,22 +91,105 @@ export default function UserManagementTab() {
     }
   };
 
-  const UserRow = ({ u, actions }: { u: StoredUser; actions: React.ReactNode }) => (
-    <div className="flex items-center justify-between py-3 px-4 rounded-lg border bg-card hover:shadow-sm transition-shadow">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-sm truncate">{u.name}</span>
-          {u.role === "admin" && <Badge variant="secondary" className="text-[10px]">Admin</Badge>}
+  const startEdit = (u: StoredUser) => {
+    setEditId(u.id);
+    setEditName(u.name);
+    setEditUsername(u.username);
+    setEditPassword("");
+    setEditError("");
+  };
+
+  const cancelEdit = () => {
+    setEditId(null);
+    setEditError("");
+  };
+
+  const saveEdit = () => {
+    if (!editId) return;
+    setEditError("");
+
+    const data: { name?: string; username?: string; password?: string } = {};
+    if (editName.trim()) data.name = editName.trim();
+    if (editUsername.trim()) data.username = editUsername.trim();
+    if (editPassword) data.password = editPassword;
+
+    const result = updateUser(editId, data);
+    if (!result.success) {
+      setEditError(result.error || "Erro ao atualizar");
+    } else {
+      toast({ title: "Usuário atualizado", description: "Dados salvos com sucesso." });
+      setEditId(null);
+      refresh();
+    }
+  };
+
+  const UserRow = ({ u, actions }: { u: StoredUser; actions: React.ReactNode }) => {
+    const isEditing = editId === u.id;
+
+    if (isEditing) {
+      return (
+        <div className="py-3 px-4 rounded-lg border bg-card space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <Label className="text-xs">Nome</Label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="h-8 text-sm" />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Usuário</Label>
+              <Input value={editUsername} onChange={(e) => setEditUsername(e.target.value)} className="h-8 text-sm" />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Nova senha (opcional)</Label>
+              <div className="relative">
+                <Input
+                  type={showEditPassword ? "text" : "password"}
+                  value={editPassword}
+                  onChange={(e) => setEditPassword(e.target.value)}
+                  placeholder="Manter atual"
+                  className="h-8 text-sm pr-8"
+                />
+                <button type="button" onClick={() => setShowEditPassword(!showEditPassword)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  {showEditPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                </button>
+              </div>
+            </div>
+          </div>
+          {editError && (
+            <div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 rounded-md px-3 py-1.5">
+              <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {editError}
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button size="sm" className="gap-1 h-7 text-xs" onClick={saveEdit}>
+              <Save className="h-3 w-3" /> Salvar
+            </Button>
+            <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={cancelEdit}>
+              Cancelar
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
-          <span>@{u.username}</span>
-          <span>•</span>
-          <span>{u.client}</span>
+      );
+    }
+
+    return (
+      <div className="flex items-center justify-between py-3 px-4 rounded-lg border bg-card hover:shadow-sm transition-shadow">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-sm truncate">{u.name}</span>
+            {u.role === "admin" && <Badge variant="secondary" className="text-[10px]">Admin</Badge>}
+          </div>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
+            <span>@{u.username}</span>
+            <span>•</span>
+            <span>{u.client}</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-1.5 ml-3 shrink-0">
+          {actions}
         </div>
       </div>
-      <div className="flex items-center gap-1.5 ml-3 shrink-0">{actions}</div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -106,7 +205,16 @@ export default function UserManagementTab() {
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">Empresa</Label>
-            <Input value={newClient} onChange={(e) => setNewClient(e.target.value)} placeholder="Empresa" className="h-9 text-sm" />
+            <Select value={newClient} onValueChange={setNewClient}>
+              <SelectTrigger className="h-9 text-sm">
+                <SelectValue placeholder="Selecione a empresa" />
+              </SelectTrigger>
+              <SelectContent>
+                {CLIENT_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">Usuário</Label>
@@ -177,8 +285,17 @@ export default function UserManagementTab() {
           {activeUsers.map((u) => (
             <UserRow key={u.id} u={u} actions={
               u.id !== user!.id && u.role !== "admin" ? (
-                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
-                  <Trash2 className="h-3.5 w-3.5" />
+                <>
+                  <Button size="sm" variant="ghost" onClick={() => startEdit(u)}>
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </>
+              ) : u.id === user!.id ? (
+                <Button size="sm" variant="ghost" onClick={() => startEdit(u)}>
+                  <Pencil className="h-3.5 w-3.5" />
                 </Button>
               ) : null
             } />
