@@ -135,7 +135,7 @@ export function DashboardSidebar() {
 
   return (
     <Sidebar
-      className={cn(isCollapsed ? "w-16" : "w-64", "bg-[#3d4449] border-r border-[rgba(255,255,255,0.05)]")}
+      className={cn(isCollapsed ? "w-16" : "w-64", "bg-[#3d4449] border-r-0")}
       collapsible="icon"
     >
       <SidebarHeader className="relative h-12 px-3 py-0 bg-[#FF5722] flex items-center justify-center">
