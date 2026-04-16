@@ -96,17 +96,18 @@ export default function GroupBySidebar({
     onPagedItemsChange?.(pagedItems.map(i => i.value ?? i.nome));
   }, [pagedItems, onPagedItemsChange]);
 
-  // ── Mobile: floating button + Sheet drawer (fullscreen) ──
+  // Listen to global event to open the mobile sheet (triggered from page header button)
+  useEffect(() => {
+    if (!isMobile) return;
+    const handler = () => setMobileOpen(true);
+    window.addEventListener("open-tipo-operacao", handler);
+    return () => window.removeEventListener("open-tipo-operacao", handler);
+  }, [isMobile]);
+
+  // ── Mobile: Sheet drawer (fullscreen) — opened by external header button ──
   if (isMobile) {
     return (
       <>
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="fixed bottom-20 right-6 z-40 bg-[#FF5722] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-[#E64A19] transition-colors"
-          aria-label="Abrir tipo de operação"
-        >
-          <Filter className="w-5 h-5" />
-        </button>
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent side="right" className="w-full max-w-full p-0 flex flex-col">
             <SheetHeader className="px-4 py-3 border-b border-border flex-row items-center justify-between space-y-0">
