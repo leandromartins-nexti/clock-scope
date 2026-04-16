@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { PrimeFilterProvider } from "@/contexts/PrimeFilterContext";
 import { FloatingActionMenu } from "@/components/layout/FloatingActionMenu";
@@ -8,7 +8,7 @@ import OnboardingTour from "@/components/onboarding/OnboardingTour";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCustomer } from "@/contexts/CustomerContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
+import { LogOut, Menu, User } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const CLIENT_OPTIONS = [
@@ -16,6 +16,15 @@ const CLIENT_OPTIONS = [
   { value: "atitudeservicos", label: "Atitude Serviços", customerId: 391 },
   { value: "vigeyes", label: "VigEyes", customerId: 642 },
 ];
+
+const MobileMenuButton = () => {
+  const { toggleSidebar } = useSidebar();
+  return (
+    <Button variant="ghost" size="icon" className="md:hidden h-8 w-8" onClick={toggleSidebar} aria-label="Abrir menu">
+      <Menu className="h-5 w-5" />
+    </Button>
+  );
+};
 
 const DashboardLayout = () => {
   const { user, logout } = useAuth();
@@ -39,7 +48,7 @@ const DashboardLayout = () => {
             <div className="flex-1 flex flex-col">
               <header className="h-12 flex items-center justify-between border-b border-border bg-card px-4">
                 <div className="flex items-center gap-3">
-                  <SidebarTrigger className="md:hidden" />
+                  <MobileMenuButton />
                   {canSwitchClient && (
                     <Select
                       value={activeClientValue}
