@@ -201,6 +201,7 @@ export default function AnalyticsConfiguracao() {
     { id: "base-dados", label: "Base de Dados", icon: Database },
     { id: "scores", label: "Scores", icon: Gauge },
     ...(canSwitchClient ? [{ id: "clientes", label: "Clientes", icon: Users }] : []),
+    ...(user?.role === "admin" ? [{ id: "usuarios", label: "Usuários", icon: UserPlus }] : []),
   ];
 
   const totalCharts = dataRegistry.reduce((acc, m) => acc + m.tabs.reduce((a, t) => a + t.charts.length, 0), 0);
