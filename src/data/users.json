@@ -35,6 +35,15 @@
       "name": "Operador VigEyes",
       "role": "user",
       "status": "active"
+    },
+    {
+      "id": 5,
+      "username": "power",
+      "password": "Power@123",
+      "client": "vigeyes",
+      "name": "Power",
+      "role": "user",
+      "status": "active"
     }
   ]
 }

@@ -63,20 +63,39 @@ export function validatePassword(password: string): string | null {
   return null;
 }
 
-function loadUsers(): StoredUser[] {
-  try {
-    const stored = localStorage.getItem(USERS_STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored) as StoredUser[];
-      return parsed.map((u) => ({ ...u, status: u.status || "active" }));
-    }
-  } catch {}
-  // Seed from JSON - encode passwords on first load
-  const seed = (defaultUsersJson.users as any[]).map((u) => ({
+function buildSeed(): StoredUser[] {
+  return (defaultUsersJson.users as any[]).map((u) => ({
     ...u,
     status: u.status || "active",
     password: encodePassword(u.password),
   })) as StoredUser[];
+}
+
+function loadUsers(): StoredUser[] {
+  const seed = buildSeed();
+  try {
+    const stored = localStorage.getItem(USERS_STORAGE_KEY);
+    if (stored) {
+      const parsed = (JSON.parse(stored) as StoredUser[]).map((u) => ({
+        ...u,
+        status: u.status || "active",
+      }));
+      // Merge: add any seed users (by username) missing from localStorage
+      const existingUsernames = new Set(parsed.map((u) => u.username.toLowerCase()));
+      const maxId = parsed.reduce((m, u) => Math.max(m, u.id), 0);
+      let nextId = maxId + 1;
+      const merged = [...parsed];
+      for (const seedUser of seed) {
+        if (!existingUsernames.has(seedUser.username.toLowerCase())) {
+          merged.push({ ...seedUser, id: nextId++ });
+        }
+      }
+      if (merged.length !== parsed.length) {
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(merged));
+      }
+      return merged;
+    }
+  } catch {}
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(seed));
   return seed;
 }
