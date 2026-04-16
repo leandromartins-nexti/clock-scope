@@ -12,7 +12,7 @@ import ExecutiveV2 from "./pages/ExecutiveV2";
 import AnalyticsV3 from "./pages/AnalyticsV3";
 import ROIConfig from "./pages/ROIConfig";
 import ROIConfigV3 from "./pages/ROIConfigV3";
-import UserManagement from "./pages/UserManagement";
+
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { ScoreConfigProvider } from "./contexts/ScoreConfigContext";
