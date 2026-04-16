@@ -17,6 +17,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
+  const [successMsg, setSuccessMsg] = useState("");
+
   const passwordChecks = [
     { label: "Mínimo 8 caracteres", ok: password.length >= 8 },
     { label: "Letra maiúscula", ok: /[A-Z]/.test(password) },
@@ -27,6 +29,7 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccessMsg("");
 
     if (!client.trim()) {
       setError("Informe a empresa");
@@ -53,7 +56,16 @@ export default function Login() {
         return;
       }
       const result = register(username, password, name, finalClient);
-      if (!result.success) setError(result.error || "Erro ao cadastrar");
+      if (!result.success) {
+        setError(result.error || "Erro ao cadastrar");
+      } else {
+        setSuccessMsg("Cadastro enviado! Aguarde a aprovação do administrador para acessar o sistema.");
+        setMode("login");
+        setUsername("");
+        setPassword("");
+        setName("");
+        setClient("");
+      }
     }
   };
 
@@ -145,6 +157,13 @@ export default function Login() {
                 </div>
               )}
             </div>
+
+            {successMsg && (
+              <div className="flex items-center gap-2 text-sm text-primary bg-primary/10 rounded-md px-3 py-2">
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                {successMsg}
+              </div>
+            )}
 
             {error && (
               <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2">
