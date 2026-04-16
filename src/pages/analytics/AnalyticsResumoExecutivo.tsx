@@ -327,20 +327,20 @@ export default function AnalyticsResumoExecutivo() {
                 };
                 const targetRoute = indicadorRouteMap[card.label];
                 return (
-                  <div
+                <div
                     key={card.label}
                     data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
-                    className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
+                    className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
                     onClick={() => targetRoute && navigate(targetRoute)}
                     title={`Ver detalhes de ${card.label}`}
                   >
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: getLineColor(card.score) }} />
-                    <span className="text-sm font-medium text-foreground min-w-[140px]">{card.label}</span>
+                    <span className="text-sm font-medium text-foreground flex-1 sm:flex-none sm:min-w-[140px] truncate">{card.label}</span>
                     <span className={`text-xs font-bold min-w-[45px] text-center px-1.5 py-0.5 rounded ${getScoreColor(card.score)} ${getScoreBg(card.score)}`}>{card.score}</span>
-                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[65px] text-center ${card.corVariacao} ${
+                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[55px] sm:min-w-[65px] text-center ${card.corVariacao} ${
                       card.corVariacao.includes('green') ? 'bg-green-50' : card.corVariacao.includes('red') ? 'bg-red-50' : 'bg-gray-50'
                     }`}>{card.variacao}</span>
-                    <div className="flex-1 h-[36px] min-w-[120px]">
+                    <div className="hidden sm:block flex-1 h-[36px] sm:min-w-[120px]">
                       <ResponsiveContainer width="100%" height={36}>
                         <LineChart data={card.evolucao}>
                           {card.perPointColors && (
