@@ -26,7 +26,7 @@ interface AnalyticsChatProps {
 }
 
 const tabLabels: Record<string, string> = {
-  qualidade: "Qualidade do Ponto",
+  qualidade: "Ponto",
   absenteismo: "Absenteísmo",
   movimentacoes: "Movimentações",
   coberturas: "Coberturas e Continuidade",

@@ -21,6 +21,11 @@ import volumeEmpresa from "@/data/customers/642/absenteismo/volume-mensal-por-em
 import compV5Empresa from "@/data/customers/642/absenteismo/composicao-v5-por-empresa.json";
 import maturidadeEmpresa from "@/data/customers/642/absenteismo/maturidade-por-empresa.json";
 import {
+  useNextiScoreConfig,
+  computeNextiScore,
+  getNextiScoreClassification,
+} from "@/contexts/NextiScoreConfigContext";
+import {
   Filter, Eraser, DollarSign, CheckCircle,
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
@@ -133,7 +138,7 @@ export default function AnalyticsResumoExecutivo() {
     const variacao = diff >= 0 ? `+${diff} pts` : `${diff} pts`;
     const corVariacao = diff >= 0 ? "text-green-600" : "text-red-600";
     return {
-      label: "Qualidade do Ponto",
+      label: "Ponto",
       valor: `${lastScore}`,
       variacao,
       corVariacao,
@@ -143,16 +148,16 @@ export default function AnalyticsResumoExecutivo() {
     };
   }, [selectedRegional, groupBy, scoreConfig, sources, allMonths, kpiSummary.score]);
 
-  // Score for gauge — uses the 3-month rolling composite score (same as Operacional tab)
-  const activeScore = kpiSummary.score;
-  const scoreClassif = getScoreClassification(activeScore, scoreConfig);
+  // Score Nexti — composição ponderada de Ponto + Absenteísmo
+  const { config: nextiConfig } = useNextiScoreConfig();
+  const pontoScore = kpiSummary.score;
 
   // Previous period score for trend
   const prevScore = useMemo(
     () => computePrevTriScore(selectedRegional, groupBy as any, scoreConfig, sources),
     [selectedRegional, groupBy, scoreConfig, sources]
   );
-  const scoreDiff = activeScore - prevScore;
+  // (activeScore/scoreClassif/scoreDiff são definidos abaixo, após o cálculo do Absenteísmo)
 
   // Principal Melhora / Piora: entity with biggest positive/negative score change
   const { principalMelhora, principalPiora } = useMemo(() => {
@@ -247,6 +252,12 @@ export default function AnalyticsResumoExecutivo() {
 
   const sparklineCards = [qualidadeCard, absenteismoCard];
 
+  // Score Nexti final (gauge): combinação ponderada de Ponto + Absenteísmo
+  const absenteismoScore = absenteismoCard.score;
+  const activeScore = computeNextiScore(pontoScore, absenteismoScore, nextiConfig);
+  const scoreClassif = getNextiScoreClassification(activeScore, nextiConfig);
+  const scoreDiff = activeScore - prevScore;
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       {/* Filter bar */}
@@ -282,7 +293,7 @@ export default function AnalyticsResumoExecutivo() {
           {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
           <div className="grid grid-cols-5 gap-3">
             <div data-onboarding="score-operacional">
-              <ScoreBoard title="Score Operacional" tooltip="Score composto calculado pela média dos últimos 3 meses, combinando qualidade das marcações, velocidade de tratativa e saúde do back-office.">
+              <ScoreBoard title="Score Nexti" tooltip="Score consolidado da operação, calculado pela média ponderada dos sub-scores de Ponto e Absenteísmo. Configure os pesos em Configuração → Scores → Score Nexti.">
                 <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={scoreClassif.label} color={scoreClassif.color} />
               </ScoreBoard>
             </div>
@@ -330,14 +341,14 @@ export default function AnalyticsResumoExecutivo() {
               {sparklineCards.map((card) => {
                 const lastIdx = card.evolucao.length - 1;
                 const indicadorRouteMap: Record<string, string> = {
-                  "Qualidade do Ponto": "/analytics/operacional",
+                  "Ponto": "/analytics/operacional",
                   "Absenteísmo": "/analytics/operacional",
                 };
                 const targetRoute = indicadorRouteMap[card.label];
                 return (
                   <div
                     key={card.label}
-                    data-onboarding={card.label === "Qualidade do Ponto" ? "row-qualidade" : undefined}
+                    data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
                     className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
                     onClick={() => targetRoute && navigate(targetRoute)}
                     title={`Ver detalhes de ${card.label}`}

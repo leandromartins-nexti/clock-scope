@@ -46,7 +46,7 @@ export interface OperacionalSubTab {
 }
 
 export const OPERACIONAL_SUB_TABS: OperacionalSubTab[] = [
-  { id: "qualidade", label: "Qualidade do Ponto", order: 1 },
+  { id: "qualidade", label: "Ponto", order: 1 },
   { id: "absenteismo", label: "Absenteísmo", order: 2 },
   { id: "turnover", label: "Turnover", order: 3 },
   { id: "movimentacoes", label: "Movimentações", order: 4 },

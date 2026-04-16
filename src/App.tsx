@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { ScoreConfigProvider } from "./contexts/ScoreConfigContext";
 import { AbsenteismoScoreConfigProvider } from "./contexts/AbsenteismoScoreConfigContext";
+import { NextiScoreConfigProvider } from "./contexts/NextiScoreConfigContext";
 import { CustomerProvider } from "./contexts/CustomerContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
@@ -40,6 +41,7 @@ function ProtectedRoutes() {
     <CustomerProvider>
       <ScoreConfigProvider>
         <AbsenteismoScoreConfigProvider>
+          <NextiScoreConfigProvider>
           <Routes>
             <Route element={<DashboardLayout />}>
               <Route path="/" element={<AnalyticsResumoExecutivo />} />
@@ -65,6 +67,7 @@ function ProtectedRoutes() {
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </NextiScoreConfigProvider>
         </AbsenteismoScoreConfigProvider>
       </ScoreConfigProvider>
     </CustomerProvider>
