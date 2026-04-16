@@ -884,15 +884,15 @@ function RankingDashedGrid() {
 
 function RankingFooter() {
   return (
-    <div className="flex items-center gap-4 mt-1 -mx-2 px-2">
-      <span className="min-w-[120px]" />
-      <div className="flex-1 relative h-4">
+    <div className="mt-1 hidden sm:flex items-center gap-4 px-2 overflow-hidden">
+      <span className="w-[120px] shrink-0" />
+      <div className="relative h-4 flex-1 min-w-0">
         {[0, 20, 40, 60, 80, 100].map(p => (
           <span key={p} className="absolute text-[10px] text-muted-foreground -translate-x-1/2" style={{ left: `${p}%` }}>{p}%</span>
         ))}
       </div>
-      <span className="min-w-[80px]" />
-      <span className="w-[14px]" />
+      <span className="w-[80px] shrink-0" />
+      <span className="w-[14px] shrink-0" />
     </div>
   );
 }
