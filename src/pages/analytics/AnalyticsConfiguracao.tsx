@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Users, UserPlus } from "lucide-react";
 import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
+import ScoreNextiConfig from "./ScoreNextiConfig";
 import UserManagementTab from "@/components/analytics/UserManagementTab";
 import ScoreAbsenteismoConfig from "./ScoreAbsenteismoConfig";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
@@ -50,7 +51,7 @@ const dataRegistry: MenuEntry[] = [
     menuName: "Operacional",
     tabs: [
       {
-        tabName: "Qualidade do Ponto",
+        tabName: "Ponto",
         charts: [
           {
             id: "evo-qualidade-headcount",
@@ -90,7 +91,8 @@ const dataRegistry: MenuEntry[] = [
 
 // ── Score sidebar items ──
 const scoreMenuItems = [
-  { id: "qualidade", label: "Qualidade do Ponto", icon: "🎯" },
+  { id: "nexti", label: "Score Nexti", icon: "⭐" },
+  { id: "qualidade", label: "Ponto", icon: "🎯" },
   { id: "absenteismo", label: "Absenteísmo", icon: "📉" },
 ];
 
@@ -197,7 +199,7 @@ export default function AnalyticsConfiguracao() {
   const { canSwitchClient } = useCustomer();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("base-dados");
-  const [activeScore, setActiveScore] = useState("qualidade");
+  const [activeScore, setActiveScore] = useState("nexti");
 
   const tabs = [
     { id: "base-dados", label: "Base de Dados", icon: Database },
@@ -277,10 +279,21 @@ export default function AnalyticsConfiguracao() {
 
             {/* Right content */}
             <div className="flex-1 px-6 py-5 overflow-auto">
+              {activeScore === "nexti" && (
+                <>
+                  <div className="mb-4">
+                    <h2 className="text-lg font-bold text-foreground">Score Nexti</h2>
+                    <p className="text-xs text-muted-foreground">
+                      Equilibre os pesos dos indicadores que compõem o score operacional consolidado
+                    </p>
+                  </div>
+                  <ScoreNextiConfig />
+                </>
+              )}
               {activeScore === "qualidade" && (
                 <>
                   <div className="mb-4">
-                    <h2 className="text-lg font-bold text-foreground">Score de Qualidade do Ponto</h2>
+                    <h2 className="text-lg font-bold text-foreground">Score de Ponto</h2>
                     <p className="text-xs text-muted-foreground">
                       Configure os pesos dos 4 componentes, as notas por faixa e os limites de classificação
                     </p>
