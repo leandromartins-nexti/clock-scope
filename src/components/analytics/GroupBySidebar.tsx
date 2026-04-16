@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, ArrowUpDown, PanelRightClose, PanelRightOpen, Building2, Network, LayoutGrid, SlidersHorizontal, X } from "lucide-react";
+import { Search, ArrowUpDown, PanelRightClose, PanelRightOpen, Building2, Network, LayoutGrid, SlidersHorizontal, X, Filter } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -102,10 +102,10 @@ export default function GroupBySidebar({
       <>
         <button
           onClick={() => setMobileOpen(true)}
-          className="fixed bottom-6 right-6 z-40 bg-[#FF5722] text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-[#E64A19] transition-colors"
+          className="fixed bottom-20 right-6 z-40 bg-[#FF5722] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-[#E64A19] transition-colors"
           aria-label="Abrir tipo de operação"
         >
-          <SlidersHorizontal className="w-5 h-5" />
+          <Filter className="w-5 h-5" />
         </button>
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent side="right" className="w-full max-w-full p-0 flex flex-col">

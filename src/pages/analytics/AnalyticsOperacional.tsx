@@ -51,9 +51,6 @@ export default function AnalyticsOperacional() {
           <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium whitespace-nowrap">Período: {resumo.periodo}</span>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <button onClick={() => setFilterOpen(true)} className="border border-border text-muted-foreground px-2 sm:px-4 py-2 rounded text-sm font-medium flex items-center gap-2 hover:bg-gray-50">
-            <Filter className="w-4 h-4" /> <span className="hidden sm:inline">Filtros</span>
-          </button>
           <button className="hidden sm:flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline">
             <Eraser className="w-4 h-4" /> Limpar Filtros
           </button>
