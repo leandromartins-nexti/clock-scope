@@ -138,7 +138,7 @@ export default function AnalyticsResumoExecutivo() {
     const variacao = diff >= 0 ? `+${diff} pts` : `${diff} pts`;
     const corVariacao = diff >= 0 ? "text-green-600" : "text-red-600";
     return {
-      label: "Qualidade do Ponto",
+      label: "Ponto",
       valor: `${lastScore}`,
       variacao,
       corVariacao,
@@ -148,9 +148,9 @@ export default function AnalyticsResumoExecutivo() {
     };
   }, [selectedRegional, groupBy, scoreConfig, sources, allMonths, kpiSummary.score]);
 
-  // Score for gauge — uses the 3-month rolling composite score (same as Operacional tab)
-  const activeScore = kpiSummary.score;
-  const scoreClassif = getScoreClassification(activeScore, scoreConfig);
+  // Score Nexti — composição ponderada de Ponto + Absenteísmo
+  const { config: nextiConfig } = useNextiScoreConfig();
+  const pontoScore = kpiSummary.score;
 
   // Previous period score for trend
   const prevScore = useMemo(
