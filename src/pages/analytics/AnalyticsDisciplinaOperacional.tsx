@@ -1745,7 +1745,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         </div>
 
         {/* Row 2: Evolução do Tempo de Tratativa + Sobrecarga do Back-office */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
 
           {/* Evolução do Tempo de Tratativa */}
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
@@ -2575,7 +2575,7 @@ ORDER BY a.reference_month, a.headcount DESC;`;
         </div>
 
         {/* Row 2: Evolution chart + Scatter */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-0.5">
               <div>
@@ -2701,7 +2701,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div className="bg-card border border-border/50 rounded-xl p-4">
             <h4 className="text-sm font-semibold mb-2">Trocas por Competência</h4>
             <ResponsiveContainer width="100%" height={250}>

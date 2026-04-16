@@ -889,7 +889,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
         </div>
 
         {/* ── Row 1: Mapa de Operações + Volume Mensal (grid 2 colunas) ── */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
         <div className={`bg-card border rounded-xl p-4 ${selectedRegional ? "border-[#FF5722]/30" : "border-border/50"}`}>
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
@@ -1117,7 +1117,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
         </div>{/* close grid-cols-2 row 1 */}
 
         {/* ── G2 + G3: Composição + Maturidade side by side ── */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {/* G2: Composição das Ausências por Tipo */}
           <div className="bg-card border border-border/50 rounded-xl p-4">
             <div className="flex items-center justify-between mb-0.5">
@@ -1269,7 +1269,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
         </div>
 
         {/* ── Insights inline ── */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <div className="bg-card border border-orange-200 rounded-xl p-4 space-y-2">
             <p className="text-xs font-semibold text-orange-600">⚠ Alertas</p>
             <ul className="text-xs text-muted-foreground space-y-1.5">
