@@ -331,6 +331,7 @@ export default function AnalyticsResumoExecutivo() {
                 const lastIdx = card.evolucao.length - 1;
                 const indicadorRouteMap: Record<string, string> = {
                   "Qualidade do Ponto": "/analytics/operacional",
+                  "Absenteísmo": "/analytics/operacional",
                 };
                 const targetRoute = indicadorRouteMap[card.label];
                 return (
