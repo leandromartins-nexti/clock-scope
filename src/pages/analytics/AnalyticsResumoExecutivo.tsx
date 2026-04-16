@@ -392,7 +392,7 @@ export default function AnalyticsResumoExecutivo() {
             </div>
             {/* Month legend footer */}
             {sparklineCards[0]?.evolucao.length > 0 && (
-              <div className="flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
+              <div className="hidden sm:flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
                 <div className="w-2" />
                 <span className="min-w-[140px]" />
                 <span className="min-w-[45px]" />
@@ -409,12 +409,12 @@ export default function AnalyticsResumoExecutivo() {
 
 
           {/* ═══ CTA Financeiro ═══ */}
-          <div className="bg-surface border border-border/50 rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+          <div className="bg-surface border border-border/50 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
                 <DollarSign size={20} className="text-[#FF5722]" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-semibold">Visão Financeira em breve</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Prepare seus parâmetros agora para que a visão em R$ já esteja pronta quando liberada.
@@ -423,7 +423,7 @@ export default function AnalyticsResumoExecutivo() {
             </div>
             <button
               onClick={() => navigate("/analytics/configuracao")}
-              className="bg-[#FF5722] text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition shrink-0"
+              className="bg-[#FF5722] text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition shrink-0 w-full sm:w-auto"
             >
               Configurar parâmetros
             </button>
