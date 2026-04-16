@@ -1,4 +1,5 @@
 import { Lock } from "lucide-react";
+import { ReactNode } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, ResponsiveContainer, CartesianGrid,
 } from "recharts";
@@ -7,56 +8,39 @@ import { blurMockData } from "@/lib/analytics-mock-data";
 interface LockedTabOverlayProps {
   nome: string;
   descricao: string;
+  backgroundContent?: ReactNode;
 }
 
-export default function LockedTabOverlay({ nome, descricao }: LockedTabOverlayProps) {
+export default function LockedTabOverlay({ nome, descricao, backgroundContent }: LockedTabOverlayProps) {
   return (
     <div className="relative min-h-[600px]">
-      {/* Blurred mock content */}
-      <div className="filter blur-[6px] opacity-40 pointer-events-none p-6 space-y-6">
-        {/* KPI Cards */}
-        <div className="grid grid-cols-4 gap-4">
-          {blurMockData.kpiCards.map((kpi, i) => (
-            <div key={i} className="bg-card border border-border/50 rounded-xl p-6">
-              <p className="text-[0.85rem] font-medium text-muted-foreground">{kpi.label}</p>
-              <p className="text-[1.8rem] font-semibold leading-none mt-2">{kpi.valor}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Bar Chart */}
-        <div className="bg-card border border-border/50 rounded-xl p-6">
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={blurMockData.barChartData}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-              <XAxis dataKey="name" fontSize={11} />
-              <YAxis fontSize={11} />
-              <Bar dataKey="valor" fill="#FF5722" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Table */}
-        <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-[hsl(var(--surface))]">
-              <tr>
-                <th className="text-left text-xs font-semibold text-muted-foreground p-3">Operação</th>
-                <th className="text-left text-xs font-semibold text-muted-foreground p-3">Valor</th>
-                <th className="text-left text-xs font-semibold text-muted-foreground p-3">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {blurMockData.tableData.map((row, i) => (
-                <tr key={i} className="border-t border-border">
-                  <td className="text-sm p-3">{row.operacao}</td>
-                  <td className="text-sm p-3">{row.valor}</td>
-                  <td className="text-sm p-3">{row.score}</td>
-                </tr>
+      {/* Blurred background content */}
+      <div className="filter blur-[3px] opacity-60 pointer-events-none select-none">
+        {backgroundContent ? (
+          backgroundContent
+        ) : (
+          <div className="p-6 space-y-6">
+            {/* KPI Cards */}
+            <div className="grid grid-cols-4 gap-4">
+              {blurMockData.kpiCards.map((kpi, i) => (
+                <div key={i} className="bg-card border border-border/50 rounded-xl p-6">
+                  <p className="text-[0.85rem] font-medium text-muted-foreground">{kpi.label}</p>
+                  <p className="text-[1.8rem] font-semibold leading-none mt-2">{kpi.valor}</p>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
+            <div className="bg-card border border-border/50 rounded-xl p-6">
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={blurMockData.barChartData}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                  <XAxis dataKey="name" fontSize={11} />
+                  <YAxis fontSize={11} />
+                  <Bar dataKey="valor" fill="#FF5722" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Overlay card */}

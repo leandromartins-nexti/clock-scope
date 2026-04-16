@@ -4,6 +4,7 @@ import { ChevronRight, Filter, Eraser, Lock } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo, lockedTabs } from "@/lib/analytics-mock-data";
 import LockedTabOverlay from "@/components/analytics/LockedTabOverlay";
+import { QualidadeTab } from "./AnalyticsDisciplinaOperacional";
 
 interface TabDef {
   id: string;
@@ -63,10 +64,15 @@ export default function AnalyticsLockedSection({ sectionName, sectionId, tabs }:
         </div>
       </div>
 
-      <div className="px-6 py-4 flex-1">
+      <div className="flex-1 relative">
         <LockedTabOverlay
           nome={currentLocked?.nome || activeTab}
           descricao={currentLocked?.descricao || "Funcionalidade em desenvolvimento"}
+          backgroundContent={
+            <div className="flex w-full">
+              <QualidadeTab />
+            </div>
+          }
         />
       </div>
 
