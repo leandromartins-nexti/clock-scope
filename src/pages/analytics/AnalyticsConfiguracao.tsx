@@ -199,9 +199,12 @@ export default function AnalyticsConfiguracao() {
   const [activeTab, setActiveTab] = useState("base-dados");
   const [activeScore, setActiveScore] = useState("qualidade");
 
+  const isNexti = user?.client === "nexti";
+
   const tabs = [
-    { id: "base-dados", label: "Base de Dados", icon: Database },
+    ...(!isNexti ? [{ id: "base-dados", label: "Base de Dados", icon: Database }] : []),
     { id: "scores", label: "Scores", icon: Gauge },
+    ...(!isNexti ? [] : [{ id: "base-dados", label: "Base de Dados", icon: Database }]),
     ...(canSwitchClient ? [{ id: "clientes", label: "Clientes", icon: Users }] : []),
     ...(user?.role === "admin" ? [{ id: "usuarios", label: "Usuários", icon: UserPlus }] : []),
   ];
