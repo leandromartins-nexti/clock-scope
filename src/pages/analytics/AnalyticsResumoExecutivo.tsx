@@ -315,17 +315,21 @@ export default function AnalyticsResumoExecutivo() {
               <div className="w-2" />
               <span className="flex-1 sm:flex-none sm:min-w-[140px]">Indicador</span>
               <span className="min-w-[45px] text-center">Score</span>
-              <span className="min-w-[55px] sm:min-w-[65px] text-center">Variação</span>
-              <div className="hidden sm:block flex-1 sm:min-w-[120px]" />
+              <span className="hidden sm:inline-block min-w-[65px] text-center">Variação</span>
+              <div className="flex-1 sm:min-w-[120px]" />
             </div>
             <div className="divide-y divide-border/40">
               {sparklineCards.map((card) => {
                 const lastIdx = card.evolucao.length - 1;
+                const firstMonth = card.evolucao[0]?.competencia ?? "";
+                const lastMonth = card.evolucao[lastIdx]?.competencia ?? "";
                 const indicadorRouteMap: Record<string, string> = {
                   "Ponto": "/analytics/operacional",
                   "Absenteísmo": "/analytics/operacional",
                 };
                 const targetRoute = indicadorRouteMap[card.label];
+                const gradId = `grad-${card.label.replace(/\s/g,'')}`;
+                const areaGradId = `area-${card.label.replace(/\s/g,'')}`;
                 return (
                 <div
                     key={card.label}
@@ -337,15 +341,47 @@ export default function AnalyticsResumoExecutivo() {
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: getLineColor(card.score) }} />
                     <span className="text-sm font-medium text-foreground flex-1 sm:flex-none sm:min-w-[140px] truncate">{card.label}</span>
                     <span className={`text-xs font-bold min-w-[45px] text-center px-1.5 py-0.5 rounded ${getScoreColor(card.score)} ${getScoreBg(card.score)}`}>{card.score}</span>
-                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[55px] sm:min-w-[65px] text-center ${card.corVariacao} ${
+                    <span className={`hidden sm:inline-block text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[65px] text-center ${card.corVariacao} ${
                       card.corVariacao.includes('green') ? 'bg-green-50' : card.corVariacao.includes('red') ? 'bg-red-50' : 'bg-gray-50'
                     }`}>{card.variacao}</span>
+
+                    {/* Mobile: area chart with first/last month labels */}
+                    <div className="flex sm:hidden flex-1 flex-col min-w-0">
+                      <div className="h-[32px] w-full">
+                        <ResponsiveContainer width="100%" height={32}>
+                          <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, left: 0, bottom: 0 }}>
+                            <defs>
+                              <linearGradient id={areaGradId} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor={getLineColor(card.score)} stopOpacity={0.4} />
+                                <stop offset="100%" stopColor={getLineColor(card.score)} stopOpacity={0.05} />
+                              </linearGradient>
+                            </defs>
+                            <Area
+                              type="monotone"
+                              dataKey="valor"
+                              stroke={getLineColor(card.score)}
+                              strokeWidth={2}
+                              fill={`url(#${areaGradId})`}
+                              dot={false}
+                              activeDot={false}
+                              isAnimationActive={false}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="flex justify-between text-[9px] text-muted-foreground mt-0.5 px-0.5">
+                        <span>{firstMonth.replace('/20', '/')}</span>
+                        <span>{lastMonth.replace('/20', '/')}</span>
+                      </div>
+                    </div>
+
+                    {/* Desktop: line chart with dots */}
                     <div className="hidden sm:block flex-1 h-[36px] sm:min-w-[120px]">
                       <ResponsiveContainer width="100%" height={36}>
                         <LineChart data={card.evolucao}>
                           {card.perPointColors && (
                             <defs>
-                              <linearGradient id={`grad-${card.label.replace(/\s/g,'')}`} x1="0" y1="0" x2="1" y2="0">
+                              <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
                                 {card.evolucao.map((pt, i) => {
                                   const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
                                   return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} />;
@@ -361,7 +397,7 @@ export default function AnalyticsResumoExecutivo() {
                           <Line
                             type="monotone"
                             dataKey="valor"
-                            stroke={card.perPointColors ? `url(#grad-${card.label.replace(/\s/g,'')})` : getLineColor(card.score)}
+                            stroke={card.perPointColors ? `url(#${gradId})` : getLineColor(card.score)}
                             strokeWidth={3}
                             dot={(props: any) => {
                               const ptColor = card.perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
@@ -390,13 +426,12 @@ export default function AnalyticsResumoExecutivo() {
                 );
               })}
             </div>
-            {/* Month legend footer */}
+            {/* Month legend footer (desktop only) */}
             {sparklineCards[0]?.evolucao.length > 0 && (
               <div className="hidden sm:flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
                 <div className="w-2" />
                 <span className="min-w-[140px]" />
                 <span className="min-w-[45px]" />
-                
                 <span className="min-w-[65px]" />
                 <div className="flex-1 min-w-[120px] flex justify-between">
                   {sparklineCards[0].evolucao.map((pt) => (
