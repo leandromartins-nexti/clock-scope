@@ -121,7 +121,7 @@ function LegacyMenuItems({ isCollapsed }: { isCollapsed: boolean }) {
 // ─── Main Sidebar ───────────────────────────────────────────────
 
 export function DashboardSidebar() {
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
   const location = useLocation();
   const [analyticsOpen, setAnalyticsOpen] = useState(
@@ -131,6 +131,10 @@ export function DashboardSidebar() {
   const isAnalyticsActive = (route: string) => {
     if (route === "/analytics") return location.pathname === "/analytics";
     return location.pathname.startsWith(route);
+  };
+
+  const handleNavClick = () => {
+    if (isMobile) setOpenMobile(false);
   };
 
   return (
@@ -159,7 +163,7 @@ export function DashboardSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild className="text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3 justify-center">
-                  <NavLink to="/analytics">
+                  <NavLink to="/analytics" onClick={handleNavClick}>
                     <BarChart3 className="w-5 h-5" />
                   </NavLink>
                 </SidebarMenuButton>
@@ -188,7 +192,7 @@ export function DashboardSidebar() {
                         isAnalyticsActive(item.route) && "text-white bg-[rgba(255,255,255,0.08)]"
                       )}
                     >
-                      <NavLink to={item.route}>
+                      <NavLink to={item.route} onClick={handleNavClick}>
                         <item.icon className="w-4 h-4 mr-2 text-[#A1A3A4]" />
                         <span className="flex-1">{item.label}</span>
                         {item.locked && <Lock className="w-3 h-3 ml-auto text-[#A1A3A4]" />}
