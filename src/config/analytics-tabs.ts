@@ -13,8 +13,7 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
-  LayoutDashboard, ClipboardList, DollarSign, Target,
-  Gavel, Brain, Settings,
+  LayoutDashboard, ClipboardList, ShieldCheck, HeartHandshake, Settings,
 } from "lucide-react";
 
 export interface AnalyticsTabConfig {
@@ -76,40 +75,22 @@ export const ANALYTICS_TABS: AnalyticsTabConfig[] = [
     component: lazy(() => import("@/pages/analytics/AnalyticsOperacional")),
   },
   {
-    id: "financeiro",
-    label: "Financeiro",
-    icon: DollarSign,
-    order: 3,
-    category: "locked",
-    enabled: true,
-    route: "/analytics/financeiro",
-  },
-  {
-    id: "estrategico",
-    label: "Estratégico",
-    icon: Target,
-    order: 4,
-    category: "locked",
-    enabled: true,
-    route: "/analytics/estrategico",
-  },
-  {
     id: "compliance",
-    label: "Compliance Avançado",
-    icon: Gavel,
-    order: 5,
+    label: "Compliance",
+    icon: ShieldCheck,
+    order: 3,
     category: "locked",
     enabled: true,
     route: "/analytics/compliance",
   },
   {
-    id: "inteligencia",
-    label: "Inteligência",
-    icon: Brain,
-    order: 6,
+    id: "engajamento",
+    label: "Engajamento",
+    icon: HeartHandshake,
+    order: 4,
     category: "locked",
     enabled: true,
-    route: "/analytics/inteligencia",
+    route: "/analytics/engajamento",
   },
   {
     id: "configuracao",
