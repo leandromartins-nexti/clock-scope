@@ -42,7 +42,10 @@ export function validatePassword(password: string): string | null {
 function loadUsers(): StoredUser[] {
   try {
     const stored = localStorage.getItem(USERS_STORAGE_KEY);
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      const parsed = JSON.parse(stored) as StoredUser[];
+      return parsed.map((u) => ({ ...u, status: u.status || "active" }));
+    }
   } catch {}
   const seed = (defaultUsersJson.users as any[]).map((u) => ({
     ...u,
