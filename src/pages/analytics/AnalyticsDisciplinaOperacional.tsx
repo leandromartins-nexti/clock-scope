@@ -1317,11 +1317,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   };
 
   return (
-    <div className="flex">
+    <div className="flex flex-col xl:flex-row w-full">
       {/* Left: KPI cards + charts */}
-      <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
+      <div className="flex-1 min-w-0 space-y-3 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 xl:pb-4">
         {/* Linha 1: 6 KPI Cards */}
-        <div className="grid grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
           {/* 1. Score de Ponto with decomposition popover */}
           <ScoreBoard title="Score de Ponto" tooltip={`Score de Ponto\n─────────────────\nSaúde geral consolidada da operação de ponto.\nCombina 3 componentes com pesos configuráveis.\n\nJanela: média dos últimos 3 meses.\n\nCálculo:\n  (Qualidade × ${scoreConfig.weight_quality}%) + (Velocidade × ${scoreConfig.weight_treatment}%) + (Saúde Back-office × ${scoreConfig.weight_backoffice}%)\n\nScore ${compositeScore}: (${Math.round(fullBreakdown.qualPct)} × ${scoreConfig.weight_quality/100}) + (${Math.round(fullBreakdown.treatScore)} × ${scoreConfig.weight_treatment/100}) + (${Math.round(fullBreakdown.boScore)} × ${scoreConfig.weight_backoffice/100})`}>
             <Popover>
@@ -1745,7 +1745,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         </div>
 
         {/* Row 2: Evolução do Tempo de Tratativa + Sobrecarga do Back-office */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
 
           {/* Evolução do Tempo de Tratativa */}
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
@@ -2561,10 +2561,10 @@ ORDER BY a.reference_month, a.headcount DESC;`;
   }, [groupBy, selectedLabel]);
 
   return (
-    <div className="flex">
-      <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
+    <div className="flex flex-col xl:flex-row w-full">
+      <div className="flex-1 min-w-0 space-y-3 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 xl:pb-4">
         {/* Linha 1: Score + 4 KPI Cards */}
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
           <ScoreBoard title="Score da Aba" tooltip="Score composto que combina Absenteísmo e Turnover. Configure pesos e limites em Configuração.">
             <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={activeData.faixa} color={activeData.scoreColor} />
           </ScoreBoard>
@@ -2575,7 +2575,7 @@ ORDER BY a.reference_month, a.headcount DESC;`;
         </div>
 
         {/* Row 2: Evolution chart + Scatter */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-0.5">
               <div>
@@ -2673,9 +2673,9 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
   const sidebarItems = useMemo(() => getSidebarItems(groupBy, scoreConfig, dataSources), [groupBy, scoreConfig, dataSources]);
 
   return (
-    <div className="flex">
-      <div className="flex-1 min-w-0 space-y-3 pl-6 pr-4 py-4">
-        <div className="grid grid-cols-3 gap-3">
+    <div className="flex flex-col xl:flex-row w-full">
+      <div className="flex-1 min-w-0 space-y-3 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 xl:pb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
             <div className="flex items-center gap-1 mb-1">
               <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Movimentações</p>
@@ -2701,7 +2701,7 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div className="bg-card border border-border/50 rounded-xl p-4">
             <h4 className="text-sm font-semibold mb-2">Trocas por Competência</h4>
             <ResponsiveContainer width="100%" height={250}>
