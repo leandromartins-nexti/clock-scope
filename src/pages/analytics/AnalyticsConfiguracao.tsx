@@ -308,6 +308,16 @@ export default function AnalyticsConfiguracao() {
             <ClientManagement />
           </div>
         )}
+
+        {activeTab === "usuarios" && user?.role === "admin" && (
+          <div className="flex-1 px-6 py-5 overflow-auto">
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-foreground">Gestão de Usuários</h2>
+              <p className="text-xs text-muted-foreground">Cadastre novos usuários e gerencie acessos</p>
+            </div>
+            <UserManagementTab />
+          </div>
+        )}
       </div>
     </div>
   );
