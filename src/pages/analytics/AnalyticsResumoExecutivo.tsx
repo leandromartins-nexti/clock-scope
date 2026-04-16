@@ -351,17 +351,38 @@ export default function AnalyticsResumoExecutivo() {
                         <ResponsiveContainer width="100%" height={32}>
                           <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, left: 0, bottom: 0 }}>
                             <defs>
-                              <linearGradient id={areaGradId} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor={getLineColor(card.score)} stopOpacity={0.4} />
-                                <stop offset="100%" stopColor={getLineColor(card.score)} stopOpacity={0.05} />
+                              {/* Horizontal stroke gradient — per-point color like desktop line */}
+                              <linearGradient id={`stroke-${areaGradId}`} x1="0" y1="0" x2="1" y2="0">
+                                {card.evolucao.map((pt, i) => {
+                                  const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
+                                  const c = card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score);
+                                  return <stop key={i} offset={`${pct}%`} stopColor={c} />;
+                                })}
                               </linearGradient>
+                              {/* Horizontal fill gradient — same color shift, semi-transparent */}
+                              <linearGradient id={`${areaGradId}-h`} x1="0" y1="0" x2="1" y2="0">
+                                {card.evolucao.map((pt, i) => {
+                                  const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
+                                  const c = card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score);
+                                  return <stop key={i} offset={`${pct}%`} stopColor={c} stopOpacity={0.35} />;
+                                })}
+                              </linearGradient>
+                              {/* Vertical fade mask for soft bottom */}
+                              <linearGradient id={`${areaGradId}-fade`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="white" stopOpacity={1} />
+                                <stop offset="100%" stopColor="white" stopOpacity={0} />
+                              </linearGradient>
+                              <mask id={`${areaGradId}-mask`}>
+                                <rect x="0" y="0" width="100%" height="100%" fill={`url(#${areaGradId}-fade)`} />
+                              </mask>
                             </defs>
                             <Area
                               type="monotone"
                               dataKey="valor"
-                              stroke={getLineColor(card.score)}
+                              stroke={`url(#stroke-${areaGradId})`}
                               strokeWidth={2}
-                              fill={`url(#${areaGradId})`}
+                              fill={`url(#${areaGradId}-h)`}
+                              mask={`url(#${areaGradId}-mask)`}
                               dot={false}
                               activeDot={false}
                               isAnimationActive={false}
