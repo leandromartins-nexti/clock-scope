@@ -63,7 +63,8 @@ export default function AnalyticsOperacional() {
         </div>
       </div>
 
-      <div className="bg-white border-b border-border px-2 sm:px-6 overflow-x-auto">
+      {/* Tabs desktop/tablet (≥ sm) */}
+      <div className="hidden sm:block bg-white border-b border-border px-2 sm:px-6 overflow-x-auto">
         <div className="flex gap-1 sm:gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -80,18 +81,40 @@ export default function AnalyticsOperacional() {
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
-                <span className="hidden sm:inline">{tab.label}</span>
+                <span>{tab.label}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      <div className="flex-1 flex min-h-0">
+      <div className="flex-1 flex min-h-0 pb-16 sm:pb-0">
         <div className="flex flex-1 min-w-0">
           {renderTab()}
         </div>
       </div>
+
+      {/* Tabs fixas no rodapé (mobile) */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-border shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
+        <div className="flex">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-colors ${
+                  isActive ? "text-[#FF5722]" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon className="w-5 h-5 shrink-0" />
+                <span className="text-[10px] leading-tight font-medium truncate max-w-[64px]">{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
 
       <FilterPanel open={filterOpen} onClose={() => setFilterOpen(false)} />
     </div>
