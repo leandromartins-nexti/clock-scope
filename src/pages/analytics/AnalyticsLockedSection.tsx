@@ -79,7 +79,17 @@ export default function AnalyticsLockedSection({ sectionName, sectionId, tabs }:
         <LockedTabOverlay
           nome={currentLocked?.nome || activeTab}
           descricao={currentLocked?.descricao || "Funcionalidade em desenvolvimento"}
-          backgroundContent={<LockedTabMockBackground tabId={activeTab} />}
+          backgroundContent={
+            <div
+              key={activeTab}
+              className="w-full"
+              style={{
+                filter: `hue-rotate(${TAB_VARIANTS[activeTab]?.hue ?? 0}deg) saturate(${TAB_VARIANTS[activeTab]?.sat ?? 1})`,
+              }}
+            >
+              <QualidadeTab />
+            </div>
+          }
         />
       </div>
 
