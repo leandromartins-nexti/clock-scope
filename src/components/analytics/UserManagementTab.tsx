@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useAuth, StoredUser, validatePassword } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -123,7 +123,7 @@ export default function UserManagementTab() {
     }
   };
 
-  const UserRow = ({ u, actions }: { u: StoredUser; actions: React.ReactNode }) => {
+  const renderUserRow = (u: StoredUser, actions: React.ReactNode) => {
     const isEditing = editId === u.id;
 
     if (isEditing) {
@@ -190,6 +190,7 @@ export default function UserManagementTab() {
       </div>
     );
   };
+
 
   return (
     <div className="space-y-6">
@@ -283,54 +284,60 @@ export default function UserManagementTab() {
         <TabsContent value="active" className="space-y-2 mt-4">
           {activeUsers.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Nenhum usuário ativo.</p>}
           {activeUsers.map((u) => (
-            <UserRow key={u.id} u={u} actions={
-              u.id !== user!.id && u.role !== "admin" ? (
-                <>
+            <React.Fragment key={u.id}>
+              {renderUserRow(u,
+                u.id !== user!.id && u.role !== "admin" ? (
+                  <>
+                    <Button size="sm" variant="ghost" onClick={() => startEdit(u)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </>
+                ) : u.id === user!.id ? (
                   <Button size="sm" variant="ghost" onClick={() => startEdit(u)}>
                     <Pencil className="h-3.5 w-3.5" />
                   </Button>
-                  <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </>
-              ) : u.id === user!.id ? (
-                <Button size="sm" variant="ghost" onClick={() => startEdit(u)}>
-                  <Pencil className="h-3.5 w-3.5" />
-                </Button>
-              ) : null
-            } />
+                ) : null
+              )}
+            </React.Fragment>
           ))}
         </TabsContent>
 
         <TabsContent value="pending" className="space-y-2 mt-4">
           {pendingUsers.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Nenhum cadastro pendente.</p>}
           {pendingUsers.map((u) => (
-            <UserRow key={u.id} u={u} actions={
-              <>
-                <Button size="sm" variant="default" className="gap-1" onClick={() => handleApprove(u)}>
-                  <Check className="h-3.5 w-3.5" /> Aprovar
-                </Button>
-                <Button size="sm" variant="destructive" className="gap-1" onClick={() => handleReject(u)}>
-                  <X className="h-3.5 w-3.5" /> Recusar
-                </Button>
-              </>
-            } />
+            <React.Fragment key={u.id}>
+              {renderUserRow(u,
+                <>
+                  <Button size="sm" variant="default" className="gap-1" onClick={() => handleApprove(u)}>
+                    <Check className="h-3.5 w-3.5" /> Aprovar
+                  </Button>
+                  <Button size="sm" variant="destructive" className="gap-1" onClick={() => handleReject(u)}>
+                    <X className="h-3.5 w-3.5" /> Recusar
+                  </Button>
+                </>
+              )}
+            </React.Fragment>
           ))}
         </TabsContent>
 
         <TabsContent value="rejected" className="space-y-2 mt-4">
           {rejectedUsers.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Nenhum cadastro recusado.</p>}
           {rejectedUsers.map((u) => (
-            <UserRow key={u.id} u={u} actions={
-              <>
-                <Button size="sm" variant="outline" className="gap-1" onClick={() => handleApprove(u)}>
-                  <Check className="h-3.5 w-3.5" /> Reativar
-                </Button>
-                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
-              </>
-            } />
+            <React.Fragment key={u.id}>
+              {renderUserRow(u,
+                <>
+                  <Button size="sm" variant="outline" className="gap-1" onClick={() => handleApprove(u)}>
+                    <Check className="h-3.5 w-3.5" /> Reativar
+                  </Button>
+                  <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(u)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </>
+              )}
+            </React.Fragment>
           ))}
         </TabsContent>
       </Tabs>
