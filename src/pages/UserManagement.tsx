@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth, StoredUser } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X, Trash2, Users, Clock, ShieldAlert } from "lucide-react";
+import { Check, X, Trash2, Users, Clock, ShieldAlert, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function UserManagement() {
   const { user, getUsers, approveUser, rejectUser, deleteUser } = useAuth();
   const [tab, setTab] = useState("active");
+  const [tick, setTick] = useState(0);
+  const refresh = useCallback(() => setTick((t) => t + 1), []);
+
+  // Auto-refresh when window regains focus
+  useEffect(() => {
+    window.addEventListener("focus", refresh);
+    return () => window.removeEventListener("focus", refresh);
+  }, [refresh]);
 
   if (user?.role !== "admin") {
     return (
@@ -64,9 +72,14 @@ export default function UserManagement() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-4">
-      <div>
-        <h1 className="text-xl font-bold">Gestão de Usuários</h1>
-        <p className="text-sm text-muted-foreground">Gerencie acessos e aprove novos cadastros.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold">Gestão de Usuários</h1>
+          <p className="text-sm text-muted-foreground">Gerencie acessos e aprove novos cadastros.</p>
+        </div>
+        <Button size="sm" variant="outline" className="gap-1.5" onClick={refresh}>
+          <RefreshCw className="h-3.5 w-3.5" /> Atualizar
+        </Button>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
