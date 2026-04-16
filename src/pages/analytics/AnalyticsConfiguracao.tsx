@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Users } from "lucide-react";
+import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Users, UserPlus } from "lucide-react";
 import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
+import UserManagementTab from "@/components/analytics/UserManagementTab";
 import ScoreAbsenteismoConfig from "./ScoreAbsenteismoConfig";
 import ChartDataModal from "@/components/analytics/ChartDataModal";
 import CompositeChartDataModal from "@/components/analytics/CompositeChartDataModal";
