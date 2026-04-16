@@ -138,15 +138,15 @@ export function DashboardSidebar() {
       className={cn(isCollapsed ? "w-16" : "w-64", "bg-[#3d4449] border-r border-[rgba(255,255,255,0.05)]")}
       collapsible="icon"
     >
-      <SidebarHeader className="h-12 px-3 py-0 border-b border-[rgba(255,255,255,0.05)] bg-[#FF5722] flex flex-row items-center justify-between">
+      <SidebarHeader className="h-12 px-3 py-0 bg-[#FF5722] flex flex-row items-center justify-between">
         {!isCollapsed && (
           <div className="text-white flex items-center">
-            <img src={nextiLogo} alt="Nexti" className="h-7 w-auto object-contain" />
+            <img src={nextiLogo} alt="Nexti" className="h-8 w-auto object-contain" />
           </div>
         )}
         {isCollapsed && (
           <div className="text-white flex items-center justify-center w-full">
-            <img src={nextiLogoSmall} alt="N" className="h-7 w-auto object-contain" />
+            <img src={nextiLogoSmall} alt="N" className="h-8 w-auto object-contain" />
           </div>
         )}
         <SidebarToggleButton data-onboarding="sidebar-toggle" className="text-white hover:bg-[rgba(255,255,255,0.1)] h-7 w-7 p-0 ml-auto" />
