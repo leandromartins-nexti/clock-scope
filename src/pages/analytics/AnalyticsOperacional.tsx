@@ -13,7 +13,7 @@ import TurnoverTab from "./TurnoverTab";
 import AnalyticsCoberturasContinuidade from "./AnalyticsCoberturasContinuidade";
 import { OPERACIONAL_SUB_TABS } from "@/config/analytics-tabs";
 
-const tabs = OPERACIONAL_SUB_TABS.map(t => ({ id: t.id, label: t.label }));
+const tabs = OPERACIONAL_SUB_TABS.map(t => ({ id: t.id, label: t.label, icon: t.icon }));
 
 export default function AnalyticsOperacional() {
   const navigate = useNavigate();
@@ -66,20 +66,25 @@ export default function AnalyticsOperacional() {
       </div>
 
       <div className="bg-white border-b border-border px-6">
-        <div className="flex gap-6">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === tab.id
-                  ? "border-[#FF5722] text-[#FF5722]"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="flex gap-2">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`w-40 py-3 text-sm font-medium border-b-2 transition-colors flex items-center justify-center gap-2 ${
+                  isActive
+                    ? "border-[#FF5722] text-[#FF5722]"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
