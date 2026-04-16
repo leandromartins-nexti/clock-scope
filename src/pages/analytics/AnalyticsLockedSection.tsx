@@ -4,7 +4,7 @@ import { ChevronRight, Filter, Eraser, Lock } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo, lockedTabs } from "@/lib/analytics-mock-data";
 import LockedTabOverlay from "@/components/analytics/LockedTabOverlay";
-import { QualidadeTab } from "./AnalyticsDisciplinaOperacional";
+import LockedTabMockBackground from "@/components/analytics/LockedTabMockBackground";
 
 interface TabDef {
   id: string;
@@ -68,11 +68,7 @@ export default function AnalyticsLockedSection({ sectionName, sectionId, tabs }:
         <LockedTabOverlay
           nome={currentLocked?.nome || activeTab}
           descricao={currentLocked?.descricao || "Funcionalidade em desenvolvimento"}
-          backgroundContent={
-            <div className="flex w-full">
-              <QualidadeTab />
-            </div>
-          }
+          backgroundContent={<LockedTabMockBackground tabId={activeTab} />}
         />
       </div>
 
