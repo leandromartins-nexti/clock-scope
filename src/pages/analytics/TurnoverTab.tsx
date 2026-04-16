@@ -605,7 +605,7 @@ export default function TurnoverTab() {
         </div>
 
         {/* Row 2: 2 charts */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {/* Chart 1: Evolução do Turnover e Headcount */}
           <div className={`bg-card border rounded-xl p-4 ${selectedMes ? "border-[#FF5722]/30" : "border-border/50"}`}>
             <div className="flex items-center justify-between mb-0.5">
@@ -670,7 +670,7 @@ export default function TurnoverTab() {
         </div>
 
         {/* Row 3: 2 charts */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {/* Chart 3: Top 10 Clientes com Maior Volume de Saídas */}
           {(() => {
             const { data: rankingData, totalWithExits } = getRankingTop10(groupBy, selectedRegional);
