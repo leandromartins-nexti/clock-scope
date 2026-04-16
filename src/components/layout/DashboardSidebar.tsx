@@ -138,21 +138,21 @@ export function DashboardSidebar() {
       className={cn(isCollapsed ? "w-16" : "w-64", "bg-[#3d4449] border-r border-[rgba(255,255,255,0.05)]")}
       collapsible="icon"
     >
-      <SidebarHeader className="h-12 px-3 py-0 bg-[#FF5722] flex flex-row items-center justify-between">
+      <SidebarHeader className="relative h-12 px-3 py-0 bg-[#FF5722] flex items-center justify-center">
         {!isCollapsed && (
-          <div className="text-white flex items-center">
+          <div className="flex w-full items-center justify-center text-white">
             <img src={nextiLogo} alt="Nexti" className="h-8 w-auto object-contain" />
           </div>
         )}
         {isCollapsed && (
-          <div className="text-white flex items-center justify-center w-full">
+          <div className="flex w-full items-center justify-center text-white">
             <img src={nextiLogoSmall} alt="N" className="h-8 w-auto object-contain" />
           </div>
         )}
-        <SidebarToggleButton data-onboarding="sidebar-toggle" className="text-white hover:bg-[rgba(255,255,255,0.1)] h-7 w-7 p-0 ml-auto" />
+        <SidebarToggleButton data-onboarding="sidebar-toggle" className="absolute right-2 top-1/2 h-7 w-7 -translate-y-1/2 p-0 text-white hover:bg-[rgba(255,255,255,0.1)]" />
       </SidebarHeader>
 
-      <SidebarContent className="flex-1 overflow-y-auto bg-[#3d4449] [&>*+*]:mt-0">
+      <SidebarContent className="flex-1 overflow-y-auto bg-[#3d4449] gap-0 [&>*+*]:mt-0">
         {/* ── Analytics Section ── */}
         {isCollapsed ? (
           <SidebarGroup className="px-3 py-1">
