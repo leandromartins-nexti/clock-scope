@@ -851,11 +851,7 @@ export default function AnalyticsResumoExecutivo() {
                     title={`Ver detalhes de ${card.label}`}
                   >
                     <td colSpan={2} className={`p-0 ${borderTopCls}`}>
-                      <div className="border border-[#FF5722]/20 relative p-[10px]">
-                        <div className="pointer-events-none absolute inset-x-0 -top-3 h-3 bg-gradient-to-t from-[#FF5722]/8 to-transparent" />
-                        <div className="pointer-events-none absolute inset-x-0 -bottom-3 h-3 bg-gradient-to-b from-[#FF5722]/8 to-transparent" />
-                        <div className="pointer-events-none absolute inset-y-0 -left-3 w-3 bg-gradient-to-l from-[#FF5722]/8 to-transparent" />
-                        <div className="pointer-events-none absolute inset-y-0 -right-3 w-3 bg-gradient-to-r from-[#FF5722]/8 to-transparent" />
+                      <div className="border border-border/40 relative p-[10px]">
                         <div className="flex items-center">
                           <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
                             {card.label === "Ponto" ? (
