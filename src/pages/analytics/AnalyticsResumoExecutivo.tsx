@@ -26,6 +26,7 @@ import {
 } from "@/contexts/NextiScoreConfigContext";
 import {
   Filter, Eraser, DollarSign, CheckCircle, Rocket, Clock, UserX,
+  TrendingDown, ArrowLeftRight, ShieldCheck,
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { Separator } from "@/components/ui/separator";
