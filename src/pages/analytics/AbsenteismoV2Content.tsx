@@ -1085,6 +1085,25 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       const dimmed = selectedMes && selectedMes !== entry.mes;
                       return <Cell key={idx} fill={cat.color} fillOpacity={dimmed ? 0.25 : 0.65} stroke={isActive ? "#FF5722" : cat.color} strokeOpacity={0.5} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
                     })}
+                    <LabelList dataKey={cat.key} content={(props: any) => {
+                      const { x, y, width, height, value, index } = props;
+                      const v = Number(value) || 0;
+                      if (v <= 0) return null;
+                      const entry: any = compV5ChartData[index];
+                      const total = activeV5Cats.reduce((s, c) => s + (Number(entry?.[c.key]) || 0), 0)
+                        + (showExcluded ? activeV5ExcludedCats.reduce((s, c) => s + (Number(entry?.[c.key]) || 0), 0) : 0);
+                      if (total <= 0) return null;
+                      const pct = (v / total) * 100;
+                      if (pct < 1) return null;
+                      const cx = (x ?? 0) + (width ?? 0) / 2;
+                      const h = height ?? 0;
+                      const isShort = h < 14;
+                      return (
+                        <text x={cx} y={(y ?? 0) + h / 2 + 3} textAnchor="middle" fontSize={isShort ? 7 : 9} fill="#fff" fontWeight={600} style={{ paintOrder: "stroke", stroke: "rgba(0,0,0,0.35)", strokeWidth: 2 }}>
+                          {pct.toFixed(0)}%
+                        </text>
+                      );
+                    }} />
                   </Bar>
                 ))}
                 {/* Excluded categories (if toggled on) */}
@@ -1098,6 +1117,25 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                       const dimmed = selectedMes && selectedMes !== entry.mes;
                       return <Cell key={idx} fill={cat.color} fillOpacity={dimmed ? 0.15 : 0.35} stroke={isActive ? "#FF5722" : cat.color} strokeOpacity={0.5} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
                     })}
+                    <LabelList dataKey={cat.key} content={(props: any) => {
+                      const { x, y, width, height, value, index } = props;
+                      const v = Number(value) || 0;
+                      if (v <= 0) return null;
+                      const entry: any = compV5ChartData[index];
+                      const total = activeV5Cats.reduce((s, c) => s + (Number(entry?.[c.key]) || 0), 0)
+                        + activeV5ExcludedCats.reduce((s, c) => s + (Number(entry?.[c.key]) || 0), 0);
+                      if (total <= 0) return null;
+                      const pct = (v / total) * 100;
+                      if (pct < 1) return null;
+                      const cx = (x ?? 0) + (width ?? 0) / 2;
+                      const h = height ?? 0;
+                      const isShort = h < 14;
+                      return (
+                        <text x={cx} y={(y ?? 0) + h / 2 + 3} textAnchor="middle" fontSize={isShort ? 7 : 9} fill="#fff" fontWeight={600} style={{ paintOrder: "stroke", stroke: "rgba(0,0,0,0.35)", strokeWidth: 2 }}>
+                          {pct.toFixed(0)}%
+                        </text>
+                      );
+                    }} />
                   </Bar>
                 ))}
                 {/* Taxa operacional line */}
