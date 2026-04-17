@@ -175,6 +175,12 @@ Nexti Official Theme
   .recharts-reference-area text {
     font-size: 7px !important;
   }
+  /* Shrink in-bar value labels (e.g. 88%, 14%) so they fit inside narrow bars */
+  .recharts-label-list text,
+  .recharts-bar-rectangle + text,
+  .recharts-layer.recharts-label-list text {
+    font-size: 7px !important;
+  }
   /* Shrink chart card inner padding */
   [data-onboarding] .p-4,
   .bg-card.p-4 {
