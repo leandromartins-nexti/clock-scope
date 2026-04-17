@@ -175,7 +175,6 @@ Nexti Official Theme
   .recharts-reference-area text {
     font-size: 7px !important;
   }
-  /* In-bar value labels: handled inline in components for fine control */
   /* Shrink chart card inner padding */
   [data-onboarding] .p-4,
   .bg-card.p-4 {
