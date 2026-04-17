@@ -750,7 +750,6 @@ export default function AnalyticsResumoExecutivo() {
                           <Rocket className="w-5 h-5" />
                         </div>
                         <div className="min-w-[160px]">
-                          <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#FF5722]/70">Indicador-mestre</div>
                           <div className="text-base font-extrabold text-[#FF5722] leading-tight">{card.label}</div>
                         </div>
                         <div className="flex-1 h-[17px] relative min-w-0 mt-[3px]">
