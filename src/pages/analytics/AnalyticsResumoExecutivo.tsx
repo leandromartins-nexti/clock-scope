@@ -760,7 +760,7 @@ export default function AnalyticsResumoExecutivo() {
                       <div className="pointer-events-none absolute inset-x-0 -bottom-3 h-3 bg-gradient-to-b from-[#FF5722]/8 to-transparent" />
                       <div className="pointer-events-none absolute inset-y-0 -left-3 w-3 bg-gradient-to-l from-[#FF5722]/8 to-transparent" />
                       <div className="pointer-events-none absolute inset-y-0 -right-3 w-3 bg-gradient-to-r from-[#FF5722]/8 to-transparent" />
-                      <div className="flex items-center gap-4 py-3 pl-[0.575rem] pr-3 sm:pl-6 sm:pr-3.5 relative">
+                      <div className="flex items-center gap-4 py-3 pl-0 pr-3 sm:pl-6 sm:pr-3.5 relative">
                         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white flex items-center justify-center shadow-md shrink-0">
                           <Rocket className="w-5 h-5" />
                         </div>
