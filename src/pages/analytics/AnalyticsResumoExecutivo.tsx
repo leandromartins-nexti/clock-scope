@@ -5,7 +5,7 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import { useNavigate } from "react-router-dom";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
-import { getSidebarItems, getQualidadeKpiSummary, formatMesLabel } from "@/lib/ajustesData";
+import { aggregateQualidadeEvolucao, getSidebarItems, getQualidadeKpiSummary, formatMesLabel } from "@/lib/ajustesData";
 import { useScoreConfig, getScoreClassification, computeCompositeScore } from "@/contexts/ScoreConfigContext";
 import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
 import { buildDataSources } from "@/lib/qualidadeDataSources";
@@ -301,16 +301,21 @@ export default function AnalyticsResumoExecutivo() {
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const { config: absConfig } = useAbsenteismoScoreConfig();
+  const { config: nextiConfig } = useNextiScoreConfig();
 
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
+  const handleFeedbackSubmit = () => {
+    setFeedbackSubmitted(true);
+    setFeedbackComment("");
+    setRating(null);
+  };
 
   const sidebarItems = useMemo(() => getSidebarItems(groupBy), [groupBy]);
   const sidebarSelected = sidebarItems.find(item => item.nome === selectedRegional) ?? null;
 
   const chartGroupBy: AbsGroupBy = groupBy === "unidade" ? "unidade" : groupBy === "empresa" ? "empresa" : "area";
 
-  // Current scores
   const pontoScore = useMemo(
     () => computeCompositeScore(selectedRegional, groupBy as any, scoreConfig, undefined, sources),
     [selectedRegional, groupBy, scoreConfig, sources]
@@ -326,17 +331,18 @@ export default function AnalyticsResumoExecutivo() {
   const scoreClassif = getNextiScoreClassification(activeScore, nextiConfig);
 
   const groupedEvolution = useMemo(() => {
-    const qual = customerData.evolucao_qualidade ?? [];
+    const qual = aggregateQualidadeEvolucao(selectedRegional, groupBy, sources);
     const abs = computeAbsenteismoEvolution(selectedRegional, chartGroupBy, absConfig);
+
     return qual.map((q) => {
-      const match = abs.find(a => a.month === q.competencia);
+      const match = abs.find((a) => formatMesLabel(a.month) === q.mes);
       return {
-        competencia: q.competencia,
-        ponto: Math.round(q.valor),
+        competencia: q.mes,
+        ponto: Math.round(q.value),
         absenteismo: match?.score ?? 0,
       };
     });
-  }, [customerData.evolucao_qualidade, selectedRegional, chartGroupBy, absConfig]);
+  }, [selectedRegional, groupBy, sources, chartGroupBy, absConfig]);
 
   const sparklineCards = useMemo(() => {
     const pontoSeries = groupedEvolution.map((m) => ({ competencia: m.competencia, valor: m.ponto }));
@@ -373,9 +379,10 @@ export default function AnalyticsResumoExecutivo() {
     ];
   }, [groupedEvolution]);
 
-  const kpiSummary = useMemo(() => getQualidadeKpiSummary(selectedRegional, groupBy, customerData), [selectedRegional, groupBy, customerData]);
-
-  const { config: nextiConfig } = useNextiScoreConfig();
+  const kpiSummary = useMemo(
+    () => getQualidadeKpiSummary(selectedRegional, groupBy, scoreConfig, null, sources),
+    [selectedRegional, groupBy, scoreConfig, sources]
+  );
 
   // Previous period score for trend
   const prevScore = useMemo(
