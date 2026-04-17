@@ -368,7 +368,7 @@ export default function AnalyticsResumoExecutivo() {
       {
         label: "Ponto",
         evolucao: pontoSeries,
-        score: pontoSeries[pontoSeries.length - 1]?.valor ?? 0,
+        score: pontoScore,
         variacao: p.variacao,
         corVariacao: p.corVariacao,
         perPointColors: true,
@@ -376,13 +376,13 @@ export default function AnalyticsResumoExecutivo() {
       {
         label: "Absenteísmo",
         evolucao: absSeries,
-        score: absSeries[absSeries.length - 1]?.valor ?? 0,
+        score: absenteismoScore,
         variacao: a.variacao,
         corVariacao: a.corVariacao,
         perPointColors: true,
       },
     ];
-  }, [groupedEvolution]);
+  }, [groupedEvolution, pontoScore, absenteismoScore]);
 
   const kpiSummary = useMemo(
     () => getQualidadeKpiSummary(selectedRegional, groupBy, scoreConfig, null, sources),
