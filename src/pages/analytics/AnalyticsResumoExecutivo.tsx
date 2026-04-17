@@ -851,7 +851,7 @@ export default function AnalyticsResumoExecutivo() {
                     title={`Ver detalhes de ${card.label}`}
                   >
                     <td colSpan={2} className={`p-0 ${borderTopCls}`}>
-                      <div className="border border-border/40 relative p-[10px]">
+                      <div className="relative p-[10px]">
                         <div className="flex items-center">
                           <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
                             {card.label === "Ponto" ? (
