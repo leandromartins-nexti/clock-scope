@@ -798,7 +798,7 @@ export default function AnalyticsResumoExecutivo() {
                 <div
                     key={card.label}
                     data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
-                    className="flex items-center gap-4 pl-5 pr-3 sm:pr-4 py-5 transition-colors cursor-pointer group hover:bg-muted/30"
+                    className="flex items-center gap-4 pl-3 pr-3 sm:pr-4 py-5 transition-colors cursor-pointer group hover:bg-muted/30"
                     onClick={(event) => {
                       const target = event.target as HTMLElement | null;
                       if (target?.closest('[data-block-row-click="true"]')) {
