@@ -389,7 +389,7 @@ export default function AnalyticsResumoExecutivo() {
                             </div>
                             {/* Pílula do score com borda branca */}
                             <div
-                              className="absolute -top-[17px] z-20 pointer-events-none"
+                              className="absolute -top-[25px] z-20 pointer-events-none"
                               style={{ right: `${widthPct / 2}%`, transform: 'translateX(50%)' }}
                             >
                               <span
