@@ -28,6 +28,7 @@ import AnalyticsCompliance from "./pages/analytics/AnalyticsCompliance";
 import AnalyticsEngajamento from "./pages/analytics/AnalyticsEngajamento";
 import AnalyticsConfiguracao from "./pages/analytics/AnalyticsConfiguracao";
 import GaugeShowcase from "./pages/analytics/GaugeShowcase";
+import ScoreNextiLab from "./pages/analytics/ScoreNextiLab";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ function ProtectedRoutes() {
               <Route path="/analytics/engajamento" element={<AnalyticsEngajamento />} />
               <Route path="/analytics/configuracao" element={<AnalyticsConfiguracao />} />
               <Route path="/analytics/gauge-showcase" element={<GaugeShowcase />} />
+              <Route path="/analytics/score-nexti-lab" element={<ScoreNextiLab />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
