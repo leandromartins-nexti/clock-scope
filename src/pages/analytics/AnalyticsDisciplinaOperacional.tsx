@@ -1939,11 +1939,11 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     <YAxis yAxisId="left" tick={{ fontSize: 10 }} />
                     <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} tickFormatter={(v: number) => v >= 1000 ? `${(v/1000).toFixed(1).replace('.', ',')}k` : `${v}`} label={{ value: "HE (h)", angle: 90, position: "insideRight", fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
                     <ReferenceLine yAxisId="left" y={limiteSaudavel} stroke="#22c55e" strokeDasharray="5 3" strokeWidth={1.2} label={({ viewBox }: any) => {
-                      const { y } = viewBox || {};
+                      const { y, width, x } = viewBox || {};
+                      const rightEdge = (x ?? 0) + (width ?? 0);
                       return (
                         <g>
-                          <text x={0} y={(y ?? 0) - 6} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">Limite</text>
-                          <text x={0} y={(y ?? 0) + 4} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">saudável</text>
+                          <text x={rightEdge - 4} y={(y ?? 0) - 4} fontSize={9} fill="#22c55e" fontWeight={500} textAnchor="end">Limite saudável</text>
                         </g>
                       );
                     }} />

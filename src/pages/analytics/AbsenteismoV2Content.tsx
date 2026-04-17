@@ -929,8 +929,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                 const rightEdge = (x ?? 0) + (width ?? 0);
                 return (
                   <g>
-                    <text x={rightEdge + 4} y={(y ?? 0) - 4} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">Limite</text>
-                    <text x={rightEdge + 4} y={(y ?? 0) + 6} fontSize={8} fill="#22c55e" fontWeight={500} textAnchor="start">saudável</text>
+                    <text x={rightEdge - 4} y={(y ?? 0) - 4} fontSize={9} fill="#22c55e" fontWeight={500} textAnchor="end">Limite saudável</text>
                   </g>
                 );
               }} />
