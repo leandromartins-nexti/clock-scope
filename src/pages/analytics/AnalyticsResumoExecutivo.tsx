@@ -22,7 +22,7 @@ import {
   getNextiScoreClassification,
 } from "@/contexts/NextiScoreConfigContext";
 import {
-  Filter, Eraser, DollarSign, CheckCircle,
+  Filter, Eraser, DollarSign, CheckCircle, Rocket,
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { Separator } from "@/components/ui/separator";
