@@ -138,9 +138,9 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
           <h4 className="text-sm font-semibold mb-0.5">Evolução por Competência</h4>
           <p className="text-[11px] text-muted-foreground mb-2">Distribuição mensal dos tipos de evento na cobertura</p>
           <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={evolucao} margin={{ top: 5, right: 28, left: 0, bottom: 0 }}>
+            <AreaChart data={evolucao} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="competencia" tick={{ fontSize: 10 }} />
+              <XAxis dataKey="competencia" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
               <YAxis tick={{ fontSize: 10 }} />
               <RechartsTooltip />
               <Legend />
