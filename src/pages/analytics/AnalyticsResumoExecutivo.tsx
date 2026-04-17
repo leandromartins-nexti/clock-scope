@@ -412,6 +412,7 @@ export default function AnalyticsResumoExecutivo() {
         variacao: n.variacao,
         corVariacao: n.corVariacao,
         perPointColors: true,
+        forceColor: undefined as string | undefined,
         highlight: true,
         componentsPonto: pontoSeries,
         componentsAbs: absSeries,
