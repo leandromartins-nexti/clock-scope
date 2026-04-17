@@ -144,7 +144,11 @@ Nexti Official Theme
   .recharts-cartesian-axis-tick text,
   .recharts-polar-angle-axis-tick-value,
   .recharts-polar-radius-axis-tick-value {
-    font-size: 8px !important;
+    font-size: 7px !important;
+  }
+  /* Tighter tick line spacing */
+  .recharts-cartesian-axis-tick-line {
+    display: none !important;
   }
   /* Hide angled axis labels (vertical "Volume", "Headcount", etc.) on mobile */
   .recharts-label,
@@ -153,21 +157,27 @@ Nexti Official Theme
   }
   /* Tighten legend spacing */
   .recharts-legend-wrapper {
-    font-size: 9px !important;
+    font-size: 8px !important;
     padding-top: 0 !important;
+    line-height: 1 !important;
   }
   .recharts-default-legend .recharts-legend-item {
-    margin-right: 4px !important;
+    margin-right: 3px !important;
   }
   /* Reduce chart card padding to give plot area more horizontal space */
   .recharts-responsive-container {
-    margin-left: -12px !important;
-    margin-right: -8px !important;
-    width: calc(100% + 20px) !important;
+    margin-left: -18px !important;
+    margin-right: -14px !important;
+    width: calc(100% + 32px) !important;
   }
   /* Shrink reference-line right-side labels (e.g. "Limite saudável") */
   .recharts-reference-line text,
   .recharts-reference-area text {
-    font-size: 8px !important;
+    font-size: 7px !important;
+  }
+  /* Shrink chart card inner padding */
+  [data-onboarding] .p-4,
+  .bg-card.p-4 {
+    padding: 0.5rem !important;
   }
 }
