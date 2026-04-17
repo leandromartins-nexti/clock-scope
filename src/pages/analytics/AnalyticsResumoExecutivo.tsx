@@ -394,7 +394,7 @@ export default function AnalyticsResumoExecutivo() {
                             >
                               <span
                                 className="text-[10px] font-bold px-2 py-[2px] rounded-full text-white shadow-md whitespace-nowrap"
-                                style={{ backgroundColor: scoreColor, border: '2px solid white' }}
+                                style={{ backgroundColor: scoreColor, border: '2px solid #C8860D' }}
                               >
                                 {card.score}
                               </span>
