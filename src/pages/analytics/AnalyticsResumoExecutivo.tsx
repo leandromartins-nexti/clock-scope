@@ -880,8 +880,8 @@ export default function AnalyticsResumoExecutivo() {
                             </div>
                           </div>
 
-                          {/* Desktop: area chart com bracket */}
-                          <div className="hidden sm:block flex-1 h-[17px] relative min-w-0 mt-[3px]">
+                          {/* Desktop: bolhas mensais com bracket */}
+                          <div className="hidden sm:block flex-1 h-[34px] relative min-w-0 mt-[3px]">
                             {card.evolucao.length >= 3 && (
                               <DraggableBracket
                                 card={card}
@@ -890,34 +890,35 @@ export default function AnalyticsResumoExecutivo() {
                                 onStartIdxChange={setBracketStartIdx}
                               />
                             )}
-                            <ResponsiveContainer width="100%" height={17}>
-                              <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
-                                <defs>
-                                  <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
-                                    {card.evolucao.map((pt, i) => {
-                                      const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                      const stopColor = card.forceColor ?? getLineColor(pt.valor);
-                                      return <stop key={i} offset={`${pct}%`} stopColor={stopColor} stopOpacity={0.45} />;
-                                    })}
-                                  </linearGradient>
-                                  <linearGradient id={`${areaGradId}-stroke`} x1="0" y1="0" x2="1" y2="0">
-                                    {card.evolucao.map((pt, i) => {
-                                      const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                      const stopColor = card.forceColor ?? getLineColor(pt.valor);
-                                      return <stop key={i} offset={`${pct}%`} stopColor={stopColor} />;
-                                    })}
-                                  </linearGradient>
-                                </defs>
-                                <RechartsTooltip content={<SparklineTooltip cardData={card} />} cursor={false} wrapperStyle={{ zIndex: 9999 }} />
-                                <Area
-                                  type="monotone"
-                                  dataKey="valor"
-                                  stroke={`url(#${areaGradId}-stroke)`}
-                                  strokeWidth={2}
-                                  fill={`url(#${areaGradId})`}
-                                />
-                              </AreaChart>
-                            </ResponsiveContainer>
+                            {(() => {
+                              const max = Math.max(...card.evolucao.map((p) => p.valor), 100);
+                              return (
+                                <div className="flex items-center justify-between gap-1 w-full h-[34px] px-1">
+                                  {card.evolucao.map((pt, i) => {
+                                    const c = card.forceColor ?? getLineColor(pt.valor);
+                                    const size = 10 + (pt.valor / max) * 20;
+                                    return (
+                                      <div
+                                        key={i}
+                                        className="flex-1 flex items-center justify-center"
+                                        title={`${pt.competencia}: ${pt.valor}`}
+                                      >
+                                        <div
+                                          className="rounded-full"
+                                          style={{
+                                            width: `${size}px`,
+                                            height: `${size}px`,
+                                            backgroundColor: c,
+                                            opacity: 0.85,
+                                            boxShadow: `0 0 0 2px ${c}25`,
+                                          }}
+                                        />
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            })()}
                           </div>
                         </div>
                       </div>
@@ -984,8 +985,8 @@ export default function AnalyticsResumoExecutivo() {
                             </div>
                           </div>
 
-                          {/* Desktop: Sparkline com bracket */}
-                          <div className="hidden sm:block flex-1 h-[17px] relative min-w-0 mt-[3px]">
+                          {/* Desktop: bolhas mensais com bracket */}
+                          <div className="hidden sm:block flex-1 h-[34px] relative min-w-0 mt-[3px]">
                             {card.evolucao.length >= 3 && (
                               <DraggableBracket
                                 card={card}
@@ -994,34 +995,35 @@ export default function AnalyticsResumoExecutivo() {
                                 onStartIdxChange={setBracketStartIdx}
                               />
                             )}
-                            <ResponsiveContainer width="100%" height={17}>
-                              <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
-                                <defs>
-                                  <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
-                                    {card.evolucao.map((pt, i) => {
-                                      const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                      const stopColor = card.forceColor ?? getLineColor(pt.valor);
-                                      return <stop key={i} offset={`${pct}%`} stopColor={stopColor} stopOpacity={0.45} />;
-                                    })}
-                                  </linearGradient>
-                                  <linearGradient id={`${areaGradId}-stroke`} x1="0" y1="0" x2="1" y2="0">
-                                    {card.evolucao.map((pt, i) => {
-                                      const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                      const stopColor = card.forceColor ?? getLineColor(pt.valor);
-                                      return <stop key={i} offset={`${pct}%`} stopColor={stopColor} />;
-                                    })}
-                                  </linearGradient>
-                                </defs>
-                                <RechartsTooltip content={<SparklineTooltip cardData={card} />} cursor={false} wrapperStyle={{ zIndex: 9999 }} />
-                                <Area
-                                  type="monotone"
-                                  dataKey="valor"
-                                  stroke={`url(#${areaGradId}-stroke)`}
-                                  strokeWidth={2}
-                                  fill={`url(#${areaGradId})`}
-                                />
-                              </AreaChart>
-                            </ResponsiveContainer>
+                            {(() => {
+                              const max = Math.max(...card.evolucao.map((p) => p.valor), 100);
+                              return (
+                                <div className="flex items-center justify-between gap-1 w-full h-[34px] px-1">
+                                  {card.evolucao.map((pt, i) => {
+                                    const c = card.forceColor ?? getLineColor(pt.valor);
+                                    const size = 10 + (pt.valor / max) * 20;
+                                    return (
+                                      <div
+                                        key={i}
+                                        className="flex-1 flex items-center justify-center"
+                                        title={`${pt.competencia}: ${pt.valor}`}
+                                      >
+                                        <div
+                                          className="rounded-full"
+                                          style={{
+                                            width: `${size}px`,
+                                            height: `${size}px`,
+                                            backgroundColor: c,
+                                            opacity: 0.85,
+                                            boxShadow: `0 0 0 2px ${c}25`,
+                                          }}
+                                        />
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            })()}
                           </div>
                         </div>
                       </div>
@@ -1047,88 +1049,6 @@ export default function AnalyticsResumoExecutivo() {
             )}
           </table>
 
-          {/* ═══ Variação 1: Barras verticais por mês ═══ */}
-          <IndicatorVariantTable
-            title="Variação 1 — Barras Mensais"
-            cards={sparklineCards}
-            renderViz={(card) => {
-              const max = Math.max(...card.evolucao.map((p) => p.valor), 100);
-              return (
-                <div className="flex items-end gap-[2px] w-full h-[34px]">
-                  {card.evolucao.map((pt, i) => {
-                    const c = card.forceColor ?? (card.perPointColors ? getLineColor(pt.valor) : getLineColor(pt.valor));
-                    const h = Math.max(8, (pt.valor / max) * 100);
-                    return (
-                      <div
-                        key={i}
-                        className="flex-1 rounded-[2px] transition-opacity hover:opacity-100"
-                        style={{ height: `${h}%`, backgroundColor: c, opacity: 0.85 }}
-                        title={`${pt.competencia}: ${pt.valor}`}
-                      />
-                    );
-                  })}
-                </div>
-              );
-            }}
-          />
-
-          {/* ═══ Variação 2: Blocos coloridos com valor (heatmap numérico) ═══ */}
-          <IndicatorVariantTable
-            title="Variação 2 — Blocos com Score"
-            cards={sparklineCards}
-            renderViz={(card) => (
-              <div className="flex items-center gap-[2px] w-full h-[34px]">
-                {card.evolucao.map((pt, i) => {
-                  const c = card.forceColor ?? getLineColor(pt.valor);
-                  return (
-                    <div
-                      key={i}
-                      className="flex-1 h-full rounded-[3px] flex items-center justify-center text-[9px] font-semibold text-white"
-                      style={{ backgroundColor: c, opacity: 0.9 }}
-                      title={`${pt.competencia}: ${pt.valor}`}
-                    >
-                      {pt.valor}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          />
-
-          {/* ═══ Variação 3: Bolinhas/círculos com tamanho proporcional ═══ */}
-          <IndicatorVariantTable
-            title="Variação 3 — Bolhas Mensais"
-            cards={sparklineCards}
-            renderViz={(card) => {
-              const max = Math.max(...card.evolucao.map((p) => p.valor), 100);
-              return (
-                <div className="flex items-center justify-between gap-1 w-full h-[34px] px-1">
-                  {card.evolucao.map((pt, i) => {
-                    const c = card.forceColor ?? getLineColor(pt.valor);
-                    const size = 10 + (pt.valor / max) * 20;
-                    return (
-                      <div
-                        key={i}
-                        className="flex-1 flex items-center justify-center"
-                        title={`${pt.competencia}: ${pt.valor}`}
-                      >
-                        <div
-                          className="rounded-full"
-                          style={{
-                            width: `${size}px`,
-                            height: `${size}px`,
-                            backgroundColor: c,
-                            opacity: 0.85,
-                            boxShadow: `0 0 0 2px ${c}25`,
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            }}
-          />
 
           {/* ═══ CTA Financeiro ═══ */}
           <div className="bg-surface border border-border/50 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
