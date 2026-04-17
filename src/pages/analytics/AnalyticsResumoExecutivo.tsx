@@ -696,22 +696,29 @@ export default function AnalyticsResumoExecutivo() {
               valueColor="text-red-600"
               subtitle={`Score ${kpiSummary.maiorRisco.score}`}
             />
-            <KPIBoard
-              title="Economia Gerada"
-              tooltip="Estimativa consolidada de ganho operacional com base na melhoria dos indicadores do período"
-              value={kpiSummary.diff}
-              valueColor="text-emerald-600"
-              subtitle="últimos 3 meses"
-              icon={<DollarSign className="w-4 h-4 text-emerald-600" />}
-            />
-            <KPIBoard
-              title="Confiabilidade"
-              tooltip="Nível de confiança da leitura com base na consistência e estabilidade da série histórica"
-              value={scoreDiffLabel}
-              valueColor={scoreDiff >= 0 ? "text-green-600" : "text-red-600"}
-              subtitle={scoreClassif.label}
-              icon={<CheckCircle className="w-4 h-4 text-primary" />}
-            />
+            {(() => {
+              const indicadores = sparklineCards.filter((c) => !c.highlight);
+              const best = indicadores.reduce((a, b) => (b.score > a.score ? b : a), indicadores[0]);
+              const worst = indicadores.reduce((a, b) => (b.score < a.score ? b : a), indicadores[0]);
+              return (
+                <>
+                  <KPIBoard
+                    title="Melhor Indicador"
+                    tooltip="Indicador operacional com maior score no último mês"
+                    value={best?.label ?? "-"}
+                    valueColor="text-green-600"
+                    subtitle={`Score ${best?.score ?? "-"}`}
+                  />
+                  <KPIBoard
+                    title="Pior Indicador"
+                    tooltip="Indicador operacional com menor score no último mês"
+                    value={worst?.label ?? "-"}
+                    valueColor="text-red-600"
+                    subtitle={`Score ${worst?.score ?? "-"}`}
+                  />
+                </>
+              );
+            })()}
           </div>
 
           {/* ═══ Linha 2: Indicadores — lista vertical com sparklines inline ═══ */}
