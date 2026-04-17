@@ -928,6 +928,7 @@ export default function AnalyticsResumoExecutivo() {
                             />
                           </AreaChart>
                         </ResponsiveContainer>
+                        </div>
                       </div>
                     </td>
                   </tr>
