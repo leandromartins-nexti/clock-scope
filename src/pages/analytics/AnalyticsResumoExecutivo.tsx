@@ -102,8 +102,13 @@ function DraggableBracket({ card }: { card: BracketCard }) {
     moved: boolean;
   } | null>(null);
 
-  const widthPct = (windowSize / total) * 100;
-  const leftPct = (startIdx / total) * 100;
+  // Recharts distribui os pontos uniformemente entre left=0 e right=100% da área plot.
+  // Para alinhar exatamente sob os 3 pontos (do índice startIdx ao startIdx+2):
+  const denom = Math.max(1, total - 1);
+  const startPct = (startIdx / denom) * 100;
+  const endPct = ((startIdx + windowSize - 1) / denom) * 100;
+  const leftPct = startPct;
+  const widthPct = endPct - startPct;
   const windowMonths = card.evolucao.slice(startIdx, startIdx + windowSize);
   const avgScore = Math.round(windowMonths.reduce((sum, point) => sum + point.valor, 0) / windowMonths.length);
   const scoreColor = getLineColor(avgScore);
