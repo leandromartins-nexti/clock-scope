@@ -337,7 +337,7 @@ export default function AnalyticsResumoExecutivo() {
                 <div
                     key={card.label}
                     data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
-                    className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
+                    className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-5 hover:bg-muted/30 transition-colors cursor-pointer group"
                     onClick={() => targetRoute && navigate(targetRoute)}
                     title={`Ver detalhes de ${card.label}`}
                   >
