@@ -614,25 +614,6 @@ export default function AnalyticsResumoExecutivo() {
               </div>
             )}
           </div>
-                  </div>
-                );
-              })}
-            </div>
-            {/* Month legend footer (desktop only) */}
-            {sparklineCards[0]?.evolucao.length > 0 && (
-              <div className="hidden sm:flex items-center gap-4 px-4 py-1.5 border-t border-border/40">
-                <div className="w-2" />
-                <span className="min-w-[140px]" />
-                <div className="flex-1 min-w-[120px] flex justify-between">
-                  {sparklineCards[0].evolucao.map((pt) => (
-                    <span key={pt.competencia} className="text-[9px] text-muted-foreground">{pt.competencia.replace('/20', '/')}</span>
-                  ))}
-                </div>
-                <span className="min-w-[65px]" />
-                <span className="min-w-[45px]" />
-              </div>
-            )}
-          </div>
 
           {/* Variantes de teste removidas */}
 
