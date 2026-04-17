@@ -970,6 +970,31 @@ export default function AnalyticsResumoExecutivo() {
                               const denom = Math.max(1, card.evolucao.length - 1);
                               return (
                                 <div className="relative w-full h-[34px]">
+                                  {/* Grid tracejada de fundo a cada 3 meses */}
+                                  <svg
+                                    className="absolute inset-0 w-full h-full pointer-events-none"
+                                    preserveAspectRatio="none"
+                                    viewBox="0 0 100 34"
+                                  >
+                                    {card.evolucao.map((_, i) => {
+                                      if (i % 3 !== 0) return null;
+                                      const x = (i / denom) * 100;
+                                      return (
+                                        <line
+                                          key={`grid-${i}`}
+                                          x1={x}
+                                          x2={x}
+                                          y1={2}
+                                          y2={32}
+                                          stroke="#94a3b8"
+                                          strokeOpacity={0.25}
+                                          strokeWidth={1}
+                                          strokeDasharray="2 3"
+                                          vectorEffect="non-scaling-stroke"
+                                        />
+                                      );
+                                    })}
+                                  </svg>
                                   {card.evolucao.map((pt, i) => {
                                     const c = card.forceColor ?? getLineColor(pt.valor);
                                     const size = 10 + (pt.valor / max) * 20;
