@@ -550,8 +550,9 @@ export default function AnalyticsResumoExecutivo() {
                     key={card.label}
                     onClick={() => { /* hero não navega */ }}
                   >
-                    <div className="bg-white border border-[#FF5722]/40 shadow-[0_8px_24px_-8px_rgba(255,87,34,0.35),0_-8px_24px_-8px_rgba(255,87,34,0.35)] relative overflow-hidden">
-                      
+                    <div className="bg-white border border-[#FF5722]/40 relative overflow-hidden">
+                      <div className="pointer-events-none absolute inset-x-0 top-0 h-3 bg-gradient-to-b from-[#FF5722]/15 to-transparent" />
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3 bg-gradient-to-t from-[#FF5722]/15 to-transparent" />
                       <div className="flex items-center gap-4 py-3 pl-6 pr-3.5 relative">
                         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white flex items-center justify-center shadow-md shrink-0">
                           <Rocket className="w-5 h-5" />
