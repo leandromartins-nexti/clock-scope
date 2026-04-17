@@ -302,28 +302,21 @@ function DraggableBracket({
     <div
       ref={containerRef}
       data-block-row-click="true"
-      className="absolute -top-[14px] select-none pointer-events-none"
+      className="absolute -top-[14px] z-20 select-none"
       style={{
         left: `${leftPct}%`,
         width: `${widthPct}%`,
-        height: 31,
+        height: 14,
         transition: dragging ? "none" : "left 260ms cubic-bezier(0.22, 1, 0.36, 1)",
       }}
+      onPointerDown={interactive ? onPointerDown : (e) => { stopEvent(e); }}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
       onClick={(e) => { stopEvent(e); }}
     >
-      {/* Top hit area only (bracket header) — keeps drag/hover here, lets bubbles below stay interactive */}
       <div
-        className="absolute inset-x-0 top-0 z-10 pointer-events-auto"
-        style={{ height: 14, cursor: dragging ? "grabbing" : interactive ? "grab" : "default" }}
-        onPointerDown={interactive ? onPointerDown : (e) => { stopEvent(e); }}
-        onPointerEnter={() => setHovered(true)}
-        onPointerLeave={() => setHovered(false)}
-      />
-
-      <div
-        className="absolute inset-x-0 top-[2px] rounded-sm"
+        className="absolute inset-x-0 top-[2px] bottom-0 rounded-sm"
         style={{
-          height: 12,
           background: highlightGlow ? `linear-gradient(180deg, ${scoreColor}1A 0%, transparent 100%)` : "transparent",
           boxShadow: highlightGlow ? `0 0 0 1px ${scoreColor}30 inset` : "none",
           transition: "background 180ms ease, box-shadow 180ms ease",
@@ -331,10 +324,11 @@ function DraggableBracket({
       />
 
       <svg
-        viewBox="0 0 100 31"
+        viewBox="0 0 100 14"
         preserveAspectRatio="none"
-        className="absolute inset-0 z-0 h-full w-full pointer-events-none"
+        className={`absolute inset-0 h-full w-full ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
         style={{
+          touchAction: "none",
           filter: highlightGlow
             ? `drop-shadow(0 0 10px ${scoreColor}55) drop-shadow(0 4px 10px rgba(0,0,0,0.16))`
             : "none",
@@ -342,25 +336,15 @@ function DraggableBracket({
           transition: dragging ? "filter 120ms ease" : "filter 180ms ease, transform 180ms ease",
         }}
       >
-        <defs>
-          <linearGradient id={`bracketGrad-${card.label.replace(/\s/g,'')}-${startIdx}`} x1="0" y1="0" x2="1" y2="0">
-            {windowMonths.map((pt, i) => {
-              const c = card.forceColor ?? getLineColor(pt.valor);
-              const offset = (i / Math.max(1, windowMonths.length - 1)) * 100;
-              return <stop key={i} offset={`${offset}%`} stopColor={c} />;
-            })}
-          </linearGradient>
-        </defs>
         <path
-          d="M 1 31 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 31"
-          stroke={`url(#bracketGrad-${card.label.replace(/\s/g,'')}-${startIdx})`}
+          d="M 1 13 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 13"
+          stroke={highlightGlow ? scoreColor : "#B8B2AC"}
           strokeWidth={dragging ? 3.1 : 2.5}
-          strokeOpacity={0.85}
           fill="none"
           strokeLinecap="butt"
           strokeLinejoin="miter"
           vectorEffect="non-scaling-stroke"
-          style={{ transition: "stroke-width 180ms ease" }}
+          style={{ transition: "stroke 180ms ease, stroke-width 180ms ease" }}
         />
       </svg>
 
@@ -970,40 +954,15 @@ export default function AnalyticsResumoExecutivo() {
                               const denom = Math.max(1, card.evolucao.length - 1);
                               return (
                                 <div className="relative w-full h-[34px]">
-                                  {/* Grid tracejada de fundo a cada 3 meses */}
-                                  <svg
-                                    className="absolute inset-0 w-full h-full pointer-events-none"
-                                    preserveAspectRatio="none"
-                                    viewBox="0 0 100 34"
-                                  >
-                                    {card.evolucao.map((_, i) => {
-                                      if (i % 3 !== 0) return null;
-                                      const x = (i / denom) * 100;
-                                      return (
-                                        <line
-                                          key={`grid-${i}`}
-                                          x1={x}
-                                          x2={x}
-                                          y1={2}
-                                          y2={32}
-                                          stroke="#94a3b8"
-                                          strokeOpacity={0.25}
-                                          strokeWidth={1}
-                                          strokeDasharray="2 3"
-                                          vectorEffect="non-scaling-stroke"
-                                        />
-                                      );
-                                    })}
-                                  </svg>
                                   {card.evolucao.map((pt, i) => {
                                     const c = card.forceColor ?? getLineColor(pt.valor);
                                     const size = 10 + (pt.valor / max) * 20;
                                     const leftPct = (i / denom) * 100;
                                     return (
                                       <UITooltip key={i} delayDuration={100}>
-                                         <TooltipTrigger asChild>
+                                        <TooltipTrigger asChild>
                                           <div
-                                             className="absolute top-1/2 z-10 rounded-full cursor-pointer transition-transform hover:scale-125 outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0"
+                                            className="absolute top-1/2 rounded-full cursor-pointer transition-transform hover:scale-125 outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0"
                                             style={{
                                               left: `${leftPct}%`,
                                               transform: 'translate(-50%, -50%)',
