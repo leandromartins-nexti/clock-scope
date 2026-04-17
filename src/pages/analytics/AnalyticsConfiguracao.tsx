@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Users, UserPlus } from "lucide-react";
+import { Database, Gauge, ChevronRight, ChevronDown, Table2, Eye, Info, Users, UserPlus, Star, Target, TrendingDown } from "lucide-react";
 import ScoreQualidadeConfig from "./ScoreQualidadeConfig";
 import ScoreNextiConfig from "./ScoreNextiConfig";
 import UserManagementTab from "@/components/analytics/UserManagementTab";
@@ -91,9 +91,9 @@ const dataRegistry: MenuEntry[] = [
 
 // ── Score sidebar items ──
 const scoreMenuItems = [
-  { id: "nexti", label: "Score Nexti", icon: "⭐" },
-  { id: "qualidade", label: "Ponto", icon: "🎯" },
-  { id: "absenteismo", label: "Absenteísmo", icon: "📉" },
+  { id: "nexti", label: "Score Nexti", icon: Star },
+  { id: "qualidade", label: "Ponto", icon: Target },
+  { id: "absenteismo", label: "Absenteísmo", icon: TrendingDown },
 ];
 
 // ── Chart row in Base de Dados ──
@@ -272,7 +272,7 @@ export default function AnalyticsConfiguracao() {
                         : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                     }`}
                   >
-                    <span className="text-base">{item.icon}</span>
+                    <item.icon className="w-4 h-4" />
                     {item.label}
                   </button>
                 ))}
