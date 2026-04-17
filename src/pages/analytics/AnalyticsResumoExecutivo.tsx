@@ -918,29 +918,8 @@ export default function AnalyticsResumoExecutivo() {
                           <div className="shrink-0 w-[120px] sm:w-auto sm:flex-none sm:min-w-[160px] pl-[10px]">
                             <div className="text-base font-extrabold text-[#FF5722] leading-tight whitespace-nowrap">{card.label}</div>
                           </div>
-                          {/* Mobile: heatmap horizontal (alinhado com Ponto/Absenteísmo) */}
-                          <div className="flex sm:hidden flex-1 min-w-0 h-[27px] flex-col justify-between overflow-hidden self-center mt-[6px] pl-3">
-                            <div className="flex items-center gap-[2px] w-full h-[19px]">
-                              {card.evolucao.map((pt, i) => {
-                                const c = card.forceColor ?? (card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score));
-                                return (
-                                  <div
-                                    key={i}
-                                    className="flex-1 h-full rounded-[2px]"
-                                    style={{ backgroundColor: c, opacity: 0.75 }}
-                                    title={`${pt.competencia}: ${pt.valor}`}
-                                  />
-                                );
-                              })}
-                            </div>
-                            <div className="flex justify-between text-[8px] leading-[8px] text-muted-foreground px-0.5">
-                              <span>{firstMonth.replace('/20', '/')}</span>
-                              <span>{lastMonth.replace('/20', '/')}</span>
-                            </div>
-                          </div>
-
-                          {/* Desktop: bolhas mensais com bracket */}
-                          <div className="hidden sm:block flex-1 h-[34px] relative min-w-0 mt-[3px]">
+                          {/* Bolhas mensais com bracket (web e mobile) */}
+                          <div className="block flex-1 h-[34px] relative min-w-0 mt-[3px]">
                             {card.evolucao.length >= 3 && (
                               <DraggableBracket
                                 card={card}
