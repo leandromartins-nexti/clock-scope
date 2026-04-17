@@ -679,7 +679,11 @@ export default function AnalyticsResumoExecutivo() {
 
           {/* ═══ Linha 1: Score Compacto + 4 KPI Cards ═══ */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            <div data-onboarding="score-operacional">
+            <div
+              data-onboarding="score-operacional"
+              className="rounded-xl border border-[#FF5722]/20 bg-[#F5F0E6] p-[2px] [&>div]:bg-[#F5F0E6] [&>div]:border-transparent"
+              style={{ boxShadow: '0 -4px 8px -4px rgba(255,87,34,0.25), 0 4px 8px -4px rgba(255,87,34,0.25)' }}
+            >
               <ScoreBoard title="Score Nexti" tooltip="Score consolidado da operação, calculado pela média ponderada dos sub-scores de Ponto e Absenteísmo. Configure os pesos em Configuração → Scores → Score Nexti.">
                 <Popover>
                   <PopoverTrigger asChild>
