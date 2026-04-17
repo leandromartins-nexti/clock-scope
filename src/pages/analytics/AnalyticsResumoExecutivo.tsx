@@ -381,7 +381,7 @@ export default function AnalyticsResumoExecutivo() {
                                 <path
                                   d="M 1 13 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 13"
                                   stroke="#C8860D"
-                                  strokeWidth="1.5"
+                                  strokeWidth="2.5"
                                   fill="none"
                                   strokeLinecap="butt"
                                   strokeLinejoin="miter"
