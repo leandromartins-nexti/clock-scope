@@ -514,8 +514,7 @@ export default function AnalyticsResumoExecutivo() {
               <div className="w-2" />
               <span className="flex-1 sm:flex-none sm:min-w-[140px]">Indicador</span>
               <div className="flex-1 sm:min-w-[120px] text-center">Histórico 12m</div>
-              <span className="hidden sm:inline-block min-w-[65px] text-center">Variação</span>
-              <span className="min-w-[45px] text-center">Score</span>
+            </div>
             </div>
             <div className="divide-y divide-border/40">
               {sparklineCards.map((card) => {
