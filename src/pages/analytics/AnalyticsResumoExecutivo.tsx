@@ -1006,7 +1006,7 @@ export default function AnalyticsResumoExecutivo() {
                     title={`Ver detalhes de ${card.label}`}
                   >
                     <td colSpan={2} className={`p-0 ${borderTopCls}`}>
-                      <div className="relative p-[10px]">
+                      <div className="relative p-[10px] pr-[20px]">
                         <div className="flex items-center">
                           <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
                             {card.label === "Ponto" ? (
@@ -1249,7 +1249,7 @@ function IndicatorVariantTable({
             return (
               <tr key={card.label} className={isHero ? "bg-[#F5F0E6]" : ""}>
                 <td colSpan={2} className={`p-0 ${borderTopCls}`}>
-                  <div className={`relative p-[10px] ${isHero ? "border border-[#FF5722]/20" : ""}`}>
+                  <div className={`relative p-[10px] pr-[20px] ${isHero ? "border border-[#FF5722]/20" : ""}`}>
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${isHero ? "bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white shadow-md" : ""}`}>
                         {isHero ? (
