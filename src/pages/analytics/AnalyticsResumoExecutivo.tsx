@@ -337,7 +337,7 @@ export default function AnalyticsResumoExecutivo() {
                 <div
                     key={card.label}
                     data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
-                    className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
+                    className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-5 hover:bg-muted/30 transition-colors cursor-pointer group"
                     onClick={() => targetRoute && navigate(targetRoute)}
                     title={`Ver detalhes de ${card.label}`}
                   >
@@ -374,7 +374,7 @@ export default function AnalyticsResumoExecutivo() {
                           <>
                             {/* Bracket/chave SVG sobre os últimos 3 meses */}
                             <div
-                              className="absolute -top-[6px] pointer-events-none z-10"
+                              className="absolute -top-[14px] pointer-events-none z-10"
                               style={{ right: 0, width: `${widthPct}%`, height: 14 }}
                             >
                               <svg viewBox="0 0 100 14" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
@@ -389,7 +389,7 @@ export default function AnalyticsResumoExecutivo() {
                             </div>
                             {/* Pílula do score com borda branca */}
                             <div
-                              className="absolute -top-[9px] z-20 pointer-events-none"
+                              className="absolute -top-[17px] z-20 pointer-events-none"
                               style={{ right: `${widthPct / 2}%`, transform: 'translateX(50%)' }}
                             >
                               <span
