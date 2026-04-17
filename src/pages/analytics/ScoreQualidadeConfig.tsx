@@ -133,7 +133,7 @@ export default function ScoreQualidadeConfig() {
   }, [local.he_multiplier]);
 
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
       {/* Left: Configuration */}
       <div className="space-y-6">
         {/* Block 1: Weights (3 components) */}
@@ -327,7 +327,7 @@ export default function ScoreQualidadeConfig() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Button variant="outline" size="sm" className="gap-1.5" onClick={handleReset}>
             <RotateCcw className="w-3.5 h-3.5" /> Restaurar padrão
           </Button>
@@ -341,7 +341,7 @@ export default function ScoreQualidadeConfig() {
       </div>
 
       {/* Right: Live Preview */}
-      <div className="sticky top-4 self-start">
+      <div className="lg:sticky lg:top-4 self-start">
         <div className="bg-card border border-border/50 rounded-xl p-5 space-y-5">
           <div>
             <h3 className="text-sm font-bold text-foreground">Preview do Score</h3>

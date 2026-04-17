@@ -124,7 +124,7 @@ export default function ScoreAbsenteismoConfig() {
   };
 
   return (
-    <div className="grid grid-cols-[1.5fr_1fr] gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-4 lg:gap-6">
       {/* Left: Configuration */}
       <div className="space-y-5">
         {/* 1. Perfil */}
@@ -171,7 +171,7 @@ export default function ScoreAbsenteismoConfig() {
             <h3 className="text-sm font-bold text-foreground">Faixas do Sub-Score Volume</h3>
             <p className="text-[10px] text-muted-foreground mt-0.5">Taxa de absenteísmo (%) → Score. Quanto menor a taxa, melhor o score.</p>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <BandInput label="Excelente ≤" value={local.volume_excelente_ate} onChange={v => update({ volume_excelente_ate: v })} />
             <BandInput label="Bom ≤" value={local.volume_bom_ate} onChange={v => update({ volume_bom_ate: v })} />
             <BandInput label="Atenção ≤" value={local.volume_atencao_ate} onChange={v => update({ volume_atencao_ate: v })} />
@@ -193,7 +193,7 @@ export default function ScoreAbsenteismoConfig() {
             <h3 className="text-sm font-bold text-foreground">Faixas do Sub-Score Maturidade</h3>
             <p className="text-[10px] text-muted-foreground mt-0.5">% Planejado → Score. Quanto maior o planejado, melhor o score.</p>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <BandInput label="Excelente ≥" value={local.maturidade_excelente_acima} onChange={v => update({ maturidade_excelente_acima: v })} step={1} />
             <BandInput label="Bom ≥" value={local.maturidade_bom_acima} onChange={v => update({ maturidade_bom_acima: v })} step={1} />
             <BandInput label="Atenção ≥" value={local.maturidade_atencao_acima} onChange={v => update({ maturidade_atencao_acima: v })} step={1} />
@@ -208,7 +208,7 @@ export default function ScoreAbsenteismoConfig() {
             <h3 className="text-sm font-bold text-foreground">Pesos por Categoria (Composição)</h3>
             <p className="text-[10px] text-muted-foreground mt-0.5">Cada categoria tem um peso de 0 a 100. Sub-Score = Σ(% horas × peso) ÷ 100.</p>
           </div>
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {([
               { key: "cat_peso_planejada" as const, label: "Planejada" },
               { key: "cat_peso_saude" as const, label: "Saúde" },
@@ -229,7 +229,7 @@ export default function ScoreAbsenteismoConfig() {
         {/* 6. Configurações Operacionais */}
         <div className="bg-card border border-border/50 rounded-xl p-5 space-y-3">
           <h3 className="text-sm font-bold text-foreground">Configurações Operacionais</h3>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <BandInput label="Horas previstas/mês" value={local.horas_previstas_mes} onChange={v => update({ horas_previstas_mes: v })} unit="h" step={1} />
             <BandInput label="Limite saudável (Mapa)" value={local.limite_saudavel_mapa} onChange={v => update({ limite_saudavel_mapa: v })} unit="pts" step={1} />
             <BandInput label="Limite crítico (Mapa)" value={local.limite_critico_mapa} onChange={v => update({ limite_critico_mapa: v })} unit="pts" step={1} />
@@ -267,7 +267,7 @@ export default function ScoreAbsenteismoConfig() {
       </div>
 
       {/* Right: Live Preview */}
-      <div className="sticky top-4 self-start">
+      <div className="lg:sticky lg:top-4 self-start">
         <div className="bg-card border border-border/50 rounded-xl p-5 space-y-5">
           <div>
             <h3 className="text-sm font-bold text-foreground">Preview do Score</h3>
