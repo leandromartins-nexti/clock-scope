@@ -246,7 +246,7 @@ function DraggableBracket({ card }: { card: BracketCard }) {
         }}
       >
         <path
-          d="M 1 13 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 13"
+          d="M 1 3 L 50 3 L 50 1 L 50 3 L 99 3"
           stroke={highlightGlow ? scoreColor : "#6B7280"}
           strokeWidth={dragging ? 3.1 : 2.5}
           fill="none"
