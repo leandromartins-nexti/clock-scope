@@ -28,7 +28,7 @@ import { FilterPanel } from "@/components/layout/FilterPanel";
 import { Separator } from "@/components/ui/separator";
 import InsightsCenter from "@/components/analytics/InsightsCenter";
 import AnalyticsChat from "@/components/analytics/AnalyticsChat";
-import NextiHighlightVariants from "@/components/analytics/NextiHighlightVariants";
+
 import {
   ResponsiveContainer, AreaChart, Area, Tooltip as RechartsTooltip,
 } from "recharts";
@@ -695,8 +695,6 @@ export default function AnalyticsResumoExecutivo() {
             )}
           </div>
 
-          {/* ═══ Variações de destaque do Score Nexti ═══ */}
-          <NextiHighlightVariants cards={sparklineCards} />
 
           {/* ═══ CTA Financeiro ═══ */}
           <div className="bg-surface border border-border/50 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
