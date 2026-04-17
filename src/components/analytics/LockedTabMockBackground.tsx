@@ -190,20 +190,20 @@ export default function LockedTabMockBackground({ tabId }: Props) {
   const m = MOCKS[tabId] || DEFAULT_MOCK;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 w-full max-w-full overflow-hidden">
       {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {m.kpis.map((kpi, i) => (
-          <div key={i} className="bg-card border border-border/50 rounded-xl p-6">
-            <p className="text-[0.85rem] font-medium text-muted-foreground">{kpi.label}</p>
-            <p className="text-[1.8rem] font-semibold leading-none mt-2">{kpi.valor}</p>
+          <div key={i} className="bg-card border border-border/50 rounded-xl p-4 sm:p-6 min-w-0">
+            <p className="text-xs sm:text-[0.85rem] font-medium text-muted-foreground truncate">{kpi.label}</p>
+            <p className="text-lg sm:text-[1.8rem] font-semibold leading-none mt-2 truncate">{kpi.valor}</p>
           </div>
         ))}
       </div>
 
       {/* Chart */}
-      <div className="bg-card border border-border/50 rounded-xl p-6">
-        <p className="text-sm font-semibold mb-3 text-foreground">{m.chartTitle}</p>
+      <div className="bg-card border border-border/50 rounded-xl p-3 sm:p-6 min-w-0 overflow-hidden">
+        <p className="text-xs sm:text-sm font-semibold mb-3 text-foreground truncate">{m.chartTitle}</p>
         <ResponsiveContainer width="100%" height={240}>
           {m.chartType === "bar" ? (
             <BarChart data={m.chartData}>
@@ -250,27 +250,29 @@ export default function LockedTabMockBackground({ tabId }: Props) {
 
       {/* Table */}
       <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <p className="text-sm font-semibold text-foreground">{m.tableTitle}</p>
+        <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-border">
+          <p className="text-xs sm:text-sm font-semibold text-foreground truncate">{m.tableTitle}</p>
         </div>
-        <table className="w-full">
-          <thead className="bg-[hsl(var(--surface))]">
-            <tr>
-              {m.tableHeaders.map((h) => (
-                <th key={h} className="text-left text-xs font-semibold text-muted-foreground p-3">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {m.tableRows.map((row, i) => (
-              <tr key={i} className="border-t border-border">
-                {row.map((cell, j) => (
-                  <td key={j} className="text-sm p-3">{cell}</td>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-[hsl(var(--surface))]">
+              <tr>
+                {m.tableHeaders.map((h) => (
+                  <th key={h} className="text-left text-[10px] sm:text-xs font-semibold text-muted-foreground p-2 sm:p-3 whitespace-nowrap">{h}</th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {m.tableRows.map((row, i) => (
+                <tr key={i} className="border-t border-border">
+                  {row.map((cell, j) => (
+                    <td key={j} className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

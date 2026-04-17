@@ -11,8 +11,8 @@ export default function AnalyticsLockedPage() {
   }
 
   return (
-    <div className="bg-[hsl(var(--surface))] min-h-screen flex flex-col">
-      <div className="px-6 py-4 flex-1">
+    <div className="bg-[hsl(var(--surface))] min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+      <div className="px-3 sm:px-6 py-3 sm:py-4 flex-1 min-w-0">
         <LockedTabOverlay nome={tab.nome} descricao={tab.descricao} />
       </div>
     </div>
