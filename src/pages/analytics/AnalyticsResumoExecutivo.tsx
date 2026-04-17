@@ -850,8 +850,8 @@ export default function AnalyticsResumoExecutivo() {
                     }}
                     title={`Ver detalhes de ${card.label}`}
                   >
-                    <td className="pl-[0.575rem] pr-2 sm:pr-4 py-5 align-middle">
-                      <div className="flex items-center gap-4">
+                    <td className="p-0 align-middle">
+                      <div className="border border-r-0 border-[#FF5722]/20 p-[10px] flex items-center">
                         {card.label === "Ponto" ? (
                           <Clock className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
                         ) : card.label === "Absenteísmo" ? (
