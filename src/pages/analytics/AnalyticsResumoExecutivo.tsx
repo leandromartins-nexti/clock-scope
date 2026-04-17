@@ -1219,6 +1219,107 @@ export default function AnalyticsResumoExecutivo() {
   );
 }
 
+/** Variant table reusing the indicator list with custom 12m visualization */
+function IndicatorVariantTable({
+  title,
+  cards,
+  renderViz,
+}: {
+  title: string;
+  cards: Array<{
+    label: string;
+    score: number;
+    evolucao: { competencia: string; valor: number }[];
+    forceColor?: string;
+    perPointColors?: boolean;
+    highlight?: boolean;
+  }>;
+  renderViz: (card: any) => React.ReactNode;
+}) {
+  const first = cards[0]?.evolucao ?? [];
+  return (
+    <div className="space-y-2">
+      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">{title}</h3>
+      <table className="bg-card border border-border/50 rounded-xl w-full border-separate border-spacing-0 table-fixed">
+        <thead>
+          <tr className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+            <th scope="col" className="px-3 sm:px-4 py-2 border-b border-border/40 text-left font-medium w-[160px] sm:w-[220px]">
+              Indicador
+            </th>
+            <th scope="col" className="py-2 border-b border-border/40 text-center font-medium">
+              Histórico 12m
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {cards.map((card, rowIdx) => {
+            const borderTopCls = rowIdx > 0 ? "border-t border-border/40" : "";
+            const isHero = card.highlight;
+            return (
+              <tr key={card.label} className={isHero ? "bg-[#F5F0E6]" : ""}>
+                <td colSpan={2} className={`p-0 ${borderTopCls}`}>
+                  <div className={`relative p-[10px] ${isHero ? "border border-[#FF5722]/20" : ""}`}>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${isHero ? "bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white shadow-md" : ""}`}>
+                        {isHero ? (
+                          <Rocket className="w-5 h-5" />
+                        ) : card.label === "Ponto" ? (
+                          <Clock className="w-5 h-5" style={{ color: "#FF5722" }} />
+                        ) : card.label === "Absenteísmo" ? (
+                          <UserX className="w-5 h-5" style={{ color: "#FF5722" }} />
+                        ) : card.label === "Turnover" ? (
+                          <TrendingDown className="w-5 h-5" style={{ color: "#FF5722" }} />
+                        ) : card.label === "Movimentações" ? (
+                          <ArrowLeftRight className="w-5 h-5" style={{ color: "#FF5722" }} />
+                        ) : card.label === "Coberturas" ? (
+                          <ShieldCheck className="w-5 h-5" style={{ color: "#FF5722" }} />
+                        ) : (
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: card.forceColor ?? getLineColor(card.score) }} />
+                        )}
+                      </div>
+                      <div className="shrink-0 w-[120px] sm:w-auto sm:flex-none sm:min-w-[160px]">
+                        <div className={`text-sm leading-tight whitespace-nowrap ${isHero ? "text-base font-extrabold text-[#FF5722]" : "font-medium text-foreground"}`}>
+                          {card.label}
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">{renderViz(card)}</div>
+                      <div
+                        className="shrink-0 w-9 text-center text-[11px] font-semibold rounded px-1.5 py-0.5"
+                        style={{
+                          color: card.forceColor ?? getLineColor(card.score),
+                          backgroundColor: `${card.forceColor ?? getLineColor(card.score)}15`,
+                        }}
+                      >
+                        {card.score}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+        {first.length > 0 && (
+          <tfoot className="hidden sm:table-footer-group">
+            <tr>
+              <td className="border-t border-border/40 px-4 py-1.5" />
+              <td className="border-t border-border/40 py-1.5">
+                <div className="flex pr-12">
+                  {first.map((pt) => (
+                    <span key={pt.competencia} className="text-[9px] text-muted-foreground flex-1 text-center">
+                      {pt.competencia.replace("/20", "/")}
+                    </span>
+                  ))}
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        )}
+      </table>
+    </div>
+  );
+}
+
 /** Format "2025-04-01" → "abr/2025" */
 function formatMonthShort(dateStr: string): string {
   const months = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
