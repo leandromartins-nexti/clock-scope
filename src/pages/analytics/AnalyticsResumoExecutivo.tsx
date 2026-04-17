@@ -865,7 +865,7 @@ export default function AnalyticsResumoExecutivo() {
                               />
                             )}
                           </div>
-                          <div className="shrink-0 sm:flex-none sm:min-w-[160px]">
+                          <div className="shrink-0 sm:flex-none sm:min-w-[160px] pl-[10px]">
                             <div className="text-sm font-medium text-foreground leading-tight whitespace-nowrap">{card.label}</div>
                           </div>
                           {/* Mobile: heatmap horizontal */}
