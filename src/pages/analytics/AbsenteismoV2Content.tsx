@@ -1208,7 +1208,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
             </div>
             <p className="text-[10px] text-muted-foreground mb-2">Evolução mensal · % planejado vs reativo · linha vermelha = % falta crua</p>
             <ResponsiveContainer width="100%" height={280}>
-              <ComposedChart data={maturidadeChartData} onClick={(e: any) => {
+              <ComposedChart data={maturidadeChartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -1217,7 +1217,7 @@ export default function AbsenteismoV2Content({ selectedRegional, onRegionalClick
                   const isActive = selectedMes === payload.value;
                   return <text x={x} y={y + 12} textAnchor="middle" fontSize={10} fill={isActive ? "#FF5722" : "hsl(var(--muted-foreground))"} fontWeight={isActive ? 700 : 400}>{payload.value}</text>;
                 }} />
-                <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} label={{ value: "Distribuição (%)", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
+                <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} width={36} />
                 {selectedMes && <ReferenceLine x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
                 <RechartsTooltip content={({ active, payload, label }) => {
                   if (!active || !payload?.length) return null;
