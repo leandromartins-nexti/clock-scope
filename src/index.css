@@ -144,7 +144,7 @@ Nexti Official Theme
   .recharts-cartesian-axis-tick text,
   .recharts-polar-angle-axis-tick-value,
   .recharts-polar-radius-axis-tick-value {
-    font-size: 9px !important;
+    font-size: 8px !important;
   }
   /* Hide angled axis labels (vertical "Volume", "Headcount", etc.) on mobile */
   .recharts-label,
@@ -153,10 +153,21 @@ Nexti Official Theme
   }
   /* Tighten legend spacing */
   .recharts-legend-wrapper {
-    font-size: 10px !important;
-    padding-top: 2px !important;
+    font-size: 9px !important;
+    padding-top: 0 !important;
   }
   .recharts-default-legend .recharts-legend-item {
-    margin-right: 6px !important;
+    margin-right: 4px !important;
+  }
+  /* Reduce chart card padding to give plot area more horizontal space */
+  .recharts-responsive-container {
+    margin-left: -12px !important;
+    margin-right: -8px !important;
+    width: calc(100% + 20px) !important;
+  }
+  /* Shrink reference-line right-side labels (e.g. "Limite saudável") */
+  .recharts-reference-line text,
+  .recharts-reference-area text {
+    font-size: 8px !important;
   }
 }
