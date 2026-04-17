@@ -2004,7 +2004,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         return (
                           <g>
                             <text x={(x ?? 0) + (w ?? 0) / 2} y={(y ?? 0) + barH / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
-                              {d.operadores}
+                              {d.operadores >= 1000 ? `${(d.operadores/1000).toFixed(1).replace('.', ',')}k` : d.operadores}
                             </text>
                           </g>
                         );
