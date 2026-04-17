@@ -892,28 +892,28 @@ export default function AnalyticsResumoExecutivo() {
                             )}
                             {(() => {
                               const max = Math.max(...card.evolucao.map((p) => p.valor), 100);
+                              const denom = Math.max(1, card.evolucao.length - 1);
                               return (
-                                <div className="flex items-center justify-between gap-1 w-full h-[34px] px-1">
+                                <div className="relative w-full h-[34px]">
                                   {card.evolucao.map((pt, i) => {
                                     const c = card.forceColor ?? getLineColor(pt.valor);
                                     const size = 10 + (pt.valor / max) * 20;
+                                    const leftPct = (i / denom) * 100;
                                     return (
                                       <div
                                         key={i}
-                                        className="flex-1 flex items-center justify-center"
+                                        className="absolute top-1/2 rounded-full"
                                         title={`${pt.competencia}: ${pt.valor}`}
-                                      >
-                                        <div
-                                          className="rounded-full"
-                                          style={{
-                                            width: `${size}px`,
-                                            height: `${size}px`,
-                                            backgroundColor: c,
-                                            opacity: 0.85,
-                                            boxShadow: `0 0 0 2px ${c}25`,
-                                          }}
-                                        />
-                                      </div>
+                                        style={{
+                                          left: `${leftPct}%`,
+                                          transform: 'translate(-50%, -50%)',
+                                          width: `${size}px`,
+                                          height: `${size}px`,
+                                          backgroundColor: c,
+                                          opacity: 0.85,
+                                          boxShadow: `0 0 0 2px ${c}25`,
+                                        }}
+                                      />
                                     );
                                   })}
                                 </div>
