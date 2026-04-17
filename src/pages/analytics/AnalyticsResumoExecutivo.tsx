@@ -848,19 +848,23 @@ export default function AnalyticsResumoExecutivo() {
                     }}
                     title={`Ver detalhes de ${card.label}`}
                   >
-                    {card.label === "Ponto" ? (
-                      <Clock className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
-                    ) : card.label === "Absenteísmo" ? (
-                      <UserX className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
-                    ) : (
-                      <div
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: card.forceColor ?? getLineColor(card.score) }}
-                      />
-                    )}
-                    <span className="flex-1 sm:flex-none sm:min-w-[202px] truncate text-sm font-medium text-foreground">
-                      {card.label}
-                    </span>
+                    <div className="flex items-center gap-4 pr-5 shrink-0">
+                      <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                        {card.label === "Ponto" ? (
+                          <Clock className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
+                        ) : card.label === "Absenteísmo" ? (
+                          <UserX className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
+                        ) : (
+                          <div
+                            className="w-2 h-2 rounded-full shrink-0"
+                            style={{ backgroundColor: card.forceColor ?? getLineColor(card.score) }}
+                          />
+                        )}
+                      </div>
+                      <span className="sm:flex-none sm:min-w-[202px] truncate text-sm font-medium text-foreground">
+                        {card.label}
+                      </span>
+                    </div>
                     {/* Mobile: heatmap horizontal */}
                     <div className="flex sm:hidden flex-1 min-w-0 h-[27px] flex-col justify-between overflow-hidden self-center mt-[6px]">
                       <div className="flex items-center gap-[2px] w-full h-[19px]">
