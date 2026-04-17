@@ -25,6 +25,9 @@ import {
   Filter, Eraser, DollarSign, CheckCircle,
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
+import { Separator } from "@/components/ui/separator";
+import InsightsCenter from "@/components/analytics/InsightsCenter";
+import AnalyticsChat from "@/components/analytics/AnalyticsChat";
 import {
   ResponsiveContainer, LineChart, Line, AreaChart, Area, Tooltip as RechartsTooltip,
 } from "recharts";
@@ -250,12 +253,10 @@ export default function AnalyticsResumoExecutivo() {
           )}
         </div>
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <button onClick={() => setFilterOpen(true)} className="border border-border text-muted-foreground px-2 sm:px-4 py-2 rounded text-sm font-medium flex items-center gap-2 hover:bg-gray-50">
-            <Filter className="w-4 h-4" /> <span className="hidden sm:inline">Filtros</span>
-          </button>
           <button onClick={() => setSelectedRegional(null)} className="hidden sm:flex items-center gap-1.5 text-sm text-[#FF5722] hover:underline">
             <Eraser className="w-4 h-4" /> Limpar Filtros
           </button>
+          <Separator orientation="vertical" className="h-6 hidden sm:block" />
           <button
             onClick={() => window.dispatchEvent(new Event("open-tipo-operacao"))}
             className="sm:hidden text-muted-foreground hover:text-foreground p-1.5 rounded-md transition-colors"
@@ -263,6 +264,8 @@ export default function AnalyticsResumoExecutivo() {
           >
             <Filter className="w-4 h-4" />
           </button>
+          <InsightsCenter />
+          <AnalyticsChat activeTab="resumo" />
         </div>
       </div>
 
