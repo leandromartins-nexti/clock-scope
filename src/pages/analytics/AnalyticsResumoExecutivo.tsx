@@ -604,8 +604,8 @@ export default function AnalyticsResumoExecutivo() {
                 const firstMonth = card.evolucao[0]?.competencia ?? "";
                 const lastMonth = card.evolucao[lastIdx]?.competencia ?? "";
                 const indicadorRouteMap: Record<string, string> = {
-                  "Ponto": "/analytics/operacional",
-                  "Absenteísmo": "/analytics/operacional",
+                  "Ponto": "/analytics/operacional?tab=qualidade",
+                  "Absenteísmo": "/analytics/operacional?tab=absenteismo",
                 };
                 const targetRoute = indicadorRouteMap[card.label];
                 const gradId = `grad-${card.label.replace(/\s/g,'')}`;
