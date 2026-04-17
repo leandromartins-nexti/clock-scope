@@ -962,7 +962,7 @@ export default function AnalyticsResumoExecutivo() {
                                       <UITooltip key={i} delayDuration={100}>
                                         <TooltipTrigger asChild>
                                           <div
-                                            className="absolute top-1/2 rounded-full cursor-pointer transition-transform hover:scale-125"
+                                            className="absolute top-1/2 rounded-full cursor-pointer transition-transform hover:scale-125 outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0"
                                             style={{
                                               left: `${leftPct}%`,
                                               transform: 'translate(-50%, -50%)',
@@ -1073,7 +1073,7 @@ export default function AnalyticsResumoExecutivo() {
                                       <UITooltip key={i} delayDuration={100}>
                                         <TooltipTrigger asChild>
                                           <div
-                                            className="absolute top-1/2 rounded-full cursor-pointer transition-transform hover:scale-125"
+                                            className="absolute top-1/2 rounded-full cursor-pointer transition-transform hover:scale-125 outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0"
                                             style={{
                                               left: `${leftPct}%`,
                                               transform: 'translate(-50%, -50%)',
