@@ -13,23 +13,23 @@ interface LockedTabOverlayProps {
 
 export default function LockedTabOverlay({ nome, descricao, backgroundContent }: LockedTabOverlayProps) {
   return (
-    <div className="relative min-h-[600px]">
+    <div className="relative min-h-[500px] sm:min-h-[600px] overflow-hidden">
       {/* Blurred background content */}
-      <div className="filter blur-[3px] opacity-60 pointer-events-none select-none">
+      <div className="filter blur-[3px] opacity-60 pointer-events-none select-none overflow-hidden">
         {backgroundContent ? (
           backgroundContent
         ) : (
-          <div className="p-6 space-y-6">
+          <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
             {/* KPI Cards */}
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {blurMockData.kpiCards.map((kpi, i) => (
-                <div key={i} className="bg-card border border-border/50 rounded-xl p-6">
-                  <p className="text-[0.85rem] font-medium text-muted-foreground">{kpi.label}</p>
-                  <p className="text-[1.8rem] font-semibold leading-none mt-2">{kpi.valor}</p>
+                <div key={i} className="bg-card border border-border/50 rounded-xl p-4 sm:p-6">
+                  <p className="text-xs sm:text-[0.85rem] font-medium text-muted-foreground">{kpi.label}</p>
+                  <p className="text-xl sm:text-[1.8rem] font-semibold leading-none mt-2">{kpi.valor}</p>
                 </div>
               ))}
             </div>
-            <div className="bg-card border border-border/50 rounded-xl p-6">
+            <div className="bg-card border border-border/50 rounded-xl p-3 sm:p-6">
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={blurMockData.barChartData}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
@@ -43,16 +43,16 @@ export default function LockedTabOverlay({ nome, descricao, backgroundContent }:
         )}
       </div>
 
-      {/* Overlay card */}
-      <div className="absolute inset-0 flex items-center justify-center z-10">
-        <div className="bg-card border border-border rounded-xl shadow-2xl p-10 text-center max-w-md">
-          <Lock className="mx-auto mb-4 text-muted-foreground" size={40} />
-          <h3 className="text-xl font-semibold mb-2">Em breve: {nome}</h3>
-          <p className="text-muted-foreground mb-6">{descricao}</p>
-          <p className="text-xs text-muted-foreground mb-6">Previsão de lançamento: Q3 2026</p>
+      {/* Overlay card — sticky-positioned within viewport */}
+      <div className="absolute inset-0 flex items-start sm:items-center justify-center z-10 p-4 pt-16 sm:pt-4">
+        <div className="bg-card border border-border rounded-xl shadow-2xl p-6 sm:p-10 text-center w-full max-w-md mx-auto sticky top-4">
+          <Lock className="mx-auto mb-4 text-muted-foreground" size={36} />
+          <h3 className="text-lg sm:text-xl font-semibold mb-2">Em breve: {nome}</h3>
+          <p className="text-sm text-muted-foreground mb-4 sm:mb-6">{descricao}</p>
+          <p className="text-xs text-muted-foreground mb-4 sm:mb-6">Previsão de lançamento: Q3 2026</p>
           <button
             onClick={() => console.log({ tab: nome, timestamp: Date.now() })}
-            className="bg-[#FF5722] text-white px-6 py-2.5 rounded-lg font-medium hover:opacity-90 transition"
+            className="bg-[#FF5722] text-white px-5 sm:px-6 py-2.5 rounded-lg font-medium hover:opacity-90 transition text-sm w-full sm:w-auto"
           >
             Quero saber quando liberar
           </button>
