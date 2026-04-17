@@ -659,7 +659,12 @@ export default function AnalyticsResumoExecutivo() {
                         </div>
                         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                           <span>Benchmark do setor (Vigilância/Facilities)</span>
-                          <span className="font-medium">72</span>
+                          <span
+                            className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white"
+                            style={{ backgroundColor: 72 >= 80 ? "#22c55e" : 72 >= 60 ? "#eab308" : "#ef4444" }}
+                          >
+                            72
+                          </span>
                         </div>
                       </div>
                     </div>
