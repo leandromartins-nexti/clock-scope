@@ -9,11 +9,14 @@ import { aggregateQualidadeEvolucao, getSidebarItems, getQualidadeKpiSummary, fo
 import { useScoreConfig, getScoreClassification, computeCompositeScore } from "@/contexts/ScoreConfigContext";
 import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
 import { buildDataSources } from "@/lib/qualidadeDataSources";
-import { computePrevTriScore } from "@/lib/scoreComputations";
+import { computePrevTriScore, computeQualityPercentage, computeTreatmentScore, computeBackofficeScore } from "@/lib/scoreComputations";
 import { useAbsenteismoScoreConfig } from "@/contexts/AbsenteismoScoreConfigContext";
 import {
   computeAbsenteismoEvolution,
   computeAbsenteismoCurrentScore,
+  computeVolumeScoreForMonth,
+  computeComposicaoScoreForMonth,
+  computeMaturidadeScoreForMonth,
   type AbsGroupBy,
 } from "@/lib/absenteismoScoreShared";
 import {
