@@ -736,7 +736,7 @@ export default function AnalyticsResumoExecutivo() {
                 <th scope="col" className="px-3 sm:px-4 py-2 border-b border-border/40 text-left font-medium w-[160px] sm:w-[220px]">
                   Indicador
                 </th>
-                <th scope="col" className="px-3 sm:px-4 py-2 border-b border-border/40 text-center font-medium">
+                <th scope="col" className="py-2 border-b border-border/40 text-center font-medium">
                   Histórico 12m
                 </th>
               </tr>
@@ -867,7 +867,7 @@ export default function AnalyticsResumoExecutivo() {
                         </span>
                       </div>
                     </td>
-                    <td className="pr-3 sm:pr-4 py-5 align-middle">
+                    <td className="py-5 align-middle">
                       {/* Mobile: heatmap horizontal */}
                       <div className="flex sm:hidden h-[27px] flex-col justify-between overflow-hidden mt-[6px]">
                         <div className="flex items-center gap-[2px] w-full h-[19px]">
@@ -938,7 +938,7 @@ export default function AnalyticsResumoExecutivo() {
               <tfoot className="hidden sm:table-footer-group">
                 <tr>
                   <td className="border-t border-border/40 px-4 py-1.5" />
-                  <td className="border-t border-border/40 px-4 py-1.5">
+                  <td className="border-t border-border/40 py-1.5">
                     <div className="flex justify-between">
                       {sparklineCards[0].evolucao.map((pt) => (
                         <span key={pt.competencia} className="text-[9px] text-muted-foreground">{pt.competencia.replace('/20', '/')}</span>
