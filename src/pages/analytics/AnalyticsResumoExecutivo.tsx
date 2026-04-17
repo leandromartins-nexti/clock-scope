@@ -136,7 +136,7 @@ function DraggableBracket({ card }: { card: BracketCard }) {
     if (!dragStateRef.current || !containerRef.current?.parentElement) return;
 
     const parentWidth = containerRef.current.parentElement.getBoundingClientRect().width;
-    const stepPx = parentWidth / total;
+    const stepPx = parentWidth / Math.max(1, total - 1);
     const deltaX = e.clientX - dragStateRef.current.originX;
     const deltaSteps = Math.round(deltaX / stepPx);
     const next = Math.min(maxStart, Math.max(0, dragStateRef.current.originStart + deltaSteps));
