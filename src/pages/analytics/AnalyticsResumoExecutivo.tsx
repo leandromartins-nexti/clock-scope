@@ -592,7 +592,7 @@ export default function AnalyticsResumoExecutivo() {
                           <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#FF5722]/70">Indicador-mestre</div>
                           <div className="text-base font-extrabold text-[#FF5722] leading-tight">{card.label}</div>
                         </div>
-                        <div className="flex-1 h-[17px] relative min-w-0">
+                        <div className="flex-1 h-[17px] relative min-w-0 mt-[3px]">
                           {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
                           <ResponsiveContainer width="100%" height={17}>
                             <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
