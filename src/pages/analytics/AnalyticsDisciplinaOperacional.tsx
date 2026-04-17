@@ -1727,7 +1727,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     const total = d.registradas + d.justificadas;
                     const pct = total > 0 ? ((d.justificadas / total) * 100).toFixed(0) : "0";
                     return (
-                      <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
+                      <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" className="text-[7px] sm:text-[9px]" fill="#fff" fontWeight={600}>
                         {pct}%
                       </text>
                     );
