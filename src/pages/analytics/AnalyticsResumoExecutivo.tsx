@@ -544,15 +544,67 @@ export default function AnalyticsResumoExecutivo() {
                 const targetRoute = indicadorRouteMap[card.label];
                 const gradId = `grad-${card.label.replace(/\s/g,'')}`;
                 const areaGradId = `area-${card.label.replace(/\s/g,'')}`;
-                return (
+                return card.highlight ? (
+                  // ═══ Hero Rocket — linha-mestre ═══
+                  <div
+                    key={card.label}
+                    className="px-3 sm:px-4 py-3"
+                    onClick={() => { /* hero não navega */ }}
+                  >
+                    <div className="rounded-xl bg-white border border-[#FF5722]/40 shadow-[0_8px_24px_-8px_rgba(255,87,34,0.35)] relative overflow-hidden">
+                      <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-orange-50 to-transparent pointer-events-none" />
+                      <div className="flex items-center gap-4 px-4 py-3 relative">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white flex items-center justify-center shadow-md shrink-0">
+                          <Rocket className="w-5 h-5" />
+                        </div>
+                        <div className="min-w-[160px]">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#FF5722]/70">Indicador-mestre</div>
+                          <div className="text-base font-extrabold text-[#FF5722] leading-tight">{card.label}</div>
+                        </div>
+                        <div className="flex-1 h-[28px] relative min-w-0">
+                          {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
+                          <ResponsiveContainer width="100%" height={28}>
+                            <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+                              <defs>
+                                <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
+                                  {card.evolucao.map((pt, i) => {
+                                    const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
+                                    const stopColor = card.forceColor ?? getLineColor(pt.valor);
+                                    return <stop key={i} offset={`${pct}%`} stopColor={stopColor} stopOpacity={0.4} />;
+                                  })}
+                                </linearGradient>
+                                <linearGradient id={`${areaGradId}-stroke`} x1="0" y1="0" x2="1" y2="0">
+                                  {card.evolucao.map((pt, i) => {
+                                    const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
+                                    const stopColor = card.forceColor ?? getLineColor(pt.valor);
+                                    return <stop key={i} offset={`${pct}%`} stopColor={stopColor} />;
+                                  })}
+                                </linearGradient>
+                              </defs>
+                              <RechartsTooltip content={<SparklineTooltip cardData={card} />} cursor={false} wrapperStyle={{ zIndex: 9999 }} />
+                              <Area
+                                type="monotone"
+                                dataKey="valor"
+                                stroke={`url(#${areaGradId}-stroke)`}
+                                strokeWidth={2.8}
+                                fill={`url(#${areaGradId})`}
+                                style={{ filter: `drop-shadow(0 1px 4px ${card.forceColor ?? "#FF5722"}55)` }}
+                              />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </div>
+                        <div className="flex items-baseline gap-1 shrink-0">
+                          <span className="text-2xl font-black text-[#FF5722] tabular-nums">{card.score}</span>
+                          <span className="text-[10px] font-bold text-[#FF5722]/60">/100</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
                 <div
                     key={card.label}
                     data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
-                    className={`flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-5 transition-colors cursor-pointer group ${
-                      card.highlight
-                        ? "bg-orange-50/40 hover:bg-orange-50/60 border-l-[3px] border-l-[#FF5722]"
-                        : "hover:bg-muted/30"
-                    }`}
+                    className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-5 transition-colors cursor-pointer group hover:bg-muted/30"
                     onClick={(event) => {
                       const target = event.target as HTMLElement | null;
                       if (target?.closest('[data-block-row-click="true"]')) {
@@ -568,21 +620,10 @@ export default function AnalyticsResumoExecutivo() {
                       className="w-2 h-2 rounded-full shrink-0"
                       style={{ backgroundColor: card.forceColor ?? getLineColor(card.score) }}
                     />
-                    <span
-                      className={`flex-1 sm:flex-none sm:min-w-[140px] truncate ${
-                        card.highlight
-                          ? "text-sm font-bold text-[#FF5722] uppercase tracking-wide"
-                          : "text-sm font-medium text-foreground"
-                      }`}
-                    >
+                    <span className="flex-1 sm:flex-none sm:min-w-[140px] truncate text-sm font-medium text-foreground">
                       {card.label}
-                      {card.highlight && (
-                        <span className="ml-2 text-[10px] font-semibold text-[#FF5722]/70 normal-case tracking-normal">
-                          {card.score}
-                        </span>
-                      )}
                     </span>
-                    {/* Mobile: heatmap horizontal — altura total idêntica ao badge de score */}
+                    {/* Mobile: heatmap horizontal */}
                     <div className="flex sm:hidden flex-1 min-w-0 h-[27px] flex-col justify-between overflow-hidden self-center mt-[6px]">
                       <div className="flex items-center gap-[2px] w-full h-[19px]">
                         {card.evolucao.map((pt, i) => {
@@ -603,17 +644,17 @@ export default function AnalyticsResumoExecutivo() {
                       </div>
                     </div>
 
-                    {/* Desktop: Sparkline com área gradiente semântica + highlight dos últimos 3 meses */}
-                    <div className={`hidden sm:block flex-1 sm:min-w-[120px] relative ${card.highlight ? "h-[26px]" : "h-[17px]"}`}>
+                    {/* Desktop: Sparkline */}
+                    <div className="hidden sm:block flex-1 sm:min-w-[120px] relative h-[17px]">
                       {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
-                      <ResponsiveContainer width="100%" height={card.highlight ? 26 : 17}>
+                      <ResponsiveContainer width="100%" height={17}>
                         <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
                           <defs>
                             <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
                               {card.evolucao.map((pt, i) => {
                                 const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
                                 const stopColor = card.forceColor ?? getLineColor(pt.valor);
-                                return <stop key={i} offset={`${pct}%`} stopColor={stopColor} stopOpacity={card.highlight ? 0.35 : 0.45} />;
+                                return <stop key={i} offset={`${pct}%`} stopColor={stopColor} stopOpacity={0.45} />;
                               })}
                             </linearGradient>
                             <linearGradient id={`${areaGradId}-stroke`} x1="0" y1="0" x2="1" y2="0">
@@ -629,9 +670,8 @@ export default function AnalyticsResumoExecutivo() {
                             type="monotone"
                             dataKey="valor"
                             stroke={`url(#${areaGradId}-stroke)`}
-                            strokeWidth={card.highlight ? 2.6 : 2}
+                            strokeWidth={2}
                             fill={`url(#${areaGradId})`}
-                            style={card.highlight ? { filter: `drop-shadow(0 1px 4px ${card.forceColor ?? "#FF5722"}55)` } : undefined}
                           />
                         </AreaChart>
                       </ResponsiveContainer>
