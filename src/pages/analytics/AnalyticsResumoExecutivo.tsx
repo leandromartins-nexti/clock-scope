@@ -293,7 +293,7 @@ function DraggableBracket({
         </span>
       </div>
 
-      {released && !dragging && (
+      {((released && !dragging) || (hovered && !dragging)) && (
         <div
           className="absolute z-30 pointer-events-none animate-in fade-in slide-in-from-top-1"
           style={{ top: -82, left: "50%", transform: "translateX(-50%)" }}
