@@ -302,21 +302,28 @@ function DraggableBracket({
     <div
       ref={containerRef}
       data-block-row-click="true"
-      className="absolute -top-[14px] z-20 select-none"
+      className="absolute -top-[14px] z-20 select-none pointer-events-none"
       style={{
         left: `${leftPct}%`,
         width: `${widthPct}%`,
-        height: 14,
+        height: 31,
         transition: dragging ? "none" : "left 260ms cubic-bezier(0.22, 1, 0.36, 1)",
       }}
-      onPointerDown={interactive ? onPointerDown : (e) => { stopEvent(e); }}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
       onClick={(e) => { stopEvent(e); }}
     >
+      {/* Top hit area only (bracket header) — keeps drag/hover here, lets bubbles below stay interactive */}
       <div
-        className="absolute inset-x-0 top-[2px] bottom-0 rounded-sm"
+        className="absolute inset-x-0 top-0 pointer-events-auto"
+        style={{ height: 14, cursor: dragging ? "grabbing" : interactive ? "grab" : "default" }}
+        onPointerDown={interactive ? onPointerDown : (e) => { stopEvent(e); }}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+      />
+
+      <div
+        className="absolute inset-x-0 top-[2px] rounded-sm"
         style={{
+          height: 12,
           background: highlightGlow ? `linear-gradient(180deg, ${scoreColor}1A 0%, transparent 100%)` : "transparent",
           boxShadow: highlightGlow ? `0 0 0 1px ${scoreColor}30 inset` : "none",
           transition: "background 180ms ease, box-shadow 180ms ease",
@@ -324,11 +331,10 @@ function DraggableBracket({
       />
 
       <svg
-        viewBox="0 0 100 14"
+        viewBox="0 0 100 31"
         preserveAspectRatio="none"
-        className={`absolute inset-0 h-full w-full ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
+        className="absolute inset-0 h-full w-full pointer-events-none"
         style={{
-          touchAction: "none",
           filter: highlightGlow
             ? `drop-shadow(0 0 10px ${scoreColor}55) drop-shadow(0 4px 10px rgba(0,0,0,0.16))`
             : "none",
@@ -337,7 +343,7 @@ function DraggableBracket({
         }}
       >
         <path
-          d="M 1 13 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 13"
+          d="M 1 31 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 31"
           stroke={highlightGlow ? scoreColor : "#B8B2AC"}
           strokeWidth={dragging ? 3.1 : 2.5}
           fill="none"
