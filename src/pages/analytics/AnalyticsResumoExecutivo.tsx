@@ -372,25 +372,29 @@ export default function AnalyticsResumoExecutivo() {
                         const scoreColor = getLineColor(card.score);
                         return (
                           <>
+                            {/* Bracket/chave SVG sobre os últimos 3 meses */}
                             <div
-                              className="absolute top-0 bottom-0 rounded-md border-2 pointer-events-none z-10"
-                              style={{
-                                right: 0,
-                                width: `${widthPct}%`,
-                                borderColor: scoreColor,
-                                backgroundColor: `${scoreColor}14`,
-                              }}
-                            />
+                              className="absolute -top-[6px] pointer-events-none z-10"
+                              style={{ right: 0, width: `${widthPct}%`, height: 14 }}
+                            >
+                              <svg viewBox="0 0 100 14" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+                                <path
+                                  d="M 1 13 C 1 5, 4 3, 10 3 L 40 3 C 46 3, 50 1, 50 1 C 50 1, 54 3, 60 3 L 90 3 C 96 3, 99 5, 99 13"
+                                  stroke={scoreColor}
+                                  strokeWidth="1.5"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            </div>
+                            {/* Pílula do score com borda branca */}
                             <div
-                              className="absolute -top-[2px] z-20 pointer-events-none"
-                              style={{
-                                right: `${widthPct / 2}%`,
-                                transform: 'translateX(50%)',
-                              }}
+                              className="absolute -top-[9px] z-20 pointer-events-none"
+                              style={{ right: `${widthPct / 2}%`, transform: 'translateX(50%)' }}
                             >
                               <span
-                                className="text-[10px] font-bold px-1.5 py-[1px] rounded-md text-white shadow-sm whitespace-nowrap"
-                                style={{ backgroundColor: scoreColor }}
+                                className="text-[10px] font-bold px-2 py-[2px] rounded-full text-white shadow-md whitespace-nowrap"
+                                style={{ backgroundColor: scoreColor, border: '2px solid white' }}
                               >
                                 {card.score}
                               </span>
