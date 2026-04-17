@@ -820,7 +820,7 @@ export default function AnalyticsResumoExecutivo() {
                           style={{ backgroundColor: card.forceColor ?? getLineColor(card.score) }}
                         />
                       )}
-                      <span className="flex-1 sm:flex-none sm:min-w-[178px] truncate text-sm font-medium text-foreground">
+                      <span className="flex-1 sm:flex-none sm:min-w-[202px] truncate text-sm font-medium text-foreground">
                         {card.label}
                       </span>
                     </div>
