@@ -938,7 +938,7 @@ export default function AnalyticsResumoExecutivo() {
                                 <div className="relative w-full h-[34px]">
                                   {card.evolucao.map((pt, i) => {
                                     const c = card.forceColor ?? getLineColor(pt.valor);
-                                    const size = 10 + (pt.valor / max) * 20;
+                                    const size = (10 + (pt.valor / max) * 20) * bubbleScale;
                                     const leftPct = (i / denom) * 100;
                                     return (
                                       <UITooltip key={i} delayDuration={100}>
@@ -1028,7 +1028,7 @@ export default function AnalyticsResumoExecutivo() {
                                 <div className="relative w-full h-[34px]">
                                   {card.evolucao.map((pt, i) => {
                                     const c = card.forceColor ?? getLineColor(pt.valor);
-                                    const size = 10 + (pt.valor / max) * 20;
+                                    const size = (10 + (pt.valor / max) * 20) * bubbleScale;
                                     const leftPct = (i / denom) * 100;
                                     return (
                                       <UITooltip key={i} delayDuration={100}>
