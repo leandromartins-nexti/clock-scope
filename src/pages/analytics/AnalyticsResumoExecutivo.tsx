@@ -635,7 +635,15 @@ export default function AnalyticsResumoExecutivo() {
                                 <div className="h-full rounded-full transition-all" style={{ width: `${barWidth}%`, backgroundColor: cor }} />
                               </div>
                               <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                                <span>Bench. setor: {c.bench}</span>
+                                <span className="flex items-center gap-1">
+                                  Bench. setor:
+                                  <span
+                                    className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white"
+                                    style={{ backgroundColor: c.bench >= 80 ? "#22c55e" : c.bench >= 60 ? "#eab308" : "#ef4444" }}
+                                  >
+                                    {c.bench}
+                                  </span>
+                                </span>
                                 <span className={`font-medium ${benchColor}`}>{benchSign}{benchDelta} vs setor</span>
                               </div>
                             </div>
