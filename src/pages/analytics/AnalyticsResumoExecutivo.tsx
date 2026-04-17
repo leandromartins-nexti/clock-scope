@@ -1069,20 +1069,25 @@ export default function AnalyticsResumoExecutivo() {
                                     const size = 10 + (pt.valor / max) * 20;
                                     const leftPct = (i / denom) * 100;
                                     return (
-                                      <div
-                                        key={i}
-                                        className="absolute top-1/2 rounded-full"
-                                        title={`${pt.competencia}: ${pt.valor}`}
-                                        style={{
-                                          left: `${leftPct}%`,
-                                          transform: 'translate(-50%, -50%)',
-                                          width: `${size}px`,
-                                          height: `${size}px`,
-                                          backgroundColor: c,
-                                          opacity: 0.85,
-                                          boxShadow: `0 0 0 2px ${c}25`,
-                                        }}
-                                      />
+                                      <UITooltip key={i} delayDuration={100}>
+                                        <TooltipTrigger asChild>
+                                          <div
+                                            className="absolute top-1/2 rounded-full cursor-pointer transition-transform hover:scale-125"
+                                            style={{
+                                              left: `${leftPct}%`,
+                                              transform: 'translate(-50%, -50%)',
+                                              width: `${size}px`,
+                                              height: `${size}px`,
+                                              backgroundColor: c,
+                                              opacity: 0.85,
+                                              boxShadow: `0 0 0 2px ${c}25`,
+                                            }}
+                                          />
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top" className="bg-card border border-border shadow-lg p-3">
+                                          <BubbleTooltipContent cardData={card} idx={i} />
+                                        </TooltipContent>
+                                      </UITooltip>
                                     );
                                   })}
                                 </div>
