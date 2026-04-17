@@ -768,7 +768,7 @@ export default function AnalyticsResumoExecutivo() {
                           <div className="text-base font-extrabold text-[#FF5722] leading-tight whitespace-nowrap">{card.label}</div>
                         </div>
                         {/* Mobile: heatmap horizontal (alinhado com Ponto/Absenteísmo) */}
-                        <div className="flex sm:hidden flex-1 min-w-0 h-[27px] flex-col justify-between overflow-hidden self-center mt-[6px]">
+                        <div className="flex sm:hidden flex-1 min-w-0 h-[27px] flex-col justify-between overflow-hidden self-center mt-[6px] pl-3">
                           <div className="flex items-center gap-[2px] w-full h-[19px]">
                             {card.evolucao.map((pt, i) => {
                               const c = card.forceColor ?? (card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score));
