@@ -9,11 +9,14 @@ import { aggregateQualidadeEvolucao, getSidebarItems, getQualidadeKpiSummary, fo
 import { useScoreConfig, getScoreClassification, computeCompositeScore } from "@/contexts/ScoreConfigContext";
 import { useQualidadePontoData } from "@/hooks/useQualidadePontoData";
 import { buildDataSources } from "@/lib/qualidadeDataSources";
-import { computePrevTriScore } from "@/lib/scoreComputations";
+import { computePrevTriScore, computeQualityPercentage, computeTreatmentScore, computeBackofficeScore } from "@/lib/scoreComputations";
 import { useAbsenteismoScoreConfig } from "@/contexts/AbsenteismoScoreConfigContext";
 import {
   computeAbsenteismoEvolution,
   computeAbsenteismoCurrentScore,
+  computeVolumeScoreForMonth,
+  computeComposicaoScoreForMonth,
+  computeMaturidadeScoreForMonth,
   type AbsGroupBy,
 } from "@/lib/absenteismoScoreShared";
 import {
@@ -45,15 +48,26 @@ function SparklineTooltip({ active, payload, cardData }: any) {
   const next = idx < evolucao.length - 1 ? evolucao[idx + 1] : null;
   const fmt = (v: number) => `${v}`;
   const pointColor = getLineColor(valor);
+  const subScores: { label: string; value: number }[] | undefined =
+    cardData.subScoresByMonth?.[comp];
   return (
     <div className="bg-card border border-border rounded-lg shadow-lg px-3 py-2.5 text-xs min-w-[180px] z-[9999] relative">
       <p className="font-semibold text-foreground mb-2">{comp}</p>
       <div className="flex items-center gap-2 mb-2">
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: pointColor }} />
         <span className="text-muted-foreground">{cardData.label}:</span>
-        <span className="font-bold text-foreground">{fmt(valor)}</span>
         <span className={`font-semibold px-1.5 py-0.5 rounded text-[10px] ${getScoreColor(valor)} ${getScoreBg(valor)}`}>Score {valor}</span>
       </div>
+      {subScores && subScores.length > 0 && (
+        <div className="border-t border-border/50 pt-2 pb-1 mb-1 space-y-1">
+          {subScores.map((s) => (
+            <div key={s.label} className="flex justify-between gap-3">
+              <span className="text-muted-foreground">{s.label}:</span>
+              <span className={`font-semibold px-1.5 py-0.5 rounded text-[10px] ${getScoreColor(s.value)} ${getScoreBg(s.value)}`}>{s.value}</span>
+            </div>
+          ))}
+        </div>
+      )}
       <div className="border-t border-border/50 pt-2 space-y-1">
         {prev && (() => {
           const d = valor - prev.valor;
@@ -410,10 +424,28 @@ export default function AnalyticsResumoExecutivo() {
     return months.map((m) => {
       const pontoMonth = computeCompositeScore(selectedRegional, groupBy as any, scoreConfig, [m], sources);
       const absMatch = abs.find((a) => a.month === m);
+      // Sub-componentes Ponto
+      const qualPct = computeQualityPercentage(selectedRegional, groupBy as any, [m], sources);
+      const treat = computeTreatmentScore(selectedRegional, groupBy as any, scoreConfig, [m], sources);
+      const bo = computeBackofficeScore(selectedRegional, groupBy as any, scoreConfig, [m], sources);
+      // Sub-componentes Absenteísmo
+      const volScore = computeVolumeScoreForMonth(m, selectedRegional, chartGroupBy, absConfig);
+      const compScore = computeComposicaoScoreForMonth(m, selectedRegional, chartGroupBy, absConfig);
+      const matScore = computeMaturidadeScoreForMonth(m, selectedRegional, chartGroupBy, absConfig);
       return {
         competencia: formatMesLabel(m),
         ponto: Math.round(pontoMonth),
         absenteismo: absMatch?.score ?? 0,
+        pontoSubs: [
+          { label: "Qualidade", value: Math.round(qualPct) },
+          { label: "Tratativa", value: Math.round(treat.score) },
+          { label: "Back-office", value: Math.round(bo.score) },
+        ],
+        absSubs: [
+          { label: "Volume", value: Math.round(volScore) },
+          { label: "Composição", value: Math.round(compScore) },
+          { label: "Maturidade", value: Math.round(matScore) },
+        ],
       };
     });
   }, [selectedRegional, groupBy, sources, chartGroupBy, absConfig, scoreConfig]);
@@ -425,6 +457,17 @@ export default function AnalyticsResumoExecutivo() {
       competencia: m.competencia,
       valor: Math.round(computeNextiScore(m.ponto, m.absenteismo, nextiConfig)),
     }));
+    const pontoSubsByMonth: Record<string, { label: string; value: number }[]> = {};
+    const absSubsByMonth: Record<string, { label: string; value: number }[]> = {};
+    const nextiSubsByMonth: Record<string, { label: string; value: number }[]> = {};
+    groupedEvolution.forEach((m) => {
+      pontoSubsByMonth[m.competencia] = m.pontoSubs;
+      absSubsByMonth[m.competencia] = m.absSubs;
+      nextiSubsByMonth[m.competencia] = [
+        { label: "Ponto", value: m.ponto },
+        { label: "Absenteísmo", value: m.absenteismo },
+      ];
+    });
     const makeDelta = (series: { valor: number }[]) => {
       const prev = series[series.length - 2]?.valor ?? series[series.length - 1]?.valor ?? 0;
       const curr = series[series.length - 1]?.valor ?? 0;
@@ -455,6 +498,7 @@ export default function AnalyticsResumoExecutivo() {
         componentsAbs: absSeries,
         recomputeNexti: (avgP: number, avgA: number) =>
           computeNextiScore(avgP, avgA, nextiConfig),
+        subScoresByMonth: nextiSubsByMonth,
       },
       {
         label: "Ponto",
@@ -463,6 +507,7 @@ export default function AnalyticsResumoExecutivo() {
         variacao: p.variacao,
         corVariacao: p.corVariacao,
         perPointColors: true,
+        subScoresByMonth: pontoSubsByMonth,
       },
       {
         label: "Absenteísmo",
@@ -471,6 +516,7 @@ export default function AnalyticsResumoExecutivo() {
         variacao: a.variacao,
         corVariacao: a.corVariacao,
         perPointColors: true,
+        subScoresByMonth: absSubsByMonth,
       },
     ];
   }, [groupedEvolution, nextiConfig]);

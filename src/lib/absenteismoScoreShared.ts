@@ -82,7 +82,7 @@ function getMatRows(groupBy: AbsGroupBy): Array<Record<string, any>> {
 
 // ── Computações por mês ──
 
-function computeVolumeScoreForMonth(
+export function computeVolumeScoreForMonth(
   month: string,
   entityName: string | null,
   groupBy: AbsGroupBy,
@@ -111,7 +111,7 @@ function computeVolumeScoreForMonth(
   return computeVolumeScore(taxa, config);
 }
 
-function computeComposicaoScoreForMonth(
+export function computeComposicaoScoreForMonth(
   month: string,
   entityName: string | null,
   groupBy: AbsGroupBy,
@@ -147,7 +147,7 @@ function computeComposicaoScoreForMonth(
   return computeComposicaoScore(dist, config);
 }
 
-function computeMaturidadeScoreForMonth(
+export function computeMaturidadeScoreForMonth(
   month: string,
   entityName: string | null,
   groupBy: AbsGroupBy,
