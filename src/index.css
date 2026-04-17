@@ -167,8 +167,8 @@ Nexti Official Theme
   /* Reduce chart card padding to give plot area more horizontal space */
   .recharts-responsive-container {
     margin-left: -40px !important;
-    margin-right: -8px !important;
-    width: calc(100% + 48px) !important;
+    margin-right: -40px !important;
+    width: calc(100% + 80px) !important;
   }
   /* Shrink reference-line right-side labels (e.g. "Limite saudável") */
   .recharts-reference-line text,
