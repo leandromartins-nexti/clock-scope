@@ -709,7 +709,7 @@ export const lockedTabs = [
   // Compliance Avançado
   { id: "sancoes", grupo: "Compliance Avançado", nome: "Sanções Disciplinares", descricao: "Acompanhe advertências, suspensões e políticas disciplinares" },
   { id: "alertas-preventivos", grupo: "Compliance Avançado", nome: "Alertas Preventivos", descricao: "Receba alertas antes que violações trabalhistas aconteçam" },
-  { id: "regulatorio", grupo: "Compliance Avançado", nome: "Regulatório", descricao: "Monitore mudanças na legislação e impacto nos seus contratos" },
+  { id: "regulatorio", grupo: "Compliance Avançado", nome: "Dossiê Trabalhista", descricao: "Acesse um dossiê detalhado da vida trabalhista de cada colaborador: histórico de jornadas, ocorrências, advertências e conformidade legal" },
   // Inteligência
   { id: "previsoes", grupo: "Inteligência", nome: "Previsões", descricao: "Antecipe absenteísmo, turnover e demanda de cobertura com inteligência preditiva" },
   { id: "benchmark", grupo: "Inteligência", nome: "Benchmark Setorial", descricao: "Compare sua operação com o mercado por setor e região" },
