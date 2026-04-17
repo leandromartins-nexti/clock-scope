@@ -366,45 +366,7 @@ export default function AnalyticsResumoExecutivo() {
 
                     {/* Desktop: Sparkline com área gradiente semântica + highlight dos últimos 3 meses */}
                     <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[17px] relative">
-                      {/* Highlight box sobre os últimos 3 de 12 meses (25% da largura) */}
-                      {card.evolucao.length >= 3 && (() => {
-                        const widthPct = (3 / card.evolucao.length) * 100;
-                        const scoreColor = getLineColor(card.score);
-                        return (
-                          <>
-                            {/* Bracket/chave SVG sobre os últimos 3 meses */}
-                            <div
-                              className="absolute -top-[14px] pointer-events-none z-10"
-                              style={{ right: 0, width: `${widthPct}%`, height: 14 }}
-                            >
-                              <svg viewBox="0 0 100 14" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-                                <path
-                                  d="M 1 13 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 13"
-                                  stroke="#C8860D"
-                                  strokeWidth="2.5"
-                                  fill="none"
-                                  strokeLinecap="butt"
-                                  strokeLinejoin="miter"
-                                  strokeDasharray="3 2"
-                                  vectorEffect="non-scaling-stroke"
-                                />
-                              </svg>
-                            </div>
-                            {/* Pílula do score com borda branca */}
-                            <div
-                              className="absolute -top-[25px] z-20 pointer-events-none"
-                              style={{ right: `${widthPct / 2}%`, transform: 'translateX(50%)' }}
-                            >
-                              <span
-                                className="text-[10px] font-bold px-2 py-[2px] rounded-full text-white shadow-md whitespace-nowrap"
-                                style={{ backgroundColor: scoreColor, border: '2px solid white' }}
-                              >
-                                {card.score}
-                              </span>
-                            </div>
-                          </>
-                        );
-                      })()}
+                      {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
                       <ResponsiveContainer width="100%" height={17}>
                         <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
                           <defs>
