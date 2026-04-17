@@ -764,7 +764,7 @@ export default function AnalyticsResumoExecutivo() {
                         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white flex items-center justify-center shadow-md shrink-0">
                           <Rocket className="w-5 h-5" />
                         </div>
-                        <div className="min-w-[160px]">
+                        <div className="flex-1 sm:flex-none sm:min-w-[160px]">
                           <div className="text-base font-extrabold text-[#FF5722] leading-tight">{card.label}</div>
                         </div>
                         {/* Mobile: heatmap horizontal (alinhado com Ponto/Absenteísmo) */}
