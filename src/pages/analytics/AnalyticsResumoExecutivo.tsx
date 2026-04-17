@@ -654,7 +654,8 @@ export default function AnalyticsResumoExecutivo() {
             )}
           </div>
 
-          {/* Variantes de teste removidas */}
+          {/* ═══ Variações de destaque do Score Nexti ═══ */}
+          <NextiHighlightVariants cards={sparklineCards} />
 
           {/* ═══ CTA Financeiro ═══ */}
           <div className="bg-surface border border-border/50 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
