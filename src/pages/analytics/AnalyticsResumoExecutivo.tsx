@@ -93,11 +93,27 @@ interface BracketCard {
   /** Recalcula score agregando a janela exatamente como o gauge superior. */
   computeWindowScore?: (startIdx: number, endIdxExclusive: number) => number;
 }
-function DraggableBracket({ card }: { card: BracketCard }) {
+function DraggableBracket({
+  card,
+  interactive = true,
+  startIdx: controlledStartIdx,
+  onStartIdxChange,
+}: {
+  card: BracketCard;
+  interactive?: boolean;
+  startIdx?: number;
+  onStartIdxChange?: (idx: number) => void;
+}) {
   const total = card.evolucao.length;
   const windowSize = 3;
   const maxStart = total - windowSize;
-  const [startIdx, setStartIdx] = useState(maxStart);
+  const [internalStartIdx, setInternalStartIdx] = useState(maxStart);
+  const startIdx = controlledStartIdx ?? internalStartIdx;
+  const setStartIdx = (updater: number | ((prev: number) => number)) => {
+    const next = typeof updater === "function" ? (updater as (p: number) => number)(startIdx) : updater;
+    if (controlledStartIdx !== undefined) onStartIdxChange?.(next);
+    else setInternalStartIdx(next);
+  };
   const [dragging, setDragging] = useState(false);
   const [released, setReleased] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -209,19 +225,17 @@ function DraggableBracket({ card }: { card: BracketCard }) {
     <div
       ref={containerRef}
       data-block-row-click="true"
-      className="absolute -top-[14px] z-20 select-none"
+      className={`absolute -top-[14px] z-20 select-none ${interactive ? "" : "pointer-events-none"}`}
       style={{
         left: `${leftPct}%`,
         width: `${widthPct}%`,
         height: 14,
         transition: dragging ? "none" : "left 260ms cubic-bezier(0.22, 1, 0.36, 1)",
       }}
-      onPointerDown={onPointerDown}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      onClick={(e) => {
-        stopEvent(e);
-      }}
+      onPointerDown={interactive ? onPointerDown : undefined}
+      onPointerEnter={interactive ? () => setHovered(true) : undefined}
+      onPointerLeave={interactive ? () => setHovered(false) : undefined}
+      onClick={interactive ? (e) => { stopEvent(e); } : undefined}
     >
       <div
         className="absolute inset-x-0 top-[2px] bottom-0 rounded-sm"
@@ -324,6 +338,7 @@ export default function AnalyticsResumoExecutivo() {
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const { config: absConfig } = useAbsenteismoScoreConfig();
   const { config: nextiConfig } = useNextiScoreConfig();
+  const [bracketStartIdx, setBracketStartIdx] = useState<number | null>(null);
 
   const handleRegionalClick = (nome: string) => setSelectedRegional(prev => prev === nome ? null : nome);
   const handleGroupByChange = (g: GroupBy) => { setGroupBy(g); setSelectedRegional(null); };
@@ -593,7 +608,14 @@ export default function AnalyticsResumoExecutivo() {
                           <div className="text-base font-extrabold text-[#FF5722] leading-tight">{card.label}</div>
                         </div>
                         <div className="flex-1 h-[17px] relative min-w-0 mt-[3px]">
-                          {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
+                          {card.evolucao.length >= 3 && (
+                            <DraggableBracket
+                              card={card}
+                              interactive
+                              startIdx={bracketStartIdx ?? card.evolucao.length - 3}
+                              onStartIdxChange={setBracketStartIdx}
+                            />
+                          )}
                           <ResponsiveContainer width="100%" height={17}>
                             <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
                               <defs>
@@ -672,7 +694,14 @@ export default function AnalyticsResumoExecutivo() {
 
                     {/* Desktop: Sparkline */}
                     <div className="hidden sm:block flex-1 sm:min-w-[120px] relative h-[17px] mt-[5px]">
-                      {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
+                      {card.evolucao.length >= 3 && (
+                        <DraggableBracket
+                          card={card}
+                          interactive={false}
+                          startIdx={bracketStartIdx ?? card.evolucao.length - 3}
+                          onStartIdxChange={setBracketStartIdx}
+                        />
+                      )}
                       <ResponsiveContainer width="100%" height={17}>
                         <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
                           <defs>
