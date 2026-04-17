@@ -241,7 +241,6 @@ export default function AnalyticsResumoExecutivo() {
       <div className="bg-white px-3 sm:px-6 py-3 border-b border-border flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
           <div className="flex items-center gap-2 text-sm">
-            <Filter className="w-4 h-4 text-[#FF5722]" />
             <span className="font-semibold text-foreground hidden sm:inline">Filtros Aplicados:</span>
           </div>
           <span className="bg-orange-50 text-[#FF5722] border border-orange-200 rounded-full px-3 py-1 text-[11px] font-medium whitespace-nowrap">Período: {periodoLabel}</span>
