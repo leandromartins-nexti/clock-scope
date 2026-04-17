@@ -365,7 +365,7 @@ export default function AnalyticsResumoExecutivo() {
                     </div>
 
                     {/* Desktop: Sparkline com área gradiente semântica + highlight dos últimos 3 meses */}
-                    <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[36px] relative">
+                    <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[22px] relative">
                       {/* Highlight box sobre os últimos 3 de 12 meses (25% da largura) */}
                       {card.evolucao.length >= 3 && (() => {
                         const widthPct = (3 / card.evolucao.length) * 100;
