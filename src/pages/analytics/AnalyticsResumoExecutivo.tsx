@@ -631,7 +631,12 @@ export default function AnalyticsResumoExecutivo() {
                                 <span className="text-xs font-medium">{c.label}</span>
                                 <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-md text-white" style={{ backgroundColor: cor }}>{c.valor}</span>
                               </div>
-                              <div className="h-2 bg-muted/50 rounded-md overflow-hidden border border-border/40">
+                              <div
+                                className="h-2 bg-muted/50 rounded-md overflow-hidden border border-border/40 transition-colors hover:border-2"
+                                style={{ ['--hover-border' as any]: cor }}
+                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = cor; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = ''; }}
+                              >
                                 <div className="h-full rounded-md transition-all" style={{ width: `${barWidth}%`, backgroundColor: cor }} />
                               </div>
                               <div className="flex items-center justify-between text-[10px] text-muted-foreground">
