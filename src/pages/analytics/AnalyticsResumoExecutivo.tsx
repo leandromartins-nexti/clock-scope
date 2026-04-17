@@ -29,9 +29,8 @@ import { Separator } from "@/components/ui/separator";
 import InsightsCenter from "@/components/analytics/InsightsCenter";
 import AnalyticsChat from "@/components/analytics/AnalyticsChat";
 import {
-  ResponsiveContainer, LineChart, Line, AreaChart, Area, Tooltip as RechartsTooltip,
+  ResponsiveContainer, AreaChart, Area, Tooltip as RechartsTooltip,
 } from "recharts";
-import IndicatorVizPlayground from "@/components/analytics/IndicatorVizPlayground";
 
 // ── Custom sparkline tooltip ────────────────────────────────
 function SparklineTooltip({ active, payload, cardData }: any) {
@@ -364,96 +363,34 @@ export default function AnalyticsResumoExecutivo() {
                       </div>
                     </div>
 
-                    {/* Desktop: 3 visualizações empilhadas para validação */}
-                    <div className="hidden sm:flex flex-col gap-1.5 flex-1 sm:min-w-[120px]">
-                      {/* Opção 1 — Heatmap horizontal (recomendado) */}
-                      <div className="flex items-center gap-1 h-[14px]" title="Opção 1: Heatmap">
-                        <span className="text-[8px] text-muted-foreground w-3 shrink-0">1</span>
-                        <div className="flex items-center gap-[2px] flex-1 h-full">
-                          {card.evolucao.map((pt, i) => {
-                            const c = card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score);
-                            return (
-                              <div
-                                key={i}
-                                className="flex-1 h-full rounded-[2px]"
-                                style={{ backgroundColor: c, opacity: 0.85 }}
-                                title={`${pt.competencia}: ${pt.valor}`}
-                              />
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Opção 2 — Linha atual com pontos */}
-                      <div className="flex items-center gap-1 h-[28px]" title="Opção 2: Linha (atual)">
-                        <span className="text-[8px] text-muted-foreground w-3 shrink-0">2</span>
-                        <div className="flex-1 h-full">
-                          <ResponsiveContainer width="100%" height={28}>
-                            <LineChart data={card.evolucao}>
-                              {card.perPointColors && (
-                                <defs>
-                                  <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
-                                    {card.evolucao.map((pt, i) => {
-                                      const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                      return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} />;
-                                    })}
-                                  </linearGradient>
-                                </defs>
-                              )}
-                              <RechartsTooltip content={<SparklineTooltip cardData={card} />} cursor={false} wrapperStyle={{ zIndex: 9999 }} />
-                              <Line
-                                type="monotone"
-                                dataKey="valor"
-                                stroke={card.perPointColors ? `url(#${gradId})` : getLineColor(card.score)}
-                                strokeWidth={2.5}
-                                dot={(props: any) => {
-                                  const ptColor = card.perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
-                                  return (
-                                    <circle key={props.index} cx={props.cx} cy={props.cy} r={props.index === lastIdx ? 4 : 2.5} fill={ptColor} stroke="white" strokeWidth={1.5} />
-                                  );
-                                }}
-                                activeDot={(props: any) => {
-                                  const ptColor = card.perPointColors ? getLineColor(props.payload.valor) : getLineColor(card.score);
-                                  return <circle cx={props.cx} cy={props.cy} r={4} fill={ptColor} stroke="white" strokeWidth={2} />;
-                                }}
-                              />
-                            </LineChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </div>
-
-                      {/* Opção 3 — Sparkline com área gradiente */}
-                      <div className="flex items-center gap-1 h-[28px]" title="Opção 3: Área com gradiente">
-                        <span className="text-[8px] text-muted-foreground w-3 shrink-0">3</span>
-                        <div className="flex-1 h-full">
-                          <ResponsiveContainer width="100%" height={28}>
-                            <AreaChart data={card.evolucao}>
-                              <defs>
-                                <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
-                                  {card.evolucao.map((pt, i) => {
-                                    const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                    return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} stopOpacity={0.45} />;
-                                  })}
-                                </linearGradient>
-                                <linearGradient id={`${areaGradId}-stroke`} x1="0" y1="0" x2="1" y2="0">
-                                  {card.evolucao.map((pt, i) => {
-                                    const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                    return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} />;
-                                  })}
-                                </linearGradient>
-                              </defs>
-                              <RechartsTooltip content={<SparklineTooltip cardData={card} />} cursor={false} wrapperStyle={{ zIndex: 9999 }} />
-                              <Area
-                                type="monotone"
-                                dataKey="valor"
-                                stroke={`url(#${areaGradId}-stroke)`}
-                                strokeWidth={2}
-                                fill={`url(#${areaGradId})`}
-                              />
-                            </AreaChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </div>
+                    {/* Desktop: Sparkline com área gradiente semântica */}
+                    <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[32px]">
+                      <ResponsiveContainer width="100%" height={32}>
+                        <AreaChart data={card.evolucao}>
+                          <defs>
+                            <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
+                              {card.evolucao.map((pt, i) => {
+                                const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
+                                return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} stopOpacity={0.45} />;
+                              })}
+                            </linearGradient>
+                            <linearGradient id={`${areaGradId}-stroke`} x1="0" y1="0" x2="1" y2="0">
+                              {card.evolucao.map((pt, i) => {
+                                const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
+                                return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} />;
+                              })}
+                            </linearGradient>
+                          </defs>
+                          <RechartsTooltip content={<SparklineTooltip cardData={card} />} cursor={false} wrapperStyle={{ zIndex: 9999 }} />
+                          <Area
+                            type="monotone"
+                            dataKey="valor"
+                            stroke={`url(#${areaGradId}-stroke)`}
+                            strokeWidth={2}
+                            fill={`url(#${areaGradId})`}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
                     </div>
 
                     <span className={`hidden sm:inline-block text-[11px] font-medium px-2 py-0.5 rounded-full min-w-[65px] text-center ${card.corVariacao} ${
@@ -479,9 +416,6 @@ export default function AnalyticsResumoExecutivo() {
               </div>
             )}
           </div>
-
-          {/* ═══ Playground de visualizações (validação) ═══ */}
-          {sparklineCards[0] && <IndicatorVizPlayground card={sparklineCards[0]} />}
 
           {/* ═══ CTA Financeiro ═══ */}
           <div className="bg-surface border border-border/50 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
