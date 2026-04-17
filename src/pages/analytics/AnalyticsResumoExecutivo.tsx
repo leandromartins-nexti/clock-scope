@@ -761,11 +761,13 @@ export default function AnalyticsResumoExecutivo() {
                       <div className="pointer-events-none absolute inset-y-0 -left-3 w-3 bg-gradient-to-l from-[#FF5722]/8 to-transparent" />
                       <div className="pointer-events-none absolute inset-y-0 -right-3 w-3 bg-gradient-to-r from-[#FF5722]/8 to-transparent" />
                       <div className="flex items-center gap-4 py-3 pl-[0.575rem] pr-3 sm:pl-6 sm:pr-3.5 relative">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white flex items-center justify-center shadow-md shrink-0">
-                          <Rocket className="w-5 h-5" />
-                        </div>
-                        <div className="shrink-0 sm:flex-none sm:min-w-[160px]">
-                          <div className="text-base font-extrabold text-[#FF5722] leading-tight whitespace-nowrap">{card.label}</div>
+                        <div className="flex items-center gap-4 pr-5 shrink-0">
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white flex items-center justify-center shadow-md shrink-0">
+                            <Rocket className="w-5 h-5" />
+                          </div>
+                          <div className="sm:flex-none sm:min-w-[160px]">
+                            <div className="text-base font-extrabold text-[#FF5722] leading-tight whitespace-nowrap">{card.label}</div>
+                          </div>
                         </div>
                         {/* Mobile: heatmap horizontal (alinhado com Ponto/Absenteísmo) */}
                         <div className="flex sm:hidden flex-1 min-w-0 h-[27px] flex-col justify-between overflow-hidden self-center mt-[6px] pl-3">
@@ -846,19 +848,21 @@ export default function AnalyticsResumoExecutivo() {
                     }}
                     title={`Ver detalhes de ${card.label}`}
                   >
-                    {card.label === "Ponto" ? (
-                      <Clock className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
-                    ) : card.label === "Absenteísmo" ? (
-                      <UserX className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
-                    ) : (
-                      <div
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: card.forceColor ?? getLineColor(card.score) }}
-                      />
-                    )}
-                    <span className="flex-1 sm:flex-none sm:min-w-[202px] truncate text-sm font-medium text-foreground">
-                      {card.label}
-                    </span>
+                    <div className="flex items-center gap-4 pr-5 shrink-0">
+                      {card.label === "Ponto" ? (
+                        <Clock className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
+                      ) : card.label === "Absenteísmo" ? (
+                        <UserX className="w-4 h-4 shrink-0" style={{ color: "#FF5722" }} />
+                      ) : (
+                        <div
+                          className="w-2 h-2 rounded-full shrink-0"
+                          style={{ backgroundColor: card.forceColor ?? getLineColor(card.score) }}
+                        />
+                      )}
+                      <span className="sm:flex-none sm:min-w-[202px] truncate text-sm font-medium text-foreground">
+                        {card.label}
+                      </span>
+                    </div>
                     {/* Mobile: heatmap horizontal */}
                     <div className="flex sm:hidden flex-1 min-w-0 h-[27px] flex-col justify-between overflow-hidden self-center mt-[6px]">
                       <div className="flex items-center gap-[2px] w-full h-[19px]">
