@@ -158,6 +158,8 @@ function DraggableBracket({ card }: { card: BracketCard }) {
         height: 14,
         transition: dragging ? "none" : "left 220ms cubic-bezier(0.34, 1.56, 0.64, 1)",
       }}
+      onClick={(e) => { e.stopPropagation(); }}
+      onPointerDownCapture={(e) => { e.stopPropagation(); }}
     >
       {/* Bracket SVG (drag handle) */}
       <svg
