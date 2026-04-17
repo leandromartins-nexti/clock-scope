@@ -593,10 +593,6 @@ export default function AnalyticsResumoExecutivo() {
                             </AreaChart>
                           </ResponsiveContainer>
                         </div>
-                        <div className="flex items-baseline gap-1 shrink-0">
-                          <span className="text-2xl font-black text-[#FF5722] tabular-nums">{card.score}</span>
-                          <span className="text-[10px] font-bold text-[#FF5722]/60">/100</span>
-                        </div>
                       </div>
                     </div>
                   </div>
