@@ -906,7 +906,7 @@ export default function AnalyticsResumoExecutivo() {
                   // ═══ Hero Rocket — linha-mestre ═══
                   <tr key={card.label} className="bg-[#F5F0E6]">
                     <td colSpan={2} className={`p-0 ${borderTopCls}`}>
-                      <div className="border border-[#FF5722]/20 relative p-[10px]" style={{ boxShadow: '0 -4px 8px -4px rgba(255,87,34,0.25), 0 4px 8px -4px rgba(255,87,34,0.25)' }}>
+                      <div className="border border-[#FF5722]/20 relative p-[10px] pr-[10px]" style={{ boxShadow: '0 -4px 8px -4px rgba(255,87,34,0.25), 0 4px 8px -4px rgba(255,87,34,0.25)', paddingRight: '10px' }}>
                         <div className="pointer-events-none absolute inset-x-0 -top-3 h-3 bg-gradient-to-t from-[#FF5722]/8 to-transparent" />
                         <div className="pointer-events-none absolute inset-x-0 -bottom-3 h-3 bg-gradient-to-b from-[#FF5722]/8 to-transparent" />
                         <div className="pointer-events-none absolute inset-y-0 -left-3 w-3 bg-gradient-to-l from-[#FF5722]/8 to-transparent" />
