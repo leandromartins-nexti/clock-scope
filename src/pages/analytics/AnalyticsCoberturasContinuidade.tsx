@@ -76,64 +76,44 @@ export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded
       <div className="flex-1 min-w-0 px-3 sm:pl-6 sm:pr-4 py-4 pb-24 sm:pb-4 space-y-3 overflow-y-auto">
       {/* ═══ Linha 1: Score + 4 KPI Cards (idêntico ao Resumo Executivo) ═══ */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {/* Score Cobertura */}
-        <div className="bg-card border border-border/50 rounded-xl p-3 flex flex-col items-center justify-center">
-          <div className="flex items-center gap-1 mb-1">
-            <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Score Cobertura</p>
-            <InfoTip text="Índice de eficiência de cobertura calculado a partir de: taxa de ausências cobertas, tipo de evento gerado na apuração, tempo médio de reposição e dias de posto descoberto." />
-          </div>
-          <ScoreGauge score={activeData.score} color={scoreClassif.color} />
-          <p className={`text-3xl font-bold leading-none -mt-1 ${scoreColor}`}>{activeData.score}</p>
-          <p className={`text-xs font-semibold ${scoreColor} mt-0.5`}>{scoreFaixa}</p>
-          <div className="flex items-center justify-center gap-1 mt-1">
-            <TrendingUp size={12} className="text-green-500" />
-            <span className="text-[11px] font-medium text-green-600">+{activeData.scoreDiff} vs anterior</span>
-          </div>
-        </div>
+        <ScoreBoard
+          title="Score Cobertura"
+          tooltip="Índice de eficiência de cobertura calculado a partir de: taxa de ausências cobertas, tipo de evento gerado na apuração, tempo médio de reposição e dias de posto descoberto."
+        >
+          <ScoreGauge score={activeData.score} label={`${activeData.score}`} faixa={scoreFaixa} color={scoreClassif.color} />
+        </ScoreBoard>
 
-        {/* Melhor Operação */}
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <TrendingUp size={16} className="text-green-500" />
-            <InfoTip text="Operação com maior score de cobertura no período" />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Melhor Operação</p>
-          <p className="text-base font-semibold mt-0.5 truncate">{activeData.melhorOperacao.nome}</p>
-          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.melhorOperacao.score} · Alta</p>
-        </div>
+        <KPIBoard
+          title="Melhor Operação"
+          tooltip="Operação com maior score de cobertura no período"
+          value={activeData.melhorOperacao.nome}
+          valueColor="text-green-600"
+          subtitle={`Score ${activeData.melhorOperacao.score} · Alta`}
+        />
 
-        {/* Maior Risco */}
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <AlertTriangle size={16} className="text-red-500" />
-            <InfoTip text="Operação com menor cobertura e maior concentração de risco" />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Maior Risco</p>
-          <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{activeData.maiorRisco.nome}</p>
-          <p className="text-[11px] text-muted-foreground mt-1 truncate">Score {activeData.maiorRisco.score} · {activeData.maiorRisco.indicador}</p>
-        </div>
+        <KPIBoard
+          title="Maior Risco"
+          tooltip="Operação com menor cobertura e maior concentração de risco"
+          value={activeData.maiorRisco.nome}
+          valueColor="text-red-600"
+          subtitle={`Score ${activeData.maiorRisco.score} · ${activeData.maiorRisco.indicador}`}
+        />
 
-        {/* Hora Regular */}
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <ArrowDownRight size={16} className="text-green-500" />
-            <InfoTip text="Percentual das coberturas realizadas em hora regular" />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Hora Regular</p>
-          <p className="text-base font-semibold mt-0.5 text-green-600 truncate">{activeData.horaRegular.valor}</p>
-          <p className="text-[11px] text-muted-foreground mt-1 truncate">{activeData.horaRegular.detalhe}</p>
-        </div>
+        <KPIBoard
+          title="Hora Regular"
+          tooltip="Percentual das coberturas realizadas em hora regular"
+          value={activeData.horaRegular.valor}
+          valueColor="text-green-600"
+          subtitle={activeData.horaRegular.detalhe}
+        />
 
-        {/* Hora Extra */}
-        <div className="bg-card border border-border/50 rounded-xl p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col">
-          <div className="flex justify-between items-start">
-            <ArrowUpRight size={16} className="text-red-500" />
-            <InfoTip text="Percentual das coberturas que geraram hora extra" />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground mt-2">Hora Extra</p>
-          <p className="text-base font-semibold mt-0.5 text-red-600 truncate">{activeData.horaExtra.valor}</p>
-          <p className="text-[11px] text-muted-foreground mt-1 truncate">{activeData.horaExtra.detalhe}</p>
-        </div>
+        <KPIBoard
+          title="Hora Extra"
+          tooltip="Percentual das coberturas que geraram hora extra"
+          value={activeData.horaExtra.valor}
+          valueColor="text-red-600"
+          subtitle={activeData.horaExtra.detalhe}
+        />
       </div>
 
       {/* ═══ Linha 2: Donut + AreaChart lado a lado ═══ */}
