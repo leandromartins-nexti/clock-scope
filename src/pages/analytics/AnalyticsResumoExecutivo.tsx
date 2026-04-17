@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { Separator } from "@/components/ui/separator";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import InsightsCenter from "@/components/analytics/InsightsCenter";
 import AnalyticsChat from "@/components/analytics/AnalyticsChat";
 
@@ -601,7 +602,65 @@ export default function AnalyticsResumoExecutivo() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <div data-onboarding="score-operacional">
               <ScoreBoard title="Score Nexti" tooltip="Score consolidado da operação, calculado pela média ponderada dos sub-scores de Ponto e Absenteísmo. Configure os pesos em Configuração → Scores → Score Nexti.">
-                <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={scoreClassif.label} color={scoreClassif.color} />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex flex-col items-center gap-0 cursor-pointer" title="Ver decomposição do score">
+                      <ScoreGauge score={activeScore} label={`${activeScore}`} faixa={scoreClassif.label} color={scoreClassif.color} />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" side="bottom" align="start">
+                    <div className="p-3 border-b border-border/50">
+                      <p className="text-sm font-semibold">Como o Score {activeScore} foi calculado</p>
+                    </div>
+                    <div className="p-3 space-y-3">
+                      {(() => {
+                        const componentes = [
+                          { label: "Score de Ponto", valor: pontoScore, peso: nextiConfig.peso_ponto, bench: 75 },
+                          { label: "Score de Absenteísmo", valor: absenteismoScore, peso: nextiConfig.peso_absenteismo, bench: 70 },
+                        ];
+                        return componentes.map((c) => {
+                          const contrib = +(c.valor * c.peso / 100).toFixed(1);
+                          const cor = c.valor >= 80 ? "#22c55e" : c.valor >= 60 ? "#eab308" : "#ef4444";
+                          const barWidth = Math.max((contrib / Math.max(activeScore, 1)) * 100, 4);
+                          const benchDelta = c.valor - c.bench;
+                          const benchSign = benchDelta > 0 ? "+" : "";
+                          const benchColor = benchDelta >= 0 ? "text-green-600" : "text-red-600";
+                          return (
+                            <div key={c.label} className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-medium">{c.label}</span>
+                                <span className="text-[10px] text-muted-foreground">peso {c.peso}%</span>
+                              </div>
+                              <div className="flex items-center justify-between text-[11px]">
+                                <span>Nota {c.valor}</span>
+                                <span className="font-semibold">{contrib} pts</span>
+                              </div>
+                              <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
+                                <div className="h-full rounded-full transition-all" style={{ width: `${barWidth}%`, backgroundColor: cor }} />
+                              </div>
+                              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                                <span>Bench. setor: {c.bench}</span>
+                                <span className={`font-medium ${benchColor}`}>{benchSign}{benchDelta} pts vs setor</span>
+                              </div>
+                            </div>
+                          );
+                        });
+                      })()}
+                      <div className="border-t border-border/50 pt-2 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold">Score composto</span>
+                          <span className="text-sm font-bold" style={{ color: scoreClassif.color }}>
+                            {activeScore} ({scoreClassif.label})
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                          <span>Benchmark do setor (Vigilância/Facilities)</span>
+                          <span className="font-medium">72</span>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </ScoreBoard>
             </div>
             <KPIBoard
