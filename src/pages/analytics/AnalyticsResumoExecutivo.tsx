@@ -355,6 +355,7 @@ function DraggableBracket({
           d="M 1 31 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 31"
           stroke={`url(#bracketGrad-${card.label.replace(/\s/g,'')}-${startIdx})`}
           strokeWidth={dragging ? 3.1 : 2.5}
+          strokeOpacity={0.85}
           fill="none"
           strokeLinecap="butt"
           strokeLinejoin="miter"
