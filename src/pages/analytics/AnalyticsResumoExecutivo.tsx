@@ -302,7 +302,7 @@ function DraggableBracket({
     <div
       ref={containerRef}
       data-block-row-click="true"
-      className="absolute -top-[14px] z-20 select-none pointer-events-none"
+      className="absolute -top-[14px] select-none pointer-events-none"
       style={{
         left: `${leftPct}%`,
         width: `${widthPct}%`,
@@ -313,7 +313,7 @@ function DraggableBracket({
     >
       {/* Top hit area only (bracket header) — keeps drag/hover here, lets bubbles below stay interactive */}
       <div
-        className="absolute inset-x-0 top-0 pointer-events-auto"
+        className="absolute inset-x-0 top-0 z-10 pointer-events-auto"
         style={{ height: 14, cursor: dragging ? "grabbing" : interactive ? "grab" : "default" }}
         onPointerDown={interactive ? onPointerDown : (e) => { stopEvent(e); }}
         onPointerEnter={() => setHovered(true)}
@@ -333,7 +333,7 @@ function DraggableBracket({
       <svg
         viewBox="0 0 100 31"
         preserveAspectRatio="none"
-        className="absolute inset-0 h-full w-full pointer-events-none"
+        className="absolute inset-0 z-0 h-full w-full pointer-events-none"
         style={{
           filter: highlightGlow
             ? `drop-shadow(0 0 10px ${scoreColor}55) drop-shadow(0 4px 10px rgba(0,0,0,0.16))`
@@ -976,9 +976,9 @@ export default function AnalyticsResumoExecutivo() {
                                     const leftPct = (i / denom) * 100;
                                     return (
                                       <UITooltip key={i} delayDuration={100}>
-                                        <TooltipTrigger asChild>
+                                         <TooltipTrigger asChild>
                                           <div
-                                            className="absolute top-1/2 rounded-full cursor-pointer transition-transform hover:scale-125 outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0"
+                                             className="absolute top-1/2 z-10 rounded-full cursor-pointer transition-transform hover:scale-125 outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0"
                                             style={{
                                               left: `${leftPct}%`,
                                               transform: 'translate(-50%, -50%)',
