@@ -424,10 +424,28 @@ export default function AnalyticsResumoExecutivo() {
     return months.map((m) => {
       const pontoMonth = computeCompositeScore(selectedRegional, groupBy as any, scoreConfig, [m], sources);
       const absMatch = abs.find((a) => a.month === m);
+      // Sub-componentes Ponto
+      const qualPct = computeQualityPercentage(selectedRegional, groupBy as any, [m], sources);
+      const treat = computeTreatmentScore(selectedRegional, groupBy as any, scoreConfig, [m], sources);
+      const bo = computeBackofficeScore(selectedRegional, groupBy as any, scoreConfig, [m], sources);
+      // Sub-componentes Absenteísmo
+      const volScore = computeVolumeScoreForMonth(m, selectedRegional, chartGroupBy, absConfig);
+      const compScore = computeComposicaoScoreForMonth(m, selectedRegional, chartGroupBy, absConfig);
+      const matScore = computeMaturidadeScoreForMonth(m, selectedRegional, chartGroupBy, absConfig);
       return {
         competencia: formatMesLabel(m),
         ponto: Math.round(pontoMonth),
         absenteismo: absMatch?.score ?? 0,
+        pontoSubs: [
+          { label: "Qualidade", value: Math.round(qualPct) },
+          { label: "Tratativa", value: Math.round(treat.score) },
+          { label: "Back-office", value: Math.round(bo.score) },
+        ],
+        absSubs: [
+          { label: "Volume", value: Math.round(volScore) },
+          { label: "Composição", value: Math.round(compScore) },
+          { label: "Maturidade", value: Math.round(matScore) },
+        ],
       };
     });
   }, [selectedRegional, groupBy, sources, chartGroupBy, absConfig, scoreConfig]);
@@ -439,6 +457,17 @@ export default function AnalyticsResumoExecutivo() {
       competencia: m.competencia,
       valor: Math.round(computeNextiScore(m.ponto, m.absenteismo, nextiConfig)),
     }));
+    const pontoSubsByMonth: Record<string, { label: string; value: number }[]> = {};
+    const absSubsByMonth: Record<string, { label: string; value: number }[]> = {};
+    const nextiSubsByMonth: Record<string, { label: string; value: number }[]> = {};
+    groupedEvolution.forEach((m) => {
+      pontoSubsByMonth[m.competencia] = m.pontoSubs;
+      absSubsByMonth[m.competencia] = m.absSubs;
+      nextiSubsByMonth[m.competencia] = [
+        { label: "Ponto", value: m.ponto },
+        { label: "Absenteísmo", value: m.absenteismo },
+      ];
+    });
     const makeDelta = (series: { valor: number }[]) => {
       const prev = series[series.length - 2]?.valor ?? series[series.length - 1]?.valor ?? 0;
       const curr = series[series.length - 1]?.valor ?? 0;
@@ -469,6 +498,7 @@ export default function AnalyticsResumoExecutivo() {
         componentsAbs: absSeries,
         recomputeNexti: (avgP: number, avgA: number) =>
           computeNextiScore(avgP, avgA, nextiConfig),
+        subScoresByMonth: nextiSubsByMonth,
       },
       {
         label: "Ponto",
@@ -477,6 +507,7 @@ export default function AnalyticsResumoExecutivo() {
         variacao: p.variacao,
         corVariacao: p.corVariacao,
         perPointColors: true,
+        subScoresByMonth: pontoSubsByMonth,
       },
       {
         label: "Absenteísmo",
@@ -485,6 +516,7 @@ export default function AnalyticsResumoExecutivo() {
         variacao: a.variacao,
         corVariacao: a.corVariacao,
         perPointColors: true,
+        subScoresByMonth: absSubsByMonth,
       },
     ];
   }, [groupedEvolution, nextiConfig]);
