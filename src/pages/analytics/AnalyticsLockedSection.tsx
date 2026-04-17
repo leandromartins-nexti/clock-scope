@@ -1,21 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ChevronRight, Filter, Eraser, Lock } from "lucide-react";
+import { Filter, Eraser, Lock } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo, lockedTabs } from "@/lib/analytics-mock-data";
 import LockedTabOverlay from "@/components/analytics/LockedTabOverlay";
-import { QualidadeTab } from "./AnalyticsDisciplinaOperacional";
-
-// Pequenas variações visuais por aba para dar sensação de "dados diferentes"
-// sem reconstruir o dashboard inteiro. Hue-rotate sutil + leve saturação.
-const TAB_VARIANTS: Record<string, { hue: number; sat: number; seed: string }> = {
-  sancoes: { hue: -8, sat: 1.05, seed: "A" },
-  "alertas-preventivos": { hue: 6, sat: 1.0, seed: "B" },
-  regulatorio: { hue: -14, sat: 0.95, seed: "C" },
-  pesquisas: { hue: 12, sat: 1.08, seed: "D" },
-  reconhecimento: { hue: -4, sat: 1.0, seed: "E" },
-  comunicacao: { hue: 18, sat: 0.92, seed: "F" },
-};
+import LockedTabMockBackground from "@/components/analytics/LockedTabMockBackground";
 
 interface TabDef {
   id: string;
