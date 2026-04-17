@@ -550,7 +550,7 @@ export default function AnalyticsResumoExecutivo() {
                     key={card.label}
                     onClick={() => { /* hero não navega */ }}
                   >
-                    <div className="bg-white border-y border-[#FF5722]/20 relative">
+                    <div className="bg-[#FFF7F2] border-y border-[#FF5722]/20 relative">
                       <div className="pointer-events-none absolute inset-x-0 -top-3 h-3 bg-gradient-to-t from-[#FF5722]/15 to-transparent" />
                       <div className="pointer-events-none absolute inset-x-0 -bottom-3 h-3 bg-gradient-to-b from-[#FF5722]/15 to-transparent" />
                       <div className="flex items-center gap-4 py-3 pl-6 pr-3.5 relative">
