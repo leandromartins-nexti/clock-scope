@@ -1,9 +1,9 @@
 import AnalyticsLockedSection from "./AnalyticsLockedSection";
 
 const tabs = [
-  { id: "pesquisas", label: "Pesquisas de Clima" },
-  { id: "reconhecimento", label: "Reconhecimento" },
-  { id: "comunicacao", label: "Comunicação Interna" },
+  { id: "pesquisas", label: "Checklist" },
+  { id: "reconhecimento", label: "Direct" },
+  { id: "comunicacao", label: "Avisos" },
 ];
 
 export default function AnalyticsEngajamento() {
