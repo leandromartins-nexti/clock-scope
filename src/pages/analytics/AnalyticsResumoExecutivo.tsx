@@ -349,7 +349,7 @@ export default function AnalyticsResumoExecutivo() {
                     <div className="flex sm:hidden flex-1 flex-col min-w-0">
                       <div className="h-[32px] w-full">
                         <ResponsiveContainer width="100%" height={32}>
-                          <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, left: 0, bottom: 0 }}>
+                          <AreaChart data={card.evolucao} margin={{ top: 3, right: 1, left: 1, bottom: 0 }}>
                             <defs>
                               {/* Horizontal stroke gradient — per-point color like desktop line */}
                               <linearGradient id={`stroke-${areaGradId}`} x1="0" y1="0" x2="1" y2="0">
@@ -359,30 +359,24 @@ export default function AnalyticsResumoExecutivo() {
                                   return <stop key={i} offset={`${pct}%`} stopColor={c} />;
                                 })}
                               </linearGradient>
-                              {/* Horizontal fill gradient — same color shift, semi-transparent */}
+                              {/* Horizontal fill gradient — strong color shift */}
                               <linearGradient id={`${areaGradId}-h`} x1="0" y1="0" x2="1" y2="0">
                                 {card.evolucao.map((pt, i) => {
                                   const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
                                   const c = card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score);
-                                  return <stop key={i} offset={`${pct}%`} stopColor={c} stopOpacity={0.35} />;
+                                  return <stop key={i} offset={`${pct}%`} stopColor={c} stopOpacity={0.55} />;
                                 })}
                               </linearGradient>
-                              {/* Vertical fade mask for soft bottom */}
-                              <linearGradient id={`${areaGradId}-fade`} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="white" stopOpacity={1} />
-                                <stop offset="100%" stopColor="white" stopOpacity={0} />
-                              </linearGradient>
-                              <mask id={`${areaGradId}-mask`}>
-                                <rect x="0" y="0" width="100%" height="100%" fill={`url(#${areaGradId}-fade)`} />
-                              </mask>
                             </defs>
                             <Area
                               type="monotone"
                               dataKey="valor"
                               stroke={`url(#stroke-${areaGradId})`}
-                              strokeWidth={2}
+                              strokeWidth={2.25}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                               fill={`url(#${areaGradId}-h)`}
-                              mask={`url(#${areaGradId}-mask)`}
+                              fillOpacity={1}
                               dot={false}
                               activeDot={false}
                               isAnimationActive={false}
