@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
+import { ScoreBoard, KPIBoard } from "@/components/analytics/kpi";
 import { TrendIcon, getScoreColor } from "@/components/analytics/IndicatorTable";
 
 export default function AnalyticsCoberturasContinuidade({ embedded }: { embedded?: boolean }) {
