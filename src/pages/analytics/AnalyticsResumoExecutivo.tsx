@@ -548,7 +548,6 @@ export default function AnalyticsResumoExecutivo() {
                   // ═══ Hero Rocket — linha-mestre ═══
                   <div
                     key={card.label}
-                    className="px-3 sm:px-4"
                     onClick={() => { /* hero não navega */ }}
                   >
                     <div className="rounded-xl bg-white border border-[#FF5722]/40 shadow-[0_8px_24px_-8px_rgba(255,87,34,0.35)] relative overflow-hidden">
