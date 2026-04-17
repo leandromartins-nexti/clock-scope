@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { getScoreColor, getScoreBg, getLineColor } from "@/components/analytics/IndicatorTable";
 import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
@@ -425,6 +426,8 @@ function DraggableBracket({
 // ── Main Page ───────────────────────────────────────────────
 export default function AnalyticsResumoExecutivo() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const bubbleScale = isMobile ? 0.7 : 1;
   const { config: scoreConfig } = useScoreConfig();
   const { data: customerData } = useQualidadePontoData();
   const sources = useMemo(() => buildDataSources(customerData), [customerData]);
@@ -935,7 +938,7 @@ export default function AnalyticsResumoExecutivo() {
                                 <div className="relative w-full h-[34px]">
                                   {card.evolucao.map((pt, i) => {
                                     const c = card.forceColor ?? getLineColor(pt.valor);
-                                    const size = 10 + (pt.valor / max) * 20;
+                                    const size = (10 + (pt.valor / max) * 20) * bubbleScale;
                                     const leftPct = (i / denom) * 100;
                                     return (
                                       <UITooltip key={i} delayDuration={100}>
@@ -1025,7 +1028,7 @@ export default function AnalyticsResumoExecutivo() {
                                 <div className="relative w-full h-[34px]">
                                   {card.evolucao.map((pt, i) => {
                                     const c = card.forceColor ?? getLineColor(pt.valor);
-                                    const size = 10 + (pt.valor / max) * 20;
+                                    const size = (10 + (pt.valor / max) * 20) * bubbleScale;
                                     const leftPct = (i / denom) * 100;
                                     return (
                                       <UITooltip key={i} delayDuration={100}>
