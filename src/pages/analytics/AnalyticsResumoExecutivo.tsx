@@ -299,9 +299,9 @@ function DraggableBracket({
           style={{
             backgroundColor: "#ffffff",
             color: getLineColor(avgScore),
-            border: "2px solid #B8B2AC",
+            border: `2px solid ${highlightGlow ? scoreColor : "#B8B2AC"}`,
             boxShadow: highlightGlow ? `0 6px 16px ${scoreColor}33` : undefined,
-            transition: "color 180ms ease, box-shadow 180ms ease",
+            transition: "color 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
           }}
         >
           {avgScore}
