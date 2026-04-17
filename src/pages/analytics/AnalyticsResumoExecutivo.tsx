@@ -915,10 +915,10 @@ export default function AnalyticsResumoExecutivo() {
                         <div className="pointer-events-none absolute inset-y-0 -left-3 w-3 bg-gradient-to-l from-[#FF5722]/8 to-transparent" />
                         <div className="pointer-events-none absolute inset-y-0 -right-3 w-3 bg-gradient-to-r from-[#FF5722]/8 to-transparent" />
                         <div className="flex items-center">
-                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white flex items-center justify-center shadow-md shrink-0">
+                          <div className="hidden sm:flex w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF5722] to-[#D84315] text-white items-center justify-center shadow-md shrink-0">
                             <Rocket className="w-5 h-5" />
                           </div>
-                          <div className="hidden sm:block shrink-0 sm:w-auto sm:flex-none sm:min-w-[160px] sm:pl-[10px]">
+                          <div className="shrink-0 w-[120px] sm:w-auto sm:flex-none sm:min-w-[160px] pl-[10px] sm:pl-[10px]">
                             <div className="text-base font-extrabold text-[#FF5722] leading-tight whitespace-nowrap">{card.label}</div>
                           </div>
                           {/* Bolhas mensais com bracket (web e mobile) */}
@@ -990,7 +990,7 @@ export default function AnalyticsResumoExecutivo() {
                     <td colSpan={2} className={`p-0 ${borderTopCls}`}>
                       <div className="relative p-[10px] pr-[20px]">
                         <div className="flex items-center">
-                          <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
+                          <div className="hidden sm:flex w-10 h-10 rounded-lg items-center justify-center shrink-0">
                             {card.label === "Ponto" ? (
                               <Clock className="w-5 h-5" style={{ color: "#FF5722" }} />
                             ) : card.label === "Absenteísmo" ? (
@@ -1008,7 +1008,7 @@ export default function AnalyticsResumoExecutivo() {
                               />
                             )}
                           </div>
-                          <div className="hidden sm:block shrink-0 sm:w-auto sm:flex-none sm:min-w-[160px] sm:pl-[10px]">
+                          <div className="shrink-0 w-[120px] sm:w-auto sm:flex-none sm:min-w-[160px] pl-[10px] sm:pl-[10px]">
                             <div className="text-sm font-medium text-foreground leading-tight whitespace-nowrap">{card.label}</div>
                           </div>
                           {/* Bolhas mensais com bracket (web e mobile) */}
