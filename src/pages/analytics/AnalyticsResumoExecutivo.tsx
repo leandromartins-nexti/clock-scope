@@ -705,7 +705,7 @@ export default function AnalyticsResumoExecutivo() {
                         ];
                         return componentes.map((c) => {
                           const contrib = +(c.valor * c.peso / 100).toFixed(1);
-                          const cor = c.valor >= 80 ? "#22c55e" : c.valor >= 60 ? "#eab308" : "#ef4444";
+                          const cor = c.valor >= 80 ? "#22c55e" : c.valor >= 60 ? "#d4a017" : "#ef4444";
                           const barWidth = Math.max((contrib / Math.max(activeScore, 1)) * 100, 4);
                           const benchDelta = c.valor - c.bench;
                           const benchSign = benchDelta > 0 ? "+" : "";
