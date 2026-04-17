@@ -716,4 +716,8 @@ export const lockedTabs = [
   { id: "chatbot", grupo: "Inteligência", nome: "Chatbot Analítico", descricao: "Converse com seus dados em linguagem natural" },
   // Configuração
   { id: "metodologia", grupo: "Configuração", nome: "Metodologia e Governança", descricao: "Transparência total sobre parâmetros, premissas e regras de cálculo" },
+  // Engajamento
+  { id: "pesquisas", grupo: "Engajamento", nome: "Checklist", descricao: "Acompanhe o cumprimento de checklists operacionais e a aderência das equipes aos protocolos" },
+  { id: "reconhecimento", grupo: "Engajamento", nome: "Direct", descricao: "Monitore a comunicação direta entre líderes e colaboradores em tempo real" },
+  { id: "comunicacao", grupo: "Engajamento", nome: "Avisos", descricao: "Gerencie avisos, convocações e a taxa de leitura das comunicações enviadas" },
 ];
