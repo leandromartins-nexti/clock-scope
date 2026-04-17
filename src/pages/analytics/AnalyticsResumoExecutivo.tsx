@@ -385,7 +385,7 @@ export default function AnalyticsResumoExecutivo() {
                                   fill="none"
                                   strokeLinecap="butt"
                                   strokeLinejoin="miter"
-                                  strokeDasharray="6 5"
+                                  strokeDasharray="3 2"
                                   vectorEffect="non-scaling-stroke"
                                 />
                               </svg>
