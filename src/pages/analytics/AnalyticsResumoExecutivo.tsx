@@ -247,7 +247,7 @@ function DraggableBracket({ card }: { card: BracketCard }) {
       >
         <path
           d="M 1 13 L 1 3 L 50 3 L 50 1 L 50 3 L 99 3 L 99 13"
-          stroke={highlightGlow ? scoreColor : "#C9C4C4"}
+          stroke={highlightGlow ? scoreColor : "#B8B2AC"}
           strokeWidth={dragging ? 3.1 : 2.5}
           fill="none"
           strokeLinecap="butt"
@@ -270,7 +270,7 @@ function DraggableBracket({ card }: { card: BracketCard }) {
           style={{
             backgroundColor: "#ffffff",
             color: getLineColor(avgScore),
-            border: "2px solid #C9C4C4",
+            border: "2px solid #B8B2AC",
             boxShadow: highlightGlow ? `0 6px 16px ${scoreColor}33` : undefined,
             transition: "color 180ms ease, box-shadow 180ms ease",
           }}
