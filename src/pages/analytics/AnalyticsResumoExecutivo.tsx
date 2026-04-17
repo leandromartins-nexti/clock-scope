@@ -365,7 +365,7 @@ export default function AnalyticsResumoExecutivo() {
                     </div>
 
                     {/* Desktop: Sparkline com área gradiente semântica + highlight dos últimos 3 meses */}
-                    <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[22px] relative">
+                    <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[14px] relative">
                       {/* Highlight box sobre os últimos 3 de 12 meses (25% da largura) */}
                       {card.evolucao.length >= 3 && (() => {
                         const widthPct = (3 / card.evolucao.length) * 100;
@@ -398,8 +398,8 @@ export default function AnalyticsResumoExecutivo() {
                           </>
                         );
                       })()}
-                      <ResponsiveContainer width="100%" height={36}>
-                        <AreaChart data={card.evolucao} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
+                      <ResponsiveContainer width="100%" height={14}>
+                        <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
                           <defs>
                             <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
                               {card.evolucao.map((pt, i) => {
@@ -450,8 +450,7 @@ export default function AnalyticsResumoExecutivo() {
             )}
           </div>
 
-          {/* ═══ 10 variações da tabela (validação) ═══ */}
-          <IndicatorTableVariants cards={sparklineCards} />
+          {/* Variantes de teste removidas */}
 
           {/* ═══ CTA Financeiro ═══ */}
           <div className="bg-surface border border-border/50 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
