@@ -26,6 +26,7 @@ import {
 } from "@/contexts/NextiScoreConfigContext";
 import {
   Filter, Eraser, DollarSign, CheckCircle, Rocket, Clock, UserX,
+  TrendingDown, ArrowLeftRight, ShieldCheck,
 } from "lucide-react";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { Separator } from "@/components/ui/separator";
@@ -519,6 +520,53 @@ export default function AnalyticsResumoExecutivo() {
         perPointColors: true,
         subScoresByMonth: absSubsByMonth,
       },
+      ...(() => {
+        const mockFor = (seed: number, base: number, amp: number) =>
+          groupedEvolution.map((m, i) => {
+            const v = Math.round(
+              base + Math.sin((i + seed) * 0.7) * amp + Math.cos((i + seed) * 0.3) * (amp / 2)
+            );
+            return { competencia: m.competencia, valor: Math.max(0, Math.min(100, v)) };
+          });
+        const turnoverSeries = mockFor(1, 72, 6);
+        const movSeries = mockFor(3, 65, 8);
+        const cobSeries = mockFor(5, 80, 5);
+        const t = makeDelta(turnoverSeries);
+        const mv = makeDelta(movSeries);
+        const cb = makeDelta(cobSeries);
+        return [
+          {
+            label: "Turnover",
+            evolucao: turnoverSeries,
+            score: turnoverSeries[turnoverSeries.length - 1]?.valor ?? 0,
+            variacao: t.variacao,
+            corVariacao: t.corVariacao,
+            perPointColors: true,
+            forceColor: undefined as string | undefined,
+            highlight: false,
+          },
+          {
+            label: "Movimentações",
+            evolucao: movSeries,
+            score: movSeries[movSeries.length - 1]?.valor ?? 0,
+            variacao: mv.variacao,
+            corVariacao: mv.corVariacao,
+            perPointColors: true,
+            forceColor: undefined as string | undefined,
+            highlight: false,
+          },
+          {
+            label: "Coberturas",
+            evolucao: cobSeries,
+            score: cobSeries[cobSeries.length - 1]?.valor ?? 0,
+            variacao: cb.variacao,
+            corVariacao: cb.corVariacao,
+            perPointColors: true,
+            forceColor: undefined as string | undefined,
+            highlight: false,
+          },
+        ];
+      })(),
     ];
   }, [groupedEvolution, nextiConfig]);
 
@@ -749,6 +797,9 @@ export default function AnalyticsResumoExecutivo() {
                 const indicadorRouteMap: Record<string, string> = {
                   "Ponto": "/analytics/operacional?tab=qualidade",
                   "Absenteísmo": "/analytics/operacional?tab=absenteismo",
+                  "Turnover": "/analytics/operacional?tab=turnover",
+                  "Movimentações": "/analytics/operacional?tab=movimentacoes",
+                  "Coberturas": "/analytics/operacional?tab=coberturas",
                 };
                 const targetRoute = indicadorRouteMap[card.label];
                 const gradId = `grad-${card.label.replace(/\s/g,'')}`;
@@ -858,6 +909,12 @@ export default function AnalyticsResumoExecutivo() {
                               <Clock className="w-5 h-5" style={{ color: "#FF5722" }} />
                             ) : card.label === "Absenteísmo" ? (
                               <UserX className="w-5 h-5" style={{ color: "#FF5722" }} />
+                            ) : card.label === "Turnover" ? (
+                              <TrendingDown className="w-5 h-5" style={{ color: "#FF5722" }} />
+                            ) : card.label === "Movimentações" ? (
+                              <ArrowLeftRight className="w-5 h-5" style={{ color: "#FF5722" }} />
+                            ) : card.label === "Coberturas" ? (
+                              <ShieldCheck className="w-5 h-5" style={{ color: "#FF5722" }} />
                             ) : (
                               <div
                                 className="w-2 h-2 rounded-full"
