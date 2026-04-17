@@ -547,7 +547,11 @@ export default function AnalyticsResumoExecutivo() {
                 <div
                     key={card.label}
                     data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
-                    className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-5 hover:bg-muted/30 transition-colors cursor-pointer group"
+                    className={`flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-5 transition-colors cursor-pointer group ${
+                      card.highlight
+                        ? "bg-orange-50/40 hover:bg-orange-50/60 border-l-[3px] border-l-[#FF5722]"
+                        : "hover:bg-muted/30"
+                    }`}
                     onClick={(event) => {
                       const target = event.target as HTMLElement | null;
                       if (target?.closest('[data-block-row-click="true"]')) {
@@ -559,13 +563,29 @@ export default function AnalyticsResumoExecutivo() {
                     }}
                     title={`Ver detalhes de ${card.label}`}
                   >
-                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: getLineColor(card.score) }} />
-                    <span className="text-sm font-medium text-foreground flex-1 sm:flex-none sm:min-w-[140px] truncate">{card.label}</span>
+                    <div
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: card.forceColor ?? getLineColor(card.score) }}
+                    />
+                    <span
+                      className={`flex-1 sm:flex-none sm:min-w-[140px] truncate ${
+                        card.highlight
+                          ? "text-sm font-bold text-[#FF5722] uppercase tracking-wide"
+                          : "text-sm font-medium text-foreground"
+                      }`}
+                    >
+                      {card.label}
+                      {card.highlight && (
+                        <span className="ml-2 text-[10px] font-semibold text-[#FF5722]/70 normal-case tracking-normal">
+                          {card.score}
+                        </span>
+                      )}
+                    </span>
                     {/* Mobile: heatmap horizontal — altura total idêntica ao badge de score */}
                     <div className="flex sm:hidden flex-1 min-w-0 h-[27px] flex-col justify-between overflow-hidden self-center mt-[6px]">
                       <div className="flex items-center gap-[2px] w-full h-[19px]">
                         {card.evolucao.map((pt, i) => {
-                          const c = card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score);
+                          const c = card.forceColor ?? (card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score));
                           return (
                             <div
                               key={i}
@@ -583,21 +603,23 @@ export default function AnalyticsResumoExecutivo() {
                     </div>
 
                     {/* Desktop: Sparkline com área gradiente semântica + highlight dos últimos 3 meses */}
-                    <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[17px] relative">
+                    <div className={`hidden sm:block flex-1 sm:min-w-[120px] relative ${card.highlight ? "h-[26px]" : "h-[17px]"}`}>
                       {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
-                      <ResponsiveContainer width="100%" height={17}>
+                      <ResponsiveContainer width="100%" height={card.highlight ? 26 : 17}>
                         <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
                           <defs>
                             <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
                               {card.evolucao.map((pt, i) => {
                                 const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} stopOpacity={0.45} />;
+                                const stopColor = card.forceColor ?? getLineColor(pt.valor);
+                                return <stop key={i} offset={`${pct}%`} stopColor={stopColor} stopOpacity={card.highlight ? 0.35 : 0.45} />;
                               })}
                             </linearGradient>
                             <linearGradient id={`${areaGradId}-stroke`} x1="0" y1="0" x2="1" y2="0">
                               {card.evolucao.map((pt, i) => {
                                 const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
-                                return <stop key={i} offset={`${pct}%`} stopColor={getLineColor(pt.valor)} />;
+                                const stopColor = card.forceColor ?? getLineColor(pt.valor);
+                                return <stop key={i} offset={`${pct}%`} stopColor={stopColor} />;
                               })}
                             </linearGradient>
                           </defs>
@@ -606,8 +628,9 @@ export default function AnalyticsResumoExecutivo() {
                             type="monotone"
                             dataKey="valor"
                             stroke={`url(#${areaGradId}-stroke)`}
-                            strokeWidth={2}
+                            strokeWidth={card.highlight ? 2.6 : 2}
                             fill={`url(#${areaGradId})`}
+                            style={card.highlight ? { filter: `drop-shadow(0 1px 4px ${card.forceColor ?? "#FF5722"}55)` } : undefined}
                           />
                         </AreaChart>
                       </ResponsiveContainer>
