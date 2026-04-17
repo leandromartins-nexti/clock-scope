@@ -2022,6 +2022,30 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                           </g>
                         );
                       }} />
+                      <LabelList content={({ x, y, width: w, index }: any) => {
+                        const d = sobrecargaData[index];
+                        if (!d) return null;
+                        const insightId = chartInsightPins.sobrecarga?.[d.mes];
+                        if (!insightId) return null;
+                        const cx = (x ?? 0) + (w ?? 0) / 2;
+                        const cy = (y ?? 0) - 10;
+                        return (
+                          <g
+                            style={{ cursor: "pointer" }}
+                            onClick={(e) => { e.stopPropagation(); openInsightById(insightId); }}
+                          >
+                            <title>Ver insight: Recuperação dramática da qualidade</title>
+                            {/* Pulse ring */}
+                            <circle cx={cx} cy={cy} r={11} fill="#22c55e" opacity={0.18}>
+                              <animate attributeName="r" values="9;14;9" dur="1.6s" repeatCount="indefinite" />
+                              <animate attributeName="opacity" values="0.25;0.05;0.25" dur="1.6s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Pin body */}
+                            <circle cx={cx} cy={cy} r={8} fill="#22c55e" stroke="#fff" strokeWidth={1.5} />
+                            <text x={cx} y={cy + 3} textAnchor="middle" fontSize={9} fontWeight={700} fill="#fff">💡</text>
+                          </g>
+                        );
+                      }} />
                     </Bar>
                     <Line yAxisId="right" type="monotone" dataKey="he" name="Horas extras" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }} />
                   </ComposedChart>
@@ -2043,6 +2067,14 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       </div>
 
       <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
+
+      <InsightDetailModal
+        insight={activeInsight}
+        open={!!activeInsight}
+        onClose={() => setActiveInsight(null)}
+        onDismiss={() => setActiveInsight(null)}
+        onCrossRef={openInsightById}
+      />
 
       <ChartDataModal
         open={chartDataModal === "evoQualidade"}
