@@ -225,17 +225,17 @@ function DraggableBracket({
     <div
       ref={containerRef}
       data-block-row-click="true"
-      className={`absolute -top-[14px] z-20 select-none ${interactive ? "" : "pointer-events-none"}`}
+      className="absolute -top-[14px] z-20 select-none"
       style={{
         left: `${leftPct}%`,
         width: `${widthPct}%`,
         height: 14,
         transition: dragging ? "none" : "left 260ms cubic-bezier(0.22, 1, 0.36, 1)",
       }}
-      onPointerDown={interactive ? onPointerDown : undefined}
-      onPointerEnter={interactive ? () => setHovered(true) : undefined}
-      onPointerLeave={interactive ? () => setHovered(false) : undefined}
-      onClick={interactive ? (e) => { stopEvent(e); } : undefined}
+      onPointerDown={interactive ? onPointerDown : (e) => { stopEvent(e); }}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onClick={(e) => { stopEvent(e); }}
     >
       <div
         className="absolute inset-x-0 top-[2px] bottom-0 rounded-sm"
