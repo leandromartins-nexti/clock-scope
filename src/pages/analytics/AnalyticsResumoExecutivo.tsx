@@ -346,8 +346,8 @@ export default function AnalyticsResumoExecutivo() {
                     }`}>{card.variacao}</span>
 
                     {/* Mobile: heatmap horizontal — altura total idêntica ao badge de score */}
-                    <div className="flex sm:hidden flex-1 min-w-0 h-[22px] flex-col justify-between overflow-hidden self-center">
-                      <div className="flex items-center gap-[2px] w-full h-[14px]">
+                    <div className="flex sm:hidden flex-1 min-w-0 h-[32px] flex-col justify-between overflow-hidden self-center">
+                      <div className="flex items-center gap-[2px] w-full h-[24px]">
                         {card.evolucao.map((pt, i) => {
                           const c = card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score);
                           return (
