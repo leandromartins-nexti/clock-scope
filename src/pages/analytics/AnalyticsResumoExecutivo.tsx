@@ -345,8 +345,8 @@ export default function AnalyticsResumoExecutivo() {
                       card.corVariacao.includes('green') ? 'bg-green-50' : card.corVariacao.includes('red') ? 'bg-red-50' : 'bg-gray-50'
                     }`}>{card.variacao}</span>
 
-                    {/* Mobile: heatmap horizontal — 1 quadradinho por mês */}
-                    <div className="flex sm:hidden flex-1 flex-col min-w-0">
+                    {/* Mobile: heatmap horizontal — alinhado verticalmente com o score */}
+                    <div className="flex sm:hidden flex-1 min-w-0 relative">
                       <div className="flex items-center gap-[2px] w-full h-[18px]">
                         {card.evolucao.map((pt, i) => {
                           const c = card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score);
@@ -360,7 +360,7 @@ export default function AnalyticsResumoExecutivo() {
                           );
                         })}
                       </div>
-                      <div className="flex justify-between text-[9px] text-muted-foreground mt-1 px-0.5">
+                      <div className="absolute left-0 right-0 top-full flex justify-between text-[9px] text-muted-foreground mt-1 px-0.5 pointer-events-none">
                         <span>{firstMonth.replace('/20', '/')}</span>
                         <span>{lastMonth.replace('/20', '/')}</span>
                       </div>
