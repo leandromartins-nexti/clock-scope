@@ -39,6 +39,8 @@ import ScoreGauge from "@/components/analytics/ScoreGauge";
 import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import QualidadeInsightsSection from "@/components/analytics/QualidadeInsightsSection";
+import InsightDetailModal from "@/components/analytics/InsightDetailModal";
+import { getInsightsForCustomer, type QualidadeInsight } from "@/data/qualidadeInsightsData";
 
 // decomposicaoScore and kpisPeriodoAnterior now loaded dynamically via useQualidadePontoData hook
 import { evolucaoQualidadeHeadcountSource, evolucaoQualidadeHeadcountColumns } from "@/data/chart-sources/evolucao-qualidade-headcount";
@@ -911,6 +913,17 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [chartDataModal, setChartDataModal] = useState<string | null>(null);
+  const { customerId } = useCustomer();
+  const [activeInsight, setActiveInsight] = useState<QualidadeInsight | null>(null);
+  // Map: chart name → mes label → insight id (chart pin annotations)
+  const chartInsightPins: Record<string, Record<string, string>> = {
+    sobrecarga: { "set/25": "C1" },
+  };
+  const openInsightById = useCallback((id: string) => {
+    const all = getInsightsForCustomer(customerId);
+    const found = all.find(i => i.id === id);
+    if (found) setActiveInsight(found);
+  }, [customerId]);
 
   // TODO: REMOVER EM PRODUÇÃO — build dynamic data sources from active customer
   const dataSources = useMemo(() => buildDataSources(customerData), [customerData]);
