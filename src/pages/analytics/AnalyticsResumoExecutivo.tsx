@@ -450,8 +450,7 @@ export default function AnalyticsResumoExecutivo() {
             )}
           </div>
 
-          {/* ═══ 10 variações da tabela (validação) ═══ */}
-          <IndicatorTableVariants cards={sparklineCards} />
+          {/* Variantes de teste removidas */}
 
           {/* ═══ CTA Financeiro ═══ */}
           <div className="bg-surface border border-border/50 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
