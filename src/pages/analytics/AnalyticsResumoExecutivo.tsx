@@ -90,6 +90,8 @@ interface BracketCard {
   componentsPonto?: { competencia: string; valor: number }[];
   componentsAbs?: { competencia: string; valor: number }[];
   recomputeNexti?: (avgPonto: number, avgAbs: number) => number;
+  /** Recalcula score agregando a janela exatamente como o gauge superior. */
+  computeWindowScore?: (startIdx: number, endIdxExclusive: number) => number;
 }
 function DraggableBracket({ card }: { card: BracketCard }) {
   const total = card.evolucao.length;
@@ -114,6 +116,9 @@ function DraggableBracket({ card }: { card: BracketCard }) {
   const widthPct = endPct - startPct;
   const windowMonths = card.evolucao.slice(startIdx, startIdx + windowSize);
   const avgScore = (() => {
+    if (card.computeWindowScore) {
+      return Math.round(card.computeWindowScore(startIdx, startIdx + windowSize));
+    }
     if (card.recomputeNexti && card.componentsPonto && card.componentsAbs) {
       const pSlice = card.componentsPonto.slice(startIdx, startIdx + windowSize);
       const aSlice = card.componentsAbs.slice(startIdx, startIdx + windowSize);
