@@ -671,7 +671,7 @@ export default function AnalyticsResumoExecutivo() {
                     </div>
 
                     {/* Desktop: Sparkline */}
-                    <div className="hidden sm:block flex-1 sm:min-w-[120px] relative h-[17px]">
+                    <div className="hidden sm:block flex-1 sm:min-w-[120px] relative h-[17px] mt-[5px]">
                       {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
                       <ResponsiveContainer width="100%" height={17}>
                         <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
