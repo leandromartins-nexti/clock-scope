@@ -295,7 +295,7 @@ function DraggableBracket({
         }}
       >
         <span
-          className="text-[10px] font-bold px-2 py-[2px] rounded-none shadow-md whitespace-nowrap"
+          className="text-[10px] font-bold px-2 py-[2px] rounded-md shadow-md whitespace-nowrap"
           style={{
             backgroundColor: "#ffffff",
             color: getLineColor(avgScore),
