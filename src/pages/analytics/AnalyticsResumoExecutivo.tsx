@@ -363,10 +363,42 @@ export default function AnalyticsResumoExecutivo() {
                       </div>
                     </div>
 
-                    {/* Desktop: Sparkline com área gradiente semântica */}
-                    <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[32px]">
-                      <ResponsiveContainer width="100%" height={32}>
-                        <AreaChart data={card.evolucao}>
+                    {/* Desktop: Sparkline com área gradiente semântica + highlight dos últimos 3 meses */}
+                    <div className="hidden sm:block flex-1 sm:min-w-[120px] h-[36px] relative">
+                      {/* Highlight box sobre os últimos 3 de 12 meses (25% da largura) */}
+                      {card.evolucao.length >= 3 && (() => {
+                        const widthPct = (3 / card.evolucao.length) * 100;
+                        const scoreColor = getLineColor(card.score);
+                        return (
+                          <>
+                            <div
+                              className="absolute top-0 bottom-0 rounded-md border-2 pointer-events-none z-10"
+                              style={{
+                                right: 0,
+                                width: `${widthPct}%`,
+                                borderColor: scoreColor,
+                                backgroundColor: `${scoreColor}14`,
+                              }}
+                            />
+                            <div
+                              className="absolute -top-[2px] z-20 pointer-events-none"
+                              style={{
+                                right: `${widthPct / 2}%`,
+                                transform: 'translateX(50%)',
+                              }}
+                            >
+                              <span
+                                className="text-[10px] font-bold px-1.5 py-[1px] rounded-md text-white shadow-sm whitespace-nowrap"
+                                style={{ backgroundColor: scoreColor }}
+                              >
+                                {card.score}
+                              </span>
+                            </div>
+                          </>
+                        );
+                      })()}
+                      <ResponsiveContainer width="100%" height={36}>
+                        <AreaChart data={card.evolucao} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
                           <defs>
                             <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
                               {card.evolucao.map((pt, i) => {
