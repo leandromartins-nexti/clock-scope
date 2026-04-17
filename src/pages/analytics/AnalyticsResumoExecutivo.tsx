@@ -592,16 +592,16 @@ export default function AnalyticsResumoExecutivo() {
                           <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#FF5722]/70">Indicador-mestre</div>
                           <div className="text-base font-extrabold text-[#FF5722] leading-tight">{card.label}</div>
                         </div>
-                        <div className="flex-1 h-[28px] relative min-w-0">
+                        <div className="flex-1 h-[17px] relative min-w-0">
                           {card.evolucao.length >= 3 && <DraggableBracket card={card} />}
-                          <ResponsiveContainer width="100%" height={28}>
+                          <ResponsiveContainer width="100%" height={17}>
                             <AreaChart data={card.evolucao} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
                               <defs>
                                 <linearGradient id={areaGradId} x1="0" y1="0" x2="1" y2="0">
                                   {card.evolucao.map((pt, i) => {
                                     const pct = card.evolucao.length > 1 ? (i / (card.evolucao.length - 1)) * 100 : 0;
                                     const stopColor = card.forceColor ?? getLineColor(pt.valor);
-                                    return <stop key={i} offset={`${pct}%`} stopColor={stopColor} stopOpacity={0.4} />;
+                                    return <stop key={i} offset={`${pct}%`} stopColor={stopColor} stopOpacity={0.45} />;
                                   })}
                                 </linearGradient>
                                 <linearGradient id={`${areaGradId}-stroke`} x1="0" y1="0" x2="1" y2="0">
@@ -617,9 +617,8 @@ export default function AnalyticsResumoExecutivo() {
                                 type="monotone"
                                 dataKey="valor"
                                 stroke={`url(#${areaGradId}-stroke)`}
-                                strokeWidth={2.8}
+                                strokeWidth={2}
                                 fill={`url(#${areaGradId})`}
-                                style={{ filter: `drop-shadow(0 1px 4px ${card.forceColor ?? "#FF5722"}55)` }}
                               />
                             </AreaChart>
                           </ResponsiveContainer>
