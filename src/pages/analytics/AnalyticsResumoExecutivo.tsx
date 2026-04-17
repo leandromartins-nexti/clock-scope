@@ -629,18 +629,14 @@ export default function AnalyticsResumoExecutivo() {
                             <div key={c.label} className="space-y-1">
                               <div className="flex items-center justify-between">
                                 <span className="text-xs font-medium">{c.label}</span>
-                                <span className="text-[10px] text-muted-foreground">peso {c.peso}%</span>
-                              </div>
-                              <div className="flex items-center justify-between text-[11px]">
-                                <span>Nota {c.valor}</span>
-                                <span className="font-semibold">{contrib} pts</span>
+                                <span className="text-[11px] font-semibold">Score {c.valor}</span>
                               </div>
                               <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${barWidth}%`, backgroundColor: cor }} />
                               </div>
                               <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                                 <span>Bench. setor: {c.bench}</span>
-                                <span className={`font-medium ${benchColor}`}>{benchSign}{benchDelta} pts vs setor</span>
+                                <span className={`font-medium ${benchColor}`}>{benchSign}{benchDelta} vs setor</span>
                               </div>
                             </div>
                           );
