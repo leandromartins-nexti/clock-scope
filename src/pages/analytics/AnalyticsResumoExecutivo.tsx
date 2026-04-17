@@ -345,9 +345,9 @@ export default function AnalyticsResumoExecutivo() {
                       card.corVariacao.includes('green') ? 'bg-green-50' : card.corVariacao.includes('red') ? 'bg-red-50' : 'bg-gray-50'
                     }`}>{card.variacao}</span>
 
-                    {/* Mobile: heatmap horizontal — labels inline embaixo, sem estourar */}
-                    <div className="flex sm:hidden flex-1 flex-col min-w-0 gap-0.5 self-center">
-                      <div className="flex items-center gap-[2px] w-full h-[22px]">
+                    {/* Mobile: heatmap horizontal — altura total idêntica ao badge de score */}
+                    <div className="flex sm:hidden flex-1 min-w-0 h-[22px] flex-col justify-between overflow-hidden self-center">
+                      <div className="flex items-center gap-[2px] w-full h-[14px]">
                         {card.evolucao.map((pt, i) => {
                           const c = card.perPointColors ? getLineColor(pt.valor) : getLineColor(card.score);
                           return (
@@ -360,7 +360,7 @@ export default function AnalyticsResumoExecutivo() {
                           );
                         })}
                       </div>
-                      <div className="flex justify-between text-[9px] leading-none text-muted-foreground px-0.5">
+                      <div className="flex justify-between text-[8px] leading-[8px] text-muted-foreground px-0.5">
                         <span>{firstMonth.replace('/20', '/')}</span>
                         <span>{lastMonth.replace('/20', '/')}</span>
                       </div>
