@@ -521,8 +521,6 @@ export default function AnalyticsResumoExecutivo() {
         subScoresByMonth: absSubsByMonth,
       },
       ...(() => {
-        // Mock determinístico para os 3 novos indicadores (Turnover, Movimentações, Coberturas)
-        // até a integração real com seus contextos de score.
         const mockFor = (seed: number, base: number, amp: number) =>
           groupedEvolution.map((m, i) => {
             const v = Math.round(
@@ -544,6 +542,8 @@ export default function AnalyticsResumoExecutivo() {
             variacao: t.variacao,
             corVariacao: t.corVariacao,
             perPointColors: true,
+            forceColor: undefined as string | undefined,
+            highlight: false,
           },
           {
             label: "Movimentações",
@@ -552,6 +552,8 @@ export default function AnalyticsResumoExecutivo() {
             variacao: mv.variacao,
             corVariacao: mv.corVariacao,
             perPointColors: true,
+            forceColor: undefined as string | undefined,
+            highlight: false,
           },
           {
             label: "Coberturas",
@@ -560,6 +562,8 @@ export default function AnalyticsResumoExecutivo() {
             variacao: cb.variacao,
             corVariacao: cb.corVariacao,
             perPointColors: true,
+            forceColor: undefined as string | undefined,
+            highlight: false,
           },
         ];
       })(),
