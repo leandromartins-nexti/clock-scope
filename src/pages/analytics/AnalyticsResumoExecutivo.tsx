@@ -838,7 +838,7 @@ export default function AnalyticsResumoExecutivo() {
                   <tr
                     key={card.label}
                     data-onboarding={card.label === "Ponto" ? "row-qualidade" : undefined}
-                    className="bg-[#F5F0E6] cursor-pointer group"
+                    className="cursor-pointer group"
                     onClick={(event) => {
                       const target = event.target as HTMLElement | null;
                       if (target?.closest('[data-block-row-click="true"]')) {
