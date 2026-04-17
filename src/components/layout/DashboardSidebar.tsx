@@ -28,8 +28,8 @@ const analyticsSubmenus = getSidebarMenuTabs().map(tab => ({
 // ─── Legacy menu items (non-Analytics) ──────────────────────────
 
 function LegacyMenuItems({ isCollapsed }: { isCollapsed: boolean }) {
-  const [rhDigitalOpen, setRhDigitalOpen] = useState(false);
-  const [nextiControlOpen, setNextiControlOpen] = useState(false);
+  const [rhDigitalOpen, setRhDigitalOpen] = useState(true);
+  const [nextiControlOpen, setNextiControlOpen] = useState(true);
 
   const collapsibleSection = (
     label: string,
@@ -85,17 +85,6 @@ function LegacyMenuItems({ isCollapsed }: { isCollapsed: boolean }) {
         </SidebarMenu>
       </SidebarGroup>
 
-      <SidebarGroup className="px-3 py-0.5">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton className={cn("text-white hover:bg-[rgba(255,255,255,0.05)] h-10 px-3", isCollapsed && "justify-center")}>
-              <Map className={cn("w-5 h-5", !isCollapsed && "mr-3")} />
-              {!isCollapsed && <span className="font-normal text-[15px]">Mapa de Postos</span>}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarGroup>
-
       {collapsibleSection("RH Digital", Megaphone, rhDigitalOpen, setRhDigitalOpen, undefined,
         <>
           <SidebarMenuItem>
@@ -106,8 +95,8 @@ function LegacyMenuItems({ isCollapsed }: { isCollapsed: boolean }) {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton className="text-[#A1A3A4] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors pl-11 h-10 font-normal text-[15px]">
-              <ArrowLeftRight className="w-4 h-4 mr-2 text-[#A1A3A4]" />
-              <span>Movimentações em Lote</span>
+              <Megaphone className="w-4 h-4 mr-2 text-[#A1A3A4]" />
+              <span>Avisos e Convocações</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </>
@@ -124,9 +113,7 @@ export function DashboardSidebar() {
   const { state, isMobile, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
   const location = useLocation();
-  const [analyticsOpen, setAnalyticsOpen] = useState(
-    location.pathname.startsWith("/analytics")
-  );
+  const [analyticsOpen, setAnalyticsOpen] = useState(true);
 
   const isAnalyticsActive = (route: string) => {
     if (route === "/analytics") return location.pathname === "/analytics";
