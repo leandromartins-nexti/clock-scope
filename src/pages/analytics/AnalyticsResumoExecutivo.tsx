@@ -31,6 +31,7 @@ import {
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Tooltip as UITooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import InsightsCenter from "@/components/analytics/InsightsCenter";
 import AnalyticsChat from "@/components/analytics/AnalyticsChat";
 
