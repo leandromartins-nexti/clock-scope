@@ -380,7 +380,7 @@ export default function AnalyticsResumoExecutivo() {
                               <svg viewBox="0 0 100 14" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
                                 <path
                                   d="M 1 13 C 1 5, 4 3, 10 3 L 40 3 C 46 3, 50 1, 50 1 C 50 1, 54 3, 60 3 L 90 3 C 96 3, 99 5, 99 13"
-                                  stroke={scoreColor}
+                                  stroke="#9ca3af"
                                   strokeWidth="1.5"
                                   fill="none"
                                   strokeLinecap="round"
