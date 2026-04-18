@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, ArrowUpDown, Building2, Network, LayoutGrid, X, Filter, Lightbulb } from "lucide-react";
+import { Search, ArrowUpDown, Building2, Network, LayoutGrid, Filter, Lightbulb } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import RightSidebarInsightsPanel from "./RightSidebarInsightsPanel";
 
-type SidebarMode = "ops" | "insights" | null;
+type SidebarMode = "ops" | "insights";
 
 // ── Types ──
 export type GroupBy = "unidade" | "empresa" | "area";
@@ -41,16 +41,12 @@ export default function GroupBySidebar({
   const { config: scoreConfig } = useScoreConfig();
   const isMobile = useIsMobile();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mode, setMode] = useState<SidebarMode>(null);
+  const [mode, setMode] = useState<SidebarMode>("ops");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sortBy, setSortBy] = useState<"score" | "nome">("score");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
-
-  const handleModeClick = (target: "ops" | "insights") => {
-    setMode(prev => (prev === target ? null : target));
-  };
 
   const searchTimerRef = useState<ReturnType<typeof setTimeout> | null>(null);
   const handleSearchChange = (value: string) => {
@@ -105,9 +101,9 @@ export default function GroupBySidebar({
     return () => window.removeEventListener("open-tipo-operacao", handler);
   }, [isMobile]);
 
-  // Reusable launcher rail (2 buttons: Filtro / Insights)
-  const LauncherRail = () => (
-    <div className="w-[44px] bg-white border-l border-border/40 p-1.5 flex flex-col items-center gap-1 self-stretch">
+  // Header toggle: 2 icon buttons (Filtro / Insights) at top of sidebar
+  const HeaderToggle = () => (
+    <div className="flex items-center gap-1 mb-1.5">
       {([
         { id: "ops" as const, icon: Filter, label: "Tipo de Operação" },
         { id: "insights" as const, icon: Lightbulb, label: "Insights" },
@@ -118,15 +114,15 @@ export default function GroupBySidebar({
           <UITooltip key={o.id}>
             <TooltipTrigger asChild>
               <button
-                onClick={() => handleModeClick(o.id)}
-                className={`p-2 rounded-md transition-colors flex items-center justify-center ${
+                onClick={() => setMode(o.id)}
+                className={`p-1.5 rounded-md transition-colors flex items-center justify-center ${
                   active
                     ? "bg-[#FF5722] text-white"
                     : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                 }`}
                 aria-label={o.label}
               >
-                <Icon size={15} />
+                <Icon size={14} />
               </button>
             </TooltipTrigger>
             <TooltipContent side="left" className="text-xs">{o.label}</TooltipContent>
@@ -138,7 +134,7 @@ export default function GroupBySidebar({
 
   // ── Mobile: Sheet drawer (fullscreen) ──
   if (isMobile) {
-    const mobileMode = mode ?? "ops";
+    const mobileMode = mode;
     return (
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="right" className="w-full max-w-full p-0 flex flex-col">
@@ -248,29 +244,16 @@ export default function GroupBySidebar({
     );
   }
 
-  // ── Desktop: Closed (Launcher rail only) ──
-  if (mode === null) {
-    return <LauncherRail />;
-  }
-
-  // ── Desktop: Open (Launcher rail + content panel) ──
+  // ── Desktop: always-open sidebar with header toggle ──
   return (
     <div className="flex shrink-0 self-stretch" data-onboarding="tipo-operacao">
-      <LauncherRail />
-
       <div className="w-[240px] bg-white border-l border-border/40 pl-3 pr-1 pt-2 flex flex-col">
-        {/* Header: title + close button */}
-        <div className="flex items-center justify-between mb-1.5">
-          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">
+        {/* Header: toggle (Filtro / Insights) + title */}
+        <div className="flex items-center justify-between gap-2 mb-1.5">
+          <HeaderToggle />
+          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase truncate">
             {mode === "ops" ? "Tipo de Operação" : "Insights"}
           </p>
-          <button
-            onClick={() => setMode(null)}
-            className="p-1 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
-            title="Fechar"
-          >
-            <X size={13} />
-          </button>
         </div>
 
         {mode === "insights" ? (

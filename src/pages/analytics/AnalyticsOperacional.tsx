@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronRight, Filter, Eraser } from "lucide-react";
-import InsightsCenter from "@/components/analytics/InsightsCenter";
+import { Filter, Eraser } from "lucide-react";
 // TODO: REMOVER EM PRODUÇÃO — TestModeBadge é do modo de teste multi-cliente
 import TestModeBadge from "@/components/analytics/TestModeBadge";
-import AnalyticsChat from "@/components/analytics/AnalyticsChat";
 import { Separator } from "@/components/ui/separator";
 import { FilterPanel } from "@/components/layout/FilterPanel";
 import { resumo } from "@/lib/analytics-mock-data";
@@ -61,8 +59,6 @@ export default function AnalyticsOperacional() {
           >
             <Filter className="w-4 h-4" />
           </button>
-          <InsightsCenter />
-          <AnalyticsChat activeTab={activeTab} />
         </div>
       </div>
 
