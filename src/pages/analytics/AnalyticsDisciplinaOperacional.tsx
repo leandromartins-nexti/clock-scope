@@ -2935,24 +2935,10 @@ function MovimentacoesContent({ selectedRegional, onRegionalClick, onItemDetail,
 
 // ── Exported standalone tab wrappers ──
 // TODO: REMOVER EM PRODUÇÃO — wrapper para mostrar estado vazio quando cliente sem dados
-function CustomerAwareTab({ children, tabId }: { children: React.ReactNode; tabId: string }) {
-  const { customerId, customerLabel, customers } = useCustomer();
-  const customer = customers.find(c => c.customer_id === customerId);
-  const hasData = customer?.tabs_available?.includes(tabId) ?? false;
-
-  if (!hasData) {
-    return (
-      <div className="flex-1 flex items-center justify-center p-12">
-        <div className="text-center space-y-4 max-w-md">
-          <NoDataPlaceholder height={200} />
-          <p className="text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">{customerLabel}</span> ainda não possui dados para esta aba.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
+// Renderiza sempre os children; o estado vazio passou a ser tratado por gráfico
+// individualmente via NoDataPlaceholder, evitando bloqueio quando o índice de
+// `tabs_available` está dessincronizado com os JSONs do cliente.
+function CustomerAwareTab({ children }: { children: React.ReactNode; tabId?: string }) {
   return <>{children}</>;
 }
 
