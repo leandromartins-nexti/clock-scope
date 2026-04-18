@@ -181,3 +181,14 @@ Nexti Official Theme
     padding: 0.5rem !important;
   }
 }
+
+/* Pulse animation para o pin ativo no tour de insights */
+@keyframes insight-pin-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1.15); }
+  50% { transform: translate(-50%, -50%) scale(1.6); }
+}
+.insight-pin-pulse {
+  animation: insight-pin-pulse 1.4s ease-in-out infinite;
+  transform-origin: center;
+}
+

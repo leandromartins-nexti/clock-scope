@@ -12,10 +12,18 @@ import type { QualidadeInsight } from "@/data/qualidadeInsightsData";
 const STEP_MS = 8000;
 const SEV_RANK: Record<string, number> = { critical: 0, high: 1, medium: 2, info: 3, success: 4 };
 
+export interface PinPosition { x: number; y: number; }
+
 interface InsightsTourContextValue {
   // Hover sync
   hoveredId: string | null;
   setHoveredId: (id: string | null) => void;
+
+  // Pin registry — usado para posicionar popover do tour e filtrar insights "com pin"
+  registerPin: (insightId: string, pos: PinPosition) => void;
+  unregisterPin: (insightId: string) => void;
+  getPinPosition: (insightId: string) => PinPosition | null;
+  pinnedIds: Set<string>;
 
   // Tour
   tourActive: boolean;
@@ -44,8 +52,27 @@ export function InsightsTourProvider({ children }: { children: ReactNode }) {
   const rafRef = useRef<number | null>(null);
   const stepStartRef = useRef<number>(0);
   const accumulatedRef = useRef<number>(0);
+  const pinPositionsRef = useRef<Map<string, PinPosition>>(new Map());
+  const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
 
   const setHoveredId = useCallback((id: string | null) => setHoveredIdState(id), []);
+
+  const registerPin = useCallback((insightId: string, pos: PinPosition) => {
+    const cur = pinPositionsRef.current.get(insightId);
+    if (cur && Math.abs(cur.x - pos.x) < 0.5 && Math.abs(cur.y - pos.y) < 0.5) return;
+    pinPositionsRef.current.set(insightId, pos);
+    setPinnedIds(new Set(pinPositionsRef.current.keys()));
+  }, []);
+
+  const unregisterPin = useCallback((insightId: string) => {
+    if (!pinPositionsRef.current.has(insightId)) return;
+    pinPositionsRef.current.delete(insightId);
+    setPinnedIds(new Set(pinPositionsRef.current.keys()));
+  }, []);
+
+  const getPinPosition = useCallback((insightId: string) => {
+    return pinPositionsRef.current.get(insightId) ?? null;
+  }, []);
 
   const stopTour = useCallback(() => {
     setTourActive(false);
@@ -153,6 +180,10 @@ export function InsightsTourProvider({ children }: { children: ReactNode }) {
   const value = useMemo<InsightsTourContextValue>(() => ({
     hoveredId,
     setHoveredId,
+    registerPin,
+    unregisterPin,
+    getPinPosition,
+    pinnedIds,
     tourActive,
     tourPaused,
     tourIndex,
@@ -165,7 +196,7 @@ export function InsightsTourProvider({ children }: { children: ReactNode }) {
     resumeTour,
     nextStep,
     prevStep,
-  }), [hoveredId, setHoveredId, tourActive, tourPaused, tourIndex, queue, tourProgress, startTour, stopTour, pauseTour, resumeTour, nextStep, prevStep]);
+  }), [hoveredId, setHoveredId, registerPin, unregisterPin, getPinPosition, pinnedIds, tourActive, tourPaused, tourIndex, queue, tourProgress, startTour, stopTour, pauseTour, resumeTour, nextStep, prevStep]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
@@ -177,6 +208,10 @@ export function useInsightsTour() {
     return {
       hoveredId: null,
       setHoveredId: () => {},
+      registerPin: () => {},
+      unregisterPin: () => {},
+      getPinPosition: () => null,
+      pinnedIds: new Set<string>(),
       tourActive: false,
       tourPaused: false,
       tourIndex: 0,

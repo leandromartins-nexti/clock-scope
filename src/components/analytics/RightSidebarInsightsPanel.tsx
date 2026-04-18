@@ -27,7 +27,7 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
   const { dismissed } = useDismissedInsights(String(customerId));
   const [filter, setFilter] = useState<string>("all");
   const [selected, setSelected] = useState<QualidadeInsight | null>(null);
-  const { hoveredId, setHoveredId, tourActive, startTour, stopTour } = useInsightsTour();
+  const { hoveredId, setHoveredId, tourActive, startTour, stopTour, pinnedIds } = useInsightsTour();
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const all = useMemo(() => getInsightsForCustomer(customerId), [customerId]);
@@ -86,15 +86,20 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              onClick={() => tourActive ? stopTour() : startTour(filtered)}
-              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors"
+              onClick={() => {
+                if (tourActive) { stopTour(); return; }
+                const pinned = filtered.filter(i => pinnedIds.has(i.id));
+                startTour(pinned.length ? pinned : filtered);
+              }}
+              disabled={!tourActive && filtered.filter(i => pinnedIds.has(i.id)).length === 0}
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               style={{
                 background: tourActive ? "#ef4444" : "#FF5722",
                 color: "#fff",
               }}
             >
               {tourActive ? <Square size={9} fill="#fff" /> : <Play size={9} fill="#fff" />}
-              {tourActive ? "Parar" : "Tour"}
+              {tourActive ? "Parar" : `Tour (${filtered.filter(i => pinnedIds.has(i.id)).length})`}
             </button>
           </TooltipTrigger>
           <TooltipContent side="top" sideOffset={6}>

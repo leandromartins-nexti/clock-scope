@@ -9,7 +9,7 @@
  *
  *  O pin é centralizado no ponto via translate(-50%, -50%) — nada mais.
  */
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import InsightSunPin from "./InsightSunPin";
 import type { PinType } from "@/data/qualidadeInsightsData";
 import { useInsightsTour } from "@/contexts/InsightsTourContext";
@@ -147,26 +147,49 @@ export default function InsightOverlayPins({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const plot = usePlotArea(containerRef);
-  const { hoveredId, setHoveredId } = useInsightsTour();
+  const { hoveredId, setHoveredId, registerPin, unregisterPin, tourActive, tourCurrentInsight } = useInsightsTour();
 
-  // DEBUG
-  // eslint-disable-next-line no-console
-  console.log("[InsightOverlayPins] render", {
-    pinsCount: pins.length,
-    pins,
-    plot: plot ? { top: plot.top, left: plot.left, width: plot.width, height: plot.height, ticks: plot.tickCentersX.length } : null,
-    yDomainLeft,
-    yDomainRight,
-  });
+  // Calcula posições de TODOS os pins de uma vez para registrar no contexto.
+  // Isso permite que o popover do tour saiba a posição absoluta na tela.
+  useEffect(() => {
+    if (!plot || !containerRef.current) return;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const ids: string[] = [];
+    pins.forEach((pin) => {
+      let leftPx: number | undefined;
+      if (plot.tickCentersX.length === totalMeses) {
+        leftPx = plot.tickCentersX[pin.mesIndex];
+      } else {
+        const step = plot.width / totalMeses;
+        leftPx = plot.left + step * (pin.mesIndex + 0.5);
+      }
+      let topPx: number | null = null;
+      if (pin.value !== undefined && pin.axis) {
+        const domain = pin.axis === "right" ? yDomainRight : yDomainLeft;
+        if (domain) {
+          const [min, max] = domain;
+          const ratio = max === min ? 0 : (pin.value - min) / (max - min);
+          const clamped = Math.max(0, Math.min(1, ratio));
+          topPx = plot.top + plot.height * (1 - clamped);
+        }
+      }
+      if (leftPx === undefined || topPx === null || Number.isNaN(leftPx)) return;
+      ids.push(pin.insightId);
+      // Posição absoluta na viewport (para o popover do tour ancorar)
+      registerPin(pin.insightId, {
+        x: containerRect.left + leftPx,
+        y: containerRect.top + topPx,
+      });
+    });
+    return () => {
+      ids.forEach((id) => unregisterPin(id));
+    };
+  }, [pins, plot, totalMeses, yDomainLeft, yDomainRight, registerPin, unregisterPin]);
 
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 20 }}>
       {plot &&
         pins.map((pin, idx) => {
-          // X: para BarChart, cada categoria ocupa width/N e o centro está em (i + 0.5) * step.
-          // Para LineChart/AreaChart, os pontos vão de 0 a width-1 (i / (N-1)).
-          // Usamos a heurística do BarChart por padrão; quando há ticks suficientes (1 por categoria),
-          // priorizamos o centro do tick real (mais preciso para line charts).
           let leftPx: number | undefined;
           if (plot.tickCentersX.length === totalMeses) {
             leftPx = plot.tickCentersX[pin.mesIndex];
@@ -174,10 +197,7 @@ export default function InsightOverlayPins({
             const step = plot.width / totalMeses;
             leftPx = plot.left + step * (pin.mesIndex + 0.5);
           }
-          if (leftPx === undefined || Number.isNaN(leftPx)) {
-            console.warn("[InsightOverlayPins] skip - no x", { pin, ticks: plot.tickCentersX.length, totalMeses });
-            return null;
-          }
+          if (leftPx === undefined || Number.isNaN(leftPx)) return null;
 
           let topPx: number | null = null;
           if (pin.value !== undefined && pin.axis) {
@@ -187,26 +207,30 @@ export default function InsightOverlayPins({
               const ratio = max === min ? 0 : (pin.value - min) / (max - min);
               const clamped = Math.max(0, Math.min(1, ratio));
               topPx = plot.top + plot.height * (1 - clamped);
-            } else {
-              console.warn("[InsightOverlayPins] skip - no domain for axis", { pin, axis: pin.axis });
             }
-          } else {
-            console.warn("[InsightOverlayPins] skip - missing value/axis", { pin });
           }
           if (topPx === null) return null;
 
           const isHighlighted = hoveredId === pin.insightId;
+          const isTourActive = tourActive && tourCurrentInsight?.id === pin.insightId;
+          const glowColor =
+            pin.type === "risk" ? "#ef4444" :
+            pin.type === "achievement" ? "#22c55e" :
+            pin.type === "opportunity" ? "#facc15" : "#3b82f6";
           return (
             <div
               key={`${pin.insightId}-${idx}`}
-              className="absolute transition-transform duration-200"
+              className={isTourActive ? "absolute insight-pin-pulse" : "absolute transition-transform duration-200"}
               style={{
                 left: `${leftPx}px`,
                 top: `${topPx}px`,
-                transform: `translate(-50%, -50%) scale(${isHighlighted ? 1.35 : 1})`,
+                transform: !isTourActive
+                  ? `translate(-50%, -50%) scale(${isHighlighted ? 1.35 : 1})`
+                  : undefined,
                 pointerEvents: "auto",
-                filter: isHighlighted ? `drop-shadow(0 0 8px ${pin.type === "risk" ? "#ef4444" : pin.type === "achievement" ? "#22c55e" : pin.type === "opportunity" ? "#facc15" : "#3b82f6"})` : "none",
-                zIndex: isHighlighted ? 30 : 20,
+                filter: (isHighlighted || isTourActive) ? `drop-shadow(0 0 8px ${glowColor})` : "none",
+                zIndex: (isHighlighted || isTourActive) ? 30 : 20,
+                ["--pin-glow" as any]: glowColor,
               }}
               onMouseEnter={() => setHoveredId(pin.insightId)}
               onMouseLeave={() => setHoveredId(null)}
