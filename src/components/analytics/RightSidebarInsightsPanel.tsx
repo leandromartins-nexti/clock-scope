@@ -97,191 +97,147 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
         })}
       </div>
 
-      {/* Insight list — cada card renderizado num layout diferente p/ validação */}
+      {/* Insight list — 8 variantes minimalistas para validação */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-1">
         {filtered.length === 0 && (
           <p className="text-[10px] text-muted-foreground text-center py-4">Nenhum insight</p>
         )}
         {filtered.map((ins, idx) => {
           const cfg = categoryConfig[ins.category];
-          const Icon = iconMap[cfg.icon as keyof typeof iconMap] ?? Lightbulb;
           const variant = idx % 8;
+          const tag = `v${variant + 1}`;
 
-          // V0 — Borda esquerda grossa (atual minimalista)
+          // V1 — Só uma barra esquerda fina + título. Zero label/ícone.
           if (variant === 0) {
             return (
               <button
                 key={ins.id}
                 onClick={() => setSelected(ins)}
-                className="group w-full text-left bg-white hover:bg-muted/40 transition-all rounded-md p-2"
-                style={{ borderLeft: `3px solid ${cfg.borderColor}`, border: `0.5px solid ${cfg.borderColor}30`, borderLeftWidth: 3 }}
+                className="w-full text-left py-1 pl-2 pr-1 hover:bg-muted/30 transition-colors"
+                style={{ borderLeft: `2px solid ${cfg.borderColor}` }}
               >
-                <span className="block text-[8px] font-bold uppercase tracking-wide mb-0.5" style={{ color: cfg.textColor }}>
-                  <Icon size={9} className="inline -mt-0.5 mr-0.5" style={{ color: cfg.borderColor }} />
-                  {cfg.label} · v1
-                </span>
-                <p className="text-[11px] font-medium leading-tight text-foreground line-clamp-3">{ins.title}</p>
-                <span className="text-[9px] mt-1 inline-flex items-center gap-0.5" style={{ color: cfg.borderColor }}>
-                  <ExternalLink size={8} /> Ver detalhes
-                </span>
+                <p className="text-[11px] leading-snug text-foreground line-clamp-3">{ins.title}</p>
+                <span className="text-[8px] text-muted-foreground/60 mt-0.5 block">{tag}</span>
               </button>
             );
           }
 
-          // V1 — Header colorido tipo "tag" no topo
+          // V2 — Bullet colorido + título inline. Sem caixa.
           if (variant === 1) {
             return (
               <button
                 key={ins.id}
                 onClick={() => setSelected(ins)}
-                className="w-full text-left bg-white hover:shadow-sm transition-all rounded-md overflow-hidden border border-border/40"
+                className="w-full text-left flex items-start gap-2 py-1 px-1 hover:bg-muted/30 transition-colors rounded"
               >
-                <div className="px-2 py-1 flex items-center gap-1" style={{ background: cfg.borderColor }}>
-                  <Icon size={10} className="text-white" />
-                  <span className="text-[8px] font-bold uppercase tracking-wide text-white">{cfg.label} · v2</span>
-                </div>
-                <div className="p-2">
-                  <p className="text-[11px] font-medium leading-tight text-foreground line-clamp-3">{ins.title}</p>
-                </div>
+                <span className="shrink-0 w-1.5 h-1.5 rounded-full mt-1.5" style={{ background: cfg.borderColor }} />
+                <p className="text-[11px] leading-snug text-foreground line-clamp-3 flex-1">{ins.title}</p>
+                <span className="text-[8px] text-muted-foreground/60">{tag}</span>
               </button>
             );
           }
 
-          // V2 — Ícone circular grande à esquerda + texto à direita
+          // V3 — Underline colorido sob o título.
           if (variant === 2) {
             return (
               <button
                 key={ins.id}
                 onClick={() => setSelected(ins)}
-                className="w-full text-left bg-white hover:bg-muted/40 transition-all rounded-md p-2 flex gap-2 border border-border/40"
+                className="w-full text-left py-1.5 px-1 hover:bg-muted/30 transition-colors"
               >
-                <div
-                  className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
-                  style={{ background: cfg.bgColor, border: `1.5px solid ${cfg.borderColor}` }}
+                <p
+                  className="text-[11px] leading-snug text-foreground line-clamp-3 pb-1"
+                  style={{ borderBottom: `1px solid ${cfg.borderColor}40` }}
                 >
-                  <Icon size={13} style={{ color: cfg.borderColor }} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <span className="text-[8px] font-bold uppercase block mb-0.5" style={{ color: cfg.textColor }}>
-                    {cfg.label} · v3
-                  </span>
-                  <p className="text-[11px] font-medium leading-tight text-foreground line-clamp-3">{ins.title}</p>
-                </div>
+                  {ins.title}
+                </p>
+                <span className="text-[8px] text-muted-foreground/60 mt-0.5 block">{tag}</span>
               </button>
             );
           }
 
-          // V3 — Fundo colorido suave (tinted card)
+          // V4 — Quadradinho colorido inline antes do título.
           if (variant === 3) {
             return (
               <button
                 key={ins.id}
                 onClick={() => setSelected(ins)}
-                className="w-full text-left rounded-md p-2 hover:brightness-95 transition-all"
-                style={{ background: cfg.bgColor, border: `1px solid ${cfg.borderColor}40` }}
+                className="w-full text-left py-1 px-1 hover:bg-muted/30 transition-colors rounded"
               >
-                <div className="flex items-center gap-1 mb-1">
-                  <Icon size={10} style={{ color: cfg.borderColor }} />
-                  <span className="text-[8px] font-bold uppercase tracking-wide" style={{ color: cfg.textColor }}>
-                    {cfg.label} · v4
-                  </span>
-                </div>
-                <p className="text-[11px] font-semibold leading-tight line-clamp-3" style={{ color: cfg.textColor }}>
+                <p className="text-[11px] leading-snug text-foreground line-clamp-3">
+                  <span
+                    className="inline-block w-2 h-2 rounded-sm mr-1.5 align-middle"
+                    style={{ background: cfg.borderColor }}
+                  />
                   {ins.title}
                 </p>
+                <span className="text-[8px] text-muted-foreground/60 mt-0.5 block">{tag}</span>
               </button>
             );
           }
 
-          // V4 — Faixa lateral colorida + ícone vertical
+          // V5 — Borda inteira super-fina, sem fill, sem ícone.
           if (variant === 4) {
             return (
               <button
                 key={ins.id}
                 onClick={() => setSelected(ins)}
-                className="w-full text-left bg-white hover:bg-muted/40 transition-all rounded-md flex overflow-hidden border border-border/40"
+                className="w-full text-left rounded p-1.5 hover:bg-muted/30 transition-colors"
+                style={{ border: `1px solid ${cfg.borderColor}40` }}
               >
-                <div className="w-7 shrink-0 flex flex-col items-center justify-center py-2 gap-1" style={{ background: cfg.borderColor }}>
-                  <Icon size={12} className="text-white" />
-                  <span className="text-[7px] font-bold text-white writing-mode-vertical">v5</span>
-                </div>
-                <div className="p-2 min-w-0 flex-1">
-                  <span className="text-[8px] font-bold uppercase block mb-0.5" style={{ color: cfg.textColor }}>
-                    {cfg.label}
-                  </span>
-                  <p className="text-[11px] font-medium leading-tight text-foreground line-clamp-3">{ins.title}</p>
-                </div>
+                <p className="text-[11px] leading-snug text-foreground line-clamp-3">{ins.title}</p>
+                <span className="text-[8px] text-muted-foreground/60 mt-0.5 block">{tag}</span>
               </button>
             );
           }
 
-          // V5 — Card "ticket" com bordas pontilhadas + bullet
+          // V6 — Apenas a categoria em texto pequeno colorido + título.
           if (variant === 5) {
             return (
               <button
                 key={ins.id}
                 onClick={() => setSelected(ins)}
-                className="w-full text-left bg-white hover:bg-muted/30 transition-all rounded-md p-2 border-2 border-dashed"
-                style={{ borderColor: `${cfg.borderColor}60` }}
+                className="w-full text-left py-1 px-1 hover:bg-muted/30 transition-colors rounded"
               >
-                <div className="flex items-start gap-1.5">
-                  <span
-                    className="shrink-0 w-1.5 h-1.5 rounded-full mt-1"
-                    style={{ background: cfg.borderColor, boxShadow: `0 0 0 3px ${cfg.borderColor}25` }}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <span className="text-[8px] font-bold uppercase block mb-0.5" style={{ color: cfg.textColor }}>
-                      {cfg.label} · v6
-                    </span>
-                    <p className="text-[11px] font-medium leading-tight text-foreground line-clamp-3">{ins.title}</p>
-                  </div>
-                </div>
+                <span
+                  className="text-[8px] uppercase tracking-wider font-medium"
+                  style={{ color: cfg.borderColor }}
+                >
+                  {cfg.label}
+                </span>
+                <p className="text-[11px] leading-snug text-foreground line-clamp-3 mt-0.5">{ins.title}</p>
+                <span className="text-[8px] text-muted-foreground/40">{tag}</span>
               </button>
             );
           }
 
-          // V6 — Minimal ultra-compacto (uma linha + título)
+          // V7 — Linha vertical 1px à esquerda, sem fundo nem borda externa.
           if (variant === 6) {
             return (
               <button
                 key={ins.id}
                 onClick={() => setSelected(ins)}
-                className="w-full text-left bg-white hover:bg-muted/40 transition-all rounded p-1.5 border border-border/30"
+                className="w-full text-left py-1 pl-2 pr-1 hover:bg-muted/30 transition-colors flex gap-2"
               >
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className="shrink-0 inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-bold uppercase"
-                    style={{ background: cfg.borderColor, color: "#fff" }}
-                  >
-                    <Icon size={8} />
-                    v7
-                  </span>
-                  <p className="text-[11px] font-medium leading-tight text-foreground line-clamp-2 flex-1">{ins.title}</p>
+                <span className="shrink-0 w-px self-stretch" style={{ background: cfg.borderColor }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] leading-snug text-foreground line-clamp-3">{ins.title}</p>
+                  <span className="text-[8px] text-muted-foreground/60 mt-0.5 block">{tag}</span>
                 </div>
               </button>
             );
           }
 
-          // V7 — Card "premium" com gradiente sutil + sombra
+          // V8 — Linha separadora superior colorida.
           return (
             <button
               key={ins.id}
               onClick={() => setSelected(ins)}
-              className="w-full text-left rounded-lg p-2 transition-all hover:shadow-md hover:-translate-y-px"
-              style={{
-                background: `linear-gradient(135deg, #ffffff 0%, ${cfg.bgColor} 100%)`,
-                border: `1px solid ${cfg.borderColor}50`,
-                boxShadow: `0 1px 2px ${cfg.borderColor}15`,
-              }}
+              className="w-full text-left py-1.5 px-1 hover:bg-muted/30 transition-colors"
+              style={{ borderTop: `1px solid ${cfg.borderColor}` }}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className="inline-flex items-center gap-0.5 text-[8px] font-bold uppercase" style={{ color: cfg.textColor }}>
-                  <Icon size={10} style={{ color: cfg.borderColor }} />
-                  {cfg.label} · v8
-                </span>
-                <ExternalLink size={9} style={{ color: cfg.borderColor }} />
-              </div>
-              <p className="text-[11px] font-semibold leading-tight text-foreground line-clamp-3">{ins.title}</p>
+              <p className="text-[11px] leading-snug text-foreground line-clamp-3">{ins.title}</p>
+              <span className="text-[8px] text-muted-foreground/60 mt-0.5 block">{tag}</span>
             </button>
           );
         })}
