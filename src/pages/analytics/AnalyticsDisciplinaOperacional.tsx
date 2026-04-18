@@ -1751,6 +1751,15 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       </text>
                     );
                   }} />
+                  <LabelList content={({ x, y, width, index }: any) => {
+                    const d = qualidadeComHeadcount[index];
+                    if (!d) return null;
+                    const insightId = chartInsightPins.evoQualidade?.[d.mes];
+                    if (!insightId) return null;
+                    const cx = (x ?? 0) + (width ?? 0) / 2;
+                    const cy = (y ?? 0);
+                    return <InsightSunPin cx={cx} cy={cy} onClick={() => openInsightById(insightId)} />;
+                  }} />
                 </Bar>
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: "Registradas", type: "square", color: "#22c55e" },
@@ -1840,7 +1849,18 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <Area yAxisId="left" type="monotone" dataKey="de3a7d" stackId="faixa" fill="#f59e0b" fillOpacity={0.35} stroke="#f59e0b" strokeWidth={0.5} name="3-7 dias" />
                 <Area yAxisId="left" type="monotone" dataKey="de7a15d" stackId="faixa" fill="#f97316" fillOpacity={0.35} stroke="#f97316" strokeWidth={0.5} name="7-15 dias" />
                 <Area yAxisId="left" type="monotone" dataKey="mais15d" stackId="faixa" fill="#ef4444" fillOpacity={0.35} stroke="#ef4444" strokeWidth={0.5} name="+15 dias" />
-                <Line yAxisId="right" type="monotone" dataKey="tempoMedio" name="Tempo médio (dias)" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }} />
+                <Line yAxisId="right" type="monotone" dataKey="tempoMedio" name="Tempo médio (dias)" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }}>
+                  <LabelList content={(props: any) => {
+                    const { index, x, y, value } = props;
+                    const mes = (props as any).mes;
+                    // Recharts passa value mas não mes; precisamos derivar via tratativaFaixasFiltrada[index]
+                    const d = tratativaFaixasFiltrada[index];
+                    if (!d) return null;
+                    const insightId = chartInsightPins.evoTratativa?.[d.mes];
+                    if (!insightId) return null;
+                    return <InsightSunPin cx={x} cy={y} onClick={() => openInsightById(insightId)} />;
+                  }} />
+                </Line>
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: "Até 1 dia", type: "square" as const, color: "#22c55e" },
                   { value: "1-3 dias", type: "square" as const, color: "#84cc16" },
