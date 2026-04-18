@@ -42,7 +42,8 @@ import QualidadeInsightsSection from "@/components/analytics/QualidadeInsightsSe
 import InsightDetailModal from "@/components/analytics/InsightDetailModal";
 import InsightSunPin from "@/components/analytics/InsightSunPin";
 import InsightOverlayPins, { type InsightOverlayPin } from "@/components/analytics/InsightOverlayPins";
-import { getInsightsForCustomer, type QualidadeInsight } from "@/data/qualidadeInsightsData";
+import { getInsightsForCustomer, filterInsightsByEntity, buildAnchorsForChart, type QualidadeInsight, type InsightChartId } from "@/data/qualidadeInsightsData";
+import { useCustomer } from "@/contexts/CustomerContext";
 
 // decomposicaoScore and kpisPeriodoAnterior now loaded dynamically via useQualidadePontoData hook
 import { evolucaoQualidadeHeadcountSource, evolucaoQualidadeHeadcountColumns } from "@/data/chart-sources/evolucao-qualidade-headcount";
