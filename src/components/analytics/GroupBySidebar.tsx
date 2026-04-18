@@ -1,9 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, ArrowUpDown, PanelRightClose, PanelRightOpen, Building2, Network, LayoutGrid, SlidersHorizontal, X, Filter } from "lucide-react";
+import { Search, ArrowUpDown, PanelRightClose, PanelRightOpen, Building2, Network, LayoutGrid, SlidersHorizontal, X, Filter, Lightbulb, ListFilter } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import RightSidebarInsightsPanel from "./RightSidebarInsightsPanel";
+
+type SidebarMode = "ops" | "insights";
 
 // ── Types ──
 export type GroupBy = "unidade" | "empresa" | "area";
@@ -45,11 +48,44 @@ export default function GroupBySidebar({
   const isMobile = useIsMobile();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mode, setMode] = useState<SidebarMode>("ops");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sortBy, setSortBy] = useState<"score" | "nome">("score");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
+
+  // Reusable mode toggle (Ops | Insights)
+  const ModeToggle = ({ vertical = false }: { vertical?: boolean }) => (
+    <div className={`flex ${vertical ? "flex-col" : "flex-row"} gap-0.5 ${vertical ? "" : "mb-1.5"}`}>
+      {([
+        { id: "ops" as const, icon: ListFilter, label: "Tipo de Operação" },
+        { id: "insights" as const, icon: Lightbulb, label: "Insights" },
+      ]).map(o => {
+        const active = mode === o.id;
+        const Icon = o.icon;
+        return (
+          <UITooltip key={o.id}>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setMode(o.id)}
+                className={`${vertical ? "p-1.5" : "flex-1 px-2 py-1"} rounded-md transition-colors flex items-center justify-center gap-1 ${
+                  active
+                    ? "bg-[#FF5722] text-white"
+                    : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                }`}
+              >
+                <Icon size={vertical ? 13 : 12} />
+                {!vertical && <span className="text-[10px] font-semibold">{o.label.split(" ")[0]}</span>}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="left" className="text-xs">{o.label}</TooltipContent>
+          </UITooltip>
+        );
+      })}
+    </div>
+  );
+
 
   const searchTimerRef = useState<ReturnType<typeof setTimeout> | null>(null);
   const handleSearchChange = (value: string) => {
@@ -111,8 +147,12 @@ export default function GroupBySidebar({
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent side="right" className="w-full max-w-full p-0 flex flex-col">
             <SheetHeader className="px-4 py-3 border-b border-border flex-row items-center justify-between space-y-0">
-              <SheetTitle className="text-sm font-semibold">Tipo de Operação</SheetTitle>
+              <SheetTitle className="text-sm font-semibold">{mode === "ops" ? "Tipo de Operação" : "Insights"}</SheetTitle>
             </SheetHeader>
+            <div className="px-3 pt-2"><ModeToggle /></div>
+            {mode === "insights" ? (
+              <div className="flex-1 overflow-y-auto p-3"><RightSidebarInsightsPanel /></div>
+            ) : (
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
               <div className="flex gap-2">
                 {groupByOptions.map(o => (
@@ -186,6 +226,7 @@ export default function GroupBySidebar({
                 })}
               </div>
             </div>
+            )}
           </SheetContent>
         </Sheet>
       </>
@@ -206,62 +247,74 @@ export default function GroupBySidebar({
             <PanelRightClose size={14} />
           </button>
 
-          {/* GroupBy icon buttons */}
-          <div className="flex flex-col gap-0.5 mb-1.5">
-            {groupByOptions.map(o => (
-              <UITooltip key={o.id}>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => handleGroupChange(o.id)}
-                    className={`p-1.5 rounded-md transition-colors ${
-                      groupBy === o.id
-                        ? "bg-[#FF5722] text-white"
-                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-                    }`}
-                  >
-                    <o.icon size={13} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left" className="text-xs">{o.label}</TooltipContent>
-              </UITooltip>
-            ))}
-          </div>
+          {/* Mode toggle (Ops | Insights) */}
+          <ModeToggle vertical />
+          <div className="w-6 border-t border-border/50 my-1" />
 
-          {/* Divider */}
-          <div className="w-6 border-t border-border/50 mb-1" />
+          {mode === "insights" ? (
+            <div className="flex-1 overflow-y-auto w-full pt-1">
+              <RightSidebarInsightsPanel collapsed />
+            </div>
+          ) : (
+            <>
+              {/* GroupBy icon buttons */}
+              <div className="flex flex-col gap-0.5 mb-1.5">
+                {groupByOptions.map(o => (
+                  <UITooltip key={o.id}>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleGroupChange(o.id)}
+                        className={`p-1.5 rounded-md transition-colors ${
+                          groupBy === o.id
+                            ? "bg-[#FF5722] text-white"
+                            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                        }`}
+                      >
+                        <o.icon size={13} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="text-xs">{o.label}</TooltipContent>
+                  </UITooltip>
+                ))}
+              </div>
 
-          {/* Abbreviated items */}
-          <div className="flex flex-col gap-0.5 overflow-y-auto flex-1">
-            {pagedItems.map(op => {
-              const itemValue = op.value ?? op.nome;
-              const isSelected = selectedRegional === itemValue;
-              const isDimmed = selectedRegional && !isSelected;
-              const scoreColor = getScoreClassification(op.score, scoreConfig).text;
-              const abbr = abreviar(op.nome);
-              return (
-                <UITooltip key={itemValue}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => onRegionalClick(itemValue)}
-                      onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
-                      className={`flex flex-col items-center px-1 py-1 rounded-md cursor-pointer transition-all text-[9px] leading-tight ${
-                        isSelected
-                          ? "bg-orange-50 border border-[#FF5722]/30"
-                          : "hover:bg-muted/40 border border-transparent"
-                      } ${isDimmed ? "opacity-35" : ""}`}
-                    >
-                      <span className="font-bold text-foreground">{abbr}</span>
-                      <span className={`font-bold tabular-nums ${scoreColor}`}>{op.score}</span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="left" className="text-xs max-w-[200px]">
-                    <p className="font-semibold">{op.nome}</p>
-                    <p className="text-muted-foreground">Score: {op.score}</p>
-                  </TooltipContent>
-                </UITooltip>
-              );
-            })}
-          </div>
+              {/* Divider */}
+              <div className="w-6 border-t border-border/50 mb-1" />
+
+              {/* Abbreviated items */}
+              <div className="flex flex-col gap-0.5 overflow-y-auto flex-1">
+                {pagedItems.map(op => {
+                  const itemValue = op.value ?? op.nome;
+                  const isSelected = selectedRegional === itemValue;
+                  const isDimmed = selectedRegional && !isSelected;
+                  const scoreColor = getScoreClassification(op.score, scoreConfig).text;
+                  const abbr = abreviar(op.nome);
+                  return (
+                    <UITooltip key={itemValue}>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => onRegionalClick(itemValue)}
+                          onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
+                          className={`flex flex-col items-center px-1 py-1 rounded-md cursor-pointer transition-all text-[9px] leading-tight ${
+                            isSelected
+                              ? "bg-orange-50 border border-[#FF5722]/30"
+                              : "hover:bg-muted/40 border border-transparent"
+                          } ${isDimmed ? "opacity-35" : ""}`}
+                        >
+                          <span className="font-bold text-foreground">{abbr}</span>
+                          <span className={`font-bold tabular-nums ${scoreColor}`}>{op.score}</span>
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="text-xs max-w-[200px]">
+                        <p className="font-semibold">{op.nome}</p>
+                        <p className="text-muted-foreground">Score: {op.score}</p>
+                      </TooltipContent>
+                    </UITooltip>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
@@ -273,7 +326,9 @@ export default function GroupBySidebar({
        <div className="bg-white border-l border-border/40 pl-3 pr-1 pt-2 h-full flex flex-col">
         {/* Header: title + collapse button */}
         <div className="flex items-center justify-between mb-1.5">
-          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Tipo de Operação</p>
+          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">
+            {mode === "ops" ? "Tipo de Operação" : "Insights"}
+          </p>
           <button
             onClick={() => setCollapsed(true)}
             className="p-1 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
@@ -283,92 +338,101 @@ export default function GroupBySidebar({
           </button>
         </div>
 
-        {/* Group toggles */}
-        <div className="flex gap-1 mb-1.5">
-          {groupByOptions.map(o => (
-            <button
-              key={o.id}
-              onClick={() => handleGroupChange(o.id)}
-              className={`px-1.5 py-0.5 rounded text-[10px] font-medium border transition-colors flex-1 whitespace-nowrap ${
-                groupBy === o.id
-                  ? "bg-[#FF5722] text-white border-[#FF5722]"
-                  : "text-muted-foreground border-border hover:border-[#FF5722]/40"
-              }`}
-            >
-              {o.short}
-            </button>
-          ))}
-        </div>
+        {/* Mode toggle (Ops | Insights) */}
+        <ModeToggle />
 
-        {/* Search */}
-        <div className="relative mb-1">
-          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Buscar..."
-            value={search}
-            onChange={e => handleSearchChange(e.target.value)}
-            className="w-full pl-6 pr-2 py-1 text-[11px] rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
-          />
-        </div>
+        {mode === "insights" ? (
+          <RightSidebarInsightsPanel />
+        ) : (
+          <>
+            {/* Group toggles */}
+            <div className="flex gap-1 mb-1.5">
+              {groupByOptions.map(o => (
+                <button
+                  key={o.id}
+                  onClick={() => handleGroupChange(o.id)}
+                  className={`px-1.5 py-0.5 rounded text-[10px] font-medium border transition-colors flex-1 whitespace-nowrap ${
+                    groupBy === o.id
+                      ? "bg-[#FF5722] text-white border-[#FF5722]"
+                      : "text-muted-foreground border-border hover:border-[#FF5722]/40"
+                  }`}
+                >
+                  {o.short}
+                </button>
+              ))}
+            </div>
 
-        {/* Pagination */}
-        {showPagination && (
-          <div className="flex gap-1 mb-1 flex-wrap">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`w-5 h-5 rounded text-[10px] font-medium transition-colors ${
-                  page === p
-                    ? "bg-[#FF5722] text-white"
-                    : "text-muted-foreground border border-border hover:border-[#FF5722]/40"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
-          </div>
-        )}
+            {/* Search */}
+            <div className="relative mb-1">
+              <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Buscar..."
+                value={search}
+                onChange={e => handleSearchChange(e.target.value)}
+                className="w-full pl-6 pr-2 py-1 text-[11px] rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
+              />
+            </div>
 
-        {/* Column headers */}
-        <div className="flex items-center gap-2 px-0.5 mb-1">
-          <button onClick={() => toggleSort("nome")} className="flex-1 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground text-left">
-            Nome <ArrowUpDown size={9} className={sortBy === "nome" ? "text-[#FF5722]" : ""} />
-          </button>
-          <button onClick={() => toggleSort("score")} className="shrink-0 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground">
-            Score <ArrowUpDown size={9} className={sortBy === "score" ? "text-[#FF5722]" : ""} />
-          </button>
-        </div>
-
-        {/* Items */}
-        <div className="space-y-0.5 overflow-y-auto flex-1">
-          {pagedItems.length === 0 && (
-            <p className="text-[10px] text-muted-foreground text-center py-2">Nenhum resultado</p>
-          )}
-          {pagedItems.map(op => {
-            const itemValue = op.value ?? op.nome;
-            const isSelected = selectedRegional === itemValue;
-            const isDimmed = selectedRegional && !isSelected;
-            const scoreColor = getScoreClassification(op.score, scoreConfig).text;
-            return (
-              <div
-                key={itemValue}
-                onClick={() => onRegionalClick(itemValue)}
-                onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
-                className={`flex items-center gap-2 px-0.5 py-1 rounded-md cursor-pointer transition-all text-xs ${
-                  isSelected
-                    ? "bg-orange-50 border border-[#FF5722]/30"
-                    : "hover:bg-muted/40 border border-transparent"
-                } ${isDimmed ? "opacity-35" : ""}`}
-                title="Clique para filtrar · Botão direito para detalhes"
-              >
-                <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
-                <span className={`font-bold tabular-nums shrink-0 ${scoreColor}`}>{op.score}</span>
+            {/* Pagination */}
+            {showPagination && (
+              <div className="flex gap-1 mb-1 flex-wrap">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-5 h-5 rounded text-[10px] font-medium transition-colors ${
+                      page === p
+                        ? "bg-[#FF5722] text-white"
+                        : "text-muted-foreground border border-border hover:border-[#FF5722]/40"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
               </div>
-            );
-          })}
-        </div>
+            )}
+
+            {/* Column headers */}
+            <div className="flex items-center gap-2 px-0.5 mb-1">
+              <button onClick={() => toggleSort("nome")} className="flex-1 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground text-left">
+                Nome <ArrowUpDown size={9} className={sortBy === "nome" ? "text-[#FF5722]" : ""} />
+              </button>
+              <button onClick={() => toggleSort("score")} className="shrink-0 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground">
+                Score <ArrowUpDown size={9} className={sortBy === "score" ? "text-[#FF5722]" : ""} />
+              </button>
+            </div>
+
+            {/* Items */}
+            <div className="space-y-0.5 overflow-y-auto flex-1">
+              {pagedItems.length === 0 && (
+                <p className="text-[10px] text-muted-foreground text-center py-2">Nenhum resultado</p>
+              )}
+              {pagedItems.map(op => {
+                const itemValue = op.value ?? op.nome;
+                const isSelected = selectedRegional === itemValue;
+                const isDimmed = selectedRegional && !isSelected;
+                const scoreColor = getScoreClassification(op.score, scoreConfig).text;
+                return (
+                  <div
+                    key={itemValue}
+                    onClick={() => onRegionalClick(itemValue)}
+                    onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
+                    className={`flex items-center gap-2 px-0.5 py-1 rounded-md cursor-pointer transition-all text-xs ${
+                      isSelected
+                        ? "bg-orange-50 border border-[#FF5722]/30"
+                        : "hover:bg-muted/40 border border-transparent"
+                    } ${isDimmed ? "opacity-35" : ""}`}
+                    title="Clique para filtrar · Botão direito para detalhes"
+                  >
+                    <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
+                    <span className={`font-bold tabular-nums shrink-0 ${scoreColor}`}>{op.score}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

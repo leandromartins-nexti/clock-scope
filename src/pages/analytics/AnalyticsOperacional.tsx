@@ -11,6 +11,7 @@ import { resumo } from "@/lib/analytics-mock-data";
 import { QualidadeTab, AbsenteismoTab, MovimentacoesTab } from "./AnalyticsDisciplinaOperacional";
 import TurnoverTab from "./TurnoverTab";
 import AnalyticsCoberturasContinuidade from "./AnalyticsCoberturasContinuidade";
+import AnalyticsInsightsAll from "./AnalyticsInsightsAll";
 import { OPERACIONAL_SUB_TABS } from "@/config/analytics-tabs";
 
 const tabs = OPERACIONAL_SUB_TABS.map(t => ({ id: t.id, label: t.label, icon: t.icon }));
@@ -36,6 +37,7 @@ export default function AnalyticsOperacional() {
       case "turnover": return <TurnoverTab />;
       case "movimentacoes": return <MovimentacoesTab />;
       case "coberturas": return <AnalyticsCoberturasContinuidade embedded />;
+      case "insights": return <AnalyticsInsightsAll />;
       default: return <QualidadeTab />;
     }
   };
