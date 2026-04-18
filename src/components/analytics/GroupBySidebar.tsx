@@ -101,9 +101,9 @@ export default function GroupBySidebar({
     return () => window.removeEventListener("open-tipo-operacao", handler);
   }, [isMobile]);
 
-  // Reusable launcher rail (2 buttons: Filtro / Insights)
-  const LauncherRail = () => (
-    <div className="w-[44px] bg-white border-l border-border/40 p-1.5 flex flex-col items-center gap-1 self-stretch">
+  // Header toggle: 2 icon buttons (Filtro / Insights) at top of sidebar
+  const HeaderToggle = () => (
+    <div className="flex items-center gap-1 mb-1.5">
       {([
         { id: "ops" as const, icon: Filter, label: "Tipo de Operação" },
         { id: "insights" as const, icon: Lightbulb, label: "Insights" },
@@ -114,15 +114,15 @@ export default function GroupBySidebar({
           <UITooltip key={o.id}>
             <TooltipTrigger asChild>
               <button
-                onClick={() => handleModeClick(o.id)}
-                className={`p-2 rounded-md transition-colors flex items-center justify-center ${
+                onClick={() => setMode(o.id)}
+                className={`p-1.5 rounded-md transition-colors flex items-center justify-center ${
                   active
                     ? "bg-[#FF5722] text-white"
                     : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                 }`}
                 aria-label={o.label}
               >
-                <Icon size={15} />
+                <Icon size={14} />
               </button>
             </TooltipTrigger>
             <TooltipContent side="left" className="text-xs">{o.label}</TooltipContent>
