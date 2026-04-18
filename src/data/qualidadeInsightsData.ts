@@ -24,6 +24,7 @@ export interface QualidadeInsight {
   modal?: InsightModal;
 }
 
+import { AlertTriangle, Trophy, Lightbulb, TrendingUp, type LucideIcon } from "lucide-react";
 import insights642 from "@/data/customers/642/qualidade-ponto/insights.json";
 import insights1 from "@/data/customers/1/insights.json";
 import insights2 from "@/data/customers/2/insights.json";
