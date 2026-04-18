@@ -26,10 +26,22 @@ export default function InsightsTourOverlay() {
   const cfg = categoryConfig[tourCurrentInsight.category];
 
   return (
-    <div
-      className="fixed z-[60] bottom-4 right-[260px] w-[380px] bg-white rounded-lg shadow-2xl border border-border/40 overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-300"
-      style={{ borderTop: `3px solid ${cfg.borderColor}` }}
-    >
+    <>
+      {/* Backdrop com sombra 30% para destacar o pin/card focado */}
+      <div
+        className="fixed inset-0 z-[55] bg-black/30 pointer-events-none animate-in fade-in duration-300"
+        aria-hidden
+      />
+      <div
+        className="fixed z-[60] bottom-4 right-[260px] w-[380px] bg-white rounded-lg shadow-2xl border border-border/40 animate-in slide-in-from-bottom-4 fade-in duration-300"
+        style={{ borderTop: `3px solid ${cfg.borderColor}` }}
+      >
+        {/* Setinha apontando para cima (para o pin do gráfico) */}
+        <div
+          className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 bg-white border-l border-t border-border/40"
+          style={{ borderTopColor: cfg.borderColor, borderLeftColor: cfg.borderColor, borderTopWidth: 3, borderLeftWidth: 3 }}
+          aria-hidden
+        />
       {/* Progress bar */}
       <div className="h-1 bg-muted/40">
         <div
@@ -116,7 +128,8 @@ export default function InsightsTourOverlay() {
           </div>
           <span className="text-[9px] text-muted-foreground/60">ESC encerra · ← → navega · espaço pausa</span>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
