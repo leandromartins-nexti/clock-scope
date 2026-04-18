@@ -128,7 +128,8 @@ export default function InsightsTourOverlay() {
           </div>
           <span className="text-[9px] text-muted-foreground/60">ESC encerra · ← → navega · espaço pausa</span>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
