@@ -205,9 +205,9 @@
     "pin": {
       "insight_id": 8,
       "type": "trend",
-      "series": "total",
-      "axis": "left",
-      "offsetY": -24
+      "series": "active_headcount",
+      "axis": "right",
+      "offsetY": -32
     }
   },
   {

@@ -204,7 +204,10 @@
     "active_headcount": 47,
     "pin": {
       "insight_id": 8,
-      "type": "trend"
+      "type": "trend",
+      "series": "active_headcount",
+      "axis": "right",
+      "offsetY": -32
     }
   },
   {
