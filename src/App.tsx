@@ -20,6 +20,8 @@ import { AbsenteismoScoreConfigProvider } from "./contexts/AbsenteismoScoreConfi
 import { NextiScoreConfigProvider } from "./contexts/NextiScoreConfigContext";
 import { CustomerProvider } from "./contexts/CustomerContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { InsightsTourProvider } from "./contexts/InsightsTourContext";
+import InsightsTourOverlay from "./components/analytics/InsightsTourOverlay";
 
 // Analytics V1 pages
 import AnalyticsResumoExecutivo from "./pages/analytics/AnalyticsResumoExecutivo";
@@ -40,6 +42,7 @@ function ProtectedRoutes() {
       <ScoreConfigProvider>
         <AbsenteismoScoreConfigProvider>
           <NextiScoreConfigProvider>
+          <InsightsTourProvider>
           <Routes>
             <Route element={<DashboardLayout />}>
               <Route path="/" element={<AnalyticsResumoExecutivo />} />
@@ -63,6 +66,8 @@ function ProtectedRoutes() {
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <InsightsTourOverlay />
+          </InsightsTourProvider>
           </NextiScoreConfigProvider>
         </AbsenteismoScoreConfigProvider>
       </ScoreConfigProvider>

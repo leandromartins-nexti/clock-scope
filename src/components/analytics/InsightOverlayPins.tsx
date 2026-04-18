@@ -12,6 +12,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import InsightSunPin from "./InsightSunPin";
 import type { PinType } from "@/data/qualidadeInsightsData";
+import { useInsightsTour } from "@/contexts/InsightsTourContext";
 
 export interface InsightOverlayPin {
   mesIndex: number;
@@ -146,6 +147,7 @@ export default function InsightOverlayPins({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const plot = usePlotArea(containerRef);
+  const { hoveredId, setHoveredId } = useInsightsTour();
 
   // DEBUG
   // eslint-disable-next-line no-console
@@ -193,16 +195,21 @@ export default function InsightOverlayPins({
           }
           if (topPx === null) return null;
 
+          const isHighlighted = hoveredId === pin.insightId;
           return (
             <div
               key={`${pin.insightId}-${idx}`}
-              className="absolute"
+              className="absolute transition-transform duration-200"
               style={{
                 left: `${leftPx}px`,
                 top: `${topPx}px`,
-                transform: "translate(-50%, -50%)",
+                transform: `translate(-50%, -50%) scale(${isHighlighted ? 1.35 : 1})`,
                 pointerEvents: "auto",
+                filter: isHighlighted ? `drop-shadow(0 0 8px ${pin.type === "risk" ? "#ef4444" : pin.type === "achievement" ? "#22c55e" : pin.type === "opportunity" ? "#facc15" : "#3b82f6"})` : "none",
+                zIndex: isHighlighted ? 30 : 20,
               }}
+              onMouseEnter={() => setHoveredId(pin.insightId)}
+              onMouseLeave={() => setHoveredId(null)}
             >
               <svg width="60" height="60" viewBox="-30 -30 60 60" style={{ overflow: "visible" }}>
                 <InsightSunPin
