@@ -1,9 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, ArrowUpDown, PanelRightClose, PanelRightOpen, Building2, Network, LayoutGrid, SlidersHorizontal, X, Filter } from "lucide-react";
+import { Search, ArrowUpDown, PanelRightClose, PanelRightOpen, Building2, Network, LayoutGrid, SlidersHorizontal, X, Filter, Lightbulb, ListFilter } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import RightSidebarInsightsPanel from "./RightSidebarInsightsPanel";
+
+type SidebarMode = "ops" | "insights";
 
 // ── Types ──
 export type GroupBy = "unidade" | "empresa" | "area";
