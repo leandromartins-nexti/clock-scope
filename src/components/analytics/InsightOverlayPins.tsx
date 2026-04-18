@@ -67,8 +67,8 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
       const containerRect = el.getBoundingClientRect();
       const gridRect = grid.getBoundingClientRect();
 
-      const xAxis = el.querySelector(".recharts-xAxis") as SVGGElement | null;
-      const svg = el.querySelector("svg.recharts-surface") as SVGSVGElement | null;
+      const xAxis = scope.querySelector(".recharts-xAxis") as SVGGElement | null;
+      const svg = scope.querySelector("svg.recharts-surface") as SVGSVGElement | null;
       const tickCentersX: number[] = [];
       if (xAxis && svg) {
         const ticks = xAxis.querySelectorAll(".recharts-cartesian-axis-tick");
@@ -112,10 +112,10 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
     // Initial attempts
     measure();
     const ro = new ResizeObserver(() => measure());
-    ro.observe(el);
-    // MutationObserver: re-measure as Recharts mounts/updates SVG inside container
+    ro.observe(scope);
+    // MutationObserver: re-measure as Recharts mounts/updates SVG dentro do parent
     const mo = new MutationObserver(() => measure());
-    mo.observe(el, { childList: true, subtree: true, attributes: true, attributeFilter: ["width", "height", "transform", "x", "y", "x1", "y1", "x2", "y2"] });
+    mo.observe(scope, { childList: true, subtree: true, attributes: true, attributeFilter: ["width", "height", "transform", "x", "y", "x1", "y1", "x2", "y2"] });
     const t1 = setTimeout(measure, 50);
     const t2 = setTimeout(measure, 200);
     const t3 = setTimeout(measure, 500);
