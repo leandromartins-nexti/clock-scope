@@ -2034,7 +2034,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         const scale = 0.45;
                         const cx = x;
                         const cy = y;
-                        const pinY = cy - 8;
+                        const pinY = cy - 20;
                         const r1 = 22 * scale;
                         const longR2 = 36 * scale;
                         const shortR2 = 30 * scale;
