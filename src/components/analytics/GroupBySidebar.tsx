@@ -244,29 +244,16 @@ export default function GroupBySidebar({
     );
   }
 
-  // ── Desktop: Closed (Launcher rail only) ──
-  if (mode === null) {
-    return <LauncherRail />;
-  }
-
-  // ── Desktop: Open (Launcher rail + content panel) ──
+  // ── Desktop: always-open sidebar with header toggle ──
   return (
     <div className="flex shrink-0 self-stretch" data-onboarding="tipo-operacao">
-      <LauncherRail />
-
       <div className="w-[240px] bg-white border-l border-border/40 pl-3 pr-1 pt-2 flex flex-col">
-        {/* Header: title + close button */}
-        <div className="flex items-center justify-between mb-1.5">
-          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">
+        {/* Header: toggle (Filtro / Insights) + title */}
+        <div className="flex items-center justify-between gap-2 mb-1.5">
+          <HeaderToggle />
+          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase truncate">
             {mode === "ops" ? "Tipo de Operação" : "Insights"}
           </p>
-          <button
-            onClick={() => setMode(null)}
-            className="p-1 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
-            title="Fechar"
-          >
-            <X size={13} />
-          </button>
         </div>
 
         {mode === "insights" ? (
