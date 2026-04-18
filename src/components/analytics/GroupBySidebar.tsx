@@ -106,12 +106,13 @@ export default function GroupBySidebar({
     return () => window.removeEventListener("open-tipo-operacao", handler);
   }, [isMobile]);
 
-  // Header toggle: 2 icon buttons (Filtro / Insights) at top of sidebar
+  // Header toggle: 3 icon buttons (Filtro / Insights / Chat AI)
   const HeaderToggle = () => (
     <div className="flex items-center gap-1 mb-1.5">
       {([
         { id: "ops" as const, icon: Filter, label: "Tipo de Operação" },
         { id: "insights" as const, icon: Lightbulb, label: "Insights" },
+        { id: "chat" as const, icon: MessageCircle, label: "Chat AI" },
       ]).map(o => {
         const active = mode === o.id;
         const Icon = o.icon;
@@ -130,7 +131,10 @@ export default function GroupBySidebar({
                 <Icon size={14} />
               </button>
             </TooltipTrigger>
-            <TooltipContent side="left" className="text-xs">{o.label}</TooltipContent>
+            <TooltipContent side="top" sideOffset={6} className="text-xs">
+              {o.label}
+              <TooltipPrimitive.Arrow className="fill-popover" width={10} height={5} />
+            </TooltipContent>
           </UITooltip>
         );
       })}
