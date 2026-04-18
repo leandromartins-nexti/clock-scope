@@ -60,7 +60,7 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
 
     const measure = () => {
       const grid = el.querySelector(".recharts-cartesian-grid") as SVGGraphicsElement | null;
-      if (!grid) return;
+      if (!grid) return false;
       const containerRect = el.getBoundingClientRect();
       const gridRect = grid.getBoundingClientRect();
 
@@ -103,19 +103,27 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
         height: gridRect.height,
         tickCentersX,
       });
+      return true;
     };
 
+    // Initial attempts
     measure();
-    const ro = new ResizeObserver(measure);
+    const ro = new ResizeObserver(() => measure());
     ro.observe(el);
+    // MutationObserver: re-measure as Recharts mounts/updates SVG inside container
+    const mo = new MutationObserver(() => measure());
+    mo.observe(el, { childList: true, subtree: true, attributes: true, attributeFilter: ["width", "height", "transform", "x", "y", "x1", "y1", "x2", "y2"] });
     const t1 = setTimeout(measure, 50);
     const t2 = setTimeout(measure, 200);
     const t3 = setTimeout(measure, 500);
+    const t4 = setTimeout(measure, 1000);
     return () => {
       ro.disconnect();
+      mo.disconnect();
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
+      clearTimeout(t4);
     };
   }, [containerRef]);
 

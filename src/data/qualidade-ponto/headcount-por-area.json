@@ -427,7 +427,10 @@
     "active_headcount": 52,
     "pin": {
       "insight_id": 4,
-      "type": "achievement"
+      "type": "achievement",
+      "series": "total",
+      "axis": "left",
+      "offsetY": -24
     }
   },
   {
