@@ -134,7 +134,7 @@ export default function GroupBySidebar({
 
   // ── Mobile: Sheet drawer (fullscreen) ──
   if (isMobile) {
-    const mobileMode = mode ?? "ops";
+    const mobileMode = mode;
     return (
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="right" className="w-full max-w-full p-0 flex flex-col">
