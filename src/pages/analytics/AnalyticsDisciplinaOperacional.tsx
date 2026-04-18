@@ -1663,7 +1663,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <button onClick={() => setChartDataModal("evoQualidade")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <ResponsiveContainer width="100%" height={280}>
-              <ComposedChart data={qualidadeComHeadcount} onClick={(e: any) => {
+              <ComposedChart data={qualidadeComHeadcount} margin={{ top: 50, right: 5, bottom: 50, left: 5 }} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
