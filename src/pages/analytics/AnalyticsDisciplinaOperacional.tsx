@@ -2500,6 +2500,153 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   </g>
                 ),
               },
+              {
+                id: "v26",
+                label: "Variação 26 — Lâmpada acende/apaga (clássica)",
+                description: "Lâmpada que alterna entre apagada (cinza) e acesa (amarelo brilhante) com halo de luz.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    {/* Halo de luz que aparece quando acende */}
+                    <circle cx={cx} cy={cy} r={22} fill="#fde047" opacity={0}>
+                      <animate attributeName="opacity" values="0;0.5;0" dur="2s" repeatCount="indefinite" />
+                      <animate attributeName="r" values="14;26;14" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx={cx} cy={cy} r={16} fill="#fef9c3" opacity={0}>
+                      <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    {/* Bulbo que muda de cor */}
+                    <circle cx={cx} cy={cy} r={12} fill="#9ca3af" stroke="#fff" strokeWidth={1.5}>
+                      <animate attributeName="fill" values="#9ca3af;#facc15;#9ca3af" dur="2s" repeatCount="indefinite" keyTimes="0;0.5;1" />
+                    </circle>
+                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={13}>💡</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v27",
+                label: "Variação 27 — Lâmpada com raios cintilantes",
+                description: "Lâmpada acesa emitindo raios de luz que aparecem em sequência ao redor.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    {/* Glow base */}
+                    <circle cx={cx} cy={cy} r={14} fill="#fde047" opacity={0.3}>
+                      <animate attributeName="opacity" values="0.15;0.6;0.15" dur="1.5s" repeatCount="indefinite" />
+                    </circle>
+                    {/* Bulbo */}
+                    <circle cx={cx} cy={cy} r={11} fill="#facc15" stroke="#fff" strokeWidth={1.5}>
+                      <animate attributeName="fill" values="#fef08a;#facc15;#fef08a" dur="1.5s" repeatCount="indefinite" />
+                    </circle>
+                    <text x={cx} y={cy + 4} textAnchor="middle" fontSize={12}>💡</text>
+                    {/* 8 raios cintilantes */}
+                    {[0, 45, 90, 135, 180, 225, 270, 315].map((a, i) => {
+                      const rad = (a * Math.PI) / 180;
+                      const x1 = cx + Math.cos(rad) * 14;
+                      const y1 = cy + Math.sin(rad) * 14;
+                      const x2 = cx + Math.cos(rad) * 22;
+                      const y2 = cy + Math.sin(rad) * 22;
+                      return (
+                        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#facc15" strokeWidth={2.5} strokeLinecap="round" opacity={0}>
+                          <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite" begin={`${i * 0.18}s`} />
+                        </line>
+                      );
+                    })}
+                  </g>
+                ),
+              },
+              {
+                id: "v28",
+                label: "Variação 28 — Lâmpada flicker (vagalume)",
+                description: "Efeito de vagalume: pisca rapidamente como uma ideia surgindo, com mudança de intensidade.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    {/* Glow externo */}
+                    <circle cx={cx} cy={cy} r={20} fill="#fbbf24" opacity={0}>
+                      <animate attributeName="opacity" values="0;0;0.3;0;0.5;0;0.7;0.2;0.6;0;0" dur="3s" repeatCount="indefinite" />
+                    </circle>
+                    {/* Bulbo com flicker */}
+                    <circle cx={cx} cy={cy} r={12} fill="#facc15" stroke="#fff" strokeWidth={1.5}>
+                      <animate attributeName="opacity" values="0.3;0.4;1;0.4;0.5;1;1;0.5;1;0.3" dur="3s" repeatCount="indefinite" />
+                      <animate attributeName="fill" values="#9ca3af;#9ca3af;#facc15;#9ca3af;#fcd34d;#facc15;#fde047;#9ca3af;#facc15;#9ca3af" dur="3s" repeatCount="indefinite" />
+                    </circle>
+                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={13}>
+                      <animate attributeName="opacity" values="0.5;1;1;0.5;1;1;1;0.5;1;0.5" dur="3s" repeatCount="indefinite" />
+                      💡
+                    </text>
+                  </g>
+                ),
+              },
+              {
+                id: "v29",
+                label: "Variação 29 — Lâmpada com filamento elétrico",
+                description: "Bulbo translúcido com filamento que ganha brilho elétrico, emitindo faíscas amarelas.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    {/* Halo elétrico */}
+                    <circle cx={cx} cy={cy} r={18} fill="none" stroke="#fde047" strokeWidth={1.5} opacity={0} strokeDasharray="3 3">
+                      <animate attributeName="opacity" values="0;0.8;0" dur="1.2s" repeatCount="indefinite" />
+                      <animateTransform attributeName="transform" type="rotate" from={`0 ${cx} ${cy}`} to={`360 ${cx} ${cy}`} dur="3s" repeatCount="indefinite" />
+                    </circle>
+                    {/* Bulbo translúcido */}
+                    <circle cx={cx} cy={cy} r={13} fill="#fef9c3" stroke="#eab308" strokeWidth={1.5} opacity={0.85} />
+                    {/* Filamento que pulsa */}
+                    <path d={`M ${cx-5} ${cy+2} Q ${cx-3} ${cy-3} ${cx} ${cy+1} Q ${cx+3} ${cy+5} ${cx+5} ${cy-1}`} stroke="#f59e0b" strokeWidth={1.8} fill="none" strokeLinecap="round">
+                      <animate attributeName="stroke" values="#f59e0b;#fff;#fbbf24;#fff;#f59e0b" dur="1.2s" repeatCount="indefinite" />
+                      <animate attributeName="stroke-width" values="1.5;2.8;1.5" dur="1.2s" repeatCount="indefinite" />
+                    </path>
+                    {/* Faíscas */}
+                    {[45, 135, 225, 315].map((a, i) => {
+                      const rad = (a * Math.PI) / 180;
+                      return (
+                        <circle key={i} cx={cx + Math.cos(rad) * 16} cy={cy + Math.sin(rad) * 16} r={1.5} fill="#fde047" opacity={0}>
+                          <animate attributeName="opacity" values="0;1;0" dur="0.6s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                          <animate attributeName="r" values="0.5;2.5;0.5" dur="0.6s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                        </circle>
+                      );
+                    })}
+                  </g>
+                ),
+              },
+              {
+                id: "v30",
+                label: "Variação 30 — Lâmpada 'eureka' explosiva",
+                description: "Momento eureka: lâmpada apagada, então acende com explosão de luz e raios divergentes.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    {/* Onda de choque */}
+                    <circle cx={cx} cy={cy} r={10} fill="none" stroke="#fbbf24" strokeWidth={2} opacity={0}>
+                      <animate attributeName="r" values="10;28;10" dur="2.5s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0;0;0.9;0;0" dur="2.5s" repeatCount="indefinite" keyTimes="0;0.4;0.5;0.7;1" />
+                    </circle>
+                    {/* Halo amarelo grande */}
+                    <circle cx={cx} cy={cy} r={18} fill="#fde047" opacity={0}>
+                      <animate attributeName="opacity" values="0;0;0.6;0.3;0" dur="2.5s" repeatCount="indefinite" keyTimes="0;0.4;0.5;0.7;1" />
+                    </circle>
+                    {/* Bulbo */}
+                    <circle cx={cx} cy={cy} r={12} stroke="#fff" strokeWidth={1.5}>
+                      <animate attributeName="fill" values="#6b7280;#6b7280;#facc15;#facc15;#6b7280" dur="2.5s" repeatCount="indefinite" keyTimes="0;0.4;0.5;0.9;1" />
+                    </circle>
+                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={13}>💡</text>
+                    {/* 12 raios divergentes que aparecem no momento eureka */}
+                    {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((a, i) => {
+                      const rad = (a * Math.PI) / 180;
+                      const x1 = cx + Math.cos(rad) * 15;
+                      const y1 = cy + Math.sin(rad) * 15;
+                      const x2 = cx + Math.cos(rad) * 24;
+                      const y2 = cy + Math.sin(rad) * 24;
+                      return (
+                        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#facc15" strokeWidth={2.2} strokeLinecap="round" opacity={0}>
+                          <animate attributeName="opacity" values="0;0;1;0.5;0" dur="2.5s" repeatCount="indefinite" keyTimes="0;0.4;0.5;0.75;1" />
+                        </line>
+                      );
+                    })}
+                  </g>
+                ),
+              },
             ];
 
             const renderVariant = (variant: typeof variants[number]) => (
