@@ -92,7 +92,8 @@ export default function InsightsTourOverlay() {
         setPos(null);
         return;
       }
-      setPos(computePos(pin));
+      const measuredH = popoverRef.current?.offsetHeight || POPOVER_H;
+      setPos(computePos(pin, measuredH));
     };
     update();
     // Reagenda nas próximas frames pra capturar pins que ainda estão sendo medidos
