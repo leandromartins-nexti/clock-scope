@@ -184,6 +184,13 @@ export default function InsightOverlayPins({
           topPx = pin.topPx ?? 20;
         }
 
+        // Clamp horizontal: pin tem ~60px, então mantém 30px de margem em
+        // relação às bordas do CONTAINER para nunca ser cortado.
+        if (plot) {
+          const containerWidth = containerRef.current?.clientWidth ?? Infinity;
+          leftPx = Math.max(30, Math.min(containerWidth - 30, leftPx));
+        }
+
         const positioning: React.CSSProperties = plot
           ? { left: `${leftPx}px`, top: `${topPx}px` }
           : { left: `${(paddingLeftPct + ((pin.mesIndex + 0.5) / totalMeses) * usable) * 100}%`, top: `${pin.topPx ?? 20}px` };
