@@ -58,9 +58,14 @@ export default function InsightSunPin({
   const stemY2 = placeBelow ? pinY - bulbR * 0.9 : pinY + bulbR * 0.9;
 
   return (
-    <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+    <g
+      style={{ cursor: "pointer", pointerEvents: "all" }}
+      onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); onClick(); }}
+    >
       <title>{title}</title>
-      <line x1={cx} y1={stemY1} x2={cx} y2={stemY2} stroke="#facc15" strokeWidth={1.5} strokeDasharray="3 2" opacity={0.6} />
+      {/* Hit area transparente maior para garantir clique acima do tooltip cursor */}
+      <circle cx={cx} cy={pinY} r={longR2 + 4} fill="transparent" style={{ pointerEvents: "all" }} />
+      <line x1={cx} y1={stemY1} x2={cx} y2={stemY2} stroke="#facc15" strokeWidth={1.5} strokeDasharray="3 2" opacity={0.6} style={{ pointerEvents: "none" }} />
       <g>
         <animateTransform attributeName="transform" type="rotate" from={`0 ${cx} ${pinY}`} to={`360 ${cx} ${pinY}`} dur="12s" repeatCount="indefinite" />
         {Array.from({ length: 16 }).map((_, i) => {
