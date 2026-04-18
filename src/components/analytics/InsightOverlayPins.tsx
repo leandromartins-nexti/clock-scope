@@ -106,6 +106,9 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
         height: gridRect.height,
         tickCentersX,
       });
+      // DEBUG
+      // eslint-disable-next-line no-console
+      console.log("[InsightOverlayPins] measured", { tickCount: tickCentersX.length, gridLeft: gridRect.left - containerRect.left, gridWidth: gridRect.width });
       return true;
     };
 
@@ -158,9 +161,19 @@ export default function InsightOverlayPins({
     <div ref={containerRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 20 }}>
       {plot &&
         pins.map((pin, idx) => {
-          const leftPx = plot.tickCentersX[pin.mesIndex];
-          if (leftPx === undefined) {
-            console.warn("[InsightOverlayPins] skip - no tick", { pin, ticks: plot.tickCentersX.length });
+          // X: para BarChart, cada categoria ocupa width/N e o centro está em (i + 0.5) * step.
+          // Para LineChart/AreaChart, os pontos vão de 0 a width-1 (i / (N-1)).
+          // Usamos a heurística do BarChart por padrão; quando há ticks suficientes (1 por categoria),
+          // priorizamos o centro do tick real (mais preciso para line charts).
+          let leftPx: number | undefined;
+          if (plot.tickCentersX.length === totalMeses) {
+            leftPx = plot.tickCentersX[pin.mesIndex];
+          } else {
+            const step = plot.width / totalMeses;
+            leftPx = plot.left + step * (pin.mesIndex + 0.5);
+          }
+          if (leftPx === undefined || Number.isNaN(leftPx)) {
+            console.warn("[InsightOverlayPins] skip - no x", { pin, ticks: plot.tickCentersX.length, totalMeses });
             return null;
           }
 
