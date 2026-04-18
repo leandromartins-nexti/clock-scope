@@ -105,22 +105,11 @@ export function filterInsightsByEntity(
     if (!selectedEntity) return false;
 
     const sel = normalizeName(selectedEntity);
-    if (groupBy === "empresa" && scope.level === "company") {
-      return normalizeName(scope.company_name) === sel;
-    }
-    if (groupBy === "unidade" && scope.level === "business_unit") {
-      return normalizeName(scope.business_unit_name) === sel;
-    }
-    if (groupBy === "area" && scope.level === "area") {
-      return normalizeName(scope.area_name) === sel;
-    }
-    // Cross-level: empresa↔unidade equivalentes
-    if (groupBy === "unidade" && scope.level === "company") {
-      return normalizeName(scope.business_unit_name ?? scope.company_name) === sel;
-    }
-    if (groupBy === "empresa" && scope.level === "business_unit") {
-      return normalizeName(scope.company_name ?? scope.business_unit_name) === sel;
-    }
+    // Match estrito por nível selecionado — cada insight deve declarar
+    // company_name, business_unit_name e area_name explicitamente no scope.
+    if (groupBy === "empresa") return normalizeName(scope.company_name) === sel;
+    if (groupBy === "unidade") return normalizeName(scope.business_unit_name) === sel;
+    if (groupBy === "area")    return normalizeName(scope.area_name) === sel;
     return false;
   });
 }
