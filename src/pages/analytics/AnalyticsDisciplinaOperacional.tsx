@@ -2184,6 +2184,322 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   </g>
                 ),
               },
+              {
+                id: "v6",
+                label: "Variação 6 — Badge numerado",
+                description: "Círculo vermelho estilo notificação com número '1'.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <circle cx={cx} cy={cy} r={11} fill="#ef4444" stroke="#fff" strokeWidth={2}>
+                      <animate attributeName="r" values="11;13;11" dur="1.2s" repeatCount="indefinite" />
+                    </circle>
+                    <text x={cx} y={cy + 4} textAnchor="middle" fontSize={12} fontWeight={800} fill="#fff">1</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v7",
+                label: "Variação 7 — Lâmpada brilhando",
+                description: "Lâmpada amarela com raios de luz cintilantes.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    {[-30, 0, 30, 60, 90, 120, 150, 180, 210].map((a, i) => {
+                      const rad = (a * Math.PI) / 180;
+                      return <line key={i} x1={cx + Math.cos(rad) * 12} y1={cy + Math.sin(rad) * 12} x2={cx + Math.cos(rad) * 18} y2={cy + Math.sin(rad) * 18} stroke="#facc15" strokeWidth={2} strokeLinecap="round">
+                        <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" begin={`${i * 0.1}s`} />
+                      </line>;
+                    })}
+                    <circle cx={cx} cy={cy} r={10} fill="#fbbf24" stroke="#fff" strokeWidth={1.5} />
+                    <text x={cx} y={cy + 4} textAnchor="middle" fontSize={12}>💡</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v8",
+                label: "Variação 8 — Coroa dourada",
+                description: "Ícone de coroa indicando destaque/conquista.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <circle cx={cx} cy={cy} r={13} fill="#fef3c7" stroke="#d97706" strokeWidth={1.5} />
+                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={14}>👑</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v9",
+                label: "Variação 9 — Troféu",
+                description: "Marcador de conquista com troféu pulsante.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <circle cx={cx} cy={cy} r={14} fill="#fbbf24" stroke="#fff" strokeWidth={2}>
+                      <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={14}>🏆</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v10",
+                label: "Variação 10 — Foguete decolando",
+                description: "Foguete vermelho representando recuperação/decolagem.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <g>
+                      <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="1s" repeatCount="indefinite" />
+                      <circle cx={cx} cy={cy} r={13} fill="#ef4444" stroke="#fff" strokeWidth={1.5} />
+                      <text x={cx} y={cy + 5} textAnchor="middle" fontSize={14}>🚀</text>
+                    </g>
+                  </g>
+                ),
+              },
+              {
+                id: "v11",
+                label: "Variação 11 — Anéis duplos pulsantes",
+                description: "Dois anéis concêntricos pulsando em tempos diferentes.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <circle cx={cx} cy={cy} r={16} fill="none" stroke="#3b82f6" strokeWidth={2}>
+                      <animate attributeName="r" values="10;22;10" dur="2s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx={cx} cy={cy} r={12} fill="none" stroke="#3b82f6" strokeWidth={2}>
+                      <animate attributeName="r" values="8;18;8" dur="2s" repeatCount="indefinite" begin="0.5s" />
+                      <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite" begin="0.5s" />
+                    </circle>
+                    <circle cx={cx} cy={cy} r={8} fill="#3b82f6" stroke="#fff" strokeWidth={1.5} />
+                    <text x={cx} y={cy + 3} textAnchor="middle" fontSize={9} fontWeight={700} fill="#fff">i</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v12",
+                label: "Variação 12 — Diamante rotativo",
+                description: "Losango ciano rotacionando lentamente.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <g>
+                      <animateTransform attributeName="transform" type="rotate" from={`0 ${cx} ${cy}`} to={`360 ${cx} ${cy}`} dur="8s" repeatCount="indefinite" />
+                      <polygon points={`${cx},${cy-12} ${cx+12},${cy} ${cx},${cy+12} ${cx-12},${cy}`} fill="#06b6d4" stroke="#fff" strokeWidth={1.5} />
+                    </g>
+                    <text x={cx} y={cy + 4} textAnchor="middle" fontSize={11} fontWeight={700} fill="#fff">!</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v13",
+                label: "Variação 13 — Etiqueta bookmark",
+                description: "Tag estilo bookmark pendurada na barra.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <path d={`M ${cx-9} ${cy-12} L ${cx+9} ${cy-12} L ${cx+9} ${cy+8} L ${cx} ${cy+2} L ${cx-9} ${cy+8} Z`} fill="#ec4899" stroke="#fff" strokeWidth={1.5}>
+                      <animate attributeName="opacity" values="1;0.7;1" dur="1.5s" repeatCount="indefinite" />
+                    </path>
+                    <text x={cx} y={cy - 1} textAnchor="middle" fontSize={9} fontWeight={700} fill="#fff">!</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v14",
+                label: "Variação 14 — Coração pulsante",
+                description: "Pin em formato de coração rosa pulsante.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <g>
+                      <animateTransform attributeName="transform" type="scale" values="1;1.2;1" additive="sum" dur="1s" repeatCount="indefinite" />
+                      <circle cx={cx} cy={cy} r={13} fill="#fce7f3" stroke="#ec4899" strokeWidth={1.5} />
+                      <text x={cx} y={cy + 5} textAnchor="middle" fontSize={14}>❤️</text>
+                    </g>
+                  </g>
+                ),
+              },
+              {
+                id: "v15",
+                label: "Variação 15 — Sino balançando",
+                description: "Sino de notificação balançando lateralmente.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <g>
+                      <animateTransform attributeName="transform" type="rotate" values={`-15 ${cx} ${cy-8};15 ${cx} ${cy-8};-15 ${cx} ${cy-8}`} dur="0.8s" repeatCount="indefinite" />
+                      <circle cx={cx} cy={cy} r={12} fill="#f59e0b" stroke="#fff" strokeWidth={1.5} />
+                      <text x={cx} y={cy + 4} textAnchor="middle" fontSize={13}>🔔</text>
+                    </g>
+                  </g>
+                ),
+              },
+              {
+                id: "v16",
+                label: "Variação 16 — Raio elétrico",
+                description: "Bolt amarelo brilhante com borda piscante.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <circle cx={cx} cy={cy} r={13} fill="#fef08a" stroke="#eab308" strokeWidth={2}>
+                      <animate attributeName="stroke-width" values="2;4;2" dur="0.8s" repeatCount="indefinite" />
+                    </circle>
+                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={14}>⚡</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v17",
+                label: "Variação 17 — Fogo crescente",
+                description: "Emoji de fogo indicando momento quente.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <g>
+                      <animateTransform attributeName="transform" type="scale" values="1;1.15;1" additive="sum" dur="0.6s" repeatCount="indefinite" />
+                      <circle cx={cx} cy={cy} r={13} fill="#fed7aa" stroke="#ea580c" strokeWidth={1.5} />
+                      <text x={cx} y={cy + 5} textAnchor="middle" fontSize={14}>🔥</text>
+                    </g>
+                  </g>
+                ),
+              },
+              {
+                id: "v18",
+                label: "Variação 18 — Alvo (target)",
+                description: "Anéis concêntricos estilo alvo de tiro.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <circle cx={cx} cy={cy} r={13} fill="#fff" stroke="#dc2626" strokeWidth={2} />
+                    <circle cx={cx} cy={cy} r={9} fill="none" stroke="#dc2626" strokeWidth={1.5} />
+                    <circle cx={cx} cy={cy} r={5} fill="#dc2626">
+                      <animate attributeName="r" values="3;6;3" dur="1.2s" repeatCount="indefinite" />
+                    </circle>
+                  </g>
+                ),
+              },
+              {
+                id: "v19",
+                label: "Variação 19 — Setas convergentes",
+                description: "4 setas apontando para o ponto de interesse.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <g>
+                      <animateTransform attributeName="transform" type="scale" values="0.8;1.1;0.8" additive="sum" dur="1.2s" repeatCount="indefinite" />
+                      <polygon points={`${cx-18},${cy-10} ${cx-10},${cy-4} ${cx-18},${cy+2}`} fill="#8b5cf6" />
+                      <polygon points={`${cx+18},${cy-10} ${cx+10},${cy-4} ${cx+18},${cy+2}`} fill="#8b5cf6" />
+                      <polygon points={`${cx-8},${cy-18} ${cx-2},${cy-10} ${cx+4},${cy-18}`} fill="#8b5cf6" />
+                      <polygon points={`${cx-8},${cy+10} ${cx-2},${cy+18} ${cx+4},${cy+10}`} fill="#8b5cf6" />
+                    </g>
+                    <circle cx={cx} cy={cy-3} r={6} fill="#8b5cf6" stroke="#fff" strokeWidth={1.5} />
+                  </g>
+                ),
+              },
+              {
+                id: "v20",
+                label: "Variação 20 — Confete festivo",
+                description: "Pin com partículas coloridas ao redor.",
+                renderPin: (cx, cy, onClick) => {
+                  const colors = ["#ef4444", "#22c55e", "#3b82f6", "#eab308", "#ec4899", "#06b6d4", "#a855f7", "#f97316"];
+                  return (
+                    <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                      <title>Ver insight</title>
+                      {colors.map((c, i) => {
+                        const a = (i / colors.length) * Math.PI * 2;
+                        const px = cx + Math.cos(a) * 16;
+                        const py = cy + Math.sin(a) * 16;
+                        return <rect key={i} x={px - 2} y={py - 2} width={4} height={4} fill={c} transform={`rotate(${i * 30} ${px} ${py})`}>
+                          <animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite" begin={`${i * 0.15}s`} />
+                        </rect>;
+                      })}
+                      <circle cx={cx} cy={cy} r={10} fill="#22c55e" stroke="#fff" strokeWidth={1.5} />
+                      <text x={cx} y={cy + 4} textAnchor="middle" fontSize={11}>🎉</text>
+                    </g>
+                  );
+                },
+              },
+              {
+                id: "v21",
+                label: "Variação 21 — Check de sucesso",
+                description: "Círculo verde com check, estilo confirmação.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <circle cx={cx} cy={cy} r={13} fill="#22c55e" stroke="#fff" strokeWidth={2}>
+                      <animate attributeName="r" values="13;15;13" dur="1.4s" repeatCount="indefinite" />
+                    </circle>
+                    <path d={`M ${cx-5} ${cy} L ${cx-1} ${cy+4} L ${cx+6} ${cy-4}`} stroke="#fff" strokeWidth={2.5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                  </g>
+                ),
+              },
+              {
+                id: "v22",
+                label: "Variação 22 — Triângulo de alerta",
+                description: "Sinal de atenção amarelo com exclamação.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <polygon points={`${cx},${cy-13} ${cx+13},${cy+10} ${cx-13},${cy+10}`} fill="#facc15" stroke="#fff" strokeWidth={1.8}>
+                      <animate attributeName="opacity" values="1;0.6;1" dur="0.8s" repeatCount="indefinite" />
+                    </polygon>
+                    <text x={cx} y={cy + 7} textAnchor="middle" fontSize={13} fontWeight={900} fill="#000">!</text>
+                  </g>
+                ),
+              },
+              {
+                id: "v23",
+                label: "Variação 23 — Hexágono honeycomb",
+                description: "Hexágono roxo com letra 'i' central.",
+                renderPin: (cx, cy, onClick) => {
+                  const r = 13;
+                  const pts = [0, 60, 120, 180, 240, 300].map(a => {
+                    const rad = ((a - 30) * Math.PI) / 180;
+                    return `${cx + Math.cos(rad) * r},${cy + Math.sin(rad) * r}`;
+                  }).join(" ");
+                  return (
+                    <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                      <title>Ver insight</title>
+                      <polygon points={pts} fill="#a855f7" stroke="#fff" strokeWidth={1.8}>
+                        <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite" />
+                      </polygon>
+                      <text x={cx} y={cy + 4} textAnchor="middle" fontSize={12} fontWeight={800} fill="#fff">i</text>
+                    </g>
+                  );
+                },
+              },
+              {
+                id: "v24",
+                label: "Variação 24 — Faixa diagonal 'INSIGHT'",
+                description: "Banner inclinado tipo selo de novidade.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <g transform={`rotate(-20 ${cx} ${cy})`}>
+                      <rect x={cx - 28} y={cy - 8} width={56} height={16} fill="#dc2626" stroke="#fff" strokeWidth={1.2}>
+                        <animate attributeName="fill" values="#dc2626;#f87171;#dc2626" dur="1.5s" repeatCount="indefinite" />
+                      </rect>
+                      <text x={cx} y={cy + 4} textAnchor="middle" fontSize={10} fontWeight={800} fill="#fff">INSIGHT</text>
+                    </g>
+                  </g>
+                ),
+              },
+              {
+                id: "v25",
+                label: "Variação 25 — Olho observador",
+                description: "Pin com ícone de olho indicando 'olhe aqui'.",
+                renderPin: (cx, cy, onClick) => (
+                  <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                    <title>Ver insight</title>
+                    <circle cx={cx} cy={cy} r={14} fill="#1e293b" stroke="#fff" strokeWidth={2}>
+                      <animate attributeName="r" values="14;16;14" dur="1.6s" repeatCount="indefinite" />
+                    </circle>
+                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={14}>👁️</text>
+                  </g>
+                ),
+              },
             ];
 
             const renderVariant = (variant: typeof variants[number]) => (
