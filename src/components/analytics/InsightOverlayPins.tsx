@@ -57,9 +57,12 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
   useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    // O SVG do Recharts é IRMÃO do overlay (ambos dentro do mesmo parent .relative).
+    // Por isso buscamos no parent, não dentro do próprio overlay.
+    const scope: HTMLElement = (el.parentElement as HTMLElement) ?? el;
 
     const measure = () => {
-      const grid = el.querySelector(".recharts-cartesian-grid") as SVGGraphicsElement | null;
+      const grid = scope.querySelector(".recharts-cartesian-grid") as SVGGraphicsElement | null;
       if (!grid) return false;
       const containerRect = el.getBoundingClientRect();
       const gridRect = grid.getBoundingClientRect();
