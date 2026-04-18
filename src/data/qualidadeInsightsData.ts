@@ -12,6 +12,7 @@ export interface InsightModal {
 
 export interface QualidadeInsight {
   id: string;
+  numeric_id?: number;
   category: "risk" | "achievement" | "opportunity" | "event";
   severity: "critical" | "high" | "medium" | "info" | "success";
   title: string;
@@ -24,11 +25,13 @@ export interface QualidadeInsight {
 }
 
 import insights642 from "@/data/customers/642/qualidade-ponto/insights.json";
+import insights1 from "@/data/customers/1/insights.json";
 import insights2 from "@/data/customers/2/insights.json";
 import insights391 from "@/data/customers/391/insights.json";
 
 const insightsByCustomer: Record<number, QualidadeInsight[]> = {
   642: insights642 as QualidadeInsight[],
+  1: insights1 as QualidadeInsight[],
   2: insights2 as QualidadeInsight[],
   391: insights391 as QualidadeInsight[],
 };
@@ -36,6 +39,20 @@ const insightsByCustomer: Record<number, QualidadeInsight[]> = {
 export function getInsightsForCustomer(customerId: number): QualidadeInsight[] {
   return insightsByCustomer[customerId] ?? [];
 }
+
+export function findInsightByNumericId(customerId: number, numericId: number): QualidadeInsight | undefined {
+  return getInsightsForCustomer(customerId).find(i => i.numeric_id === numericId);
+}
+
+export type PinType = "risk" | "achievement" | "opportunity" | "trend";
+
+/** Visual mapping for the 4 pin types (matches Insights Center icons) */
+export const PIN_TYPE_VISUALS: Record<PinType, { color: string; emoji: string; label: string }> = {
+  risk:        { color: "#ef4444", emoji: "🚨", label: "Risco" },
+  achievement: { color: "#22c55e", emoji: "🏆", label: "Conquista" },
+  opportunity: { color: "#facc15", emoji: "💡", label: "Oportunidade" },
+  trend:       { color: "#3b82f6", emoji: "📊", label: "Tendência" },
+};
 
 // Legacy export for backward compat
 export const qualidadeInsights: QualidadeInsight[] = insights642 as QualidadeInsight[];
