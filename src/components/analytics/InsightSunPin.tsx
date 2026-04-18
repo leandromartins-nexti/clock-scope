@@ -32,14 +32,14 @@ export default function InsightSunPin({
 }: InsightSunPinProps) {
   const visuals = PIN_TYPE_VISUALS[type];
   const color = visuals.color;
-  const emoji = visuals.emoji;
+  const IconCmp = visuals.icon;
 
   const longR2 = 36 * scale;
   const r1 = 22 * scale;
   const shortR2 = 30 * scale;
   const glowR = 28 * scale;
   const bulbR = 20 * scale;
-  const fontSize = Math.max(10, Math.round(24 * scale));
+  const iconSize = Math.max(12, Math.round(22 * scale));
 
   const required = distance + longR2;
   let placeBelow = false;
