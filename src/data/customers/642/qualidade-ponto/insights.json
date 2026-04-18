@@ -61,7 +61,22 @@
         "O1"
       ]
     },
-    "numeric_id": 1
+    "numeric_id": 1,
+    "scope": {
+      "level": "company",
+      "company_id": 9380,
+      "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+      "business_unit_id": 17518,
+      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA"
+    },
+    "anchors": [
+      {
+        "chart": "sobrecarga_backoffice",
+        "month": "2025-09",
+        "series": "horas_extras_rateadas",
+        "axis": "right"
+      }
+    ]
   },
   {
     "id": "R2",
@@ -121,7 +136,22 @@
         "O2"
       ]
     },
-    "numeric_id": 2
+    "numeric_id": 2,
+    "scope": {
+      "level": "company",
+      "company_id": 9379,
+      "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
+      "business_unit_id": 17517,
+      "business_unit_name": "VIG EYES TERCEIRIZACAO"
+    },
+    "anchors": [
+      {
+        "chart": "qualidade_headcount",
+        "month": "2026-03-01",
+        "series": "justificadas",
+        "axis": "left"
+      }
+    ]
   },
   {
     "id": "R3",
@@ -180,7 +210,18 @@
         "R2"
       ]
     },
-    "numeric_id": 3
+    "numeric_id": 3,
+    "scope": {
+      "level": "global"
+    },
+    "anchors": [
+      {
+        "chart": "tratativa_tempo",
+        "month": "2026-03-01",
+        "series": "tempo_medio_horas",
+        "axis": "right"
+      }
+    ]
   },
   {
     "id": "C1",
@@ -240,7 +281,22 @@
         "R1"
       ]
     },
-    "numeric_id": 4
+    "numeric_id": 4,
+    "scope": {
+      "level": "company",
+      "company_id": 9380,
+      "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+      "business_unit_id": 17518,
+      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA"
+    },
+    "anchors": [
+      {
+        "chart": "qualidade_headcount",
+        "month": "2026-03-01",
+        "series": "total",
+        "axis": "left"
+      }
+    ]
   },
   {
     "id": "C2",
@@ -300,7 +356,22 @@
         "R2"
       ]
     },
-    "numeric_id": 5
+    "numeric_id": 5,
+    "scope": {
+      "level": "company",
+      "company_id": 9381,
+      "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+      "business_unit_id": 17519,
+      "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL"
+    },
+    "anchors": [
+      {
+        "chart": "sobrecarga_backoffice",
+        "month": "2026-03",
+        "series": "operadores_ativos",
+        "axis": "left"
+      }
+    ]
   },
   {
     "id": "O1",
@@ -364,7 +435,22 @@
         "E1"
       ]
     },
-    "numeric_id": 6
+    "numeric_id": 6,
+    "scope": {
+      "level": "company",
+      "company_id": 9380,
+      "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
+      "business_unit_id": 17518,
+      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA"
+    },
+    "anchors": [
+      {
+        "chart": "sobrecarga_backoffice",
+        "month": "2026-03",
+        "series": "ajustes_por_operador",
+        "axis": "left"
+      }
+    ]
   },
   {
     "id": "O2",
@@ -424,7 +510,22 @@
         "R2"
       ]
     },
-    "numeric_id": 7
+    "numeric_id": 7,
+    "scope": {
+      "level": "company",
+      "company_id": 9381,
+      "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
+      "business_unit_id": 17519,
+      "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL"
+    },
+    "anchors": [
+      {
+        "chart": "qualidade_headcount",
+        "month": "2026-03-01",
+        "series": "total",
+        "axis": "left"
+      }
+    ]
   },
   {
     "id": "E1",
@@ -487,7 +588,18 @@
         "C1"
       ]
     },
-    "numeric_id": 8
+    "numeric_id": 8,
+    "scope": {
+      "level": "global"
+    },
+    "anchors": [
+      {
+        "chart": "qualidade_headcount",
+        "month": "2025-09-01",
+        "series": "active_headcount",
+        "axis": "right"
+      }
+    ]
   },
   {
     "id": "E2",
@@ -547,6 +659,17 @@
         "O1"
       ]
     },
-    "numeric_id": 9
+    "numeric_id": 9,
+    "scope": {
+      "level": "global"
+    },
+    "anchors": [
+      {
+        "chart": "qualidade_headcount",
+        "month": "2025-12-01",
+        "series": "active_headcount",
+        "axis": "right"
+      }
+    ]
   }
 ]

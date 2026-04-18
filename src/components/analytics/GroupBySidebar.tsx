@@ -175,7 +175,7 @@ export default function GroupBySidebar({
           {mobileMode === "chat" ? (
             <div className="flex-1 overflow-y-auto p-3"><InlineAnalyticsChat activeTab={activeTab} groupBy={groupBy} /></div>
           ) : mobileMode === "insights" ? (
-            <div className="flex-1 overflow-y-auto p-3"><RightSidebarInsightsPanel /></div>
+            <div className="flex-1 overflow-y-auto p-3"><RightSidebarInsightsPanel groupBy={groupBy} selectedEntity={selectedRegional} /></div>
           ) : (
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
               <div className="flex gap-2">
@@ -273,7 +273,7 @@ export default function GroupBySidebar({
         {mode === "chat" ? (
           <InlineAnalyticsChat activeTab={activeTab} groupBy={groupBy} />
         ) : mode === "insights" ? (
-          <RightSidebarInsightsPanel />
+          <RightSidebarInsightsPanel groupBy={groupBy} selectedEntity={selectedRegional} />
         ) : (
           <>
             {/* Group toggles */}

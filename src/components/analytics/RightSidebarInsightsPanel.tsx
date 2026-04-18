@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Trophy, Lightbulb, Activity, Play, Square } from "lucide-react";
 import { useCustomer } from "@/contexts/CustomerContext";
-import { getInsightsForCustomer, categoryConfig, type QualidadeInsight } from "@/data/qualidadeInsightsData";
+import { getInsightsForCustomer, filterInsightsByEntity, categoryConfig, type QualidadeInsight, type GroupByLevel } from "@/data/qualidadeInsightsData";
 import InsightDetailModal from "./InsightDetailModal";
 import { useDismissedInsights } from "@/hooks/useDismissedInsights";
 import { useInsightsTour } from "@/contexts/InsightsTourContext";
@@ -20,9 +20,13 @@ const catKeys: Array<{ key: "all" | keyof typeof categoryConfig; label: string }
 
 interface Props {
   collapsed?: boolean;
+  /** Filtro contextual da sidebar de operações (empresa/unidade/area) */
+  groupBy?: GroupByLevel;
+  /** Entidade selecionada na sidebar (null = visão consolidada) */
+  selectedEntity?: string | null;
 }
 
-export default function RightSidebarInsightsPanel({ collapsed = false }: Props) {
+export default function RightSidebarInsightsPanel({ collapsed = false, groupBy = "empresa", selectedEntity = null }: Props) {
   const { customerId } = useCustomer();
   const { dismissed } = useDismissedInsights(String(customerId));
   const [filter, setFilter] = useState<string>("all");
@@ -31,10 +35,14 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const all = useMemo(() => getInsightsForCustomer(customerId), [customerId]);
+  const scoped = useMemo(
+    () => filterInsightsByEntity(all, groupBy, selectedEntity),
+    [all, groupBy, selectedEntity]
+  );
   const active = useMemo(
-    () => all.filter(i => !dismissed.includes(i.id))
+    () => scoped.filter(i => !dismissed.includes(i.id))
             .sort((a, b) => (severityOrder[a.severity] ?? 9) - (severityOrder[b.severity] ?? 9)),
-    [all, dismissed]
+    [scoped, dismissed]
   );
   const filtered = useMemo(
     () => filter === "all" ? active : active.filter(i => i.category === filter),
