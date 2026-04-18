@@ -1663,7 +1663,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               <button onClick={() => setChartDataModal("evoQualidade")} className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Ver dados"><Database className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <ResponsiveContainer width="100%" height={280}>
-              <ComposedChart data={qualidadeComHeadcount} margin={{ top: 50, right: 5, bottom: 50, left: 5 }} onClick={(e: any) => {
+              <ComposedChart data={qualidadeComHeadcount} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -1758,7 +1758,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     if (!insightId) return null;
                     const cx = (x ?? 0) + (width ?? 0) / 2;
                     const cy = (y ?? 0);
-                    return <InsightSunPin cx={cx} cy={cy} plotTop={50} plotBottom={175} padding={5} onClick={() => openInsightById(insightId)} />;
+                    return <InsightSunPin cx={cx} cy={cy} onClick={() => openInsightById(insightId)} />;
                   }} />
                 </Bar>
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
@@ -1802,7 +1802,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     tempoMedio,
                   };
                 });
-              })()} margin={{ top: 50, right: 5, bottom: 50, left: 5 }} onClick={(e: any) => {
+              })()} onClick={(e: any) => {
                 if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
               }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -1856,7 +1856,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     if (!d) return null;
                     const insightId = chartInsightPins.evoTratativa?.[d.mes];
                     if (!insightId) return null;
-                    return <InsightSunPin cx={x} cy={y} plotTop={50} plotBottom={175} padding={5} onClick={() => openInsightById(insightId)} />;
+                    return <InsightSunPin cx={x} cy={y} onClick={() => openInsightById(insightId)} />;
                   }} />
                 </Line>
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
@@ -1964,7 +1964,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   </button>
                 </div>
                 <ResponsiveContainer width="100%" height={280}>
-                  <ComposedChart data={sobrecargaData} margin={{ top: 50, right: 10, bottom: 50, left: 0 }} onClick={(e: any) => {
+                  <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }} onClick={(e: any) => {
                     if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
                   }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -2054,7 +2054,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         if (!d) return null;
                         const insightId = chartInsightPins.sobrecarga?.[d.mes];
                         if (!insightId) return null;
-                        return <InsightSunPin cx={x} cy={y} plotTop={50} plotBottom={175} padding={5} onClick={() => openInsightById(insightId)} />;
+                        return <InsightSunPin cx={x} cy={y} onClick={() => openInsightById(insightId)} />;
                       }} />
                     </Line>
                   </ComposedChart>
