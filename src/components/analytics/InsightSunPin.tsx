@@ -1,14 +1,22 @@
 /**
  * InsightSunPin — pin de insight estilo "SOL mini" com lâmpada animada.
  * Renderizado como SVG dentro de Recharts via <LabelList content={...}>.
- * Posiciona-se 40px acima do ponto (cx, cy) recebido.
+ * Por padrão posiciona-se 40px ACIMA do ponto (cx, cy). Se não houver espaço
+ * suficiente acima (estouraria o topo do plot area), inverte para BAIXO.
  */
 interface InsightSunPinProps {
   cx: number;
   cy: number;
   onClick: () => void;
   scale?: number;
-  offsetY?: number;
+  /** Distância (em px) entre o ponto e o centro da lâmpada. Default 40. */
+  distance?: number;
+  /** Top Y do plot area (para detectar estouro superior). Default 0. */
+  plotTop?: number;
+  /** Bottom Y do plot area (para detectar estouro inferior quando flipped). */
+  plotBottom?: number;
+  /** Força direção (auto detecta se omitido). */
+  direction?: "up" | "down" | "auto";
   title?: string;
 }
 
@@ -17,21 +25,42 @@ export default function InsightSunPin({
   cy,
   onClick,
   scale = 0.45,
-  offsetY = -40,
+  distance = 40,
+  plotTop = 0,
+  plotBottom,
+  direction = "auto",
   title = "Ver insight",
 }: InsightSunPinProps) {
-  const pinY = cy + offsetY;
-  const r1 = 22 * scale;
   const longR2 = 36 * scale;
+  const r1 = 22 * scale;
   const shortR2 = 30 * scale;
   const glowR = 28 * scale;
   const bulbR = 20 * scale;
   const fontSize = Math.max(10, Math.round(24 * scale));
 
+  // Espaço necessário acima/abaixo do ponto = distance + raio externo
+  const required = distance + longR2;
+  let placeBelow = false;
+  if (direction === "down") placeBelow = true;
+  else if (direction === "up") placeBelow = false;
+  else {
+    const spaceAbove = cy - plotTop;
+    if (spaceAbove < required) placeBelow = true;
+    if (placeBelow && plotBottom !== undefined) {
+      const spaceBelow = plotBottom - cy;
+      // Se também não couber abaixo, mantem o que tiver mais espaço
+      if (spaceBelow < required && spaceAbove >= spaceBelow) placeBelow = false;
+    }
+  }
+
+  const pinY = placeBelow ? cy + distance : cy - distance;
+  const stemY1 = placeBelow ? cy - 4 : cy + 4;
+  const stemY2 = placeBelow ? pinY - bulbR * 0.9 : pinY + bulbR * 0.9;
+
   return (
     <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
       <title>{title}</title>
-      <line x1={cx} y1={cy + 4} x2={cx} y2={pinY + bulbR * 0.9} stroke="#facc15" strokeWidth={1.5} strokeDasharray="3 2" opacity={0.6} />
+      <line x1={cx} y1={stemY1} x2={cx} y2={stemY2} stroke="#facc15" strokeWidth={1.5} strokeDasharray="3 2" opacity={0.6} />
       <g>
         <animateTransform attributeName="transform" type="rotate" from={`0 ${cx} ${pinY}`} to={`360 ${cx} ${pinY}`} dur="12s" repeatCount="indefinite" />
         {Array.from({ length: 16 }).map((_, i) => {
