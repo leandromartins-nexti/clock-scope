@@ -2803,6 +2803,62 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   );
                 },
               },
+              ...([
+                { id: "v36", label: "Variação 36 — SOL compacto (acima do topo)", description: "Mesma lâmpada sol, escala reduzida (~70%), posicionada logo acima do topo da barra.", scale: 0.7, offsetY: -22 },
+                { id: "v37", label: "Variação 37 — SOL pequeno colado no topo", description: "Versão menor (~55%) colada no topo da barra para destacar sem invadir o gráfico.", scale: 0.55, offsetY: -16 },
+                { id: "v38", label: "Variação 38 — SOL médio flutuante alto", description: "Tamanho médio (~65%) flutuando bem acima da linha azul, sempre na frente.", scale: 0.65, offsetY: -42 },
+                { id: "v39", label: "Variação 39 — SOL mini sobre a linha", description: "Versão mini (~45%) posicionada exatamente sobre a curva da linha azul.", scale: 0.45, offsetY: -8 },
+                { id: "v40", label: "Variação 40 — SOL discreto no canto superior", description: "Tamanho contido (~60%) levemente acima, equilibrando destaque e leveza.", scale: 0.6, offsetY: -28 },
+              ].map(({ id, label, description, scale, offsetY }) => ({
+                id,
+                label,
+                description,
+                renderPin: (cx: number, cy: number, onClick: () => void) => {
+                  const pinY = cy + offsetY;
+                  const r1 = 22 * scale;
+                  const longR2 = 36 * scale;
+                  const shortR2 = 30 * scale;
+                  const glowR = 28 * scale;
+                  const bulbR = 20 * scale;
+                  const fontSize = Math.max(10, Math.round(24 * scale));
+                  return (
+                    <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+                      <title>Ver insight</title>
+                      <line x1={cx} y1={cy + 4} x2={cx} y2={pinY + bulbR * 0.9} stroke="#facc15" strokeWidth={1.5} strokeDasharray="3 2" opacity={0.6} />
+                      <g>
+                        <animateTransform attributeName="transform" type="rotate" from={`0 ${cx} ${pinY}`} to={`360 ${cx} ${pinY}`} dur="12s" repeatCount="indefinite" />
+                        {Array.from({ length: 16 }).map((_, i) => {
+                          const a = (i * 22.5 * Math.PI) / 180;
+                          const long = i % 2 === 0;
+                          const r2 = long ? longR2 : shortR2;
+                          return (
+                            <line
+                              key={i}
+                              x1={cx + Math.cos(a) * r1}
+                              y1={pinY + Math.sin(a) * r1}
+                              x2={cx + Math.cos(a) * r2}
+                              y2={pinY + Math.sin(a) * r2}
+                              stroke="#facc15"
+                              strokeWidth={long ? 2.5 * scale : 1.8 * scale}
+                              strokeLinecap="round"
+                              opacity={0.85}
+                            >
+                              <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite" begin={`${i * 0.07}s`} />
+                            </line>
+                          );
+                        })}
+                      </g>
+                      <circle cx={cx} cy={pinY} r={glowR} fill="#fde047" opacity={0.4}>
+                        <animate attributeName="opacity" values="0.25;0.7;0.25" dur="1.2s" repeatCount="indefinite" />
+                      </circle>
+                      <circle cx={cx} cy={pinY} r={bulbR} fill="#facc15" stroke="#fff" strokeWidth={Math.max(1.5, 3 * scale)}>
+                        <animate attributeName="fill" values="#fde047;#facc15;#fde047" dur="1.2s" repeatCount="indefinite" />
+                      </circle>
+                      <text x={cx} y={pinY + fontSize / 3} textAnchor="middle" fontSize={fontSize}>💡</text>
+                    </g>
+                  );
+                },
+              }))),
             ];
 
             const renderVariant = (variant: typeof variants[number]) => (
