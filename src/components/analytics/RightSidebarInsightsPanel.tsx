@@ -91,7 +91,7 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
                 const pinned = filtered.filter(i => pinnedIds.has(i.id));
                 startTour(pinned.length ? pinned : filtered);
               }}
-              disabled={!tourActive && filtered.filter(i => pinnedIds.has(i.id)).length === 0}
+              disabled={!tourActive && filtered.length === 0}
               className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               style={{
                 background: tourActive ? "#ef4444" : "#FF5722",
@@ -99,7 +99,7 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
               }}
             >
               {tourActive ? <Square size={9} fill="#fff" /> : <Play size={9} fill="#fff" />}
-              {tourActive ? "Parar" : `Tour (${filtered.filter(i => pinnedIds.has(i.id)).length})`}
+              {tourActive ? "Parar" : `Tour (${filtered.filter(i => pinnedIds.has(i.id)).length || filtered.length})`}
             </button>
           </TooltipTrigger>
           <TooltipContent side="top" sideOffset={6}>
