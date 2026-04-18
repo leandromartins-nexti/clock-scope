@@ -1,33 +1,32 @@
 /**
  * InsightOverlayPins — overlay HTML absoluto que renderiza pins de insight
- * SOBRE um chart Recharts, totalmente FORA da árvore de eventos do SVG.
+ * EXATAMENTE em cima do ponto (x, y) correspondente da série no gráfico Recharts.
  *
- * Posicionamento:
- *  - Horizontal: paddingLeft + (i + 0.5) * usableWidth / N
- *  - Vertical: calculado AUTOMATICAMENTE a partir do `value` da série âncora,
- *    convertendo-o em pixels usando a área do plot (medida via SVG do Recharts)
- *    e o domínio Y indicado (`axis`: left | right). Pode ser refinado com `offsetY`.
+ * Posicionamento (sem CSS de offset, sem clamp, sem padding):
+ *  - X: lê o centro real do tick do eixo X via getScreenCTM (pixel-perfect).
+ *  - Y: converte o `value` em pixel usando o domínio do eixo (left/right) e a
+ *    altura real do plot area medida no DOM (recharts-cartesian-grid).
  *
- *  - Fallback: se `value` não vier, usa `topPx` (legado) ou 20px.
+ *  O pin é centralizado no ponto via translate(-50%, -50%) — nada mais.
  */
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import InsightSunPin from "./InsightSunPin";
 import type { PinType } from "@/data/qualidadeInsightsData";
 
 export interface InsightOverlayPin {
-  mesIndex: number; // 0-based index dentro do array de meses
-  insightId: string; // legacy id (kept for click resolution)
-  numericId?: number; // preferred id used by JSON-driven pins
-  type?: PinType; // visual variant
-  topPx?: number; // legacy: pixels a partir do topo do container
-
-  /** Nome da série a ancorar (apenas para cálculo automático). */
-  series?: string;
-  /** Valor (numérico) da série naquele índice — necessário para cálculo automático. */
+  mesIndex: number;
+  insightId: string;
+  numericId?: number;
+  type?: PinType;
+  /** Valor numérico da série naquele índice — usado para calcular Y exato. */
   value?: number;
-  /** Eixo Y a usar no cálculo. */
+  /** Eixo Y a usar para a conversão valor→pixel. */
   axis?: "left" | "right";
-  /** Ajuste fino vertical em pixels (negativo = sobe). Default: -28. */
+  /** Nome da série (opcional, apenas referência). */
+  series?: string;
+  /** @deprecated mantido por compat; ignorado quando há value+axis+domain. */
+  topPx?: number;
+  /** @deprecated mantido por compat; ignorado. */
   offsetY?: number;
 }
 
@@ -35,25 +34,20 @@ interface Props {
   pins: InsightOverlayPin[];
   totalMeses: number;
   onPinClick: (id: string, numericId?: number) => void;
+  /** @deprecated mantido por compat — não usado no posicionamento. */
   paddingLeftPct?: number;
+  /** @deprecated mantido por compat — não usado no posicionamento. */
   paddingRightPct?: number;
   direction?: "up" | "down";
-  /** Domínio do eixo Y esquerdo [min, max]. Necessário para pins ancorados em axis=left. */
   yDomainLeft?: [number, number];
-  /** Domínio do eixo Y direito [min, max]. Necessário para pins ancorados em axis=right. */
   yDomainRight?: [number, number];
 }
 
-/**
- * Mede a área do plot do gráfico Recharts (recharts-cartesian-grid)
- * em coordenadas relativas ao container do overlay.
- */
 interface PlotInfo {
   top: number;
   left: number;
   width: number;
   height: number;
-  /** Centros x reais (em px relativos ao container) de cada tick do eixo X. */
   tickCentersX: number[];
 }
 
@@ -70,35 +64,25 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
       const containerRect = el.getBoundingClientRect();
       const gridRect = grid.getBoundingClientRect();
 
-      // Lê a posição EXATA de cada categoria no eixo X.
-      // Estratégia: usar o atributo `x` do <line> interno do tick (coordenada SVG
-      // ancorada na categoria), convertido para o sistema de coordenadas do
-      // container via getCTM. Isso evita o erro do bounding box do <text>, que
-      // inclui padding do label e desloca o centro alguns pixels.
       const xAxis = el.querySelector(".recharts-xAxis") as SVGGElement | null;
       const svg = el.querySelector("svg.recharts-surface") as SVGSVGElement | null;
-      let tickCentersX: number[] = [];
+      const tickCentersX: number[] = [];
       if (xAxis && svg) {
         const ticks = xAxis.querySelectorAll(".recharts-cartesian-axis-tick");
         ticks.forEach((t) => {
           const tickG = t as SVGGElement;
           const lineEl = tickG.querySelector("line") as SVGLineElement | null;
           const textEl = tickG.querySelector("text") as SVGTextElement | null;
-          // x do tick em coordenadas SVG: prioriza <line x1>, fallback <text x>
           let svgX: number | null = null;
-          if (lineEl) {
-            svgX = parseFloat(lineEl.getAttribute("x1") ?? "NaN");
-          }
+          if (lineEl) svgX = parseFloat(lineEl.getAttribute("x1") ?? "NaN");
           if ((svgX === null || Number.isNaN(svgX)) && textEl) {
             svgX = parseFloat(textEl.getAttribute("x") ?? "NaN");
           }
           if (svgX === null || Number.isNaN(svgX)) {
-            // Fallback final: bounding box
             const r = tickG.getBoundingClientRect();
             tickCentersX.push(r.left + r.width / 2 - containerRect.left);
             return;
           }
-          // Converte (svgX, 0) do espaço do tick para o espaço da tela
           const ctm = tickG.getScreenCTM();
           if (!ctm) {
             tickCentersX.push(svgX);
@@ -124,12 +108,12 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
-    const t = setTimeout(measure, 50);
+    const t1 = setTimeout(measure, 50);
     const t2 = setTimeout(measure, 200);
     const t3 = setTimeout(measure, 500);
     return () => {
       ro.disconnect();
-      clearTimeout(t);
+      clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
     };
@@ -142,85 +126,59 @@ export default function InsightOverlayPins({
   pins,
   totalMeses,
   onPinClick,
-  paddingLeftPct = 0.07,
-  paddingRightPct = 0.04,
   direction = "down",
   yDomainLeft,
   yDomainRight,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const plot = usePlotArea(containerRef);
-  const usable = 1 - paddingLeftPct - paddingRightPct;
 
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 20 }}>
-      {pins.map((pin, idx) => {
-        // Horizontal: usa o centro REAL do tick correspondente (precisão pixel-perfect
-        // mesmo com barCategoryGap/barGap do Recharts). Fallback para cálculo proporcional.
-        let leftPx: number;
-        if (plot && plot.tickCentersX[pin.mesIndex] !== undefined) {
-          leftPx = plot.tickCentersX[pin.mesIndex];
-        } else if (plot) {
-          leftPx = plot.left + ((pin.mesIndex + 0.5) / totalMeses) * plot.width;
-        } else {
-          leftPx = 0;
-        }
+      {plot &&
+        pins.map((pin, idx) => {
+          // X: centro real do tick. Se não houver, não renderiza.
+          const leftPx = plot.tickCentersX[pin.mesIndex];
+          if (leftPx === undefined) return null;
 
-        // Vertical: cálculo automático baseado no value/axis, fallback para topPx legado
-        let topPx: number;
-        const offsetY = pin.offsetY ?? -28;
-
-        if (plot && pin.value !== undefined && pin.axis) {
-          const domain = pin.axis === "right" ? yDomainRight : yDomainLeft;
-          if (domain) {
-            const [min, max] = domain;
-            const ratio = max === min ? 0 : (pin.value - min) / (max - min);
-            const clamped = Math.max(0, Math.min(1, ratio));
-            topPx = plot.top + plot.height * (1 - clamped) + offsetY;
-          } else {
-            topPx = pin.topPx ?? 20;
+          // Y: valor → pixel usando domínio do eixo e altura do plot.
+          let topPx: number | null = null;
+          if (pin.value !== undefined && pin.axis) {
+            const domain = pin.axis === "right" ? yDomainRight : yDomainLeft;
+            if (domain) {
+              const [min, max] = domain;
+              const ratio = max === min ? 0 : (pin.value - min) / (max - min);
+              const clamped = Math.max(0, Math.min(1, ratio));
+              topPx = plot.top + plot.height * (1 - clamped);
+            }
           }
-        } else {
-          topPx = pin.topPx ?? 20;
-        }
+          if (topPx === null) return null;
 
-        // Clamp horizontal: limita ao plot area (entre os eixos), não ao container.
-        // Isso garante que o pin fique exatamente sobre a barra/ponto, mesmo nos
-        // extremos (primeiro/último mês), sem ser empurrado por margens externas.
-        if (plot) {
-          const minX = plot.left;
-          const maxX = plot.left + plot.width;
-          leftPx = Math.max(minX, Math.min(maxX, leftPx));
-        }
-
-        const positioning: React.CSSProperties = plot
-          ? { left: `${leftPx}px`, top: `${topPx}px` }
-          : { left: `${(paddingLeftPct + ((pin.mesIndex + 0.5) / totalMeses) * usable) * 100}%`, top: `${pin.topPx ?? 20}px` };
-
-        return (
-          <div
-            key={`${pin.insightId}-${idx}`}
-            className="absolute"
-            style={{
-              ...positioning,
-              transform: "translate(-50%, -50%)",
-              pointerEvents: "auto",
-            }}
-          >
-            <svg width="60" height="60" viewBox="-30 -30 60 60" style={{ overflow: "visible" }}>
-              <InsightSunPin
-                cx={0}
-                cy={0}
-                onClick={() => onPinClick(pin.insightId, pin.numericId)}
-                scale={0.6}
-                distance={0}
-                direction={direction}
-                type={pin.type}
-              />
-            </svg>
-          </div>
-        );
-      })}
+          return (
+            <div
+              key={`${pin.insightId}-${idx}`}
+              className="absolute"
+              style={{
+                left: `${leftPx}px`,
+                top: `${topPx}px`,
+                transform: "translate(-50%, -50%)",
+                pointerEvents: "auto",
+              }}
+            >
+              <svg width="60" height="60" viewBox="-30 -30 60 60" style={{ overflow: "visible" }}>
+                <InsightSunPin
+                  cx={0}
+                  cy={0}
+                  onClick={() => onPinClick(pin.insightId, pin.numericId)}
+                  scale={0.6}
+                  distance={0}
+                  direction={direction}
+                  type={pin.type}
+                />
+              </svg>
+            </div>
+          );
+        })}
     </div>
   );
 }
