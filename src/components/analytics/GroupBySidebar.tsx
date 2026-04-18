@@ -247,62 +247,74 @@ export default function GroupBySidebar({
             <PanelRightClose size={14} />
           </button>
 
-          {/* GroupBy icon buttons */}
-          <div className="flex flex-col gap-0.5 mb-1.5">
-            {groupByOptions.map(o => (
-              <UITooltip key={o.id}>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => handleGroupChange(o.id)}
-                    className={`p-1.5 rounded-md transition-colors ${
-                      groupBy === o.id
-                        ? "bg-[#FF5722] text-white"
-                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-                    }`}
-                  >
-                    <o.icon size={13} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left" className="text-xs">{o.label}</TooltipContent>
-              </UITooltip>
-            ))}
-          </div>
+          {/* Mode toggle (Ops | Insights) */}
+          <ModeToggle vertical />
+          <div className="w-6 border-t border-border/50 my-1" />
 
-          {/* Divider */}
-          <div className="w-6 border-t border-border/50 mb-1" />
+          {mode === "insights" ? (
+            <div className="flex-1 overflow-y-auto w-full pt-1">
+              <RightSidebarInsightsPanel collapsed />
+            </div>
+          ) : (
+            <>
+              {/* GroupBy icon buttons */}
+              <div className="flex flex-col gap-0.5 mb-1.5">
+                {groupByOptions.map(o => (
+                  <UITooltip key={o.id}>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleGroupChange(o.id)}
+                        className={`p-1.5 rounded-md transition-colors ${
+                          groupBy === o.id
+                            ? "bg-[#FF5722] text-white"
+                            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                        }`}
+                      >
+                        <o.icon size={13} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="text-xs">{o.label}</TooltipContent>
+                  </UITooltip>
+                ))}
+              </div>
 
-          {/* Abbreviated items */}
-          <div className="flex flex-col gap-0.5 overflow-y-auto flex-1">
-            {pagedItems.map(op => {
-              const itemValue = op.value ?? op.nome;
-              const isSelected = selectedRegional === itemValue;
-              const isDimmed = selectedRegional && !isSelected;
-              const scoreColor = getScoreClassification(op.score, scoreConfig).text;
-              const abbr = abreviar(op.nome);
-              return (
-                <UITooltip key={itemValue}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => onRegionalClick(itemValue)}
-                      onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
-                      className={`flex flex-col items-center px-1 py-1 rounded-md cursor-pointer transition-all text-[9px] leading-tight ${
-                        isSelected
-                          ? "bg-orange-50 border border-[#FF5722]/30"
-                          : "hover:bg-muted/40 border border-transparent"
-                      } ${isDimmed ? "opacity-35" : ""}`}
-                    >
-                      <span className="font-bold text-foreground">{abbr}</span>
-                      <span className={`font-bold tabular-nums ${scoreColor}`}>{op.score}</span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="left" className="text-xs max-w-[200px]">
-                    <p className="font-semibold">{op.nome}</p>
-                    <p className="text-muted-foreground">Score: {op.score}</p>
-                  </TooltipContent>
-                </UITooltip>
-              );
-            })}
-          </div>
+              {/* Divider */}
+              <div className="w-6 border-t border-border/50 mb-1" />
+
+              {/* Abbreviated items */}
+              <div className="flex flex-col gap-0.5 overflow-y-auto flex-1">
+                {pagedItems.map(op => {
+                  const itemValue = op.value ?? op.nome;
+                  const isSelected = selectedRegional === itemValue;
+                  const isDimmed = selectedRegional && !isSelected;
+                  const scoreColor = getScoreClassification(op.score, scoreConfig).text;
+                  const abbr = abreviar(op.nome);
+                  return (
+                    <UITooltip key={itemValue}>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => onRegionalClick(itemValue)}
+                          onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
+                          className={`flex flex-col items-center px-1 py-1 rounded-md cursor-pointer transition-all text-[9px] leading-tight ${
+                            isSelected
+                              ? "bg-orange-50 border border-[#FF5722]/30"
+                              : "hover:bg-muted/40 border border-transparent"
+                          } ${isDimmed ? "opacity-35" : ""}`}
+                        >
+                          <span className="font-bold text-foreground">{abbr}</span>
+                          <span className={`font-bold tabular-nums ${scoreColor}`}>{op.score}</span>
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="text-xs max-w-[200px]">
+                        <p className="font-semibold">{op.nome}</p>
+                        <p className="text-muted-foreground">Score: {op.score}</p>
+                      </TooltipContent>
+                    </UITooltip>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
