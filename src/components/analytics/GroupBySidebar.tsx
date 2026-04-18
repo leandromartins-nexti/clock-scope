@@ -326,7 +326,9 @@ export default function GroupBySidebar({
        <div className="bg-white border-l border-border/40 pl-3 pr-1 pt-2 h-full flex flex-col">
         {/* Header: title + collapse button */}
         <div className="flex items-center justify-between mb-1.5">
-          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">Tipo de Operação</p>
+          <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase">
+            {mode === "ops" ? "Tipo de Operação" : "Insights"}
+          </p>
           <button
             onClick={() => setCollapsed(true)}
             className="p-1 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors shrink-0"
@@ -336,92 +338,101 @@ export default function GroupBySidebar({
           </button>
         </div>
 
-        {/* Group toggles */}
-        <div className="flex gap-1 mb-1.5">
-          {groupByOptions.map(o => (
-            <button
-              key={o.id}
-              onClick={() => handleGroupChange(o.id)}
-              className={`px-1.5 py-0.5 rounded text-[10px] font-medium border transition-colors flex-1 whitespace-nowrap ${
-                groupBy === o.id
-                  ? "bg-[#FF5722] text-white border-[#FF5722]"
-                  : "text-muted-foreground border-border hover:border-[#FF5722]/40"
-              }`}
-            >
-              {o.short}
-            </button>
-          ))}
-        </div>
+        {/* Mode toggle (Ops | Insights) */}
+        <ModeToggle />
 
-        {/* Search */}
-        <div className="relative mb-1">
-          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Buscar..."
-            value={search}
-            onChange={e => handleSearchChange(e.target.value)}
-            className="w-full pl-6 pr-2 py-1 text-[11px] rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
-          />
-        </div>
+        {mode === "insights" ? (
+          <RightSidebarInsightsPanel />
+        ) : (
+          <>
+            {/* Group toggles */}
+            <div className="flex gap-1 mb-1.5">
+              {groupByOptions.map(o => (
+                <button
+                  key={o.id}
+                  onClick={() => handleGroupChange(o.id)}
+                  className={`px-1.5 py-0.5 rounded text-[10px] font-medium border transition-colors flex-1 whitespace-nowrap ${
+                    groupBy === o.id
+                      ? "bg-[#FF5722] text-white border-[#FF5722]"
+                      : "text-muted-foreground border-border hover:border-[#FF5722]/40"
+                  }`}
+                >
+                  {o.short}
+                </button>
+              ))}
+            </div>
 
-        {/* Pagination */}
-        {showPagination && (
-          <div className="flex gap-1 mb-1 flex-wrap">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`w-5 h-5 rounded text-[10px] font-medium transition-colors ${
-                  page === p
-                    ? "bg-[#FF5722] text-white"
-                    : "text-muted-foreground border border-border hover:border-[#FF5722]/40"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
-          </div>
-        )}
+            {/* Search */}
+            <div className="relative mb-1">
+              <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Buscar..."
+                value={search}
+                onChange={e => handleSearchChange(e.target.value)}
+                className="w-full pl-6 pr-2 py-1 text-[11px] rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[#FF5722]/40"
+              />
+            </div>
 
-        {/* Column headers */}
-        <div className="flex items-center gap-2 px-0.5 mb-1">
-          <button onClick={() => toggleSort("nome")} className="flex-1 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground text-left">
-            Nome <ArrowUpDown size={9} className={sortBy === "nome" ? "text-[#FF5722]" : ""} />
-          </button>
-          <button onClick={() => toggleSort("score")} className="shrink-0 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground">
-            Score <ArrowUpDown size={9} className={sortBy === "score" ? "text-[#FF5722]" : ""} />
-          </button>
-        </div>
-
-        {/* Items */}
-        <div className="space-y-0.5 overflow-y-auto flex-1">
-          {pagedItems.length === 0 && (
-            <p className="text-[10px] text-muted-foreground text-center py-2">Nenhum resultado</p>
-          )}
-          {pagedItems.map(op => {
-            const itemValue = op.value ?? op.nome;
-            const isSelected = selectedRegional === itemValue;
-            const isDimmed = selectedRegional && !isSelected;
-            const scoreColor = getScoreClassification(op.score, scoreConfig).text;
-            return (
-              <div
-                key={itemValue}
-                onClick={() => onRegionalClick(itemValue)}
-                onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
-                className={`flex items-center gap-2 px-0.5 py-1 rounded-md cursor-pointer transition-all text-xs ${
-                  isSelected
-                    ? "bg-orange-50 border border-[#FF5722]/30"
-                    : "hover:bg-muted/40 border border-transparent"
-                } ${isDimmed ? "opacity-35" : ""}`}
-                title="Clique para filtrar · Botão direito para detalhes"
-              >
-                <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
-                <span className={`font-bold tabular-nums shrink-0 ${scoreColor}`}>{op.score}</span>
+            {/* Pagination */}
+            {showPagination && (
+              <div className="flex gap-1 mb-1 flex-wrap">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-5 h-5 rounded text-[10px] font-medium transition-colors ${
+                      page === p
+                        ? "bg-[#FF5722] text-white"
+                        : "text-muted-foreground border border-border hover:border-[#FF5722]/40"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
               </div>
-            );
-          })}
-        </div>
+            )}
+
+            {/* Column headers */}
+            <div className="flex items-center gap-2 px-0.5 mb-1">
+              <button onClick={() => toggleSort("nome")} className="flex-1 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground text-left">
+                Nome <ArrowUpDown size={9} className={sortBy === "nome" ? "text-[#FF5722]" : ""} />
+              </button>
+              <button onClick={() => toggleSort("score")} className="shrink-0 flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground hover:text-foreground">
+                Score <ArrowUpDown size={9} className={sortBy === "score" ? "text-[#FF5722]" : ""} />
+              </button>
+            </div>
+
+            {/* Items */}
+            <div className="space-y-0.5 overflow-y-auto flex-1">
+              {pagedItems.length === 0 && (
+                <p className="text-[10px] text-muted-foreground text-center py-2">Nenhum resultado</p>
+              )}
+              {pagedItems.map(op => {
+                const itemValue = op.value ?? op.nome;
+                const isSelected = selectedRegional === itemValue;
+                const isDimmed = selectedRegional && !isSelected;
+                const scoreColor = getScoreClassification(op.score, scoreConfig).text;
+                return (
+                  <div
+                    key={itemValue}
+                    onClick={() => onRegionalClick(itemValue)}
+                    onContextMenu={e => { e.preventDefault(); onItemDetail?.(itemValue); }}
+                    className={`flex items-center gap-2 px-0.5 py-1 rounded-md cursor-pointer transition-all text-xs ${
+                      isSelected
+                        ? "bg-orange-50 border border-[#FF5722]/30"
+                        : "hover:bg-muted/40 border border-transparent"
+                    } ${isDimmed ? "opacity-35" : ""}`}
+                    title="Clique para filtrar · Botão direito para detalhes"
+                  >
+                    <span className="flex-1 font-medium truncate text-foreground">{op.nome}</span>
+                    <span className={`font-bold tabular-nums shrink-0 ${scoreColor}`}>{op.score}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
