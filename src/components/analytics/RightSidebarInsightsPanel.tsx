@@ -111,7 +111,20 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
               className="w-full text-left bg-white rounded-md shadow-sm hover:shadow-md transition-all p-2"
               style={{ borderLeft: `3px solid ${cfg.borderColor}` }}
             >
-              <p className="text-[11px] leading-snug text-foreground line-clamp-3">{ins.title}</p>
+              <span
+                className="text-[8px] font-bold uppercase tracking-wider block mb-0.5"
+                style={{ color: cfg.borderColor }}
+              >
+                {cfg.label}
+              </span>
+              <p className="text-[11px] leading-snug font-medium text-foreground line-clamp-2">
+                {ins.title}
+              </p>
+              {ins.narrative && (
+                <p className="text-[10px] leading-snug text-muted-foreground line-clamp-2 mt-0.5">
+                  {ins.narrative}
+                </p>
+              )}
             </button>
           );
         })}
