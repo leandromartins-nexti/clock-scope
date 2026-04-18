@@ -16242,7 +16242,11 @@
     "faixa_mais_15_dias": 17,
     "tempo_min_horas": 0,
     "tempo_max_horas": 679,
-    "tempo_medio_horas": 21.34
+    "tempo_medio_horas": 21.34,
+    "pin": {
+      "insight_id": 2,
+      "type": "risk"
+    }
   },
   {
     "customer_id": 2,
