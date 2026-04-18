@@ -1,12 +1,15 @@
 import { useState, useMemo, useEffect } from "react";
-import { Search, ArrowUpDown, Building2, Network, LayoutGrid, Filter, Lightbulb } from "lucide-react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { Search, ArrowUpDown, Building2, Network, LayoutGrid, Filter, Lightbulb, MessageCircle } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useScoreConfig, getScoreClassification } from "@/contexts/ScoreConfigContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useSearchParams } from "react-router-dom";
 import RightSidebarInsightsPanel from "./RightSidebarInsightsPanel";
+import InlineAnalyticsChat from "./InlineAnalyticsChat";
 
-type SidebarMode = "ops" | "insights";
+type SidebarMode = "ops" | "insights" | "chat";
 
 // ── Types ──
 export type GroupBy = "unidade" | "empresa" | "area";
