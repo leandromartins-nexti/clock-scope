@@ -124,12 +124,15 @@ export default function InsightOverlayPins({
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 20 }}>
       {pins.map((pin, idx) => {
-        // Horizontal: usa o plot real se disponível (mais preciso), senão fallback proporcional
+        // Horizontal: usa o centro REAL do tick correspondente (precisão pixel-perfect
+        // mesmo com barCategoryGap/barGap do Recharts). Fallback para cálculo proporcional.
         let leftPx: number;
-        if (plot) {
+        if (plot && plot.tickCentersX[pin.mesIndex] !== undefined) {
+          leftPx = plot.tickCentersX[pin.mesIndex];
+        } else if (plot) {
           leftPx = plot.left + ((pin.mesIndex + 0.5) / totalMeses) * plot.width;
         } else {
-          leftPx = 0; // será sobrescrito pelo style abaixo
+          leftPx = 0;
         }
 
         // Vertical: cálculo automático baseado no value/axis, fallback para topPx legado
