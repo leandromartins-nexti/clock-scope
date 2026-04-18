@@ -40,6 +40,7 @@ import InfoTip from "@/components/analytics/InfoTip";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import QualidadeInsightsSection from "@/components/analytics/QualidadeInsightsSection";
 import InsightDetailModal from "@/components/analytics/InsightDetailModal";
+import InsightSunPin from "@/components/analytics/InsightSunPin";
 import { getInsightsForCustomer, type QualidadeInsight } from "@/data/qualidadeInsightsData";
 
 // decomposicaoScore and kpisPeriodoAnterior now loaded dynamically via useQualidadePontoData hook
@@ -917,7 +918,12 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const [activeInsight, setActiveInsight] = useState<QualidadeInsight | null>(null);
   // Map: chart name → mes label → insight id (chart pin annotations)
   const chartInsightPins: Record<string, Record<string, string>> = {
-    sobrecarga: { "set/25": "C1" },
+    // Evolução da Qualidade e Headcount: evento de set/25 + recuperação em mar/26
+    evoQualidade: { "set/25": "E1", "mar/26": "C1" },
+    // Evolução do Tempo de Tratativa: estoque acumulado >15d (risco trabalhista)
+    evoTratativa: { "mar/26": "R3" },
+    // Sobrecarga do Back-office: oportunidade de contratar 2 operadores
+    sobrecarga: { "mar/26": "O1" },
   };
   const openInsightById = useCallback((id: string) => {
     const all = getInsightsForCustomer(customerId);
@@ -1745,6 +1751,15 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       </text>
                     );
                   }} />
+                  <LabelList content={({ x, y, width, index }: any) => {
+                    const d = qualidadeComHeadcount[index];
+                    if (!d) return null;
+                    const insightId = chartInsightPins.evoQualidade?.[d.mes];
+                    if (!insightId) return null;
+                    const cx = (x ?? 0) + (width ?? 0) / 2;
+                    const cy = (y ?? 0);
+                    return <InsightSunPin cx={cx} cy={cy} onClick={() => openInsightById(insightId)} />;
+                  }} />
                 </Bar>
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: "Registradas", type: "square", color: "#22c55e" },
@@ -1834,7 +1849,18 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <Area yAxisId="left" type="monotone" dataKey="de3a7d" stackId="faixa" fill="#f59e0b" fillOpacity={0.35} stroke="#f59e0b" strokeWidth={0.5} name="3-7 dias" />
                 <Area yAxisId="left" type="monotone" dataKey="de7a15d" stackId="faixa" fill="#f97316" fillOpacity={0.35} stroke="#f97316" strokeWidth={0.5} name="7-15 dias" />
                 <Area yAxisId="left" type="monotone" dataKey="mais15d" stackId="faixa" fill="#ef4444" fillOpacity={0.35} stroke="#ef4444" strokeWidth={0.5} name="+15 dias" />
-                <Line yAxisId="right" type="monotone" dataKey="tempoMedio" name="Tempo médio (dias)" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }} />
+                <Line yAxisId="right" type="monotone" dataKey="tempoMedio" name="Tempo médio (dias)" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }}>
+                  <LabelList content={(props: any) => {
+                    const { index, x, y, value } = props;
+                    const mes = (props as any).mes;
+                    // Recharts passa value mas não mes; precisamos derivar via tratativaFaixasFiltrada[index]
+                    const d = tratativaFaixasFiltrada[index];
+                    if (!d) return null;
+                    const insightId = chartInsightPins.evoTratativa?.[d.mes];
+                    if (!insightId) return null;
+                    return <InsightSunPin cx={x} cy={y} onClick={() => openInsightById(insightId)} />;
+                  }} />
+                </Line>
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: "Até 1 dia", type: "square" as const, color: "#22c55e" },
                   { value: "1-3 dias", type: "square" as const, color: "#84cc16" },
@@ -2024,59 +2050,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                       }} />
                     </Bar>
                     <Line yAxisId="right" type="monotone" dataKey="he" name="Horas extras" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }}>
-                      {/* Pin SOL mini (v39) — renderizado dentro da Line para ficar na FRENTE da linha azul */}
                       <LabelList content={(props: any) => {
                         const { index, x, y } = props;
                         const d = sobrecargaData[index];
                         if (!d) return null;
                         const insightId = chartInsightPins.sobrecarga?.[d.mes];
                         if (!insightId) return null;
-                        const scale = 0.45;
-                        const cx = x;
-                        const cy = y;
-                        const pinY = cy - 40;
-                        const r1 = 22 * scale;
-                        const longR2 = 36 * scale;
-                        const shortR2 = 30 * scale;
-                        const glowR = 28 * scale;
-                        const bulbR = 20 * scale;
-                        const fontSize = Math.max(10, Math.round(24 * scale));
-                        return (
-                          <g style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); openInsightById(insightId); }}>
-                            <title>Ver insight</title>
-                            <line x1={cx} y1={cy + 4} x2={cx} y2={pinY + bulbR * 0.9} stroke="#facc15" strokeWidth={1.5} strokeDasharray="3 2" opacity={0.6} />
-                            <g>
-                              <animateTransform attributeName="transform" type="rotate" from={`0 ${cx} ${pinY}`} to={`360 ${cx} ${pinY}`} dur="12s" repeatCount="indefinite" />
-                              {Array.from({ length: 16 }).map((_, i) => {
-                                const a = (i * 22.5 * Math.PI) / 180;
-                                const long = i % 2 === 0;
-                                const r2 = long ? longR2 : shortR2;
-                                return (
-                                  <line
-                                    key={i}
-                                    x1={cx + Math.cos(a) * r1}
-                                    y1={pinY + Math.sin(a) * r1}
-                                    x2={cx + Math.cos(a) * r2}
-                                    y2={pinY + Math.sin(a) * r2}
-                                    stroke="#facc15"
-                                    strokeWidth={long ? 2.5 * scale : 1.8 * scale}
-                                    strokeLinecap="round"
-                                    opacity={0.85}
-                                  >
-                                    <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite" begin={`${i * 0.07}s`} />
-                                  </line>
-                                );
-                              })}
-                            </g>
-                            <circle cx={cx} cy={pinY} r={glowR} fill="#fde047" opacity={0.4}>
-                              <animate attributeName="opacity" values="0.25;0.7;0.25" dur="1.2s" repeatCount="indefinite" />
-                            </circle>
-                            <circle cx={cx} cy={pinY} r={bulbR} fill="#facc15" stroke="#fff" strokeWidth={Math.max(1.5, 3 * scale)}>
-                              <animate attributeName="fill" values="#fde047;#facc15;#fde047" dur="1.2s" repeatCount="indefinite" />
-                            </circle>
-                            <text x={cx} y={pinY + fontSize / 3} textAnchor="middle" fontSize={fontSize}>💡</text>
-                          </g>
-                        );
+                        return <InsightSunPin cx={x} cy={y} onClick={() => openInsightById(insightId)} />;
                       }} />
                     </Line>
                   </ComposedChart>
