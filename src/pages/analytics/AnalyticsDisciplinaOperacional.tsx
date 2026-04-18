@@ -1800,36 +1800,36 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               </ComposedChart>
             </ResponsiveContainer>
             {(() => {
-              const sourceArr =
-                groupBy === "empresa" ? customerData.hcEmpresa :
-                groupBy === "unidade" ? customerData.hcUnidade :
-                customerData.hcArea;
-              const pinsByMes = buildPinsByMonth(sourceArr, "reference_month", (raw) => MONTH_LABEL_MAP[raw] ?? raw);
+              const allInsights = getInsightsForCustomer(customerId);
+              const scopedInsights = filterInsightsByEntity(allInsights, groupBy as any, selectedRegional);
+              const anchors = buildAnchorsForChart(scopedInsights, "qualidade_headcount" as InsightChartId);
+              // mes label (ex "set/25") → index do array do gráfico
+              const labelToIdx = new Map(qualidadeComHeadcount.map((d, i) => [d.mes, i]));
               const leftMax = Math.max(1, ...qualidadeComHeadcount.map(d => (d.registradas ?? 0) + (d.justificadas ?? 0)));
               const yDomainLeft: [number, number] = [0, leftMax];
               const yDomainRight: [number, number] = [0, rightDomainMax];
-              const pins: InsightOverlayPin[] = qualidadeComHeadcount
-                .map((d, i) => {
-                  const p = pinsByMes[d.mes];
-                  if (!p) return null;
-                  const seriesValue = (() => {
-                    if (!p.series) return undefined;
-                    if (p.series === "total") return (d.registradas ?? 0) + (d.justificadas ?? 0);
-                    if (p.series === "registradas") return d.registradas;
-                    if (p.series === "justificadas") return d.justificadas;
-                    if (p.series === "activeHeadcount" || p.series === "active_headcount" || p.series === "headcount") return (d as any).activeHeadcount;
-                    return (d as any)[p.series];
+              const pins: InsightOverlayPin[] = anchors
+                .map((a) => {
+                  const label = MONTH_LABEL_MAP[a.monthKey + "-01"] ?? a.monthKey;
+                  const idx = labelToIdx.get(label);
+                  if (idx === undefined) return null;
+                  const d: any = qualidadeComHeadcount[idx];
+                  const value = (() => {
+                    if (a.series === "total") return (d.registradas ?? 0) + (d.justificadas ?? 0);
+                    if (a.series === "registradas") return d.registradas;
+                    if (a.series === "justificadas") return d.justificadas;
+                    if (a.series === "active_headcount" || a.series === "activeHeadcount" || a.series === "headcount") return d.activeHeadcount;
+                    return d[a.series];
                   })();
                   return {
-                    mesIndex: i,
-                    insightId: String(p.insight_id),
-                    numericId: p.insight_id,
-                    type: p.type,
-                    series: p.series,
-                    axis: p.axis,
-                    offsetY: p.offsetY,
-                    value: typeof seriesValue === "number" ? seriesValue : p.value,
-                  };
+                    mesIndex: idx,
+                    insightId: a.insightId,
+                    numericId: a.numericId,
+                    type: a.type,
+                    series: a.series,
+                    axis: a.axis,
+                    value: typeof value === "number" ? value : undefined,
+                  } as InsightOverlayPin;
                 })
                 .filter(Boolean) as InsightOverlayPin[];
               return <InsightOverlayPins pins={pins} totalMeses={qualidadeComHeadcount.length} onPinClick={openInsightById} direction="down" yDomainLeft={yDomainLeft} yDomainRight={yDomainRight} />;
