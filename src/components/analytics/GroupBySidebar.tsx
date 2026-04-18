@@ -254,18 +254,22 @@ export default function GroupBySidebar({
   }
 
   // ── Desktop: always-open sidebar with header toggle ──
+  const titleByMode = mode === "ops" ? "Tipo de Operação" : mode === "insights" ? "Insights" : "Chat AI";
+  const widthClass = mode === "chat" ? "w-[320px]" : "w-[240px]";
   return (
     <div className="flex shrink-0 self-stretch" data-onboarding="tipo-operacao">
-      <div className="w-[240px] bg-white border-l border-border/40 pl-3 pr-1 pt-2 flex flex-col">
-        {/* Header: toggle (Filtro / Insights) + title */}
+      <div className={`${widthClass} bg-white border-l border-border/40 pl-3 pr-1 pt-2 flex flex-col`}>
+        {/* Header: toggle + title */}
         <div className="flex items-center justify-between gap-2 mb-1.5">
           <HeaderToggle />
           <p className="text-[10px] font-semibold text-muted-foreground tracking-wide uppercase truncate">
-            {mode === "ops" ? "Tipo de Operação" : "Insights"}
+            {titleByMode}
           </p>
         </div>
 
-        {mode === "insights" ? (
+        {mode === "chat" ? (
+          <InlineAnalyticsChat activeTab={activeTab} groupBy={groupBy} />
+        ) : mode === "insights" ? (
           <RightSidebarInsightsPanel />
         ) : (
           <>
