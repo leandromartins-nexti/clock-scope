@@ -12,10 +12,18 @@ import type { QualidadeInsight } from "@/data/qualidadeInsightsData";
 const STEP_MS = 8000;
 const SEV_RANK: Record<string, number> = { critical: 0, high: 1, medium: 2, info: 3, success: 4 };
 
+export interface PinPosition { x: number; y: number; }
+
 interface InsightsTourContextValue {
   // Hover sync
   hoveredId: string | null;
   setHoveredId: (id: string | null) => void;
+
+  // Pin registry — usado para posicionar popover do tour e filtrar insights "com pin"
+  registerPin: (insightId: string, pos: PinPosition) => void;
+  unregisterPin: (insightId: string) => void;
+  getPinPosition: (insightId: string) => PinPosition | null;
+  pinnedIds: Set<string>;
 
   // Tour
   tourActive: boolean;
