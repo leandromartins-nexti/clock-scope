@@ -1817,7 +1817,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     if (p.series === "total") return (d.registradas ?? 0) + (d.justificadas ?? 0);
                     if (p.series === "registradas") return d.registradas;
                     if (p.series === "justificadas") return d.justificadas;
-                    if (p.series === "activeHeadcount" || p.series === "headcount") return (d as any).activeHeadcount;
+                    if (p.series === "activeHeadcount" || p.series === "active_headcount" || p.series === "headcount") return (d as any).activeHeadcount;
                     return (d as any)[p.series];
                   })();
                   return {
