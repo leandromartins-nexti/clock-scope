@@ -1674,7 +1674,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 }} />
                 <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}K` : `${v}`} label={{ value: "Volume de marcação", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
                 <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, rightDomainMax]} ticks={(() => { const nTicks = 5; const raw = rightDomainMax / nTicks; const mag = Math.pow(10, Math.floor(Math.log10(raw || 1))); const nice = [1,2,2.5,5,10].find(m => m * mag >= raw)! * mag; const arr: number[] = []; for (let i = 0; i <= nTicks; i++) arr.push(Math.round(nice * i)); return arr; })()} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(v >= 10000 || v % 1000 === 0 ? 0 : 1)}K` : `${v}`} label={{ value: "Headcount", angle: 90, position: "insideRight", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
-                <RechartsTooltip content={({ active, payload, label }) => {
+                <RechartsTooltip cursor={false} wrapperStyle={{ pointerEvents: "none" }} content={({ active, payload, label }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0]?.payload;
                   const reg = d?.registradas ?? 0;
@@ -1814,7 +1814,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 <YAxis yAxisId="left" tick={{ fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} label={{ value: "Distribuição por faixa (%)", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
                 <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} label={{ value: "Tempo médio (dias)", angle: 90, position: "insideRight", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" }, offset: 0 }} />
                 {selectedMes && <ReferenceLine yAxisId="left" x={selectedMes} stroke="#FF5722" strokeWidth={2} strokeDasharray="4 3" />}
-                <RechartsTooltip content={({ active, payload, label }) => {
+                <RechartsTooltip cursor={false} wrapperStyle={{ pointerEvents: "none" }} content={({ active, payload, label }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0]?.payload;
                   if (!d) return null;
@@ -1984,7 +1984,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         </g>
                       );
                     }} />
-                    <RechartsTooltip content={({ active, payload, label }) => {
+                    <RechartsTooltip cursor={false} wrapperStyle={{ pointerEvents: "none" }} content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null;
                       const d = payload[0]?.payload;
                       if (!d) return null;
