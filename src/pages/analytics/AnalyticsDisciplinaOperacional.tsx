@@ -1797,7 +1797,6 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   return p ? { mesIndex: i, insightId: String(p.insight_id), numericId: p.insight_id, type: p.type } : null;
                 })
                 .filter(Boolean) as InsightOverlayPin[];
-              console.log("[PINS-headcount]", { groupBy, sourceArrLen: sourceArr?.length, sourceArrPinned: sourceArr?.filter((r:any)=>r.pin).length, pinsByMes, qcHcMes: qualidadeComHeadcount.map(d=>d.mes), pins });
               return <InsightOverlayPins pins={pins} totalMeses={qualidadeComHeadcount.length} onPinClick={openInsightById} direction="down" />;
             })()}
             </div>

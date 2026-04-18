@@ -115,6 +115,35 @@ function loadFromImported(customerId: number): Partial<QualidadePontoDatasets> |
   return Object.keys(result).length > 0 ? result : null;
 }
 
+/**
+ * Merge `pin` annotations from `pinSource` into `target` rows.
+ * Match by name + reference_month (or `competencia` fallback).
+ * Used to overlay editorial pins (defined in customer JSON files) onto
+ * datasets that came from a ZIP import in localStorage (which lacks pins).
+ */
+function mergePinsInto(target: any[], pinSource: any[] | undefined): any[] {
+  if (!Array.isArray(target) || !Array.isArray(pinSource) || pinSource.length === 0) return target;
+  const NAME_FIELDS = ["company_name", "business_unit_name", "area_name"];
+  const DATE_FIELDS = ["reference_month", "competencia"];
+  const pinIndex = new Map<string, any>();
+  for (const r of pinSource) {
+    if (!r?.pin) continue;
+    const name = NAME_FIELDS.map(f => r[f]).find(v => v != null);
+    const date = DATE_FIELDS.map(f => r[f]).find(v => v != null);
+    if (name == null || date == null) continue;
+    pinIndex.set(`${name}__${date}`, r.pin);
+  }
+  if (pinIndex.size === 0) return target;
+  return target.map(r => {
+    if (r?.pin) return r;
+    const name = NAME_FIELDS.map(f => r[f]).find(v => v != null);
+    const date = DATE_FIELDS.map(f => r[f]).find(v => v != null);
+    if (name == null || date == null) return r;
+    const pin = pinIndex.get(`${name}__${date}`);
+    return pin ? { ...r, pin } : r;
+  });
+}
+
 export function useQualidadePontoData(): { data: QualidadePontoDatasets; loading: boolean } {
   const { customerId, loadCustomerData, customerDataVersion } = useCustomer();
   const [data, setData] = useState<QualidadePontoDatasets>(() => getBaseDatasets(customerId));
@@ -128,15 +157,7 @@ export function useQualidadePontoData(): { data: QualidadePontoDatasets; loading
       setLoading(true);
       if (!cancelled) setData(baseData);
 
-      // 1. Try imported data from localStorage
-      const imported = loadFromImported(customerId);
-      if (imported && !cancelled) {
-        setData({ ...baseData, ...imported });
-        setLoading(false);
-        return;
-      }
-
-      // 2. Try Vite glob (built-in customer data files)
+      // Always load customer-specific files first (these contain editorial `pin` annotations)
       const fileKeys = [
         { key: "hcEmpresa", file: "headcount-por", dim: "empresa" },
         { key: "hcUnidade", file: "headcount-por", dim: "un-negocio" },
@@ -151,7 +172,7 @@ export function useQualidadePontoData(): { data: QualidadePontoDatasets; loading
         { key: "kpisPeriodoAnterior", file: "kpis-periodo", dim: "anterior" },
       ];
 
-      const results = await Promise.all(
+      const customerFileResults = await Promise.all(
         fileKeys.map(async ({ key, file, dim }) => {
           const result = await loadCustomerData("qualidade-ponto", file, dim);
           return { key, result };
@@ -160,15 +181,33 @@ export function useQualidadePontoData(): { data: QualidadePontoDatasets; loading
 
       if (cancelled) return;
 
-      const newData = { ...baseData };
-      for (const { key, result } of results) {
-        if (result) {
-          (newData as any)[key] = result;
+      const customerFileData: Partial<QualidadePontoDatasets> = {};
+      for (const { key, result } of customerFileResults) {
+        if (result) (customerFileData as any)[key] = result;
+      }
+
+      // Try imported (ZIP) data from localStorage; if present, OVERRIDE arrays
+      // but MERGE editorial `pin` annotations from customer files.
+      const imported = loadFromImported(customerId);
+
+      const finalData: QualidadePontoDatasets = { ...baseData, ...customerFileData };
+      if (imported) {
+        for (const k of Object.keys(imported) as (keyof QualidadePontoDatasets)[]) {
+          const importedArr = (imported as any)[k];
+          if (!Array.isArray(importedArr)) {
+            (finalData as any)[k] = importedArr;
+            continue;
+          }
+          // Pin source priority: customer file > built-in default
+          const pinSource = (customerFileData as any)[k] ?? (baseData as any)[k];
+          (finalData as any)[k] = mergePinsInto(importedArr, pinSource);
         }
       }
 
-      setData(newData);
-      setLoading(false);
+      if (!cancelled) {
+        setData(finalData);
+        setLoading(false);
+      }
     }
 
     load();
