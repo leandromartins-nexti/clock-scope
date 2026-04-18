@@ -133,15 +133,26 @@ export default function InsightOverlayPins({
   const containerRef = useRef<HTMLDivElement>(null);
   const plot = usePlotArea(containerRef);
 
+  // DEBUG
+  // eslint-disable-next-line no-console
+  console.log("[InsightOverlayPins] render", {
+    pinsCount: pins.length,
+    pins,
+    plot: plot ? { top: plot.top, left: plot.left, width: plot.width, height: plot.height, ticks: plot.tickCentersX.length } : null,
+    yDomainLeft,
+    yDomainRight,
+  });
+
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 20 }}>
       {plot &&
         pins.map((pin, idx) => {
-          // X: centro real do tick. Se não houver, não renderiza.
           const leftPx = plot.tickCentersX[pin.mesIndex];
-          if (leftPx === undefined) return null;
+          if (leftPx === undefined) {
+            console.warn("[InsightOverlayPins] skip - no tick", { pin, ticks: plot.tickCentersX.length });
+            return null;
+          }
 
-          // Y: valor → pixel usando domínio do eixo e altura do plot.
           let topPx: number | null = null;
           if (pin.value !== undefined && pin.axis) {
             const domain = pin.axis === "right" ? yDomainRight : yDomainLeft;
@@ -150,7 +161,11 @@ export default function InsightOverlayPins({
               const ratio = max === min ? 0 : (pin.value - min) / (max - min);
               const clamped = Math.max(0, Math.min(1, ratio));
               topPx = plot.top + plot.height * (1 - clamped);
+            } else {
+              console.warn("[InsightOverlayPins] skip - no domain for axis", { pin, axis: pin.axis });
             }
+          } else {
+            console.warn("[InsightOverlayPins] skip - missing value/axis", { pin });
           }
           if (topPx === null) return null;
 
