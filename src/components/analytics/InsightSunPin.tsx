@@ -52,7 +52,9 @@ export default function InsightSunPin({
   const stemY2 = placeBelow ? pinY - bulbR * 0.9 : pinY + bulbR * 0.9;
 
   const handle = (e: React.MouseEvent) => {
+    console.log("[InsightSunPin] click", { cx, cy, pinY });
     e.stopPropagation();
+    e.preventDefault();
     onClick();
   };
 
