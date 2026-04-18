@@ -273,6 +273,10 @@ export function useInsightsTour() {
       resumeTour: () => {},
       nextStep: () => {},
       prevStep: () => {},
+      stepMs: DEFAULT_STEP_MS,
+      setStepMs: () => {},
+      loop: false,
+      setLoop: () => {},
     } as InsightsTourContextValue;
   }
   return v;
