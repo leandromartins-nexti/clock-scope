@@ -43,6 +43,8 @@ export default function GroupBySidebar({
 }: GroupBySidebarProps) {
   const { config: scoreConfig } = useScoreConfig();
   const isMobile = useIsMobile();
+  const [searchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "qualidade";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mode, setMode] = useState<SidebarMode>("ops");
   const [search, setSearch] = useState("");
