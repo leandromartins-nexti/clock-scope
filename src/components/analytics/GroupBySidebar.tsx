@@ -258,7 +258,7 @@ export default function GroupBySidebar({
 
   // ── Desktop: always-open sidebar with header toggle ──
   const titleByMode = mode === "ops" ? "Tipo de Operação" : mode === "insights" ? "Insights" : "Chat AI";
-  const widthClass = mode === "chat" ? "w-[320px]" : "w-[240px]";
+  const widthClass = "w-[240px]";
   return (
     <div className="flex shrink-0 self-stretch" data-onboarding="tipo-operacao">
       <div className={`${widthClass} bg-white border-l border-border/40 pl-3 pr-1 pt-2 flex flex-col`}>
