@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import RightSidebarInsightsPanel from "./RightSidebarInsightsPanel";
 
-type SidebarMode = "ops" | "insights";
+type SidebarMode = "ops" | "insights" | null;
 
 // ── Types ──
 export type GroupBy = "unidade" | "empresa" | "area";
