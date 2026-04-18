@@ -1770,6 +1770,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 .filter(Boolean) as InsightOverlayPin[];
               return <InsightOverlayPins pins={pins} totalMeses={qualidadeComHeadcount.length} onPinClick={openInsightById} direction="down" />;
             })()}
+            </div>
           </div>
         </div>
 
