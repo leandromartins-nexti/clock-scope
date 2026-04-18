@@ -97,117 +97,21 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
         })}
       </div>
 
-      {/* Insight list — 8 variantes minimalistas (card branco + indicador colorido) */}
+      {/* Insight list */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-1">
         {filtered.length === 0 && (
           <p className="text-[10px] text-muted-foreground text-center py-4">Nenhum insight</p>
         )}
-        {filtered.map((ins, idx) => {
+        {filtered.map((ins) => {
           const cfg = categoryConfig[ins.category];
-          const variant = idx % 8;
-          const tag = `v${variant + 1}`;
-
-          const baseCard = "w-full text-left bg-white rounded-md shadow-sm hover:shadow-md transition-all";
-          const titleCls = "text-[11px] leading-snug text-foreground line-clamp-3";
-          const tagCls = "text-[8px] text-muted-foreground/50 mt-1 block";
-
-          // V1 — Borda esquerda colorida 2px (referência)
-          if (variant === 0) {
-            return (
-              <button key={ins.id} onClick={() => setSelected(ins)}
-                className={`${baseCard} p-2`}
-                style={{ borderLeft: `2px solid ${cfg.borderColor}` }}>
-                <p className={titleCls}>{ins.title}</p>
-                <span className={tagCls}>{tag}</span>
-              </button>
-            );
-          }
-
-          // V2 — Borda esquerda mais grossa (3px)
-          if (variant === 1) {
-            return (
-              <button key={ins.id} onClick={() => setSelected(ins)}
-                className={`${baseCard} p-2`}
-                style={{ borderLeft: `3px solid ${cfg.borderColor}` }}>
-                <p className={titleCls}>{ins.title}</p>
-                <span className={tagCls}>{tag}</span>
-              </button>
-            );
-          }
-
-          // V3 — Borda topo colorida fina
-          if (variant === 2) {
-            return (
-              <button key={ins.id} onClick={() => setSelected(ins)}
-                className={`${baseCard} p-2`}
-                style={{ borderTop: `2px solid ${cfg.borderColor}` }}>
-                <p className={titleCls}>{ins.title}</p>
-                <span className={tagCls}>{tag}</span>
-              </button>
-            );
-          }
-
-          // V4 — Bullet pequeno antes do título
-          if (variant === 3) {
-            return (
-              <button key={ins.id} onClick={() => setSelected(ins)}
-                className={`${baseCard} p-2 flex items-start gap-1.5`}>
-                <span className="shrink-0 w-1.5 h-1.5 rounded-full mt-1.5"
-                  style={{ background: cfg.borderColor }} />
-                <div className="flex-1 min-w-0">
-                  <p className={titleCls}>{ins.title}</p>
-                  <span className={tagCls}>{tag}</span>
-                </div>
-              </button>
-            );
-          }
-
-          // V5 — Quadradinho colorido inline antes do texto
-          if (variant === 4) {
-            return (
-              <button key={ins.id} onClick={() => setSelected(ins)}
-                className={`${baseCard} p-2`}>
-                <p className={titleCls}>
-                  <span className="inline-block w-2 h-2 rounded-sm mr-1.5 align-middle"
-                    style={{ background: cfg.borderColor }} />
-                  {ins.title}
-                </p>
-                <span className={tagCls}>{tag}</span>
-              </button>
-            );
-          }
-
-          // V6 — Linha inferior colorida fina
-          if (variant === 5) {
-            return (
-              <button key={ins.id} onClick={() => setSelected(ins)}
-                className={`${baseCard} p-2`}
-                style={{ borderBottom: `2px solid ${cfg.borderColor}` }}>
-                <p className={titleCls}>{ins.title}</p>
-                <span className={tagCls}>{tag}</span>
-              </button>
-            );
-          }
-
-          // V7 — Borda completa fina colorida (sem fill)
-          if (variant === 6) {
-            return (
-              <button key={ins.id} onClick={() => setSelected(ins)}
-                className={`${baseCard} p-2`}
-                style={{ border: `1px solid ${cfg.borderColor}50` }}>
-                <p className={titleCls}>{ins.title}</p>
-                <span className={tagCls}>{tag}</span>
-              </button>
-            );
-          }
-
-          // V8 — Card sem indicador, só sombra colorida sutil
           return (
-            <button key={ins.id} onClick={() => setSelected(ins)}
-              className={`${baseCard} p-2`}
-              style={{ boxShadow: `0 1px 3px ${cfg.borderColor}40` }}>
-              <p className={titleCls}>{ins.title}</p>
-              <span className={tagCls}>{tag}</span>
+            <button
+              key={ins.id}
+              onClick={() => setSelected(ins)}
+              className="w-full text-left bg-white rounded-md shadow-sm hover:shadow-md transition-all p-2"
+              style={{ borderLeft: `3px solid ${cfg.borderColor}` }}
+            >
+              <p className="text-[11px] leading-snug text-foreground line-clamp-3">{ins.title}</p>
             </button>
           );
         })}
