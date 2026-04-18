@@ -9,8 +9,23 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { QualidadeInsight } from "@/data/qualidadeInsightsData";
 
-const STEP_MS = 8000;
+const DEFAULT_STEP_MS = 8000;
+const MIN_STEP_MS = 2000;
+const MAX_STEP_MS = 30000;
+const STORAGE_KEY = "insights_tour_settings_v1";
 const SEV_RANK: Record<string, number> = { critical: 0, high: 1, medium: 2, info: 3, success: 4 };
+
+function loadSettings(): { stepMs: number; loop: boolean } {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { stepMs: DEFAULT_STEP_MS, loop: false };
+    const p = JSON.parse(raw);
+    return {
+      stepMs: Math.max(MIN_STEP_MS, Math.min(MAX_STEP_MS, Number(p.stepMs) || DEFAULT_STEP_MS)),
+      loop: Boolean(p.loop),
+    };
+  } catch { return { stepMs: DEFAULT_STEP_MS, loop: false }; }
+}
 
 export interface PinPosition { x: number; y: number; }
 
