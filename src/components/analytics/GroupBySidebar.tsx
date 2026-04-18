@@ -41,16 +41,12 @@ export default function GroupBySidebar({
   const { config: scoreConfig } = useScoreConfig();
   const isMobile = useIsMobile();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mode, setMode] = useState<SidebarMode>(null);
+  const [mode, setMode] = useState<SidebarMode>("ops");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sortBy, setSortBy] = useState<"score" | "nome">("score");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
-
-  const handleModeClick = (target: "ops" | "insights") => {
-    setMode(prev => (prev === target ? null : target));
-  };
 
   const searchTimerRef = useState<ReturnType<typeof setTimeout> | null>(null);
   const handleSearchChange = (value: string) => {
