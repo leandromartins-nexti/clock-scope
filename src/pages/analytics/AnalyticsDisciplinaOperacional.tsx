@@ -917,18 +917,29 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const [chartDataModal, setChartDataModal] = useState<string | null>(null);
   const { customerId } = useCustomer();
   const [activeInsight, setActiveInsight] = useState<QualidadeInsight | null>(null);
-  // Map: chart name → mes label → insight id (chart pin annotations)
-  const chartInsightPins: Record<string, Record<string, string>> = {
-    // Evolução da Qualidade e Headcount: evento de set/25 + recuperação em mar/26
-    evoQualidade: { "set/25": "E1", "mar/26": "C1" },
-    // Evolução do Tempo de Tratativa: estoque acumulado >15d (risco trabalhista)
-    evoTratativa: { "mar/26": "R3" },
-    // Sobrecarga do Back-office: oportunidade de contratar 2 operadores
-    sobrecarga: { "mar/26": "O1" },
+  // Map: chart name → mes label → insight id (chart pin annotations) — por customer
+  const CHART_PINS_BY_CUSTOMER: Record<number, Record<string, Record<string, string>>> = {
+    642: {
+      evoQualidade: { "set/25": "E1", "mar/26": "C1" },
+      evoTratativa: { "mar/26": "R3" },
+      sobrecarga: { "mar/26": "O1" },
+    },
+    2: {
+      evoQualidade: { "set/25": "event_001", "mar/26": "ach_001" },
+      evoTratativa: { "mar/26": "risk_002" },
+      sobrecarga: { "mar/26": "opp_001" },
+    },
+    391: {
+      evoQualidade: { "set/25": "event_001", "mar/26": "ach_002" },
+      evoTratativa: { "mar/26": "risk_002" },
+      sobrecarga: { "mar/26": "opp_001" },
+    },
   };
+  const chartInsightPins: Record<string, Record<string, string>> = CHART_PINS_BY_CUSTOMER[customerId] ?? {};
   const openInsightById = useCallback((id: string) => {
     const all = getInsightsForCustomer(customerId);
     const found = all.find(i => i.id === id);
+    console.log("[openInsightById]", { id, found: !!found, totalInsights: all.length });
     if (found) setActiveInsight(found);
   }, [customerId]);
 
