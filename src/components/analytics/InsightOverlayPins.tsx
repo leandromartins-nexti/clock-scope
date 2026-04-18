@@ -70,14 +70,45 @@ function usePlotArea(containerRef: React.RefObject<HTMLDivElement>) {
       const containerRect = el.getBoundingClientRect();
       const gridRect = grid.getBoundingClientRect();
 
-      // Lê os ticks reais do eixo X (xAxis) — pega o centro de cada label/tick
+      // Lê a posição EXATA de cada categoria no eixo X.
+      // Estratégia: usar o atributo `x` do <line> interno do tick (coordenada SVG
+      // ancorada na categoria), convertido para o sistema de coordenadas do
+      // container via getCTM. Isso evita o erro do bounding box do <text>, que
+      // inclui padding do label e desloca o centro alguns pixels.
       const xAxis = el.querySelector(".recharts-xAxis") as SVGGElement | null;
+      const svg = el.querySelector("svg.recharts-surface") as SVGSVGElement | null;
       let tickCentersX: number[] = [];
-      if (xAxis) {
+      if (xAxis && svg) {
         const ticks = xAxis.querySelectorAll(".recharts-cartesian-axis-tick");
         ticks.forEach((t) => {
-          const r = (t as SVGGraphicsElement).getBoundingClientRect();
-          tickCentersX.push(r.left + r.width / 2 - containerRect.left);
+          const tickG = t as SVGGElement;
+          const lineEl = tickG.querySelector("line") as SVGLineElement | null;
+          const textEl = tickG.querySelector("text") as SVGTextElement | null;
+          // x do tick em coordenadas SVG: prioriza <line x1>, fallback <text x>
+          let svgX: number | null = null;
+          if (lineEl) {
+            svgX = parseFloat(lineEl.getAttribute("x1") ?? "NaN");
+          }
+          if ((svgX === null || Number.isNaN(svgX)) && textEl) {
+            svgX = parseFloat(textEl.getAttribute("x") ?? "NaN");
+          }
+          if (svgX === null || Number.isNaN(svgX)) {
+            // Fallback final: bounding box
+            const r = tickG.getBoundingClientRect();
+            tickCentersX.push(r.left + r.width / 2 - containerRect.left);
+            return;
+          }
+          // Converte (svgX, 0) do espaço do tick para o espaço da tela
+          const ctm = tickG.getScreenCTM();
+          if (!ctm) {
+            tickCentersX.push(svgX);
+            return;
+          }
+          const pt = svg.createSVGPoint();
+          pt.x = svgX;
+          pt.y = 0;
+          const screenPt = pt.matrixTransform(ctm);
+          tickCentersX.push(screenPt.x - containerRect.left);
         });
       }
 
@@ -151,6 +182,13 @@ export default function InsightOverlayPins({
           }
         } else {
           topPx = pin.topPx ?? 20;
+        }
+
+        // Clamp horizontal: pin tem ~60px, então mantém 30px de margem em
+        // relação às bordas do CONTAINER para nunca ser cortado.
+        if (plot) {
+          const containerWidth = containerRef.current?.clientWidth ?? Infinity;
+          leftPx = Math.max(30, Math.min(containerWidth - 30, leftPx));
         }
 
         const positioning: React.CSSProperties = plot
