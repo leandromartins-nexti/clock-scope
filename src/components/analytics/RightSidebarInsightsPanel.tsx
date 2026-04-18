@@ -74,24 +74,32 @@ export default function RightSidebarInsightsPanel({ collapsed = false }: Props) 
   // ── Expanded ──
   return (
     <div className="flex flex-col h-full min-h-0">
-      {/* Filter chips */}
-      <div className="flex flex-wrap gap-1 mb-1.5 shrink-0">
+      {/* Filter chips — minimalistas */}
+      <div className="flex flex-wrap gap-x-3 gap-y-1 mb-2 shrink-0 px-0.5">
         {catKeys.map(({ key, label }) => {
           const isActive = filter === key;
           const cfg = key === "all" ? null : categoryConfig[key as keyof typeof categoryConfig];
           const count = key === "all" ? active.length : active.filter(i => i.category === key).length;
+          const dotColor = cfg?.borderColor ?? "#9CA3AF";
           return (
             <button
               key={key}
               onClick={() => setFilter(key)}
-              className="px-1.5 py-0.5 rounded text-[10px] font-medium border transition-colors whitespace-nowrap"
-              style={{
-                background: isActive ? (cfg?.borderColor ?? "#FF5722") : (cfg?.bgColor ?? "#F1EFE8"),
-                color: isActive ? "#fff" : (cfg?.textColor ?? "#444441"),
-                borderColor: isActive ? (cfg?.borderColor ?? "#FF5722") : "transparent",
-              }}
+              className="group inline-flex items-center gap-1 py-0.5 transition-colors"
             >
-              {label}·{count}
+              <span
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ background: dotColor, opacity: isActive ? 1 : 0.5 }}
+              />
+              <span
+                className={`text-[10px] ${isActive ? "font-semibold text-foreground" : "font-medium text-muted-foreground group-hover:text-foreground"}`}
+                style={isActive ? { borderBottom: `1.5px solid ${dotColor}` } : undefined}
+              >
+                {label}
+              </span>
+              <span className={`text-[9px] tabular-nums ${isActive ? "text-foreground" : "text-muted-foreground/60"}`}>
+                {count}
+              </span>
             </button>
           );
         })}
