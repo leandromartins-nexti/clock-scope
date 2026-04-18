@@ -67,7 +67,9 @@
       "company_id": 9380,
       "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
       "business_unit_id": 17518,
-      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA"
+      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+      "area_id": 11043,
+      "area_name": "SAO PAULO"
     },
     "anchors": [
       {
@@ -142,7 +144,9 @@
       "company_id": 9379,
       "company_name": "VIG EYES TERCEIRIZACAO DE SERVICOS LTDA",
       "business_unit_id": 17517,
-      "business_unit_name": "VIG EYES TERCEIRIZACAO"
+      "business_unit_name": "VIG EYES TERCEIRIZACAO",
+      "area_id": 11043,
+      "area_name": "SAO PAULO"
     },
     "anchors": [
       {
@@ -287,7 +291,9 @@
       "company_id": 9380,
       "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
       "business_unit_id": 17518,
-      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA"
+      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+      "area_id": 11043,
+      "area_name": "SAO PAULO"
     },
     "anchors": [
       {
@@ -362,7 +368,9 @@
       "company_id": 9381,
       "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
       "business_unit_id": 17519,
-      "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL"
+      "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+      "area_id": 11045,
+      "area_name": "SOROCABA"
     },
     "anchors": [
       {
@@ -441,7 +449,9 @@
       "company_id": 9380,
       "company_name": "VIG EYES PORTARIA E LIMPEZA LTDA",
       "business_unit_id": 17518,
-      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA"
+      "business_unit_name": "VIG EYES PORTARIA E LIMPEZA",
+      "area_id": 11043,
+      "area_name": "SAO PAULO"
     },
     "anchors": [
       {
@@ -516,7 +526,9 @@
       "company_id": 9381,
       "company_name": "VIG EYES SEGURANCA PATRIMONIAL LTDA",
       "business_unit_id": 17519,
-      "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL"
+      "business_unit_name": "VIG EYES SEGURANCA PATRIMONIAL",
+      "area_id": 11046,
+      "area_name": "PIRACICABA"
     },
     "anchors": [
       {
