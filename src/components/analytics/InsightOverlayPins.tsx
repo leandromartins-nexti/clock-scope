@@ -184,11 +184,13 @@ export default function InsightOverlayPins({
           topPx = pin.topPx ?? 20;
         }
 
-        // Clamp horizontal: pin tem ~60px, então mantém 30px de margem em
-        // relação às bordas do CONTAINER para nunca ser cortado.
+        // Clamp horizontal: limita ao plot area (entre os eixos), não ao container.
+        // Isso garante que o pin fique exatamente sobre a barra/ponto, mesmo nos
+        // extremos (primeiro/último mês), sem ser empurrado por margens externas.
         if (plot) {
-          const containerWidth = containerRef.current?.clientWidth ?? Infinity;
-          leftPx = Math.max(30, Math.min(containerWidth - 30, leftPx));
+          const minX = plot.left;
+          const maxX = plot.left + plot.width;
+          leftPx = Math.max(minX, Math.min(maxX, leftPx));
         }
 
         const positioning: React.CSSProperties = plot
