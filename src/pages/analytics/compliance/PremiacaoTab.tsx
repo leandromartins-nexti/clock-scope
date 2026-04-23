@@ -205,16 +205,16 @@ function MedalhasPorPilar({ onSelectPilar }: { onSelectPilar: (p: PilarKey) => v
               className="text-left bg-gray-50 hover:bg-orange-50 border border-border/50 hover:border-orange-200 rounded-lg p-3 transition-all"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-foreground uppercase tracking-wide">{p.label}</span>
-                <Trophy className="w-3.5 h-3.5 text-[#FF5722]" />
+                <span className="text-sm font-semibold text-foreground uppercase tracking-wide">{p.label}</span>
+                <Trophy className="w-4 h-4 text-[#FF5722]" />
               </div>
-              <ol className="space-y-1.5">
+              <ol className="space-y-2">
                 {top3.map((c, i) => {
                   const cor = i === 0 ? COLOR_OURO : i === 1 ? COLOR_PRATA : COLOR_BRONZE;
                   const Icon = i === 0 ? Trophy : i === 1 ? Medal : Award;
                   return (
-                    <li key={c.id} className="flex items-center gap-2 text-[11px]">
-                      <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: cor }} />
+                    <li key={c.id} className="flex items-center gap-2 text-sm">
+                      <Icon className="w-4 h-4 shrink-0" style={{ color: cor }} />
                       <span className="font-medium text-foreground truncate flex-1">{c.nome}</span>
                       <span className="font-bold tabular-nums" style={{ color: scoreColor(c.scoreFinal) }}>
                         {c.scoreFinal.toFixed(0)}
@@ -311,17 +311,17 @@ function RankingColaboradores({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-xs">
+        <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border/60 text-muted-foreground">
-              <th className="text-left py-2 px-2 font-semibold w-12">#</th>
-              <th className="text-left py-2 px-2 font-semibold">Colaborador</th>
-              <th className="text-left py-2 px-2 font-semibold">Cargo</th>
-              <th className="text-left py-2 px-2 font-semibold">Área</th>
-              <th className="text-left py-2 px-2 font-semibold">Unidade</th>
-              <th className="text-right py-2 px-2 font-semibold">Tempo Casa</th>
-              <th className="text-right py-2 px-2 font-semibold">Score</th>
-              <th className="text-center py-2 px-2 font-semibold">Reconhecimento</th>
+              <th className="text-left py-2.5 px-2 font-semibold w-12">#</th>
+              <th className="text-left py-2.5 px-2 font-semibold">Colaborador</th>
+              <th className="text-left py-2.5 px-2 font-semibold">Cargo</th>
+              <th className="text-left py-2.5 px-2 font-semibold">Área</th>
+              <th className="text-left py-2.5 px-2 font-semibold">Unidade</th>
+              <th className="text-right py-2.5 px-2 font-semibold">Tempo Casa</th>
+              <th className="text-right py-2.5 px-2 font-semibold">Score</th>
+              <th className="text-center py-2.5 px-2 font-semibold">Reconhecimento</th>
             </tr>
           </thead>
           <tbody>
@@ -332,39 +332,39 @@ function RankingColaboradores({
               const isTop10 = c.rank <= 10;
               return (
                 <tr key={c.id} className="border-b border-border/30 hover:bg-orange-50/40 transition-colors">
-                  <td className="py-2 px-2 font-bold tabular-nums">
+                  <td className="py-2.5 px-2 font-bold tabular-nums">
                     {isOuro && <Trophy className="w-4 h-4 inline" style={{ color: COLOR_OURO }} />}
                     {isPrata && <Medal className="w-4 h-4 inline" style={{ color: COLOR_PRATA }} />}
                     {isBronze && <Award className="w-4 h-4 inline" style={{ color: COLOR_BRONZE }} />}
                     {!isOuro && !isPrata && !isBronze && <span className="text-muted-foreground">{c.rank}</span>}
                   </td>
-                  <td className="py-2 px-2">
+                  <td className="py-2.5 px-2">
                     <div className="font-semibold text-foreground">{c.nome}</div>
-                    <div className="text-[10px] text-muted-foreground">{c.matricula}</div>
+                    <div className="text-xs text-muted-foreground">{c.matricula}</div>
                   </td>
-                  <td className="py-2 px-2 text-muted-foreground">{c.cargo}</td>
-                  <td className="py-2 px-2 text-muted-foreground">{c.area}</td>
-                  <td className="py-2 px-2 text-muted-foreground">{c.unidade}</td>
-                  <td className="py-2 px-2 text-right tabular-nums text-muted-foreground">
+                  <td className="py-2.5 px-2 text-muted-foreground">{c.cargo}</td>
+                  <td className="py-2.5 px-2 text-muted-foreground">{c.area}</td>
+                  <td className="py-2.5 px-2 text-muted-foreground">{c.unidade}</td>
+                  <td className="py-2.5 px-2 text-right tabular-nums text-muted-foreground">
                     {Math.floor(c.tempoCasaMeses / 12)}a {c.tempoCasaMeses % 12}m
                   </td>
-                  <td className="py-2 px-2 text-right">
+                  <td className="py-2.5 px-2 text-right">
                     <span className="font-bold tabular-nums" style={{ color: scoreColor(c.scoreFinal) }}>
                       {c.scoreFinal.toFixed(1)}
                     </span>
                   </td>
-                  <td className="py-2 px-2 text-center">
-                    {isOuro && <Badge style={{ background: COLOR_OURO, color: "#fff" }} className="text-[10px]">🏆 Ouro</Badge>}
-                    {isPrata && <Badge style={{ background: COLOR_PRATA, color: "#fff" }} className="text-[10px]">🥈 Prata</Badge>}
-                    {isBronze && <Badge style={{ background: COLOR_BRONZE, color: "#fff" }} className="text-[10px]">🥉 Bronze</Badge>}
+                  <td className="py-2.5 px-2 text-center">
+                    {isOuro && <Badge style={{ background: COLOR_OURO, color: "#fff" }} className="text-xs">🏆 Ouro</Badge>}
+                    {isPrata && <Badge style={{ background: COLOR_PRATA, color: "#fff" }} className="text-xs">🥈 Prata</Badge>}
+                    {isBronze && <Badge style={{ background: COLOR_BRONZE, color: "#fff" }} className="text-xs">🥉 Bronze</Badge>}
                     {!isOuro && !isPrata && !isBronze && isTop10 && (
-                      <Badge variant="outline" className="text-[10px] border-orange-300 text-[#FF5722]">Destaque</Badge>
+                      <Badge variant="outline" className="text-xs border-orange-300 text-[#FF5722]">Destaque</Badge>
                     )}
                     {!isTop10 && c.rank <= 20 && (
-                      <Badge variant="outline" className="text-[10px]">Premiável</Badge>
+                      <Badge variant="outline" className="text-xs">Premiável</Badge>
                     )}
                     {c.rank > 20 && (
-                      <Badge variant="outline" className="text-[10px] text-muted-foreground">Menção Honrosa</Badge>
+                      <Badge variant="outline" className="text-xs text-muted-foreground">Menção Honrosa</Badge>
                     )}
                   </td>
                 </tr>
