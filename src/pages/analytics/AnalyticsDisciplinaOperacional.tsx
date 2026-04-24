@@ -1088,7 +1088,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       const nameFilter = selectedRegional || null;
       const monthly = aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
       if (periodGranularity === "mensal") {
-        return expandMonthlyToDaily(monthly as any[], { labelKey: "mes" });
+        return expandMonthlyToDaily(monthly as any[], { labelKey: "mes", onlyLastMonth: true });
       }
       return monthly;
     },
