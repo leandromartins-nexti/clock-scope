@@ -9,6 +9,7 @@ import { resumo } from "@/lib/analytics-mock-data";
 import { QualidadeTab, AbsenteismoTab, MovimentacoesTab } from "./AnalyticsDisciplinaOperacional";
 import TurnoverTab from "./TurnoverTab";
 import AnalyticsCoberturasContinuidade from "./AnalyticsCoberturasContinuidade";
+import AnalyticsFerias from "./AnalyticsFerias";
 import AnalyticsInsightsAll from "./AnalyticsInsightsAll";
 import { OPERACIONAL_SUB_TABS } from "@/config/analytics-tabs";
 
@@ -35,6 +36,7 @@ export default function AnalyticsOperacional() {
       case "turnover": return <TurnoverTab />;
       case "movimentacoes": return <MovimentacoesTab />;
       case "coberturas": return <AnalyticsCoberturasContinuidade embedded />;
+      case "ferias": return <AnalyticsFerias />;
       case "insights": return <AnalyticsInsightsAll />;
       default: return <QualidadeTab />;
     }
