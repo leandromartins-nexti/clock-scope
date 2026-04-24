@@ -810,10 +810,55 @@ export const vacationData = {
       { id: "9", name: "Interior BA", score: 52, classification: "Ruim" },
       { id: "10", name: "Norte Fluminense", score: 48, classification: "Ruim" },
     ],
+    itemsMensal: [
+      { id: "m1", name: "São José do Rio Preto", score: 91, classification: "Excelente" },
+      { id: "m2", name: "Capital SEG", score: 87, classification: "Bom" },
+      { id: "m3", name: "Capital ACL", score: 82, classification: "Bom" },
+      { id: "m4", name: "Interior SP", score: 76, classification: "Bom" },
+      { id: "m5", name: "Capital POR", score: 69, classification: "Atenção" },
+      { id: "m6", name: "Interior MG", score: 66, classification: "Atenção" },
+      { id: "m7", name: "Grande RJ", score: 62, classification: "Atenção" },
+      { id: "m8", name: "Capital BA", score: 54, classification: "Ruim" },
+      { id: "m9", name: "Interior BA", score: 49, classification: "Ruim" },
+      { id: "m10", name: "Norte Fluminense", score: 45, classification: "Ruim" },
+    ],
   },
   charts: {
     mapa: {
       subtitle: "Headcount × Score de Férias · uma bolha por unidade de negócio",
+      scoreOptions: ["Composto", "Aderência", "Cobertura", "Distribuição"] as const,
+      // Cada dataset reaproveita os mesmos headcounts; só o score muda.
+      datasets: {
+        Composto: [
+          { name: "Segurança Empresarial", shortName: "SEG", headcount: 42, score: 80 },
+          { name: "Terceirização", shortName: "TER", headcount: 48, score: 56 },
+          { name: "Portaria", shortName: "POR", headcount: 398, score: 73 },
+          { name: "Limpeza e Conservação", shortName: "LIM", headcount: 287, score: 68 },
+          { name: "Facilities", shortName: "FAC", headcount: 156, score: 75 },
+        ],
+        Aderência: [
+          { name: "Segurança Empresarial", shortName: "SEG", headcount: 42, score: 85 },
+          { name: "Terceirização", shortName: "TER", headcount: 48, score: 42 },
+          { name: "Portaria", shortName: "POR", headcount: 398, score: 78 },
+          { name: "Limpeza e Conservação", shortName: "LIM", headcount: 287, score: 71 },
+          { name: "Facilities", shortName: "FAC", headcount: 156, score: 80 },
+        ],
+        Cobertura: [
+          { name: "Segurança Empresarial", shortName: "SEG", headcount: 42, score: 76 },
+          { name: "Terceirização", shortName: "TER", headcount: 48, score: 62 },
+          { name: "Portaria", shortName: "POR", headcount: 398, score: 68 },
+          { name: "Limpeza e Conservação", shortName: "LIM", headcount: 287, score: 65 },
+          { name: "Facilities", shortName: "FAC", headcount: 156, score: 72 },
+        ],
+        Distribuição: [
+          { name: "Segurança Empresarial", shortName: "SEG", headcount: 42, score: 82 },
+          { name: "Terceirização", shortName: "TER", headcount: 48, score: 60 },
+          { name: "Portaria", shortName: "POR", headcount: 398, score: 75 },
+          { name: "Limpeza e Conservação", shortName: "LIM", headcount: 287, score: 70 },
+          { name: "Facilities", shortName: "FAC", headcount: 156, score: 74 },
+        ],
+      },
+      // Mantido por compatibilidade (default = Composto).
       data: [
         { name: "Segurança Empresarial", shortName: "SEG", headcount: 42, score: 80 },
         { name: "Terceirização", shortName: "TER", headcount: 48, score: 56 },

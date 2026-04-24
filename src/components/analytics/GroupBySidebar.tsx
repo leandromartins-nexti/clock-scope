@@ -29,6 +29,12 @@ interface GroupBySidebarProps {
   onGroupByChange: (g: GroupBy) => void;
   onPagedItemsChange?: (names: string[]) => void;
   pageSize?: number;
+  /** Optional secondary toggle (e.g. Anual | Mensal) shown below the group toggle. */
+  periodToggle?: {
+    options: { id: string; label: string }[];
+    value: string;
+    onChange: (id: string) => void;
+  };
 }
 
 export default function GroupBySidebar({
@@ -40,6 +46,7 @@ export default function GroupBySidebar({
   onGroupByChange,
   onPagedItemsChange,
   pageSize = 25,
+  periodToggle,
 }: GroupBySidebarProps) {
   const { config: scoreConfig } = useScoreConfig();
   const isMobile = useIsMobile();
@@ -292,6 +299,28 @@ export default function GroupBySidebar({
                 </button>
               ))}
             </div>
+
+            {/* Optional period toggle (e.g. Anual | Mensal) */}
+            {periodToggle && (
+              <div className="flex gap-1 mb-1.5">
+                {periodToggle.options.map(opt => {
+                  const active = periodToggle.value === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      onClick={() => periodToggle.onChange(opt.id)}
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-medium border transition-colors flex-1 whitespace-nowrap ${
+                        active
+                          ? "bg-[#FF5722] text-white border-[#FF5722]"
+                          : "text-muted-foreground border-border hover:border-[#FF5722]/40"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Search */}
             <div className="relative mb-1">
