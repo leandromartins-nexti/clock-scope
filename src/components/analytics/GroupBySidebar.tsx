@@ -29,6 +29,12 @@ interface GroupBySidebarProps {
   onGroupByChange: (g: GroupBy) => void;
   onPagedItemsChange?: (names: string[]) => void;
   pageSize?: number;
+  /** Optional secondary toggle (e.g. Anual | Mensal) shown below the group toggle. */
+  periodToggle?: {
+    options: { id: string; label: string }[];
+    value: string;
+    onChange: (id: string) => void;
+  };
 }
 
 export default function GroupBySidebar({
