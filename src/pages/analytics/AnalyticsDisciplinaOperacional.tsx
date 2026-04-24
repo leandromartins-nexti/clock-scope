@@ -1115,11 +1115,15 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       const nameFilter = selectedRegional || null;
       const monthly = aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
       if (periodGranularity === "mensal") {
-        return expandMonthlyToDaily(monthly as any[], { labelKey: "mes", onlyLastMonth: true });
+        return expandMonthlyToDaily(monthly as any[], {
+          labelKey: "mes",
+          onlyMonthLabel: dailyMonthLabel ?? undefined,
+          onlyLastMonth: !dailyMonthLabel,
+        });
       }
       return monthly;
     },
-    [groupBy, selectedRegional, dataSources, periodGranularity]
+    [groupBy, selectedRegional, dataSources, periodGranularity, dailyMonthLabel]
   );
   const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
