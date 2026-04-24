@@ -1876,7 +1876,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   const floored = raw.map(v => Math.floor(v));
                   const remainder = 100 - floored.reduce((s, v) => s + v, 0);
                   const fracs = raw.map((v, i) => ({ i, frac: v - floored[i] })).sort((a, b) => b.frac - a.frac);
-                  for (let j = 0; j < remainder; j++) floored[fracs[j].i]++;
+                  const steps = Math.max(0, Math.min(remainder, fracs.length));
+                  for (let j = 0; j < steps; j++) floored[fracs[j].i]++;
                   const tempoMedio = Math.round(((d.ate1d * 0.5 + d.de1a3d * 2 + d.de3a7d * 5 + d.de7a15d * 11 + d.mais15d * 20) / total) * 10) / 10;
                   return {
                     mes: d.mes,
