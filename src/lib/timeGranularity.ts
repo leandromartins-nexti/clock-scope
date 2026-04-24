@@ -54,13 +54,17 @@ export function expandMonthlyToDaily<T extends Record<string, any>>(
     averageFields?: string[];
     /** Quando true, expande apenas o último mês da série em dias (ignora os demais). */
     onlyLastMonth?: boolean;
+    /** Se informado, expande apenas este mês (ex.: "set/25"). Tem prioridade sobre onlyLastMonth. */
+    onlyMonthLabel?: string;
   } = {},
 ): T[] {
-  const { labelKey = "mes", sumFields, averageFields = [], onlyLastMonth = false } = options;
+  const { labelKey = "mes", sumFields, averageFields = [], onlyLastMonth = false, onlyMonthLabel } = options;
   if (!Array.isArray(series) || series.length === 0) return [];
 
-  // Em modo "apenas último mês", limitamos a série de entrada ao último item válido.
-  const workingSeries = onlyLastMonth
+  // Em modo "apenas mês X" ou "apenas último mês", limitamos a série de entrada.
+  const workingSeries = onlyMonthLabel
+    ? series.filter((r: any) => String(r?.[labelKey] ?? "") === onlyMonthLabel)
+    : onlyLastMonth
     ? (() => {
         for (let i = series.length - 1; i >= 0; i--) {
           const lbl = String((series[i] as any)?.[labelKey] ?? "");
@@ -69,6 +73,7 @@ export function expandMonthlyToDaily<T extends Record<string, any>>(
         return series.slice(-1);
       })()
     : series;
+
 
   const out: T[] = [];
   workingSeries.forEach((row, monthIdx) => {

@@ -98,6 +98,7 @@ function computeTempoMedioDiasByWindow(
 // ── Re-export GroupBy from shared component ──
 import GroupBySidebar, { type GroupBy, groupByOptions } from "@/components/analytics/GroupBySidebar";
 import PeriodGranularityToggle, { type PeriodGranularity } from "@/components/analytics/PeriodGranularityToggle";
+import ChartMonthActionPopover from "@/components/analytics/ChartMonthActionPopover";
 import { expandMonthlyToDaily } from "@/lib/timeGranularity";
 
 // ── Sidebar data is now computed dynamically inside components via dataSources ──
@@ -915,6 +916,31 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const { data: customerData, loading: customerDataLoading } = useQualidadePontoData();
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
   const [periodGranularity, setPeriodGranularity] = useState<PeriodGranularity>("anual");
+  /** Mês expandido no modo "mensal" (ex: "set/25"). Null = último mês da série. */
+  const [dailyMonthLabel, setDailyMonthLabel] = useState<string | null>(null);
+  /** Popover de ações ao clicar em um mês do gráfico. */
+  const [chartMenuAnchor, setChartMenuAnchor] = useState<{ x: number; y: number; mes: string } | null>(null);
+
+  const handleGranularityChange = (g: PeriodGranularity) => {
+    setPeriodGranularity(g);
+    if (g === "anual") setDailyMonthLabel(null);
+  };
+
+  const openChartMenu = (e: any) => {
+    if (!e?.activeLabel) return;
+    // Não abre o popover quando já estamos em modo Mensal (labels são dias).
+    if (periodGranularity === "mensal") {
+      setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+      return;
+    }
+    // Posiciona próximo ao cursor usando o evento DOM nativo, se disponível.
+    const native = (e?.chartX != null && e?.chartY != null) ? null : null;
+    const evt = (window as any).event as MouseEvent | undefined;
+    const x = evt?.clientX ?? window.innerWidth / 2;
+    const y = evt?.clientY ?? window.innerHeight / 2;
+    setChartMenuAnchor({ x: x + 12, y: y + 12, mes: e.activeLabel });
+    void native;
+  };
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [chartDataModal, setChartDataModal] = useState<string | null>(null);
@@ -1045,12 +1071,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         return expandMonthlyToDaily(monthly, {
           labelKey: "mes",
           averageFields: ["activeHeadcount", "hcPonto"],
-          onlyLastMonth: true,
+          onlyMonthLabel: dailyMonthLabel ?? undefined,
+          onlyLastMonth: !dailyMonthLabel,
         });
       }
       return monthly;
     },
-    [qualidadeDetalhado, headcountMaps, periodGranularity]
+    [qualidadeDetalhado, headcountMaps, periodGranularity, dailyMonthLabel]
   );
   const maxHeadcount = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.activeHeadcount), 1), [qualidadeComHeadcount]);
   const maxBarTotal = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.registradas + d.justificadas), 1), [qualidadeComHeadcount]);
@@ -1088,11 +1115,15 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       const nameFilter = selectedRegional || null;
       const monthly = aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
       if (periodGranularity === "mensal") {
-        return expandMonthlyToDaily(monthly as any[], { labelKey: "mes", onlyLastMonth: true });
+        return expandMonthlyToDaily(monthly as any[], {
+          labelKey: "mes",
+          onlyMonthLabel: dailyMonthLabel ?? undefined,
+          onlyLastMonth: !dailyMonthLabel,
+        });
       }
       return monthly;
     },
-    [groupBy, selectedRegional, dataSources, periodGranularity]
+    [groupBy, selectedRegional, dataSources, periodGranularity, dailyMonthLabel]
   );
   const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
@@ -1720,9 +1751,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             </div>
             <div className="relative pt-6">
             <ResponsiveContainer width="100%" height={280}>
-              <ComposedChart data={qualidadeComHeadcount} onClick={(e: any) => {
-                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-              }}>
+              <ComposedChart data={qualidadeComHeadcount} onClick={openChartMenu}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="mes" tick={(props: any) => {
                   const { x, y, payload } = props;
@@ -1888,9 +1917,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     tempoMedio,
                   };
                 });
-              })()} onClick={(e: any) => {
-                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-              }}>
+              })()} onClick={openChartMenu}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="mes" tick={(props: any) => {
                   const { x, y, payload } = props;
@@ -2056,7 +2083,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               ? expandMonthlyToDaily(sobrecargaMonthly as any[], {
                   labelKey: "mes",
                   averageFields: ["produtividade", "operadores", "limiteSaudavel"],
-                  onlyLastMonth: true,
+                  onlyMonthLabel: dailyMonthLabel ?? undefined,
+                  onlyLastMonth: !dailyMonthLabel,
                 })
               : sobrecargaMonthly;
 
@@ -2089,9 +2117,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                 </div>
                 <div className="relative pt-6">
                 <ResponsiveContainer width="100%" height={280}>
-                  <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }} onClick={(e: any) => {
-                    if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-                  }}>
+                  <ComposedChart data={sobrecargaData} margin={{ top: 24, right: 10, bottom: 0, left: 0 }} onClick={openChartMenu}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="mes" tick={(props: any) => {
                       const { x, y, payload } = props;
@@ -2237,7 +2263,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       <div className="flex flex-col">
         {/* Toggle de granularidade temporal: Anual ↔ Mensal (somente desktop) */}
         <div className="hidden xl:flex items-center justify-center px-2 py-2 border-b border-border bg-white">
-          <PeriodGranularityToggle value={periodGranularity} onChange={setPeriodGranularity} />
+          <PeriodGranularityToggle value={periodGranularity} onChange={handleGranularityChange} />
         </div>
         <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
       </div>
@@ -2298,6 +2324,24 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         source={sobrecargaBackofficeSource}
         activeGroupBy={groupBy as "empresa" | "unidade" | "area"}
       />
+      {chartMenuAnchor && (
+        <ChartMonthActionPopover
+          x={chartMenuAnchor.x}
+          y={chartMenuAnchor.y}
+          monthLabel={chartMenuAnchor.mes}
+          onApplyFilter={() => {
+            setSelectedMes(prev => prev === chartMenuAnchor.mes ? null : chartMenuAnchor.mes);
+            setChartMenuAnchor(null);
+          }}
+          onLoadDaily={() => {
+            setDailyMonthLabel(chartMenuAnchor.mes);
+            setPeriodGranularity("mensal");
+            setSelectedMes(null);
+            setChartMenuAnchor(null);
+          }}
+          onClose={() => setChartMenuAnchor(null)}
+        />
+      )}
     </div>
   );
 }
