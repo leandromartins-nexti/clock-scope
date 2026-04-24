@@ -1035,12 +1035,21 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     [selectedRegional, groupBy, dataSources]
   );
   const qualidadeComHeadcount = useMemo(
-    () => qualidadeDetalhado.map(d => ({
-      ...d,
-      activeHeadcount: headcountMaps.active[d.mes] ?? 0,
-      hcPonto: headcountMaps.ponto[d.mes] ?? 0,
-    })),
-    [qualidadeDetalhado, headcountMaps]
+    () => {
+      const monthly = qualidadeDetalhado.map(d => ({
+        ...d,
+        activeHeadcount: headcountMaps.active[d.mes] ?? 0,
+        hcPonto: headcountMaps.ponto[d.mes] ?? 0,
+      }));
+      if (periodGranularity === "mensal") {
+        return expandMonthlyToDaily(monthly, {
+          labelKey: "mes",
+          averageFields: ["activeHeadcount", "hcPonto"],
+        });
+      }
+      return monthly;
+    },
+    [qualidadeDetalhado, headcountMaps, periodGranularity]
   );
   const maxHeadcount = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.activeHeadcount), 1), [qualidadeComHeadcount]);
   const maxBarTotal = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.registradas + d.justificadas), 1), [qualidadeComHeadcount]);
@@ -1076,9 +1085,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const tratativaFaixasFiltrada = useMemo(
     () => {
       const nameFilter = selectedRegional || null;
-      return aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
+      const monthly = aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
+      if (periodGranularity === "mensal") {
+        return expandMonthlyToDaily(monthly as any[], { labelKey: "mes" });
+      }
+      return monthly;
     },
-    [groupBy, selectedRegional, dataSources]
+    [groupBy, selectedRegional, dataSources, periodGranularity]
   );
   const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
