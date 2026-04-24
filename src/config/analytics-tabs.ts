@@ -38,7 +38,7 @@ export interface AnalyticsTabConfig {
 }
 
 // ── Operacional sub-tabs (rendered inside AnalyticsOperacional) ──
-import { Clock, CalendarX, UserMinus, Users, ShieldCheck as ShieldCheckIcon, Lightbulb } from "lucide-react";
+import { Clock, CalendarX, UserMinus, Users, ShieldCheck as ShieldCheckIcon, Lightbulb, Plane } from "lucide-react";
 
 export interface OperacionalSubTab {
   id: string;
@@ -53,7 +53,8 @@ export const OPERACIONAL_SUB_TABS: OperacionalSubTab[] = [
   { id: "turnover", label: "Turnover", order: 3, icon: UserMinus },
   { id: "movimentacoes", label: "Movimentações", order: 4, icon: Users },
   { id: "coberturas", label: "Coberturas", order: 5, icon: ShieldCheckIcon },
-  { id: "insights", label: "Insights", order: 6, icon: Lightbulb },
+  { id: "ferias", label: "Férias", order: 6, icon: Plane },
+  { id: "insights", label: "Insights", order: 7, icon: Lightbulb },
 ];
 
 // ── Top-level Analytics menu items ──
