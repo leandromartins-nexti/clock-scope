@@ -2231,7 +2231,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         <QualidadeInsightsSection />
       </div>
 
-      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
+      <div className="flex flex-col">
+        {/* Toggle de granularidade temporal: Anual ↔ Mensal (somente desktop) */}
+        <div className="hidden xl:flex items-center justify-center px-2 py-2 border-b border-border bg-white">
+          <PeriodGranularityToggle value={periodGranularity} onChange={setPeriodGranularity} />
+        </div>
+        <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
+      </div>
 
       <InsightDetailModal
         insight={activeInsight}
