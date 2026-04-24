@@ -98,6 +98,7 @@ function computeTempoMedioDiasByWindow(
 // ── Re-export GroupBy from shared component ──
 import GroupBySidebar, { type GroupBy, groupByOptions } from "@/components/analytics/GroupBySidebar";
 import PeriodGranularityToggle, { type PeriodGranularity } from "@/components/analytics/PeriodGranularityToggle";
+import ChartMonthActionPopover from "@/components/analytics/ChartMonthActionPopover";
 import { expandMonthlyToDaily } from "@/lib/timeGranularity";
 
 // ── Sidebar data is now computed dynamically inside components via dataSources ──
