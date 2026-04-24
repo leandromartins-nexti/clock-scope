@@ -300,6 +300,28 @@ export default function GroupBySidebar({
               ))}
             </div>
 
+            {/* Optional period toggle (e.g. Anual | Mensal) */}
+            {periodToggle && (
+              <div className="flex gap-1 mb-1.5">
+                {periodToggle.options.map(opt => {
+                  const active = periodToggle.value === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      onClick={() => periodToggle.onChange(opt.id)}
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-medium border transition-colors flex-1 whitespace-nowrap ${
+                        active
+                          ? "bg-[#FF5722] text-white border-[#FF5722]"
+                          : "text-muted-foreground border-border hover:border-[#FF5722]/40"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
             {/* Search */}
             <div className="relative mb-1">
               <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
