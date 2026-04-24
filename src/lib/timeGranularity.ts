@@ -52,19 +52,33 @@ export function expandMonthlyToDaily<T extends Record<string, any>>(
     labelKey?: string;
     sumFields?: string[];
     averageFields?: string[];
+    /** Quando true, expande apenas o último mês da série em dias (ignora os demais). */
+    onlyLastMonth?: boolean;
   } = {},
 ): T[] {
-  const { labelKey = "mes", sumFields, averageFields = [] } = options;
+  const { labelKey = "mes", sumFields, averageFields = [], onlyLastMonth = false } = options;
   if (!Array.isArray(series) || series.length === 0) return [];
 
+  // Em modo "apenas último mês", limitamos a série de entrada ao último item válido.
+  const workingSeries = onlyLastMonth
+    ? (() => {
+        for (let i = series.length - 1; i >= 0; i--) {
+          const lbl = String((series[i] as any)?.[labelKey] ?? "");
+          if (MES_PT[lbl]) return [series[i]];
+        }
+        return series.slice(-1);
+      })()
+    : series;
+
   const out: T[] = [];
-  series.forEach((row, monthIdx) => {
+  workingSeries.forEach((row, monthIdx) => {
     const label = String(row[labelKey] ?? "");
     const meta = MES_PT[label];
     if (!meta) {
       out.push(row);
       return;
     }
+
 
     // Build a "clean" base row without non-serializable fields (objects/arrays
     // like `pin` annotations). Spreading those into every daily row would break

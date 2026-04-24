@@ -1045,6 +1045,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         return expandMonthlyToDaily(monthly, {
           labelKey: "mes",
           averageFields: ["activeHeadcount", "hcPonto"],
+          onlyLastMonth: true,
         });
       }
       return monthly;
@@ -1087,7 +1088,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       const nameFilter = selectedRegional || null;
       const monthly = aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
       if (periodGranularity === "mensal") {
-        return expandMonthlyToDaily(monthly as any[], { labelKey: "mes" });
+        return expandMonthlyToDaily(monthly as any[], { labelKey: "mes", onlyLastMonth: true });
       }
       return monthly;
     },
@@ -2055,6 +2056,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               ? expandMonthlyToDaily(sobrecargaMonthly as any[], {
                   labelKey: "mes",
                   averageFields: ["produtividade", "operadores", "limiteSaudavel"],
+                  onlyLastMonth: true,
                 })
               : sobrecargaMonthly;
 
