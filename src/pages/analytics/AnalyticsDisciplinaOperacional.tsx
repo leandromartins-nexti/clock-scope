@@ -2056,6 +2056,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
               ? expandMonthlyToDaily(sobrecargaMonthly as any[], {
                   labelKey: "mes",
                   averageFields: ["produtividade", "operadores", "limiteSaudavel"],
+                  onlyLastMonth: true,
                 })
               : sobrecargaMonthly;
 
