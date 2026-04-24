@@ -914,6 +914,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const { config: scoreConfig } = useScoreConfig();
   const { data: customerData, loading: customerDataLoading } = useQualidadePontoData();
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
+  const [periodGranularity, setPeriodGranularity] = useState<PeriodGranularity>("anual");
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [chartDataModal, setChartDataModal] = useState<string | null>(null);
