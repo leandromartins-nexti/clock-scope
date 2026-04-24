@@ -1917,9 +1917,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                     tempoMedio,
                   };
                 });
-              })()} onClick={(e: any) => {
-                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-              }}>
+              })()} onClick={openChartMenu}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="mes" tick={(props: any) => {
                   const { x, y, payload } = props;
