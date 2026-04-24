@@ -14,11 +14,12 @@ import {
   CartesianGrid,
   Tooltip,
   ReferenceLine,
-  BarChart,
+  ReferenceArea,
   Bar,
   Legend,
   Line,
   ComposedChart,
+  LabelList,
 } from "recharts";
 import { Check, AlertTriangle, X, Calendar } from "lucide-react";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
@@ -52,6 +53,13 @@ function gaugeColor(score: number) {
   return "#ef4444";
 }
 
+// Cor da bolha por faixa de score (regra fixa: ≥70 verde, 55-69 laranja, <55 vermelho)
+function bubbleColor(score: number) {
+  if (score >= 70) return "#22c55e";
+  if (score >= 55) return "#f97316";
+  return "#ef4444";
+}
+
 // ── Heatmap helpers ──
 function heatmapColor(pct: number) {
   if (pct < 10) return "#dcfce7";
@@ -67,16 +75,69 @@ function reserveIcon(status: "ok" | "limit" | "gap") {
   return <X size={9} className="text-red-600" />;
 }
 
+// Renderiza um insight aplicando <strong> nos trechos especificados.
+function renderInsightText(text: string, boldParts: string[]) {
+  let nodes: (string | JSX.Element)[] = [text];
+  boldParts.forEach((part, idx) => {
+    const next: (string | JSX.Element)[] = [];
+    nodes.forEach((node, ni) => {
+      if (typeof node !== "string") {
+        next.push(node);
+        return;
+      }
+      const segments = node.split(part);
+      segments.forEach((seg, si) => {
+        if (seg) next.push(seg);
+        if (si < segments.length - 1) {
+          next.push(
+            <strong key={`b-${idx}-${ni}-${si}`} className="font-bold">
+              {part}
+            </strong>
+          );
+        }
+      });
+    });
+    nodes = next;
+  });
+  return nodes;
+}
+
+const insightBolds: string[][] = [
+  ["94 férias firmes", "85", "9 colaboradores"],
+  ["Capital BA", "38% do efetivo"],
+  ["52% para 64%", "75%"],
+];
+
+type ScoreOption = "Composto" | "Aderência" | "Cobertura" | "Distribuição";
+
 export default function AnalyticsFerias() {
   const [groupBy, setGroupBy] = useState<GroupBy>("unidade");
   const [selectedRegional, setSelectedRegional] = useState<string | null>(null);
   const [onlyProblems, setOnlyProblems] = useState(false);
   const [heatmapGroup, setHeatmapGroup] = useState<"Regional" | "Contrato" | "Posto" | "Service Type">("Regional");
+  const [scoreOption, setScoreOption] = useState<ScoreOption>("Composto");
+  const [periodMode, setPeriodMode] = useState<"anual" | "mensal">("anual");
 
   const sidebarItems = useMemo(
-    () => vacationData.sidebar.items.map(i => ({ nome: i.name, score: i.score })),
-    []
+    () => {
+      const source = periodMode === "anual" ? vacationData.sidebar.items : vacationData.sidebar.itemsMensal;
+      return source.map(i => ({ nome: i.name, score: i.score }));
+    },
+    [periodMode]
   );
+
+  const mapaData = useMemo(
+    () => (vacationData.charts.mapa.datasets as Record<ScoreOption, typeof vacationData.charts.mapa.data>)[scoreOption],
+    [scoreOption]
+  );
+
+  // Variação semântica dos KPIs (lower-is-better vs higher-is-better)
+  const variations = {
+    score: { color: "text-green-600", arrow: "↑", value: vacationData.kpis.score.variation.value, unit: vacationData.kpis.score.variation.unit }, // higher-is-better, ↑ = bom
+    aProgramar: { color: "text-red-600", arrow: "↑", value: vacationData.kpis.aProgramar.variation.value, unit: vacationData.kpis.aProgramar.variation.unit },
+    semCobertura: { color: "text-green-600", arrow: "↓", value: vacationData.kpis.semCobertura.variation.value, unit: vacationData.kpis.semCobertura.variation.unit },
+    riscoDobra: { color: "text-red-600", arrow: "↑", value: vacationData.kpis.riscoDobra.variation.value, unit: vacationData.kpis.riscoDobra.variation.unit },
+  };
 
   return (
     <div className="flex w-full">
@@ -89,11 +150,17 @@ export default function AnalyticsFerias() {
               title="Score de Férias"
               tooltip={vacationData.kpis.score.tooltip}
             >
-              <ScoreGauge score={vacationData.kpis.score.value} color={gaugeColor(vacationData.kpis.score.value)} />
+              <ScoreGauge
+                score={vacationData.kpis.score.value}
+                label={`${vacationData.kpis.score.value}`}
+                color={gaugeColor(vacationData.kpis.score.value)}
+              />
               <p className={`text-[11px] font-medium ${classifColor(vacationData.kpis.score.classification as any)}`}>
                 {vacationData.kpis.score.classification}
               </p>
-              <p className="text-[10px] text-green-600 mt-0.5">↑ {vacationData.kpis.score.variation.value} {vacationData.kpis.score.variation.unit}</p>
+              <p className={`text-[10px] mt-0.5 ${variations.score.color}`}>
+                {variations.score.arrow} {variations.score.value} {variations.score.unit}
+              </p>
             </ScoreBoard>,
             <KPIBoard
               key="aprogramar"
@@ -101,15 +168,16 @@ export default function AnalyticsFerias() {
               tooltip={vacationData.kpis.aProgramar.tooltip}
               value={vacationData.kpis.aProgramar.value}
               valueColor="text-orange-500"
-              subtitle={`${vacationData.kpis.aProgramar.classification} · ↑ ${vacationData.kpis.aProgramar.variation.value} ${vacationData.kpis.aProgramar.variation.unit}`}
-            />,
+              subtitle={vacationData.kpis.aProgramar.classification}
+            >
+            </KPIBoard>,
             <KPIBoard
               key="semcobertura"
               title="Sem Cobertura"
               tooltip={vacationData.kpis.semCobertura.tooltip}
               value={vacationData.kpis.semCobertura.value}
               valueColor="text-orange-500"
-              subtitle={`${vacationData.kpis.semCobertura.classification} · ↓ ${vacationData.kpis.semCobertura.variation.value} ${vacationData.kpis.semCobertura.variation.unit}`}
+              subtitle={vacationData.kpis.semCobertura.classification}
             />,
             <KPIBoard
               key="dobra"
@@ -117,7 +185,7 @@ export default function AnalyticsFerias() {
               tooltip={vacationData.kpis.riscoDobra.tooltip}
               value={vacationData.kpis.riscoDobra.value}
               valueColor="text-red-600"
-              subtitle={`${vacationData.kpis.riscoDobra.classification} · ↑ ${vacationData.kpis.riscoDobra.variation.value} ${vacationData.kpis.riscoDobra.variation.unit}`}
+              subtitle={vacationData.kpis.riscoDobra.classification}
             />,
             <KPIBoard
               key="melhor"
@@ -138,23 +206,63 @@ export default function AnalyticsFerias() {
           ]}
         />
 
+        {/* Linha de variações reposicionadas para os KPIs 2-4 (cor semântica) */}
+        <div className="grid grid-cols-6 gap-3 -mt-2">
+          <div />
+          <p className={`text-[10px] text-center ${variations.aProgramar.color}`}>
+            {variations.aProgramar.arrow} {variations.aProgramar.value} {variations.aProgramar.unit}
+          </p>
+          <p className={`text-[10px] text-center ${variations.semCobertura.color}`}>
+            {variations.semCobertura.arrow} {variations.semCobertura.value} {variations.semCobertura.unit}
+          </p>
+          <p className={`text-[10px] text-center ${variations.riscoDobra.color}`}>
+            {variations.riscoDobra.arrow} {variations.riscoDobra.value} {variations.riscoDobra.unit}
+          </p>
+          <div />
+          <div />
+        </div>
+
         {/* ───────── Linha 2 — Grid 2×2 de gráficos ───────── */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           {/* Posição 1 — Mapa de Operações (scatter Headcount × Score) */}
           <div className="bg-card border border-border/50 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center justify-between mb-1 gap-2 flex-wrap">
               <div className="flex items-center gap-1">
                 <h3 className="text-sm font-semibold text-foreground">Mapa de Operações</h3>
-                <InfoTip text="Bolha = headcount da unidade. Eixo X: headcount; Eixo Y: Score de Férias." />
+                <InfoTip text="Bolha = headcount da unidade. Eixo X: headcount; Eixo Y: Score selecionado. Cor da bolha varia pela faixa de score." />
+              </div>
+              <div className="flex items-center gap-1.5">
+                <label className="text-[11px] text-muted-foreground">Score:</label>
+                <select
+                  value={scoreOption}
+                  onChange={e => setScoreOption(e.target.value as ScoreOption)}
+                  className="text-[11px] border border-border rounded px-1.5 py-0.5 bg-background"
+                >
+                  {vacationData.charts.mapa.scoreOptions.map(o => (
+                    <option key={o} value={o}>{o}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <p className="text-[11px] text-muted-foreground mb-2">{vacationData.charts.mapa.subtitle}</p>
-            <ResponsiveContainer width="100%" height={260}>
-              <ScatterChart margin={{ top: 8, right: 12, bottom: 8, left: 0 }}>
+            <ResponsiveContainer width="100%" height={280}>
+              <ScatterChart margin={{ top: 8, right: 12, bottom: 24, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis type="number" dataKey="headcount" name="Headcount" tick={{ fontSize: 11 }} />
+                <XAxis
+                  type="number"
+                  dataKey="headcount"
+                  name="Headcount"
+                  tick={{ fontSize: 11 }}
+                  label={{ value: "Headcount", position: "insideBottom", offset: -10, fontSize: 12, fill: "#6b7280" }}
+                />
                 <YAxis type="number" dataKey="score" name="Score" domain={[0, 100]} tick={{ fontSize: 11 }} />
                 <ZAxis type="number" dataKey="headcount" range={[80, 600]} />
+                {/* Zona Baixa performance (Score 0-55) */}
+                <ReferenceArea y1={0} y2={55} fill="#fee2e2" fillOpacity={0.5} label={{ value: "Baixa performance", position: "insideBottomLeft", fontSize: 11, fill: "#9ca3af" }} />
+                {/* Zona Escala produtiva (Score >= 85 e Headcount >= 250) */}
+                <ReferenceArea x1={250} y1={85} y2={100} fill="#dcfce7" fillOpacity={0.5} label={{ value: "Escala produtiva", position: "insideTopRight", fontSize: 11, fill: "#9ca3af" }} />
+                {/* Linha "Limite saudável" no Score 70 */}
+                <ReferenceLine y={70} stroke="#22c55e" strokeDasharray="4 4" label={{ value: "Limite saudável", position: "right", fontSize: 11, fill: "#22c55e" }} />
                 <Tooltip
                   cursor={{ strokeDasharray: "3 3" }}
                   content={({ active, payload }) => {
@@ -164,18 +272,30 @@ export default function AnalyticsFerias() {
                       <div className="bg-background border border-border rounded-md px-2 py-1 text-xs shadow-md">
                         <p className="font-semibold">{d.name}</p>
                         <p>Headcount: {d.headcount}</p>
-                        <p>Score: {d.score}</p>
+                        <p>Score ({scoreOption}): {d.score}</p>
                       </div>
                     );
                   }}
                 />
-                <ReferenceLine y={70} stroke="#C8860B" strokeDasharray="4 4" />
                 <Scatter
-                  data={vacationData.charts.mapa.data}
-                  fill={COLORS.blue}
+                  data={mapaData}
                   shape={(props: any) => {
-                    const c = gaugeColor(props.payload.score);
-                    return <circle cx={props.cx} cy={props.cy} r={Math.sqrt(props.payload.headcount) * 1.4} fill={c} fillOpacity={0.55} stroke={c} strokeWidth={1.5} />;
+                    const c = bubbleColor(props.payload.score);
+                    const r = Math.sqrt(props.payload.headcount) * 1.4;
+                    // Cor do texto: branco se score >= 70 (verde escuro o bastante), preto caso contrário (laranja/vermelho com opacidade ficam claros).
+                    // Para garantir contraste, usamos preto sempre que a bolha for vermelha/laranja claros e branco quando bolha for densa.
+                    const textColor = props.payload.score >= 70 ? "#ffffff" : "#1f2937";
+                    return (
+                      <g>
+                        <circle cx={props.cx} cy={props.cy} r={r} fill={c} fillOpacity={0.6} stroke={c} strokeWidth={1.5} />
+                        <text x={props.cx} y={props.cy - 1} textAnchor="middle" fontSize={Math.max(9, Math.min(11, r / 1.6))} fontWeight="700" fill={textColor}>
+                          {props.payload.shortName}
+                        </text>
+                        <text x={props.cx} y={props.cy + Math.max(9, Math.min(11, r / 1.6))} textAnchor="middle" fontSize={Math.max(8, Math.min(10, r / 2))} fontWeight="600" fill={textColor}>
+                          {props.payload.score}
+                        </text>
+                      </g>
+                    );
                   }}
                 />
               </ScatterChart>
@@ -299,7 +419,7 @@ export default function AnalyticsFerias() {
             </div>
             <p className="text-[11px] text-muted-foreground mb-2">{vacationData.charts.aderencia.subtitle}</p>
             <ResponsiveContainer width="100%" height={260}>
-              <ScatterChart margin={{ top: 8, right: 12, bottom: 8, left: 0 }}>
+              <ScatterChart margin={{ top: 8, right: 60, bottom: 8, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis type="number" dataKey="x" name="Volume" tick={{ fontSize: 11 }} label={{ value: "Volume de férias", position: "insideBottom", offset: -2, fontSize: 10 }} />
                 <YAxis type="number" dataKey="y" name="Aderência" domain={[0, 100]} tick={{ fontSize: 11 }} label={{ value: "% antecedência ≥30d", angle: -90, position: "insideLeft", fontSize: 10 }} />
@@ -318,7 +438,25 @@ export default function AnalyticsFerias() {
                     );
                   }}
                 />
-                <ReferenceLine y={75} stroke="#C8860B" strokeDasharray="4 4" label={{ value: "Meta 75%", fontSize: 10, fill: "#C8860B" }} />
+                <ReferenceLine
+                  y={75}
+                  stroke="#C8860B"
+                  strokeDasharray="4 4"
+                  label={{
+                    position: "right",
+                    content: (props: any) => {
+                      const { viewBox } = props;
+                      const x = viewBox.x + viewBox.width - 4;
+                      const y = viewBox.y;
+                      return (
+                        <g>
+                          <rect x={x - 2} y={y - 8} width={50} height={14} fill="#ffffff" fillOpacity={0.9} rx={2} />
+                          <text x={x + 3} y={y + 2} fontSize={11} fill="#374151">Meta 75%</text>
+                        </g>
+                      );
+                    },
+                  }}
+                />
                 <Scatter
                   data={vacationData.charts.aderencia.data}
                   shape={(props: any) => {
@@ -343,7 +481,9 @@ export default function AnalyticsFerias() {
                 : "border-l-red-500 bg-red-50/50";
             return (
               <div key={i} className={`border-l-4 ${toneStyle} border border-border/50 rounded-r-xl p-3`}>
-                <p className="text-xs text-foreground leading-relaxed">{ins.text}</p>
+                <p className="text-xs text-foreground leading-relaxed text-left">
+                  {renderInsightText(ins.text, insightBolds[i] ?? [])}
+                </p>
               </div>
             );
           })}
@@ -357,6 +497,14 @@ export default function AnalyticsFerias() {
         onRegionalClick={(v) => setSelectedRegional(v === selectedRegional ? null : v)}
         groupBy={groupBy}
         onGroupByChange={setGroupBy}
+        periodToggle={{
+          options: [
+            { id: "anual", label: "Anual" },
+            { id: "mensal", label: "Mensal" },
+          ],
+          value: periodMode,
+          onChange: (id) => setPeriodMode(id as "anual" | "mensal"),
+        }}
       />
     </div>
   );
