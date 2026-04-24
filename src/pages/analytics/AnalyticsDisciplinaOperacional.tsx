@@ -2045,13 +2045,19 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             const P90 = prodValues[p90Idx] || 500;
             const limiteSaudavel = Math.round(P50 * 1.5);
 
-            const sobrecargaData = allEntries.map(d => {
+            const sobrecargaMonthly = allEntries.map(d => {
               const categoria = d.produtividade > P90 ? "Pico crítico" : d.produtividade > limiteSaudavel ? "Acima do limite" : "Saudável";
               const barColor = d.produtividade > P90 ? "#ef4444" : d.produtividade > limiteSaudavel ? "#f59e0b" : "#22c55e";
               return { ...d, categoria, barColor, limiteSaudavel };
             });
+            const sobrecargaData = periodGranularity === "mensal"
+              ? expandMonthlyToDaily(sobrecargaMonthly as any[], {
+                  labelKey: "mes",
+                  averageFields: ["produtividade", "operadores", "limiteSaudavel"],
+                })
+              : sobrecargaMonthly;
 
-            const picoEntry = sobrecargaData.reduce((max, d) => d.produtividade > max.produtividade ? d : max, sobrecargaData[0]);
+            const picoEntry = sobrecargaData.reduce((max: any, d: any) => d.produtividade > max.produtividade ? d : max, sobrecargaData[0]);
 
             if (areaInsufficient) {
               return (
