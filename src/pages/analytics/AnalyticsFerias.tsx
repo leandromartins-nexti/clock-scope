@@ -16,11 +16,14 @@ import {
   ReferenceLine,
   ReferenceArea,
   Bar,
+  BarChart,
+  Cell,
   Legend,
   Line,
   ComposedChart,
+  Area,
 } from "recharts";
-import { Check, AlertTriangle, X, Calendar } from "lucide-react";
+import { Check, AlertTriangle, X, Calendar, Clock, CalendarRange } from "lucide-react";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import KPIRow from "@/components/analytics/kpi/KPIRow";
