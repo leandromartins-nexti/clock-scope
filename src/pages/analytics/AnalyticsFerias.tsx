@@ -180,20 +180,20 @@ export default function AnalyticsFerias() {
               subtitle={vacationData.kpis.aProgramar.classification}
             />,
             <KPIBoard
-              key="semcobertura"
-              title="Sem Cobertura"
-              tooltip={vacationData.kpis.semCobertura.tooltip}
-              value={vacationData.kpis.semCobertura.value}
+              key="cobhe"
+              title="Coberturas com HE (12m)"
+              tooltip={vacationData.kpisTopo.coberturasHE12m.tooltip}
+              value={`${vacationData.kpisTopo.coberturasHE12m.valor}%`}
               valueColor="text-orange-500"
-              subtitle={vacationData.kpis.semCobertura.classification}
+              subtitle={vacationData.kpisTopo.coberturasHE12m.classification}
             />,
             <KPIBoard
-              key="dobra"
-              title="Risco de Dobra"
-              tooltip={vacationData.kpis.riscoDobra.tooltip}
-              value={vacationData.kpis.riscoDobra.value}
-              valueColor="text-red-600"
-              subtitle={vacationData.kpis.riscoDobra.classification}
+              key="antmed"
+              title="Antecedência Média"
+              tooltip={vacationData.kpisTopo.antecedenciaMedia.tooltip}
+              value={`${vacationData.kpisTopo.antecedenciaMedia.valor.toString().replace(".", ",")} meses`}
+              valueColor="text-orange-500"
+              subtitle={vacationData.kpisTopo.antecedenciaMedia.classification}
             />,
             <KPIBoard
               key="melhor"
