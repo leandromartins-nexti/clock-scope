@@ -916,6 +916,31 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const { data: customerData, loading: customerDataLoading } = useQualidadePontoData();
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
   const [periodGranularity, setPeriodGranularity] = useState<PeriodGranularity>("anual");
+  /** Mês expandido no modo "mensal" (ex: "set/25"). Null = último mês da série. */
+  const [dailyMonthLabel, setDailyMonthLabel] = useState<string | null>(null);
+  /** Popover de ações ao clicar em um mês do gráfico. */
+  const [chartMenuAnchor, setChartMenuAnchor] = useState<{ x: number; y: number; mes: string } | null>(null);
+
+  const handleGranularityChange = (g: PeriodGranularity) => {
+    setPeriodGranularity(g);
+    if (g === "anual") setDailyMonthLabel(null);
+  };
+
+  const openChartMenu = (e: any) => {
+    if (!e?.activeLabel) return;
+    // Não abre o popover quando já estamos em modo Mensal (labels são dias).
+    if (periodGranularity === "mensal") {
+      setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
+      return;
+    }
+    // Posiciona próximo ao cursor usando o evento DOM nativo, se disponível.
+    const native = (e?.chartX != null && e?.chartY != null) ? null : null;
+    const evt = (window as any).event as MouseEvent | undefined;
+    const x = evt?.clientX ?? window.innerWidth / 2;
+    const y = evt?.clientY ?? window.innerHeight / 2;
+    setChartMenuAnchor({ x: x + 12, y: y + 12, mes: e.activeLabel });
+    void native;
+  };
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [chartDataModal, setChartDataModal] = useState<string | null>(null);
