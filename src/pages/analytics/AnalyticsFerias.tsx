@@ -105,10 +105,17 @@ function renderInsightText(text: string, boldParts: string[]) {
 }
 
 const insightBolds: string[][] = [
-  ["94 férias firmes", "85", "9 colaboradores"],
-  ["Capital BA", "38% do efetivo"],
-  ["52% para 64%", "75%"],
+  ["HE", "41% em jul/25", "39% em jan/26"],
+  ["na correria (<3m)", "18% para 42%"],
+  ["Ponto batido em férias", "1,8% (set/25)", "0,6% (mar/26)", "Capital BA"],
 ];
+
+// Cores para retrospectiva (charts A1 e A4)
+function volumeBarColor(pct: number) {
+  if (pct < 15) return "#22c55e";
+  if (pct <= 25) return "#eab308";
+  return "#ef4444";
+}
 
 type ScoreOption = "Composto" | "Aderência" | "Cobertura" | "Distribuição";
 
