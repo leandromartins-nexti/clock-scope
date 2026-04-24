@@ -1800,44 +1800,8 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                   );
                 }} />
                 <Area yAxisId="right" type="monotone" dataKey="activeHeadcount" fill="#D3D1C7" fillOpacity={0.4} stroke="#D3D1C7" strokeWidth={0} name="Headcount" />
-                <Bar yAxisId="left" dataKey="registradas" stackId="qual" radius={[0, 0, 0, 0]} name="Registradas">
-                  {qualidadeComHeadcount.map((entry, idx) => {
-                    const isActive = selectedMes && selectedMes === entry.mes;
-                    const dimmed = selectedMes && selectedMes !== entry.mes;
-                    return <Cell key={idx} fill={dimmed ? "rgba(34,197,94,0.45)" : "rgba(34,197,94,0.75)"} stroke={isActive ? "#FF5722" : "#22c55e"} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
-                  })}
-                  <LabelList dataKey="registradas" position="center" fontSize={9} fill="#fff" fontWeight={600} formatter={(v: number) => {
-                    return `${v.toLocaleString("pt-BR")}`;
-                  }} content={({ x, y, width, height, index }: any) => {
-                    const d = qualidadeComHeadcount[index];
-                    if (!d) return null;
-                    const total = d.registradas + d.justificadas;
-                    const pct = total > 0 ? ((d.registradas / total) * 100).toFixed(0) : "0";
-                    return (
-                      <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
-                        {pct}%
-                      </text>
-                    );
-                  }} />
-                </Bar>
-                <Bar yAxisId="left" dataKey="justificadas" stackId="qual" radius={[4, 4, 0, 0]} name="Justificadas">
-                  {qualidadeComHeadcount.map((entry, idx) => {
-                    const isActive = selectedMes && selectedMes === entry.mes;
-                    const dimmed = selectedMes && selectedMes !== entry.mes;
-                    return <Cell key={idx} fill={dimmed ? "rgba(239,68,68,0.45)" : "rgba(239,68,68,0.75)"} stroke={isActive ? "#FF5722" : "#ef4444"} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
-                  })}
-                  <LabelList content={({ x, y, width, height, index }: any) => {
-                    const d = qualidadeComHeadcount[index];
-                    if (!d) return null;
-                    const total = d.registradas + d.justificadas;
-                    const pct = total > 0 ? ((d.justificadas / total) * 100).toFixed(0) : "0";
-                    return (
-                      <text x={(x ?? 0) + (width ?? 0) / 2} y={(y ?? 0) + (height ?? 0) / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
-                        {pct}%
-                      </text>
-                    );
-                  }} />
-                </Bar>
+                <Area yAxisId="left" type="monotone" dataKey="registradas" stackId="qual" name="Registradas" stroke="#22c55e" strokeWidth={1.5} fill="rgba(34,197,94,0.65)" activeDot={{ r: 4, fill: "#22c55e" }} />
+                <Area yAxisId="left" type="monotone" dataKey="justificadas" stackId="qual" name="Justificadas" stroke="#ef4444" strokeWidth={1.5} fill="rgba(239,68,68,0.65)" activeDot={{ r: 4, fill: "#ef4444" }} />
                 <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 10, paddingTop: 8 }} payload={[
                   { value: "Registradas", type: "square", color: "#22c55e" },
                   { value: "Justificadas", type: "square", color: "#ef4444" },
@@ -2169,35 +2133,18 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
                         </div>
                       );
                     }} />
-                    <Bar yAxisId="left" dataKey="produtividade" radius={[4, 4, 0, 0]} name="Carga por operador" strokeWidth={1}>
-                      {sobrecargaData.map((entry, idx) => {
-                        const dimmed = selectedMes && selectedMes !== entry.mes;
-                        const baseColor = entry.barColor;
-                        // Convert hex to rgba for opacity control
-                        const hexToRgb = (hex: string) => {
-                          const r = parseInt(hex.slice(1, 3), 16);
-                          const g = parseInt(hex.slice(3, 5), 16);
-                          const b = parseInt(hex.slice(5, 7), 16);
-                          return `${r},${g},${b}`;
-                        };
-                        const isActive = selectedMes && selectedMes === entry.mes;
-                        return <Cell key={idx} fill={dimmed ? `rgba(${hexToRgb(baseColor)},0.45)` : `rgba(${hexToRgb(baseColor)},0.75)`} stroke={isActive ? "#FF5722" : baseColor} strokeWidth={isActive ? 2 : 1} strokeDasharray={isActive ? "4 3" : "none"} />;
-                      })}
-                      <LabelList content={({ x, y, width: w, height: h, index }: any) => {
+                    <Area yAxisId="left" type="monotone" dataKey="produtividade" name="Carga por operador" stroke="#22c55e" strokeWidth={2} fill="rgba(34,197,94,0.35)" activeDot={{ r: 4, fill: "#22c55e" }}>
+                      <LabelList dataKey="operadores" position="top" content={({ x, y, index }: any) => {
                         const d = sobrecargaData[index];
                         if (!d) return null;
-                        const isCritical = d.categoria === "Pico crítico";
-                        const isPeak = d === picoEntry && isCritical;
-                        const barH = h ?? 0;
+                        const valStr = d.operadores >= 1000 ? `${(d.operadores/1000).toFixed(1).replace('.', ',')}k` : d.operadores;
                         return (
-                          <g>
-                            <text x={(x ?? 0) + (w ?? 0) / 2} y={(y ?? 0) + barH / 2 + 3} textAnchor="middle" fontSize={9} fill="#fff" fontWeight={600}>
-                              {d.operadores >= 1000 ? `${(d.operadores/1000).toFixed(1).replace('.', ',')}k` : d.operadores}
-                            </text>
-                          </g>
+                          <text x={x} y={(y ?? 0) - 6} textAnchor="middle" fontSize={9} fill={d.barColor} fontWeight={600}>
+                            {valStr}
+                          </text>
                         );
                       }} />
-                    </Bar>
+                    </Area>
                     <Line yAxisId="right" type="monotone" dataKey="he" name="Horas extras" stroke="#3b82f6" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "#3b82f6" }}>
                     </Line>
                   </ComposedChart>
