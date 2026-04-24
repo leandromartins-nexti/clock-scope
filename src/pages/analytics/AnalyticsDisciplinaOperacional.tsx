@@ -2324,6 +2324,24 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         source={sobrecargaBackofficeSource}
         activeGroupBy={groupBy as "empresa" | "unidade" | "area"}
       />
+      {chartMenuAnchor && (
+        <ChartMonthActionPopover
+          x={chartMenuAnchor.x}
+          y={chartMenuAnchor.y}
+          monthLabel={chartMenuAnchor.mes}
+          onApplyFilter={() => {
+            setSelectedMes(prev => prev === chartMenuAnchor.mes ? null : chartMenuAnchor.mes);
+            setChartMenuAnchor(null);
+          }}
+          onLoadDaily={() => {
+            setDailyMonthLabel(chartMenuAnchor.mes);
+            setPeriodGranularity("mensal");
+            setSelectedMes(null);
+            setChartMenuAnchor(null);
+          }}
+          onClose={() => setChartMenuAnchor(null)}
+        />
+      )}
     </div>
   );
 }
