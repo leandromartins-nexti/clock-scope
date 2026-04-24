@@ -46,6 +46,7 @@ export default function GroupBySidebar({
   onGroupByChange,
   onPagedItemsChange,
   pageSize = 25,
+  periodToggle,
 }: GroupBySidebarProps) {
   const { config: scoreConfig } = useScoreConfig();
   const isMobile = useIsMobile();
