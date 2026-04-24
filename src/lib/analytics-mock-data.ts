@@ -721,3 +721,152 @@ export const lockedTabs = [
   { id: "reconhecimento", grupo: "Engajamento", nome: "Direct", descricao: "Monitore a comunicação direta entre líderes e colaboradores em tempo real" },
   { id: "comunicacao", grupo: "Engajamento", nome: "Avisos", descricao: "Gerencie avisos, convocações e a taxa de leitura das comunicações enviadas" },
 ];
+
+// ============================================================
+// AbA FÉRIAS — vacationData
+// ============================================================
+
+function buildHeatmapCells() {
+  const regionais = ["Capital BA", "Interior PR", "Capital SP", "Grande RJ", "Interior MG"];
+  const weeks = Array.from({ length: 26 }, (_, i) => {
+    const semNum = 18 + i;
+    return { label: `Sem ${semNum}` };
+  });
+
+  // Distribuição mockada baseada em padrão sazonal (pico em julho).
+  function pctFor(regIdx: number, wIdx: number): number {
+    const semNum = 18 + wIdx;
+    let base = 8;
+    if (semNum >= 18 && semNum <= 22) base = 10 + Math.floor(Math.random() * 10);
+    else if (semNum >= 23 && semNum <= 26) base = (regIdx === 0 || regIdx === 1) ? 22 + Math.floor(Math.random() * 8) : 12 + Math.floor(Math.random() * 8);
+    else if (semNum >= 27 && semNum <= 31) {
+      if (regIdx === 0) base = 32 + Math.floor(Math.random() * 18); // BA pico
+      else if (regIdx === 1) base = 28 + Math.floor(Math.random() * 12); // PR
+      else base = 18 + Math.floor(Math.random() * 8);
+    } else if (semNum >= 32 && semNum <= 35) base = 12 + Math.floor(Math.random() * 8);
+    else base = 6 + Math.floor(Math.random() * 8);
+    return Math.min(base, 50);
+  }
+
+  return regionais.map((regional, ri) => ({
+    regional,
+    weeks: weeks.map((_, wi) => {
+      const pct = pctFor(ri, wi);
+      const status: "ok" | "limit" | "gap" = pct >= 35 ? "gap" : pct >= 25 ? "limit" : "ok";
+      return { pct, status };
+    }),
+  }));
+}
+
+export const vacationData = {
+  kpis: {
+    score: {
+      value: 68,
+      classification: "Atenção",
+      variation: { value: 4, unit: "pts", direction: "up" },
+      tooltip: "Índice sintético que combina aderência ao prazo concessivo, distribuição ao longo do ano, cobertura programada e ausência de conflitos de calendário. Quanto maior, mais saudável a programação.",
+    },
+    aProgramar: {
+      value: "47",
+      classification: "Atenção",
+      variation: { value: 12, unit: "abs", direction: "up" },
+      tooltip: "Colaboradores com período aquisitivo vencendo nos próximos 30 dias e ainda sem férias programadas.",
+    },
+    semCobertura: {
+      value: "23",
+      classification: "Atenção",
+      variation: { value: 5, unit: "abs", direction: "down" },
+      tooltip: "Férias já programadas no sistema mas sem ferista, remanejo ou substituto definido.",
+    },
+    riscoDobra: {
+      value: "12",
+      classification: "Crítico",
+      variation: { value: 3, unit: "abs", direction: "up" },
+      tooltip: "Colaboradores a menos de 60 dias do fim do período concessivo. Risco de pagamento em dobra.",
+    },
+    melhorOperacao: {
+      operationName: "VIG EYES SEGUR…",
+      score: 84,
+      classification: "Bom",
+      tooltip: "Operação com melhor score de programação de férias no período.",
+    },
+    maiorRisco: {
+      operationName: "VIG EYES TERC…",
+      score: 52,
+      classification: "Ruim",
+      tooltip: "Operação com pior score de programação de férias.",
+    },
+  },
+  sidebar: {
+    items: [
+      { id: "1", name: "São José do Rio Preto", score: 89, classification: "Bom" },
+      { id: "2", name: "Capital ACL", score: 85, classification: "Bom" },
+      { id: "3", name: "Capital SEG", score: 82, classification: "Bom" },
+      { id: "4", name: "Interior SP", score: 78, classification: "Bom" },
+      { id: "5", name: "Capital POR", score: 73, classification: "Bom" },
+      { id: "6", name: "Grande RJ", score: 68, classification: "Atenção" },
+      { id: "7", name: "Interior MG", score: 64, classification: "Atenção" },
+      { id: "8", name: "Capital BA", score: 58, classification: "Atenção" },
+      { id: "9", name: "Interior BA", score: 52, classification: "Ruim" },
+      { id: "10", name: "Norte Fluminense", score: 48, classification: "Ruim" },
+    ],
+  },
+  charts: {
+    mapa: {
+      subtitle: "Headcount × Score de Férias · uma bolha por unidade de negócio",
+      data: [
+        { name: "Segurança Empresarial", shortName: "SEG", headcount: 42, score: 80 },
+        { name: "Terceirização", shortName: "TER", headcount: 48, score: 56 },
+        { name: "Portaria", shortName: "POR", headcount: 398, score: 73 },
+        { name: "Limpeza e Conservação", shortName: "LIM", headcount: 287, score: 68 },
+        { name: "Facilities", shortName: "FAC", headcount: 156, score: 75 },
+      ],
+    },
+    calendario: {
+      subtitle: "Densidade de férias por semana · próximos 6 meses · clique numa célula",
+      tooltip: "Cada célula mostra o percentual do efetivo em férias na semana, com marcador de status da reserva técnica. Verde (0-20%), amarelo (20-30%), laranja (30-40%), vermelho (>40%).",
+      groupByOptions: ["Regional", "Contrato", "Posto", "Service Type"] as const,
+      weeks: Array.from({ length: 26 }, (_, i) => ({ label: `Sem ${18 + i}` })),
+      cells: buildHeatmapCells(),
+    },
+    distribuicao: {
+      subtitle: "Próximos 12 meses · programação vs capacidade da reserva",
+      tooltip: "Empilha firmes, provisórias, a programar e não planejadas. Linha tracejada mostra a capacidade mensal da reserva técnica.",
+      data: [
+        { mes: "abr/26", firmes: 42, provisorias: 18, aProgramar: 12, naoPlanejadas: 5, capacidade: 70 },
+        { mes: "mai/26", firmes: 58, provisorias: 22, aProgramar: 18, naoPlanejadas: 8, capacidade: 80 },
+        { mes: "jun/26", firmes: 71, provisorias: 25, aProgramar: 24, naoPlanejadas: 11, capacidade: 85 },
+        { mes: "jul/26", firmes: 94, provisorias: 30, aProgramar: 28, naoPlanejadas: 15, capacidade: 85 },
+        { mes: "ago/26", firmes: 68, provisorias: 28, aProgramar: 20, naoPlanejadas: 9, capacidade: 85 },
+        { mes: "set/26", firmes: 45, provisorias: 20, aProgramar: 15, naoPlanejadas: 6, capacidade: 80 },
+        { mes: "out/26", firmes: 38, provisorias: 18, aProgramar: 12, naoPlanejadas: 4, capacidade: 80 },
+        { mes: "nov/26", firmes: 42, provisorias: 20, aProgramar: 14, naoPlanejadas: 5, capacidade: 80 },
+        { mes: "dez/26", firmes: 88, provisorias: 32, aProgramar: 22, naoPlanejadas: 12, capacidade: 85 },
+        { mes: "jan/27", firmes: 95, provisorias: 35, aProgramar: 25, naoPlanejadas: 14, capacidade: 85 },
+        { mes: "fev/27", firmes: 55, provisorias: 22, aProgramar: 16, naoPlanejadas: 7, capacidade: 80 },
+        { mes: "mar/27", firmes: 48, provisorias: 20, aProgramar: 14, naoPlanejadas: 6, capacidade: 80 },
+      ],
+    },
+    aderencia: {
+      subtitle: "Unidades de negócio · bolha = headcount",
+      tooltip: "Eixo X: volume de férias no período. Eixo Y: % programadas com 30+ dias de antecedência.",
+      data: [
+        { name: "São José do Rio Preto", x: 22, y: 82, headcount: 156 },
+        { name: "Capital ACL", x: 45, y: 78, headcount: 287 },
+        { name: "Capital SEG", x: 18, y: 85, headcount: 98 },
+        { name: "Interior SP", x: 28, y: 72, headcount: 142 },
+        { name: "Capital POR", x: 62, y: 68, headcount: 398 },
+        { name: "Grande RJ", x: 51, y: 58, headcount: 234 },
+        { name: "Interior MG", x: 34, y: 55, headcount: 178 },
+        { name: "Capital BA", x: 42, y: 48, headcount: 198 },
+        { name: "Interior BA", x: 28, y: 42, headcount: 134 },
+        { name: "Norte Fluminense", x: 19, y: 38, headcount: 89 },
+      ],
+    },
+  },
+  insights: [
+    { tone: "negative" as const, text: "Julho concentra 94 férias firmes vs capacidade de reserva de 85 — gap de 9 colaboradores. Antecipar parte para maio ou junho reduz HE projetada e risco de posto descoberto." },
+    { tone: "warning" as const, text: "Capital BA tem 38% do efetivo em férias no pico de julho. Concentração crítica — redistribuir com unidades vizinhas ou acionar ferista volante." },
+    { tone: "positive" as const, text: "A programação com antecedência subiu de 52% para 64% em 6 meses. A operação está reagindo melhor ao ciclo de férias. Meta: chegar a 75% até o fim do ano." },
+  ],
+};
