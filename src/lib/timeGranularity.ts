@@ -66,23 +66,36 @@ export function expandMonthlyToDaily<T extends Record<string, any>>(
       return;
     }
 
+    // Build a "clean" base row without non-serializable fields (objects/arrays
+    // like `pin` annotations). Spreading those into every daily row would break
+    // downstream code that expects them to appear on a single anchor month.
+    const cleanRow: Record<string, any> = {};
+    Object.keys(row).forEach((k) => {
+      const v = (row as any)[k];
+      if (v === null || v === undefined) return;
+      const t = typeof v;
+      if (t === "number" || t === "string" || t === "boolean") {
+        cleanRow[k] = v;
+      }
+    });
+
     // Detect numeric fields if sumFields not provided
     const detectedSumFields =
       sumFields ??
-      Object.keys(row).filter(
+      Object.keys(cleanRow).filter(
         (k) =>
           k !== labelKey &&
-          typeof row[k] === "number" &&
+          typeof cleanRow[k] === "number" &&
           !averageFields.includes(k),
       );
 
     for (let day = 1; day <= meta.days; day++) {
       const dayLabel = `${String(day).padStart(2, "0")}/${meta.abbr}`;
-      const newRow: any = { ...row, [labelKey]: dayLabel };
+      const newRow: any = { ...cleanRow, [labelKey]: dayLabel };
 
       // Distribute "sum-style" fields evenly across days with small jitter
       detectedSumFields.forEach((field, fIdx) => {
-        const monthlyTotal = Number(row[field]) || 0;
+        const monthlyTotal = Number(cleanRow[field]) || 0;
         const base = monthlyTotal / meta.days;
         const j = jitter(monthIdx * 100 + day * 7 + fIdx * 13) * 0.08; // ±8%
         newRow[field] = +(base * (1 + j)).toFixed(2);
@@ -90,12 +103,12 @@ export function expandMonthlyToDaily<T extends Record<string, any>>(
 
       // Keep average/percentage fields close to the monthly value with small jitter
       averageFields.forEach((field, fIdx) => {
-        const monthlyAvg = Number(row[field]) || 0;
+        const monthlyAvg = Number(cleanRow[field]) || 0;
         const j = jitter(monthIdx * 50 + day * 3 + fIdx * 11) * 0.04; // ±4%
         newRow[field] = +(monthlyAvg * (1 + j)).toFixed(2);
       });
 
-      out.push(newRow);
+      out.push(newRow as T);
     }
   });
   return out;
