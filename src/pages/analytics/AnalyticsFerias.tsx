@@ -16,11 +16,14 @@ import {
   ReferenceLine,
   ReferenceArea,
   Bar,
+  BarChart,
+  Cell,
   Legend,
   Line,
   ComposedChart,
+  Area,
 } from "recharts";
-import { Check, AlertTriangle, X, Calendar } from "lucide-react";
+import { Check, AlertTriangle, X, Calendar, Clock, CalendarRange } from "lucide-react";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
 import { ScoreBoard, KPIBoard } from "@/components/analytics/KPIBoard";
 import KPIRow from "@/components/analytics/kpi/KPIRow";
@@ -102,10 +105,17 @@ function renderInsightText(text: string, boldParts: string[]) {
 }
 
 const insightBolds: string[][] = [
-  ["94 férias firmes", "85", "9 colaboradores"],
-  ["Capital BA", "38% do efetivo"],
-  ["52% para 64%", "75%"],
+  ["HE", "41% em jul/25", "39% em jan/26"],
+  ["na correria (<3m)", "18% para 42%"],
+  ["Ponto batido em férias", "1,8% (set/25)", "0,6% (mar/26)", "Capital BA"],
 ];
+
+// Cores para retrospectiva (charts A1 e A4)
+function volumeBarColor(pct: number) {
+  if (pct < 15) return "#22c55e";
+  if (pct <= 25) return "#eab308";
+  return "#ef4444";
+}
 
 type ScoreOption = "Composto" | "Aderência" | "Cobertura" | "Distribuição";
 
@@ -170,20 +180,20 @@ export default function AnalyticsFerias() {
               subtitle={vacationData.kpis.aProgramar.classification}
             />,
             <KPIBoard
-              key="semcobertura"
-              title="Sem Cobertura"
-              tooltip={vacationData.kpis.semCobertura.tooltip}
-              value={vacationData.kpis.semCobertura.value}
+              key="cobhe"
+              title="Coberturas com HE (12m)"
+              tooltip={vacationData.kpisTopo.coberturasHE12m.tooltip}
+              value={`${vacationData.kpisTopo.coberturasHE12m.valor}%`}
               valueColor="text-orange-500"
-              subtitle={vacationData.kpis.semCobertura.classification}
+              subtitle={vacationData.kpisTopo.coberturasHE12m.classification}
             />,
             <KPIBoard
-              key="dobra"
-              title="Risco de Dobra"
-              tooltip={vacationData.kpis.riscoDobra.tooltip}
-              value={vacationData.kpis.riscoDobra.value}
-              valueColor="text-red-600"
-              subtitle={vacationData.kpis.riscoDobra.classification}
+              key="antmed"
+              title="Antecedência Média"
+              tooltip={vacationData.kpisTopo.antecedenciaMedia.tooltip}
+              value={`${vacationData.kpisTopo.antecedenciaMedia.valor.toString().replace(".", ",")} meses`}
+              valueColor="text-orange-500"
+              subtitle={vacationData.kpisTopo.antecedenciaMedia.classification}
             />,
             <KPIBoard
               key="melhor"
@@ -210,17 +220,229 @@ export default function AnalyticsFerias() {
           <p className={`text-[10px] text-center ${variations.aProgramar.color}`}>
             {variations.aProgramar.arrow} {variations.aProgramar.value} {variations.aProgramar.unit}
           </p>
-          <p className={`text-[10px] text-center ${variations.semCobertura.color}`}>
-            {variations.semCobertura.arrow} {variations.semCobertura.value} {variations.semCobertura.unit}
+          <p className="text-[10px] text-center text-green-600">
+            ↓ {Math.abs(vacationData.kpisTopo.coberturasHE12m.variacao)} {vacationData.kpisTopo.coberturasHE12m.unidade} vs anterior
           </p>
-          <p className={`text-[10px] text-center ${variations.riscoDobra.color}`}>
-            {variations.riscoDobra.arrow} {variations.riscoDobra.value} {variations.riscoDobra.unit}
+          <p className="text-[10px] text-center text-green-600">
+            ↑ {vacationData.kpisTopo.antecedenciaMedia.variacao.toString().replace(".", ",")} {vacationData.kpisTopo.antecedenciaMedia.unidade} vs anterior
           </p>
           <div />
           <div />
         </div>
 
-        {/* ───────── Linha 2 — Grid 2×2 de gráficos ───────── */}
+        {/* ═══════════════════════════════════════════════════════════ */}
+        {/* SEÇÃO A — Retrospectiva da Operação                          */}
+        {/* ═══════════════════════════════════════════════════════════ */}
+        <div className="pt-6 mt-4 border-t border-border/60">
+          <div className="flex items-center gap-2 mb-1">
+            <Clock size={18} className="text-muted-foreground" />
+            <h2 className="text-lg font-bold text-foreground">Retrospectiva da Operação</h2>
+          </div>
+          <p className="text-xs text-muted-foreground mb-4">Como a gestão de férias evoluiu nos últimos 12 meses</p>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+            {/* A1 — Volume de Férias por Mês */}
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <div className="flex items-center gap-1 mb-1">
+                <h3 className="text-sm font-semibold text-foreground">Volume de Férias por Mês</h3>
+                <InfoTip text="Percentual do efetivo total que esteve em férias no mês. Picos acima de 25% indicam concentração crítica que sobrecarrega a reserva técnica." />
+              </div>
+              <p className="text-[11px] text-muted-foreground mb-2">% do efetivo em férias · últimos 12 meses</p>
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={vacationData.retrospectiva.volumeMensal} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} domain={[0, 30]} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const d = payload[0].payload;
+                      const isLast = periodMode === "mensal" && d.mes === "mar/26";
+                      return (
+                        <div className="bg-background border border-border rounded-md px-2 py-1 text-xs shadow-md">
+                          <p className="font-semibold">{d.mes}{isLast ? " (último mês)" : ""}</p>
+                          <p>% do efetivo: {d.pct}%</p>
+                          <p>Colaboradores: {d.abs}</p>
+                        </div>
+                      );
+                    }}
+                  />
+                  <ReferenceLine y={18} stroke="#6b7280" strokeDasharray="4 4" label={{ value: "Média: 18%", position: "right", fontSize: 10, fill: "#6b7280" }} />
+                  <Bar dataKey="pct" radius={[3, 3, 0, 0]}>
+                    {vacationData.retrospectiva.volumeMensal.map((d, i) => {
+                      const isLast = periodMode === "mensal" && d.mes === "mar/26";
+                      return (
+                        <Cell
+                          key={i}
+                          fill={volumeBarColor(d.pct)}
+                          stroke={isLast ? "#FF5722" : undefined}
+                          strokeWidth={isLast ? 2 : 0}
+                        />
+                      );
+                    })}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* A2 — Composição da Cobertura (stacked 100% + linha HE) */}
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <div className="flex items-center gap-1 mb-1">
+                <h3 className="text-sm font-semibold text-foreground">Composição da Cobertura de Férias</h3>
+                <InfoTip text="Distribuição das coberturas de férias por tipo. Quanto maior a parcela de hora extra e não coberta, maior o custo e o risco operacional." />
+              </div>
+              <p className="text-[11px] text-muted-foreground mb-2">Como cada férias foi coberta · últimos 12 meses</p>
+              <ResponsiveContainer width="100%" height={260}>
+                <ComposedChart data={vacationData.retrospectiva.composicaoCobertura} margin={{ top: 8, right: 40, bottom: 4, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
+                  <YAxis yAxisId="left" tick={{ fontSize: 11 }} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} domain={[0, 50]} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const d = payload[0].payload;
+                      const calc = (p: number) => Math.round((p / 100) * d.total);
+                      return (
+                        <div className="bg-background border border-border rounded-md px-2 py-1 text-xs shadow-md space-y-0.5">
+                          <p className="font-semibold mb-1">Mês: {d.mes}</p>
+                          <p>Total coberturas: {d.total}</p>
+                          <p>Ferista dedicado: {d.ferista}% ({calc(d.ferista)})</p>
+                          <p>Remanejo: {d.remanejo}% ({calc(d.remanejo)})</p>
+                          <p className="text-orange-600 font-semibold">Hora extra: {d.he}% ({calc(d.he)})</p>
+                          <p className="text-red-600 font-semibold">Não coberta: {d.naoCoberta}% ({calc(d.naoCoberta)})</p>
+                        </div>
+                      );
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Bar yAxisId="left" dataKey="ferista" stackId="c" name="Ferista dedicado" fill="#22c55e" />
+                  <Bar yAxisId="left" dataKey="remanejo" stackId="c" name="Remanejo / hora regular" fill="#84cc16" />
+                  <Bar yAxisId="left" dataKey="he" stackId="c" name="Hora extra" fill="#f97316" />
+                  <Bar yAxisId="left" dataKey="naoCoberta" stackId="c" name="Não coberta" fill="#ef4444" />
+                  <Line yAxisId="right" type="monotone" dataKey="pctHE" name="% HE (eixo dir.)" stroke="#f97316" strokeWidth={2} dot={{ r: 3, fill: "#f97316" }} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* A3 — Antecedência da Programação */}
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <div className="flex items-center gap-1 mb-1">
+                <h3 className="text-sm font-semibold text-foreground">Antecedência da Programação</h3>
+                <InfoTip text="Distribuição do tempo entre o lançamento da férias no sistema e o início efetivo. Janela ideal: 6 a 12 meses. Menos de 3 meses indica gestão reativa que sobrecarrega a reserva técnica." />
+              </div>
+              <p className="text-[11px] text-muted-foreground mb-2">Quanto tempo antes cada férias foi lançada · últimos 12 meses</p>
+              <ResponsiveContainer width="100%" height={260}>
+                <ComposedChart data={vacationData.retrospectiva.antecedencia} margin={{ top: 8, right: 40, bottom: 4, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
+                  <YAxis yAxisId="left" tick={{ fontSize: 11 }} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} domain={[0, 50]} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const d = payload[0].payload;
+                      const calc = (p: number) => Math.round((p / 100) * d.total);
+                      return (
+                        <div className="bg-background border border-border rounded-md px-2 py-1 text-xs shadow-md space-y-0.5">
+                          <p className="font-semibold mb-1">Mês: {d.mes}</p>
+                          <p>Total férias do mês: {d.total}</p>
+                          <p>Adiantada (&gt;12m): {d.adiantada}% ({calc(d.adiantada)})</p>
+                          <p>Ideal (6-12m): {d.ideal}% ({calc(d.ideal)})</p>
+                          <p>Apertada (3-6m): {d.apertada}% ({calc(d.apertada)})</p>
+                          <p className="text-red-600 font-semibold">Na correria (&lt;3m): {d.naCorreria}% ({calc(d.naCorreria)})</p>
+                        </div>
+                      );
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Bar yAxisId="left" dataKey="adiantada" stackId="a" name="Adiantada (>12m)" fill="#3b82f6" />
+                  <Bar yAxisId="left" dataKey="ideal" stackId="a" name="Ideal (6-12m)" fill="#22c55e" />
+                  <Bar yAxisId="left" dataKey="apertada" stackId="a" name="Apertada (3-6m)" fill="#eab308" />
+                  <Bar yAxisId="left" dataKey="naCorreria" stackId="a" name="Na correria (<3m)" fill="#ef4444" />
+                  <Line yAxisId="right" type="monotone" dataKey="naCorreria" name="% Na correria (eixo dir.)" stroke="#ef4444" strokeWidth={2} dot={{ r: 3, fill: "#ef4444" }} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* A4 — Ponto Batido em Férias */}
+            <div className="bg-card border border-border/50 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-1 gap-2 flex-wrap">
+                <div className="flex items-center gap-1">
+                  <h3 className="text-sm font-semibold text-foreground">Ponto Batido em Férias</h3>
+                  <InfoTip text="Percentual de colaboradores-dia em que o colaborador estava formalmente em férias mas teve marcação de ponto registrada. Cada ocorrência é potencial passivo trabalhista (férias 'só no papel'). Valores acima de 0,5% indicam problema operacional relevante." />
+                </div>
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">
+                  Indicador de passivo trabalhista
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mb-2">% de colaboradores-dia em férias que tiveram marcação de ponto</p>
+              <ResponsiveContainer width="100%" height={260}>
+                <ComposedChart data={vacationData.retrospectiva.pontoBatidoFerias} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
+                  <defs>
+                    <linearGradient id="pontoBatidoArea" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ef4444" stopOpacity={0.25} />
+                      <stop offset="100%" stopColor="#ef4444" stopOpacity={0.02} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} domain={[0, 3]} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const d = payload[0].payload;
+                      return (
+                        <div className="bg-background border border-border rounded-md px-2 py-1 text-xs shadow-md space-y-0.5">
+                          <p className="font-semibold mb-1">Mês: {d.mes}</p>
+                          <p>% colaboradores-dia: {d.pct.toString().replace(".", ",")}%</p>
+                          <p>Ocorrências: {d.ocorrencias}</p>
+                          <p>Exposição estimada: {d.ocorrencias} dias de risco</p>
+                          <p>Op. com maior incidência: {d.opLider}</p>
+                        </div>
+                      );
+                    }}
+                  />
+                  <ReferenceLine y={0.5} stroke="#9ca3af" strokeDasharray="4 4" label={{ value: "Tolerância prática", position: "right", fontSize: 10, fill: "#6b7280" }} />
+                  <Area type="monotone" dataKey="pct" stroke="#ef4444" strokeWidth={2} fill="url(#pontoBatidoArea)" dot={{ r: 3, fill: "#ef4444" }} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════ */}
+        {/* SEÇÃO B — Programação e Planejamento                         */}
+        {/* ═══════════════════════════════════════════════════════════ */}
+        <div className="pt-6 mt-6 border-t border-border/60">
+          <div className="flex items-center gap-2 mb-1">
+            <CalendarRange size={18} className="text-muted-foreground" />
+            <h2 className="text-lg font-bold text-foreground">Programação e Planejamento</h2>
+          </div>
+          <p className="text-xs text-muted-foreground mb-3">O que precisa de decisão nos próximos meses</p>
+
+          {/* Mini-KPIs (Sem Cobertura · Risco Dobra) */}
+          <div className="grid grid-cols-2 gap-3 mb-3 max-w-[50%]">
+            <div className="bg-card border border-border/50 border-l-4 border-l-orange-500 rounded-md px-3 py-2">
+              <div className="flex items-center gap-1">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Sem Cobertura</p>
+                <InfoTip text="Férias já programadas mas sem ferista, remanejo ou substituto. Risco de posto descoberto ou HE." />
+              </div>
+              <p className="text-lg font-bold text-orange-500 leading-tight">{vacationData.kpis.semCobertura.value} <span className="text-xs font-normal text-muted-foreground">eventos</span></p>
+              <p className="text-[10px] text-muted-foreground">férias sem substituto alocado</p>
+            </div>
+            <div className="bg-card border border-border/50 border-l-4 border-l-red-500 rounded-md px-3 py-2">
+              <div className="flex items-center gap-1">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Risco de Dobra</p>
+                <InfoTip text="Colaboradores a menos de 60 dias do fim do período concessivo. Se não saírem de férias, pagamento em dobra." />
+              </div>
+              <p className="text-lg font-bold text-red-600 leading-tight">{vacationData.kpis.riscoDobra.value} <span className="text-xs font-normal text-muted-foreground">colaboradores</span></p>
+              <p className="text-[10px] text-muted-foreground">a menos de 60 dias do limite</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ───────── Grid 2×2 da Seção B (existente, inalterado) ───────── */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           {/* Posição 1 — Mapa de Operações (scatter Headcount × Score) */}
           <div className="bg-card border border-border/50 rounded-xl p-4">
