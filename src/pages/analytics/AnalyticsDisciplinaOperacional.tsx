@@ -1071,12 +1071,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         return expandMonthlyToDaily(monthly, {
           labelKey: "mes",
           averageFields: ["activeHeadcount", "hcPonto"],
-          onlyLastMonth: true,
+          onlyMonthLabel: dailyMonthLabel ?? undefined,
+          onlyLastMonth: !dailyMonthLabel,
         });
       }
       return monthly;
     },
-    [qualidadeDetalhado, headcountMaps, periodGranularity]
+    [qualidadeDetalhado, headcountMaps, periodGranularity, dailyMonthLabel]
   );
   const maxHeadcount = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.activeHeadcount), 1), [qualidadeComHeadcount]);
   const maxBarTotal = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.registradas + d.justificadas), 1), [qualidadeComHeadcount]);
