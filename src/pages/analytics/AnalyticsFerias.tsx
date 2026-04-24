@@ -169,8 +169,7 @@ export default function AnalyticsFerias() {
               value={vacationData.kpis.aProgramar.value}
               valueColor="text-orange-500"
               subtitle={vacationData.kpis.aProgramar.classification}
-            >
-            </KPIBoard>,
+            />,
             <KPIBoard
               key="semcobertura"
               title="Sem Cobertura"
