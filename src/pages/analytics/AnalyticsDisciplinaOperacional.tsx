@@ -2263,7 +2263,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
       <div className="flex flex-col">
         {/* Toggle de granularidade temporal: Anual ↔ Mensal (somente desktop) */}
         <div className="hidden xl:flex items-center justify-center px-2 py-2 border-b border-border bg-white">
-          <PeriodGranularityToggle value={periodGranularity} onChange={setPeriodGranularity} />
+          <PeriodGranularityToggle value={periodGranularity} onChange={handleGranularityChange} />
         </div>
         <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
       </div>
