@@ -19,7 +19,6 @@ import {
   Legend,
   Line,
   ComposedChart,
-  LabelList,
 } from "recharts";
 import { Check, AlertTriangle, X, Calendar } from "lucide-react";
 import GroupBySidebar, { type GroupBy } from "@/components/analytics/GroupBySidebar";
