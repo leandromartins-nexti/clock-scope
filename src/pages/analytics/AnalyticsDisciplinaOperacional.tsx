@@ -97,6 +97,8 @@ function computeTempoMedioDiasByWindow(
 
 // ── Re-export GroupBy from shared component ──
 import GroupBySidebar, { type GroupBy, groupByOptions } from "@/components/analytics/GroupBySidebar";
+import PeriodGranularityToggle, { type PeriodGranularity } from "@/components/analytics/PeriodGranularityToggle";
+import { expandMonthlyToDaily } from "@/lib/timeGranularity";
 
 // ── Sidebar data is now computed dynamically inside components via dataSources ──
 // (removed static module-level getSidebarItems calls that always fell back to customer 642)
@@ -912,6 +914,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const { config: scoreConfig } = useScoreConfig();
   const { data: customerData, loading: customerDataLoading } = useQualidadePontoData();
   const [visibleNames, setVisibleNames] = useState<string[]>([]);
+  const [periodGranularity, setPeriodGranularity] = useState<PeriodGranularity>("anual");
 
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [chartDataModal, setChartDataModal] = useState<string | null>(null);
@@ -1032,12 +1035,21 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
     [selectedRegional, groupBy, dataSources]
   );
   const qualidadeComHeadcount = useMemo(
-    () => qualidadeDetalhado.map(d => ({
-      ...d,
-      activeHeadcount: headcountMaps.active[d.mes] ?? 0,
-      hcPonto: headcountMaps.ponto[d.mes] ?? 0,
-    })),
-    [qualidadeDetalhado, headcountMaps]
+    () => {
+      const monthly = qualidadeDetalhado.map(d => ({
+        ...d,
+        activeHeadcount: headcountMaps.active[d.mes] ?? 0,
+        hcPonto: headcountMaps.ponto[d.mes] ?? 0,
+      }));
+      if (periodGranularity === "mensal") {
+        return expandMonthlyToDaily(monthly, {
+          labelKey: "mes",
+          averageFields: ["activeHeadcount", "hcPonto"],
+        });
+      }
+      return monthly;
+    },
+    [qualidadeDetalhado, headcountMaps, periodGranularity]
   );
   const maxHeadcount = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.activeHeadcount), 1), [qualidadeComHeadcount]);
   const maxBarTotal = useMemo(() => Math.max(...qualidadeComHeadcount.map(d => d.registradas + d.justificadas), 1), [qualidadeComHeadcount]);
@@ -1073,9 +1085,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
   const tratativaFaixasFiltrada = useMemo(
     () => {
       const nameFilter = selectedRegional || null;
-      return aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
+      const monthly = aggregateComposicaoFaixas(nameFilter, groupBy as any, dataSources);
+      if (periodGranularity === "mensal") {
+        return expandMonthlyToDaily(monthly as any[], { labelKey: "mes" });
+      }
+      return monthly;
     },
-    [groupBy, selectedRegional, dataSources]
+    [groupBy, selectedRegional, dataSources, periodGranularity]
   );
   const tratativaMediaTotal = useMemo(() => tratativaFaixasFiltrada.length ? tratativaFaixasFiltrada.reduce((s, d) => s + d.total, 0) / tratativaFaixasFiltrada.length : 0, [tratativaFaixasFiltrada]);
 
@@ -2029,13 +2045,19 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             const P90 = prodValues[p90Idx] || 500;
             const limiteSaudavel = Math.round(P50 * 1.5);
 
-            const sobrecargaData = allEntries.map(d => {
+            const sobrecargaMonthly = allEntries.map(d => {
               const categoria = d.produtividade > P90 ? "Pico crítico" : d.produtividade > limiteSaudavel ? "Acima do limite" : "Saudável";
               const barColor = d.produtividade > P90 ? "#ef4444" : d.produtividade > limiteSaudavel ? "#f59e0b" : "#22c55e";
               return { ...d, categoria, barColor, limiteSaudavel };
             });
+            const sobrecargaData = periodGranularity === "mensal"
+              ? expandMonthlyToDaily(sobrecargaMonthly as any[], {
+                  labelKey: "mes",
+                  averageFields: ["produtividade", "operadores", "limiteSaudavel"],
+                })
+              : sobrecargaMonthly;
 
-            const picoEntry = sobrecargaData.reduce((max, d) => d.produtividade > max.produtividade ? d : max, sobrecargaData[0]);
+            const picoEntry = sobrecargaData.reduce((max: any, d: any) => d.produtividade > max.produtividade ? d : max, sobrecargaData[0]);
 
             if (areaInsufficient) {
               return (
@@ -2209,7 +2231,13 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         <QualidadeInsightsSection />
       </div>
 
-      <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
+      <div className="flex flex-col">
+        {/* Toggle de granularidade temporal: Anual ↔ Mensal (somente desktop) */}
+        <div className="hidden xl:flex items-center justify-center px-2 py-2 border-b border-border bg-white">
+          <PeriodGranularityToggle value={periodGranularity} onChange={setPeriodGranularity} />
+        </div>
+        <GroupBySidebar items={sidebarItems} selectedRegional={selectedRegional} onRegionalClick={onRegionalClick} onItemDetail={onItemDetail} groupBy={groupBy} onGroupByChange={onGroupByChange} onPagedItemsChange={setVisibleNames} />
+      </div>
 
       <InsightDetailModal
         insight={activeInsight}
