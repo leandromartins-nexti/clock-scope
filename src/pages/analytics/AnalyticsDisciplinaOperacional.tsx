@@ -1045,6 +1045,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
         return expandMonthlyToDaily(monthly, {
           labelKey: "mes",
           averageFields: ["activeHeadcount", "hcPonto"],
+          onlyLastMonth: true,
         });
       }
       return monthly;
