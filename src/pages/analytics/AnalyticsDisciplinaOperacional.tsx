@@ -1751,9 +1751,7 @@ function QualidadeContent({ selectedRegional, onRegionalClick, onItemDetail, gro
             </div>
             <div className="relative pt-6">
             <ResponsiveContainer width="100%" height={280}>
-              <ComposedChart data={qualidadeComHeadcount} onClick={(e: any) => {
-                if (e?.activeLabel) setSelectedMes(prev => prev === e.activeLabel ? null : e.activeLabel);
-              }}>
+              <ComposedChart data={qualidadeComHeadcount} onClick={openChartMenu}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="mes" tick={(props: any) => {
                   const { x, y, payload } = props;
